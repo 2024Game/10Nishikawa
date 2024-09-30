@@ -11,6 +11,8 @@
 #include "CGame.h"
 #include "CSound.h"
 
+#include "CVector.h"
+
 class CApplication
 {
 public:
@@ -44,4 +46,6 @@ private:
 	//CCharacter mRectangle;
 	static CTexture mTexture;
 	CEnemy* mpEnemy;
+
+	CVector mEye;
 };
