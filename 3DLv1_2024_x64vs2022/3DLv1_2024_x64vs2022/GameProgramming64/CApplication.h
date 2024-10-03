@@ -12,6 +12,7 @@
 #include "CSound.h"
 
 #include "CVector.h"
+#include "CModel.h"
 
 class CApplication
 {
@@ -48,4 +49,7 @@ private:
 	CEnemy* mpEnemy;
 
 	CVector mEye;
+	//モデルクラスのインスタンス作成
+	CModel mModel;
+
 };
