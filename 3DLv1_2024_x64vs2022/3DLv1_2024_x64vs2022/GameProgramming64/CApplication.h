@@ -43,7 +43,7 @@ private:
 	CFont mFont;
 	CPlayer* mpPlayer;
 	CBullet* mpBullet;
-//	CRectangle mRectangle;
+	//	CRectangle mRectangle;
 	//CCharacter mRectangle;
 	static CTexture mTexture;
 	CEnemy* mpEnemy;

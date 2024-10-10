@@ -2,6 +2,7 @@
 #ifndef CMODEL_H
 #define CMODEL_H
 
+#include "CMaterial.h"
 //vectorのインクルード
 #include <vector>
 #include "CTriangle.h"
@@ -20,9 +21,14 @@ public:
 	//描画
 	void Render();
 
+	~CModel();
+
 private:
 	//三角形の可変長配列
 	std::vector<CTriangle> mTriangles;
+
+	//マテリアルポインタの可変長配列
+	std::vector<CMaterial*> mpMaterials;
 
 };
 
