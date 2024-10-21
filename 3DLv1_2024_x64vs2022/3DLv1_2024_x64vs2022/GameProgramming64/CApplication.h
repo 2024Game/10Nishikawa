@@ -51,5 +51,5 @@ private:
 	CVector mEye;
 	//モデルクラスのインスタンス作成
 	CModel mModel;
-
+	CModel mBackGround; //背景モデル
 };

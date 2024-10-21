@@ -27,11 +27,15 @@ public:
 	//Normal(法線ベクトル1, 法線ベクトル2, 法線ベクトル3)
 	void Normal(const CVector& v0, const CVector& v1, const CVector& v2);
 
+	//UV設定
+	void UV(const CVector& v0, const CVector& v1, const CVector& v2);
+
 	//描画
 	void Render();
 private:
 	int mMaterialIdx; //マテリアル番号
 	CVector mV[3]; //頂点座標
 	CVector mN[3]; //法線
+	CVector mUv[3]; //テクスチャマッピング
 };
 #endif
