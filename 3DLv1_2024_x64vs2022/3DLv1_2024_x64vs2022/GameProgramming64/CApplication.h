@@ -14,6 +14,8 @@
 #include "CVector.h"
 #include "CModel.h"
 
+#include "CMatrix.h"
+
 class CApplication
 {
 public:
