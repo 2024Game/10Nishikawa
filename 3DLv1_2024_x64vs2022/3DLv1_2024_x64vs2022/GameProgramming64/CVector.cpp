@@ -2,6 +2,17 @@
 
 //Set(X座標, Y座標, Z座標)
 
+CVector CVector::operator*(const CMatrix& m)
+{
+	//掛け算の結果をCVector型の値で返す
+	return CVector
+	(
+		mX * m.M(0, 0) + mY * m.M(1, 0) + mZ * m.M(2, 0) + m.M(3, 0),
+		mX * m.M(0, 1) + mY * m.M(1, 1) + mZ * m.M(2, 1) + m.M(3, 1),
+		mX * m.M(0, 2) + mY * m.M(1, 2) + mZ * m.M(2, 2) + m.M(3, 2)
+	);
+}
+
 CVector::CVector()
 :mX(0.0f)
 ,mY(0.0f)

@@ -9,6 +9,9 @@
 class CTriangle 
 {
 public:
+	//描画
+	//Render(行列)
+	void Render(const CMatrix& m);
 
 	//マテリアル番号の取得
 	int MaterialIdx();
