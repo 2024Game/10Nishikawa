@@ -6,6 +6,24 @@
 //数学関数のインクルード
 #include <math.h>
 
+void CMatrix::M(int row, int col, float value)
+{
+	mM[row][col] = value;
+}
+
+//移動行列の作成
+//Translate(移動量X, 移動量Y, 移動量Z)
+CMatrix CMatrix::Translate(float mx, float my, float mz)
+{
+	Identity(); //初期化
+	mM[3][0] = mx;
+	mM[3][1] = my;
+	mM[3][2] = mz;
+	//この行列を返す
+	return *this;
+}
+
+
 //回転行列（X軸）の作成
 //RotateY(角度)
 CMatrix CMatrix::RotateX(float degree)
@@ -65,7 +83,7 @@ float CMatrix::M(int r, int c) const
 //Scale(倍率X, 倍率Y, 倍率Z)
 CMatrix CMatrix::Scale(float sx, float sy, float sz)
 {
-	Identity();
+	Identity(); //初期化
 	mM[0][0] = sx, mM[1][1] = sy, mM[2][2] = sz;
 
 	//この行列を返す
