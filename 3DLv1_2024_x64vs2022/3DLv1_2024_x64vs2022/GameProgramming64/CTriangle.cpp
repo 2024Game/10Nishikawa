@@ -92,3 +92,45 @@ void CTriangle::Render()
 	
 	glEnd();
 }
+
+//’¸“_À•W‚ğ“¾‚é
+const CVector& CTriangle::V0() const
+{
+	return mV[0];
+}
+const CVector& CTriangle::V1() const
+{
+	return mV[1];
+}
+const CVector& CTriangle::V2() const
+{
+	return mV[2];
+}
+
+//–@ü‚ğ“¾‚é
+const CVector& CTriangle::N0() const
+{
+	return mN[0];
+}
+const CVector& CTriangle::N1() const
+{
+	return mN[1];
+}
+const CVector& CTriangle::N2() const
+{
+	return mN[2];
+}
+
+//UV‚ğ“¾‚é
+const CVector& CTriangle::U0() const
+{
+	return mUv[0];
+}
+const CVector& CTriangle::U1() const
+{
+	return mUv[1];
+}
+const CVector& CTriangle::U2() const
+{
+	return mUv[2];
+}

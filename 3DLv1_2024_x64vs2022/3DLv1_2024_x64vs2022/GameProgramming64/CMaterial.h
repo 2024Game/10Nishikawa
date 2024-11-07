@@ -12,6 +12,11 @@
 class CMaterial
 {
 public:
+	//頂点数の設定
+	//VertexNum(頂点数)
+	void VertexNum(int num);
+	//頂点数の取得
+	int VertexNum();
 	//テクスチャの取得
 	CTexture* Texture();
 	//デフォルトコンストラクタ
@@ -28,6 +33,8 @@ public:
 	//mDiffuse配列の取得
 	float* Diffuse();
 private:
+	//マテリアル毎の頂点数
+	int mVertexNum;
 	//マテリアル名
 	char mName[MATERIAL_NAME_LEN + 1];
 	//拡散光の色RGBA
