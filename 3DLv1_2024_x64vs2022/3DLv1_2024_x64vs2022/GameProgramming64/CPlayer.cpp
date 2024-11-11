@@ -6,8 +6,8 @@
 #define VELOCITY CVector(0.0f, 0.0f, 0.1f) //移動速度
 
 //CPlayer(位置, 回転, スケール)
-CPlayer::CPlayer(const CVector& pos, const CVector& rot
-	, const CVector& scale)
+CPlayer::CPlayer
+(const CVector& pos, const CVector& rot, const CVector& scale)
 {
 	CTransform::Update(pos, rot, scale); //行列の更新
 }
@@ -38,6 +38,14 @@ void CPlayer::Update()
 	{
 		//X軸の回転値を加算
 		mRotation = mRotation + ROTATION_XV;
+	}
+
+	//スペースキー入力で弾発射
+	if (mInput.Key(VK_SPACE))
+	{
+		bullet.Set(0.1f, 1.5f);
+		bullet.Position(CVector(0.0f, 0.0f, 10.0f) * mMatrix);
+		bullet.Rotation(mRotation);
 	}
 
 	//上キー入力で前進
