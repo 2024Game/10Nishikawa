@@ -50,6 +50,12 @@ void CApplication::Start()
 
 }
 
+CTaskManager CApplication::mTaskManager;
+CTaskManager* CApplication::TaskManager()
+{
+	return &mTaskManager;
+}
+
 void CApplication::Update()
 {
 	//頂点1､頂点2､頂点3,法線データの作成
@@ -129,6 +135,8 @@ void CApplication::Update()
 	mPlayer.Render();
 
 	mBackGround.Render();
-	mPlayer.bullet.Update();
-	mPlayer.bullet.Render();
+	//タスクマネージャの更新
+	mTaskManager.Update();
+	//タスクマネージャの描画
+	mTaskManager.Render();
 }

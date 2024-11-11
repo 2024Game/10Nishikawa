@@ -17,10 +17,12 @@
 #include "CMatrix.h"
 #include "CTransform.h"
 #include "CCharacter3.h"
+#include "CTaskManager.h"
 
 class CApplication
 {
 public:
+	static CTaskManager* TaskManager();
 	static CTexture* Texture();
 	static CCharacterManager* CharacterManager();
 	static CCharacterManager mCharacterManager;
@@ -37,6 +39,8 @@ public:
 	//ŒJ‚è•Ô‚µÀs‚·‚éƒvƒƒOƒ‰ƒ€
 	void Update();
 private:
+	static CTaskManager mTaskManager;
+
 	CSound mSoundBgm;	//BGM
 	CSound mSoundOver;	//GAME OVER
 	CGame* mpGame;
