@@ -12,7 +12,6 @@
 class CPlayer : public CCharacter3
 {
 public:
-	CBullet bullet;
 	CPlayer() {}
 	//CPlayer(位置, 回転, スケール)
 	CPlayer

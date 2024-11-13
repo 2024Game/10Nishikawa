@@ -3,6 +3,12 @@
 #define BVELOCITY CVector (0.0f, 0.0f, 0.3f)
 
 
+CBullet::CBullet()
+	: mLife(10)
+{
+
+}
+
 //幅と奥行きの設定
 //Set(幅, 奥行)
 void CBullet::Set(float w, float d)
@@ -18,9 +24,19 @@ void CBullet::Set(float w, float d)
 //更新
 void CBullet::Update()
 {
-	//位置更新　進行方向へ１進む→ヒント 17
-	mPosition = mPosition + BVELOCITY * mMatrixRotate;
-	CTransform::Update();
+	//生存時間の判定
+	if (mLife-- > 0)
+	{
+		CTransform::Update();
+		//位置更新
+		mPosition = mPosition + CVector(0.0f, 0.0f, 1.0f) * mMatrixRotate;;
+	}
+	else
+	{
+		//無効にする
+		mEnabled = false;
+	}
+
 }
 
 //描画
