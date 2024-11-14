@@ -9,7 +9,8 @@ void CTaskManager::Delete()
 {
 	//æ“ª‚©‚çÅŒã‚Ü‚ÅŒJ‚è•Ô‚µ
 	CTask* task = mHead.mpNext;
-	while (task->mpNext) {
+	while (task->mpNext)
+	{
 		CTask* del = task;
 		//ŽŸ‚Ö
 		task = task->mpNext;

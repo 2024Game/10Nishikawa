@@ -1,17 +1,19 @@
-#pragma once
-#include "CCharacter.h"
-
-class CEnemy : public CCharacter
+#ifndef CENEMY_H
+#define CENEMY_H
+//キャラクタクラスのインクルード
+#include "CCharacter3.h"
+/*
+エネミークラス
+キャラクタクラスを継承
+*/
+class CEnemy : public CCharacter3
 {
 public:
-	//衝突処理２
-	void Collision();
-	//衝突処理４
-	//Collision(自分のポインタ, 衝突相手のポインタ)
-	void Collision(CCharacter* m, CCharacter* o);
-
-	CEnemy(float x, float y, float w, float h, float l, float r, float b, float t, CTexture* pt);
-
+	//コンストラクタ
+	//CEnemy(モデル, 位置, 回転, 拡縮)
+	CEnemy(CModel* model, const CVector& position,
+		const CVector& rotation, const CVector& scale);
+	//更新処理
 	void Update();
-	bool Collision(CRectangle* rect);
 };
+#endif

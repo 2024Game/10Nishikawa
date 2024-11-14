@@ -11,6 +11,8 @@
 
 //モデルデータの指定
 #define MODEL_OBJ "res\\f14.obj", "res\\f14.mtl"
+//敵輸送機モデル
+#define MODEL_C5 "res\\C5.obj", "res\\C5.mtl"
 //背景モデルデータの指定
 #define MODEL_BACKGROUND  "res\\sky.obj", "res\\sky.mtl"
 
@@ -36,6 +38,8 @@ void CApplication::Start()
 
 	//モデルファイルの入力
 	mModel.Load(MODEL_OBJ);
+	//C5モデルの読み込み
+	mModelC5.Load(MODEL_C5);
 	mBackGround.Load(MODEL_BACKGROUND);
 	CMatrix matrix;
 	matrix.Print();
@@ -48,6 +52,12 @@ void CApplication::Start()
 	mPlayer.Position(CVector(0.0f, 0.0f, -3.0f)); //位置座標
 	mPlayer.Rotation(CVector(0.0f, 180.0f, 0.0f)); //回転
 
+	//敵機1のインスタンス作成
+	new CEnemy(&mModelC5, CVector(0.0f, 10.0f, -100.0f),
+		CVector(), CVector(0.1f, 0.1f, 0.1f));
+	//敵機2のインスタンス作成
+	new CEnemy(&mModelC5, CVector(30.0f, 10.0f, -130.0f),
+		CVector(), CVector(0.1f, 0.1f, 0.1f));
 }
 
 CTaskManager CApplication::mTaskManager;
