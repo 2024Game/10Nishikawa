@@ -64,5 +64,4 @@ private:
 	CModel mBackGround; //”wŒiƒ‚ƒfƒ‹
 	//CCharacter3 mCharacter;
 	CPlayer mPlayer;
-	//CEnemy mEnemy;
 };
