@@ -5,6 +5,21 @@ CTaskManager::CTaskManager()
 	mHead.mpNext = &mTail;
 	mTail.mpPrev = &mHead;
 }
+
+//タスクマネージャのインスタンス
+CTaskManager* CTaskManager::mpInstance = nullptr;
+
+//インスタンスの取得
+CTaskManager* CTaskManager::Instance()
+{
+	//インスタンスが無ければ
+	if (mpInstance == nullptr)
+	{	//インスタンスを生成する
+		mpInstance = new CTaskManager();
+	}
+	return mpInstance;
+}
+
 void CTaskManager::Delete()
 {
 	//先頭から最後まで繰り返し

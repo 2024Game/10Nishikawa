@@ -60,16 +60,14 @@ void CApplication::Start()
 		CVector(), CVector(0.1f, 0.1f, 0.1f));
 }
 
-CTaskManager CApplication::mTaskManager;
-CTaskManager* CApplication::TaskManager()
-{
-	return &mTaskManager;
-}
+//CTaskManager CApplication::mTaskManager;
+
 
 void CApplication::Update()
 {
 	//タスクマネージャの更新
-	mTaskManager.Update();
+	//mTaskManager.Update();
+	CTaskManager::Instance()->Update();
 
 	//頂点1､頂点2､頂点3,法線データの作成
 	CVector v0, v1, v2, n;
@@ -151,7 +149,10 @@ void CApplication::Update()
 	mBackGround.Render();
 	
 	//タスクリストの削除
-	mTaskManager.Delete();
+	//mTaskManager.Delete();
+	CTaskManager::Instance()->Delete();
 	//タスクマネージャの描画
-	mTaskManager.Render();
+	//mTaskManager.Render();
+	CTaskManager::Instance()->Render();
+	CCollisionManager::Instance()->Render();
 }

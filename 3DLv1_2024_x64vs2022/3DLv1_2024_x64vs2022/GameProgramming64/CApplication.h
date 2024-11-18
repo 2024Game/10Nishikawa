@@ -19,10 +19,11 @@
 #include "CCharacter3.h"
 #include "CTaskManager.h"
 
+#include "CCollisionManager.h"
 class CApplication
 {
 public:
-	static CTaskManager* TaskManager();
+	//static CTaskManager* TaskManager();
 	static CTexture* Texture();
 	static CCharacterManager* CharacterManager();
 	static CCharacterManager mCharacterManager;
@@ -39,7 +40,7 @@ public:
 	//ŒJ‚è•Ô‚µÀs‚·‚éƒvƒƒOƒ‰ƒ€
 	void Update();
 private:
-	static CTaskManager mTaskManager;
+	//static CTaskManager mTaskManager;
 
 	CSound mSoundBgm;	//BGM
 	CSound mSoundOver;	//GAME OVER
@@ -64,4 +65,5 @@ private:
 	CModel mBackGround; //”wŒiƒ‚ƒfƒ‹
 	//CCharacter3 mCharacter;
 	CPlayer mPlayer;
+
 };
