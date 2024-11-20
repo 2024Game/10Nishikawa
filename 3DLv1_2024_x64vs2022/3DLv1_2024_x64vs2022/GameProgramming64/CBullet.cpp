@@ -3,8 +3,20 @@
 #define BVELOCITY CVector (0.0f, 0.0f, 0.3f)
 
 
+//衝突処理
+//Collision(コライダ1, コライダ2)
+void CBullet::Collision(CCollider* m, CCollider* o)
+{
+	//コライダのmとoが衝突しているか判定
+	if (CCollider::Collision(m, o))
+	{
+		//衝突している時は無効にする
+		mEnabled = false;
+	}
+}
+
 CBullet::CBullet()
-	: mLife(10)
+	: mLife(60)
 	, mCollider(this, &mMatrix, CVector(0.0f, 0.0f, 0.0f), 0.1f)
 {
 

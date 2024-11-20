@@ -1,6 +1,14 @@
 #include "CVector.h"
+#include <math.h>
 
 //Set(X座標, Y座標, Z座標)
+
+//ベクトルの長さを返す
+float CVector::Length() const
+{
+	//sqrt関数で平方根を返す
+	return sqrtf(mX * mX + mY * mY + mZ * mZ);
+}
 
 CVector CVector::operator*(const CMatrix& m)
 {
@@ -14,9 +22,7 @@ CVector CVector::operator*(const CMatrix& m)
 }
 
 CVector::CVector()
-:mX(0.0f)
-,mY(0.0f)
-,mZ(0.0f)
+:mX(0.0f),mY(0.0f),mZ(0.0f)
 {
 
 }
