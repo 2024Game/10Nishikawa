@@ -3,6 +3,7 @@
 //キャラクタクラスのインクルード
 #include "CCharacter3.h"
 #include "CCollider.h"
+#include "CEffect.h"
 /*
 エネミークラス
 キャラクタクラスを継承

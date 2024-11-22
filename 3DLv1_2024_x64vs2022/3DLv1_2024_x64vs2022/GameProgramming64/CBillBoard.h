@@ -5,7 +5,8 @@
 ビルボードクラス
 常にカメラの方を向く四角形
 */
-class CBillBoard : public CCharacter3 {
+class CBillBoard : public CCharacter3
+{
 public:
 	//コンストラクタ
 	CBillBoard();
