@@ -3,6 +3,30 @@
 
 //Set(X座標, Y座標, Z座標)
 
+CVector CVector::Normalize() const
+{
+	//ベクトルの大きさで割ったベクトルを返す（長さ1のベクトル）
+	return *this * (1.0f / Length());
+}
+
+//ベクトルの外積を求める
+CVector CVector::Cross(const CVector& v) const
+{
+	return CVector(mY * v.mZ - mZ * v.mY, mZ * v.mX - mX * v.mZ, mX * v.mY - mY * v.mX);
+}
+
+//ベクトルに数値を掛けて、ベクトルの大きさを数値倍する
+CVector CVector::operator*(const float& f) const
+{
+	return CVector(mX * f, mY * f, mZ * f);
+}
+
+//ベクトルの内積を求める
+float CVector::Dot(const CVector& v) const
+{
+	return mX * v.mX + mY * v.mY + mZ * v.mZ;
+}
+
 //ベクトルの長さを返す
 float CVector::Length() const
 {
