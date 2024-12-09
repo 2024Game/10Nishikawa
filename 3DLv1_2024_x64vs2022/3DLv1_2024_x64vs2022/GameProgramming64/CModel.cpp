@@ -20,6 +20,11 @@ int strcmp(const char* s1, const char* s2)
 	return s1[i] - s2[i];
 }
 
+const std::vector<CTriangle>& CModel::Triangles() const
+{
+	return mTriangles;
+}
+
 //•`‰æ
 //Render(s—ñ)
 void CModel::Render(const CMatrix& m)

@@ -22,6 +22,7 @@
 #include "CCollisionManager.h"
 #include "CBillBoard.h"
 #include "CColliderTriangle.h"
+#include "CColliderMesh.h"
 class CApplication
 {
 public:
@@ -45,9 +46,12 @@ public:
 	//繰り返し実行するプログラム
 	void Update();
 private:
+	//モデルからコライダを生成
+	CColliderMesh mColliderMesh;
+
 	//三角コライダの作成
-	CColliderTriangle mColliderTriangle;
-	CColliderTriangle mColliderTriangle2;
+	//CColliderTriangle mColliderTriangle;
+	//CColliderTriangle mColliderTriangle2;
 
 	//モデルビューの逆行列
 	static CMatrix mModelViewInverse;
