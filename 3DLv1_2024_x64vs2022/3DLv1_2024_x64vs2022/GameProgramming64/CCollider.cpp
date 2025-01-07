@@ -133,8 +133,10 @@ bool CCollider::CollisionTriangleSphere(
 	//面の法線を、外積を正規化して求める
 	normal = (v1 - v0).Cross(v2 - v0).Normalize();
 	CVector c = sphere->mPosition * *sphere->mpMatrix;
-	sv = c * *sphere->mpMatrix + normal * sphere->mRadius;
-	ev = c * *sphere->mpMatrix - normal * sphere->mRadius;
+	//sv = c * *sphere->mpMatrix + normal * sphere->mRadius;
+	//ev = c * *sphere->mpMatrix - normal * sphere->mRadius;
+	sv = c + normal * sphere->mRadius;
+	ev = c - normal * sphere->mRadius;
 	
 	//三角形と線分の衝突判定を行う
 	return FuncCollisionTriangleLine(v0, v1, v2, normal, sv, ev, adjust);
