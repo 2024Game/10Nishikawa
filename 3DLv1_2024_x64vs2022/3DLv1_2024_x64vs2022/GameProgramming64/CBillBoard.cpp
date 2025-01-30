@@ -4,6 +4,13 @@
 CBillBoard::CBillBoard()
 {
 }
+
+CBillBoard::CBillBoard(CVector pos, float w, float h, int priority)
+	: CCharacter3(priority)
+{
+	Set(pos, w, h);
+}
+
 CBillBoard::CBillBoard(CVector pos, float w, float h)
 {
 	Set(pos, w, h);

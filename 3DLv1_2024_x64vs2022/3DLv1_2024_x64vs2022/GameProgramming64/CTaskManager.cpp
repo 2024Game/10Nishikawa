@@ -51,8 +51,17 @@ CTaskManager::~CTaskManager()
 //Add(ƒ^ƒXƒN‚Ìƒ|ƒCƒ“ƒ^)
 void CTaskManager::Add(CTask* addTask)
 {
-	//mTail‚Ì‘O‚É’Ç‰Á
-	CTask* task = &mTail;
+	//mHead‚ÌŽŸ‚©‚çŒŸõ
+	CTask* task = mHead.mpNext;
+
+	//—Dæ“x‚Ì‘å‚«‚¢‡‚É‘}“ü‚·‚é
+	//‘}“üˆÊ’u‚ÌŒŸõi—Dæ“x‚ª“¯‚¶‚©‘å‚«‚­‚È‚Á‚½‘Oj
+	//mPriority>=0‚Ì‚±‚Æ
+	while (addTask->mPriority < task->mPriority)
+	{
+		task = task->mpNext; //ŽŸ‚Ö
+	}
+
 	//addTask‚ÌŽŸ‚ðtask
 	addTask->mpNext = task;
 	//addTask‚Ì‘O‚ðtask‚Ì‘O‚É
@@ -79,6 +88,22 @@ void CTaskManager::Update()
 //•`‰æ
 void CTaskManager::Render()
 {
+	//ÅŒã‚©‚çæ“ª‚Ü‚ÅŒJ‚è•Ô‚µ
+	CTask* task = mTail.mpPrev;
+	if (task->mpPrev == nullptr) return;
+	while (task->mpPrev)
+	{
+		//•`‰æˆ—‚ðŒÄ‚Ô
+		task->Render();
+		//ŽŸ‚Ö
+		task = task->mpPrev;
+	}
+}
+
+/*
+//•`‰æ
+void CTaskManager::Render()
+{
 	//æ“ª‚©‚çÅŒã‚Ü‚ÅŒJ‚è•Ô‚µ
 	CTask* task = mHead.mpNext;
 	while (task->mpNext)
@@ -89,3 +114,4 @@ void CTaskManager::Render()
 		task = task->mpNext;
 	}
 }
+*/
