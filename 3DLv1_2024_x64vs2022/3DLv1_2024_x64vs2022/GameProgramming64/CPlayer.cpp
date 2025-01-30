@@ -7,6 +7,13 @@
 #define ROTATION_XV	CVector(1.0f, 0.0f, 0.0f) //回転速度
 #define VELOCITY CVector(0.0f, 0.0f, 0.15f) //移動速度
 
+//インスタンスのポインタ変数の定義
+CPlayer* CPlayer::spInstance = nullptr;
+
+CPlayer* CPlayer::Instance()
+{
+	return spInstance;
+}
 
 void CPlayer::Collision(CCollider* m, CCollider* o)
 {
@@ -48,6 +55,8 @@ void CPlayer::Collision()
 CPlayer::CPlayer
 (const CVector& pos, const CVector& rot, const CVector& scale)
 {
+	//インスタンスの設定
+	spInstance = this;
 	CTransform::Update(pos, rot, scale); //行列の更新
 }
 

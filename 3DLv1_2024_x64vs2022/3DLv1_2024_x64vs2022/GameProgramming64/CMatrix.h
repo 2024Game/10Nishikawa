@@ -5,9 +5,15 @@
 マトリクスクラス
 4行4列の行列データを扱います
 */
+class CVector;
 class CMatrix
 {
 public:
+	//回転後のベクトル
+	CVector VectorZ() const; //Z軸ベクトルの取得
+	CVector VectorX() const; //X軸ベクトルの取得
+	CVector VectorY() const; //Y軸ベクトルの取得
+
 	//逆行列取得
 	CMatrix Transpose() const;
 

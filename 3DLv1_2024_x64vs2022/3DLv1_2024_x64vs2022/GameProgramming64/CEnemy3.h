@@ -8,11 +8,13 @@
 #include "CEffect.h"
 
 #include "CCollisionManager.h"
+#
 /*
 エネミークラス
 キャラクタクラスを継承
 */
-class CEnemy3 : public CCharacter3 {
+class CEnemy3 : public CCharacter3
+{
 public:
 	//コンストラクタ
 	CEnemy3();

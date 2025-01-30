@@ -13,6 +13,9 @@
 class CPlayer : public CCharacter3
 {
 public:
+	//インスタンスのポインタの取得
+	static CPlayer* Instance();
+
 	//衝突処理
 	void Collision(CCollider* m, CCollider* o);
 
@@ -23,6 +26,7 @@ public:
 		, mLine2(this, &mMatrix, CVector(0.0f, 5.0f, -8.0f), CVector(0.0f, -3.0f, -8.0f))
 		, mLine3(this, &mMatrix, CVector(9.0f, 0.0f, -8.0f), CVector(-9.0f, 0.0f, -8.0f))
 	{
+		spInstance = this;
 	}
 	//CPlayer(位置, 回転, スケール)
 	CPlayer
@@ -30,6 +34,9 @@ public:
 	//更新処理
 	void Update();
 private:
+	//プレイヤーのインスタンス
+	static CPlayer* spInstance;
+
 	CInput mInput;
 	CColliderLine mLine1; //線分コライダ1
 	CColliderLine mLine2; //線分コライダ2
