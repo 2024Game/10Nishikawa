@@ -4,6 +4,15 @@
 void CCamera::Start(double left, double right
 	, double bottom, double top)
 {
+	//モデルビュー行列の退避
+	glPushMatrix();
+	//モデルビュー行列の初期化
+	glLoadIdentity();
+	//Depthテストオフ
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
+	glColor3f(1.0f, 1.0f, 1.0f);
+
 	//プロジェクション行列への切り替え
 	glMatrixMode(GL_PROJECTION);
 	//プロジェクション行列の退避
@@ -20,4 +29,10 @@ void CCamera::End()
 	glPopMatrix();
 	//モデルビューモードへ切り替え
 	glMatrixMode(GL_MODELVIEW);
+
+	//モデルビュー行列を戻す
+	glPopMatrix();
+	//Depthテストオン
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
 }

@@ -7,6 +7,10 @@
 class CUi
 {
 public:
+	void PosY(float f);	//高度の設定
+	void RotX(float f);	//ピッチの設定
+	void RotY(float f); //ヨーの設定
+
 	//ゲームクリア表示
 	void Clear();
 
@@ -25,6 +29,9 @@ public:
 	void Hp(int hp);
 	void Render();
 private:
+	float mPosY;	//高度　Y座標
+	float mRotX;	//ピッチ　X回転値
+	float mRotY;	//ヨー　Y回転値
 	int mEnemy;	//敵の数
 	int mHp;
 	int mTime;	//経過時間

@@ -26,6 +26,8 @@
 class CApplication
 {
 public:
+	~CApplication();
+	static CUi* Ui();	//UIクラスのインスタンスを取得
 	//モデルビュー行列の取得
 	static const CMatrix& ModelViewInverse();
 
@@ -46,6 +48,7 @@ public:
 	//繰り返し実行するプログラム
 	void Update();
 private:
+	static CUi* spUi;	//UIクラスのポインタ
 	//モデルからコライダを生成
 	CColliderMesh mColliderMesh;
 
@@ -81,5 +84,4 @@ private:
 	CModel mBackGround; //背景モデル
 	//CCharacter3 mCharacter;
 	CPlayer mPlayer;
-
 };

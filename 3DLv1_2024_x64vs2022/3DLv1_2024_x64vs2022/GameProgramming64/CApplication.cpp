@@ -19,6 +19,13 @@
 
 #define CAMERA_POSITION (0, 1, -3)
 
+CUi* CApplication::spUi = nullptr;
+
+CUi* CApplication::Ui()
+{
+	return spUi;	//インスタンスのポインタを返す
+}
+
 CCharacterManager CApplication::mCharacterManager;
 CTexture CApplication::mTexture;
 
@@ -85,6 +92,8 @@ void CApplication::Start()
 	//背景モデルから三角コライダを生成
 	//親インスタンスと親行列はなし
 	mColliderMesh.Set(nullptr, nullptr, &mBackGround);
+
+	spUi = new CUi();	//UIクラスの生成
 }
 
 //CTaskManager CApplication::mTaskManager;
@@ -193,4 +202,12 @@ void CApplication::Update()
 	//mTaskManager.Render();
 	CTaskManager::Instance()->Render();
 	CCollisionManager::Instance()->Render();
+
+	spUi->Render();	//UIの描画
+}
+
+//デストラクタ
+CApplication::~CApplication()
+{
+	delete spUi;	//インスタンスUiの削除
 }
