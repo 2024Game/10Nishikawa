@@ -5,6 +5,7 @@
 #include "CBullet.h"
 #include "CEnemy.h"
 #include "CPlayer.h"
+#include "CEnemy3.h"
 #include "CFont.h"
 #include "CMiss.h"
 #include "CCharacterManager.h"
