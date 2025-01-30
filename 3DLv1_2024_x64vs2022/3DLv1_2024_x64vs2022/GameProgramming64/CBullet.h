@@ -6,6 +6,8 @@
 #include "CTriangle.h"
 #include "CCollider.h"
 
+#include "CCollisionManager.h"
+
 /*
 弾クラス
 三角形を飛ばす
@@ -16,6 +18,8 @@ public:
 	//衝突処理
 //Collision(コライダ1, コライダ2)
 	void Collision(CCollider* m, CCollider* o);
+
+	void Collision();
 
 	CBullet();
 	//Set(幅, 奥行)

@@ -31,6 +31,19 @@ void CPlayer::Collision(CCollider* m, CCollider* o)
 	}
 }
 
+//衝突処理
+void CPlayer::Collision()
+{
+	//コライダの優先度変更
+	mLine1.ChangePriority();
+	mLine2.ChangePriority();
+	mLine3.ChangePriority();
+	//衝突処理を実行
+	CCollisionManager::Instance()->Collision(&mLine1, COLLISIONRANGE);
+	CCollisionManager::Instance()->Collision(&mLine2, COLLISIONRANGE);
+	CCollisionManager::Instance()->Collision(&mLine3, COLLISIONRANGE);
+}
+
 //CPlayer(位置, 回転, スケール)
 CPlayer::CPlayer
 (const CVector& pos, const CVector& rot, const CVector& scale)

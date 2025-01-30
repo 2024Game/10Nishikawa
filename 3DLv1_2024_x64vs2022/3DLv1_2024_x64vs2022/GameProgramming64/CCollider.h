@@ -12,6 +12,10 @@ class CCollider : public CTransform, public CTask
 {
 	friend CCollisionManager;
 public:
+	//優先度の変更
+	void ChangePriority(int priority);
+	//優先度の変更
+	virtual void ChangePriority();
 
 	//CollisionTriangleSphere(三角コライダ, 球コライダ, 調整値)
 	//retrun:true（衝突している）false(衝突していない)

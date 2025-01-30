@@ -16,6 +16,8 @@ public:
 	//Õ“Ëˆ—
 	void Collision(CCollider* m, CCollider* o);
 
+	void Collision();
+
 	CPlayer()
 		: mLine1(this, &mMatrix, CVector(0.0f, 0.0f, -14.0f), CVector(0.0f, 0.0f, 17.0f))
 		, mLine2(this, &mMatrix, CVector(0.0f, 5.0f, -8.0f), CVector(0.0f, -3.0f, -8.0f))

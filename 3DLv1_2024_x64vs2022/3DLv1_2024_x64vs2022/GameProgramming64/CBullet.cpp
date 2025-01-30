@@ -15,6 +15,15 @@ void CBullet::Collision(CCollider* m, CCollider* o)
 	}
 }
 
+//衝突処理
+void CBullet::Collision()
+{
+	//コライダの優先度変更
+	mCollider.ChangePriority();
+	//衝突処理を実行
+	CCollisionManager::Instance()->Collision(&mCollider, COLLISIONRANGE);
+}
+
 CBullet::CBullet()
 	: mLife(60)
 	, mCollider(this, &mMatrix, CVector(0.0f, 0.0f, 0.0f), 0.1f)

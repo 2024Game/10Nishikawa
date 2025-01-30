@@ -30,6 +30,8 @@ public:
 	//描画
 	void Render();
 
+	void Collision();
+
 private:
 	//タスクマネージャのインスタンス
 	static CTaskManager* mpInstance;

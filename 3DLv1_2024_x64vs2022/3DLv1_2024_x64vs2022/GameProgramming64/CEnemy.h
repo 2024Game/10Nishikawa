@@ -4,6 +4,7 @@
 #include "CCharacter3.h"
 #include "CCollider.h"
 #include "CEffect.h"
+#include "CCollisionManager.h"
 /*
 エネミークラス
 キャラクタクラスを継承
@@ -14,6 +15,8 @@ public:
 	//衝突処理
 //Collision(コライダ1, コライダ2)
 	void Collision(CCollider* m, CCollider* o);
+
+	void Collision();
 
 	//確認用メソッド　削除予定
 	/*void Render()

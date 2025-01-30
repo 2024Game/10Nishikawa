@@ -100,6 +100,20 @@ void CTaskManager::Render()
 	}
 }
 
+//Õ“Ëˆ—
+void CTaskManager::Collision()
+{
+	//æ“ª‚©‚çÅŒã‚Ü‚ÅŒJ‚è•Ô‚µ
+	CTask* task = mHead.mpNext;
+	while (task->mpNext)
+	{
+		//Õ“Ëˆ—‚ðŒÄ‚Ô
+		task->Collision();
+		//ŽŸ‚Ö
+		task = task->mpNext;
+	}
+}
+
 /*
 //•`‰æ
 void CTaskManager::Render()
