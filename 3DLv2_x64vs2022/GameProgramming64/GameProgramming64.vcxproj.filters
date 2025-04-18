@@ -16,11 +16,26 @@
     <Filter Include="ソース ファイル\Lib">
       <UniqueIdentifier>{275eb950-ff6a-4535-ac0c-c052fcd2fa52}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Character">
+      <UniqueIdentifier>{bed0c251-bf51-48d3-a9e3-05b8d2c3bc77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game">
+      <UniqueIdentifier>{b13b1fc3-a00e-4664-8f9b-0e0f4ea31357}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Collider">
+      <UniqueIdentifier>{d1530a3b-cf52-4e4d-a19b-0acae7e91686}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Model">
+      <UniqueIdentifier>{fddfb05f-18fb-4316-8961-c7c480d2e368}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Math">
+      <UniqueIdentifier>{7f074f00-73d2-495f-9e8f-5e5c8203159c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Task">
+      <UniqueIdentifier>{e8e8e5c3-0fad-4df1-8e00-b9327a95df09}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CApplication.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -33,24 +48,6 @@
     <ClCompile Include="CRectagle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="CInput.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CCharacter.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CBullet.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CEnemy.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CPlayer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CFont.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="CCharacterManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -60,74 +57,92 @@
     <ClCompile Include="CGame.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="CPlayer2.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CEnemy2.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="CPoint.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CUI.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CCamera.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CVector.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="CTriangle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="CModel.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CMaterial.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CMatrix.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CTransform.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="CCharacter.cpp">
+      <Filter>ソース ファイル\Character</Filter>
     </ClCompile>
     <ClCompile Include="CCharacter3.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Character</Filter>
     </ClCompile>
-    <ClCompile Include="CTaskManager.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="CEnemy.cpp">
+      <Filter>ソース ファイル\Character</Filter>
     </ClCompile>
-    <ClCompile Include="CCollider.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CCollisionManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CBillBoard.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CEffect.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CColliderTriangle.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CColliderLine.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CColliderMesh.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="CEnemy2.cpp">
+      <Filter>ソース ファイル\Character</Filter>
     </ClCompile>
     <ClCompile Include="CEnemy3.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayer.cpp">
+      <Filter>ソース ファイル\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayer2.cpp">
+      <Filter>ソース ファイル\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="CBullet.cpp">
+      <Filter>ソース ファイル\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="CEffect.cpp">
+      <Filter>ソース ファイル\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="CTransform.cpp">
+      <Filter>ソース ファイル\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="CApplication.cpp">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="CBillBoard.cpp">
+      <Filter>ソース ファイル\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="CCamera.cpp">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="CFont.cpp">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="CInput.cpp">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="CUI.cpp">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="CCollider.cpp">
+      <Filter>ソース ファイル\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="CColliderLine.cpp">
+      <Filter>ソース ファイル\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="CColliderMesh.cpp">
+      <Filter>ソース ファイル\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="CColliderTriangle.cpp">
+      <Filter>ソース ファイル\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="CMaterial.cpp">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="CModel.cpp">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="CVector.cpp">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="CMatrix.cpp">
+      <Filter>ソース ファイル\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="CCollisionManager.cpp">
+      <Filter>ソース ファイル\Task</Filter>
+    </ClCompile>
+    <ClCompile Include="CTaskManager.cpp">
+      <Filter>ソース ファイル\Task</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CApplication.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="main.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
@@ -138,24 +153,6 @@
       <Filter>ソース ファイル\Lib</Filter>
     </ClInclude>
     <ClInclude Include="CRectangle.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CInput.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CCharacter.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CBullet.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CEnemy.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CPlayer.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CFont.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
     <ClInclude Include="CMiss.h">
@@ -170,74 +167,95 @@
     <ClInclude Include="CGame.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="CPlayer2.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CEnemy2.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="CPoint.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CUI.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CCamera.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
     <ClInclude Include="CVector.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="CTriangle.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CModel.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CMaterial.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CMatrix.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CTransform.h">
-      <Filter>ソース ファイル</Filter>
+    <ClInclude Include="CCharacter.h">
+      <Filter>ソース ファイル\Character</Filter>
     </ClInclude>
     <ClInclude Include="CCharacter3.h">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Character</Filter>
     </ClInclude>
-    <ClInclude Include="CVertex.h">
-      <Filter>ソース ファイル</Filter>
+    <ClInclude Include="CEnemy.h">
+      <Filter>ソース ファイル\Character</Filter>
     </ClInclude>
-    <ClInclude Include="CTask.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CTaskManager.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CCollider.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CCollisionManager.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CBillBoard.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CEffect.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CColliderTriangle.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CColliderLine.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CColliderMesh.h">
-      <Filter>ソース ファイル</Filter>
+    <ClInclude Include="CEnemy2.h">
+      <Filter>ソース ファイル\Character</Filter>
     </ClInclude>
     <ClInclude Include="CEnemy3.h">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayer.h">
+      <Filter>ソース ファイル\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayer2.h">
+      <Filter>ソース ファイル\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="CBullet.h">
+      <Filter>ソース ファイル\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="CEffect.h">
+      <Filter>ソース ファイル\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="CTransform.h">
+      <Filter>ソース ファイル\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="CApplication.h">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="CBillBoard.h">
+      <Filter>ソース ファイル\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="CCamera.h">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="CFont.h">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="CInput.h">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="CUI.h">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="CCollider.h">
+      <Filter>ソース ファイル\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="CColliderLine.h">
+      <Filter>ソース ファイル\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="CColliderMesh.h">
+      <Filter>ソース ファイル\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="CColliderTriangle.h">
+      <Filter>ソース ファイル\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="CMaterial.h">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="CModel.h">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="CTriangle.h">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="CVertex.h">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="CMatrix.h">
+      <Filter>ソース ファイル\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="CCollisionManager.h">
+      <Filter>ソース ファイル\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="CTask.h">
+      <Filter>ソース ファイル\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="CTaskManager.h">
+      <Filter>ソース ファイル\Task</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
