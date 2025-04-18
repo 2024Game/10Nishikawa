@@ -1,14 +1,9 @@
 #pragma once
-#include "CRectangle.h"
 #include "CTexture.h"
-#include "CCharacter.h"
 #include "CBullet.h"
 #include "CEnemy.h"
 #include "CPlayer.h"
 #include "CFont.h"
-#include "CMiss.h"
-#include "CCharacterManager.h"
-#include "CGame.h"
 #include "CSound.h"
 
 #include "CModel.h"
@@ -16,6 +11,8 @@
 #include "CTaskManager.h"
 #include "CColliderTriangle.h"
 #include "CColliderMesh.h"
+#include "CUI.h"
+#include "CCamera.h"
 
 class CApplication
 {
@@ -26,8 +23,6 @@ public:
 	static const CMatrix& ModelViewInverse();
 
 	static CTexture* Texture();
-	static CCharacterManager* CharacterManager();
-	static CCharacterManager mCharacterManager;
 	enum class EState
 	{
 		ESTART,	//ÉQÅ[ÉÄäJén
@@ -62,10 +57,8 @@ private:
 
 	CSound mSoundBgm;	//BGM
 	CSound mSoundOver;	//GAME OVER
-	CGame* mpGame;
 	EState mState;
 
-	CMiss* mpMiss;
 	CInput mInput;
 	CFont mFont;
 	CPlayer* mpPlayer;
