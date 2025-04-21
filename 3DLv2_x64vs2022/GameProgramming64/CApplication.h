@@ -14,6 +14,8 @@
 #include "CUI.h"
 #include "CCamera.h"
 
+#include "CModelX.h"
+
 class CApplication
 {
 public:
@@ -67,4 +69,6 @@ private:
 	//CCharacter mRectangle;
 	static CTexture mTexture;
 	CEnemy* mpEnemy;
+
+	CModelX mModelX;
 };

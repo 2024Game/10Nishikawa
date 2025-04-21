@@ -117,6 +117,9 @@
     <ClCompile Include="CVector.cpp">
       <Filter>ソース ファイル\Math</Filter>
     </ClCompile>
+    <ClCompile Include="CModelX.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -205,6 +208,9 @@
     </ClInclude>
     <ClInclude Include="CVector.h">
       <Filter>ソース ファイル\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="CModelX.h">
+      <Filter>ソース ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
