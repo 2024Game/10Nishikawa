@@ -5,7 +5,6 @@
 
 #include "CTriangle.h"
 
-
 #define SOUND_BGM "res\\mario.wav" //BGM音声ファイル
 #define SOUND_OVER "res\\mdai.wav" //ゲームオーバー音声ファイル
 

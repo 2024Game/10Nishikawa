@@ -1,4 +1,3 @@
-#pragma once
 #ifndef CTRIANGLE_H
 #define CTRIANGLE_H
 

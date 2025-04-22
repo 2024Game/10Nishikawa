@@ -1,4 +1,3 @@
-#pragma once
 #ifndef CMODEL_H
 #define CMODEL_H
 

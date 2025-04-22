@@ -1,4 +1,3 @@
-#pragma once
 #ifndef CMATERIAL_H
 #define CMATERIAL_H
 #define MATERIAL_NAME_LEN 64 //–¼‘O‚Ì’·‚³

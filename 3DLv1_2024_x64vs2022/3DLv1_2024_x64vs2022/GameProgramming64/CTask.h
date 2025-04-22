@@ -1,4 +1,3 @@
-#pragma once
 #ifndef CTASK_H
 #define CTASK_H
 class CTaskManager;
