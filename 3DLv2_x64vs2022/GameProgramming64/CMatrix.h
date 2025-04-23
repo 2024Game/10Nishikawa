@@ -5,8 +5,10 @@
 4行4列の行列データを扱います
 */
 class CVector;
-class CMatrix {
+class CMatrix
+{
 public:
+	int Size();	//要素数の取得
 	CVector VectorZ() const; //Z軸ベクトルの取得
 	CVector VectorX() const; //X軸ベクトルの取得
 	CVector VectorY() const; //Y軸ベクトルの取得

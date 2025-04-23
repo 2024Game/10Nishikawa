@@ -129,9 +129,8 @@ void CModelX::Load(const char* file)
 		//単語がFrameの場合
 		if (strcmp(mToken, "Frame") == 0)
 		{
-			printf("%s ", mToken);	//Frame出力
-			GetToken();	//Frame名を取得
-			printf("%s\n", mToken); //Frame名を出力
+			//フレームを作成する
+			new CModelXFrame(this);
 		}
 	}
 
@@ -195,10 +194,19 @@ CModelXFrame::CModelXFrame(CModelX* model)
 		//}かっこの場合は終了
 		if (strchr(model->mToken, '}')) break;
 		//新なフレームの場合は、子フレームに追加
-		if (strchr(model->mToken, '{'))			//課題３
+		if (strcmp(model->mToken, "Frame") == 0)
 		{
 			//フレームを作成し、子フレームの配列に追加
 			mChild.push_back(new CModelXFrame(model));
+		}
+		else if (strcmp(model->mToken, "FrameTransformMatrix") == 0) // 課題４
+		{
+			model->GetToken(); // {
+			for (int i = 0; i < mTransformMatrix.Size(); i++)
+			{
+				mTransformMatrix.M()[i] = atof(model->GetToken());
+			}
+			model->GetToken(); // }
 		}
 		else
 		{
@@ -209,6 +217,7 @@ CModelXFrame::CModelXFrame(CModelX* model)
 	//デバッグバージョンのみ有効
 #ifdef _DEBUG
 	printf("%s\n", mpName);
+	mTransformMatrix.Print();
 #endif
 }
 

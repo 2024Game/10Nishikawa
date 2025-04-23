@@ -9,6 +9,14 @@
 
 #include "CVector.h"
 
+int CMatrix::Size()
+{
+	// float = 4bit
+	// sizeof(mM) / sizeof(float) ÇÕ 4 * çsóÒÇÃêî(4*4=16) / sizeof(float = 4)
+	// sizeof(mM) / sizeof(float) = sizeof(64) / sizeof(4) = 16
+	return sizeof(mM) / sizeof(float);
+}
+
 CVector CMatrix::VectorZ() const
 {
 	return CVector(mM[2][0], mM[2][1], mM[2][2]);
@@ -150,7 +158,8 @@ CMatrix CMatrix::Scale(float sx, float sy, float sz) {
 }
 
 
-void CMatrix::Print() {
+void CMatrix::Print()
+{
 	printf("%10f %10f %10f %10f\n",
 		mM[0][0], mM[0][1], mM[0][2], mM[0][3]);
 	printf("%10f %10f %10f %10f\n",
