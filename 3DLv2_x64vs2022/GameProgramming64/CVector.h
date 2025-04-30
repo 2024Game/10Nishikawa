@@ -6,7 +6,8 @@
  ベクトルクラス
  ベクトルデータを扱います
 */
-class CVector {
+class CVector
+{
 public:
 	//正規化
 	//大きさ1のベクトルを返す
@@ -52,6 +53,10 @@ public:
 	float Y() const;
 	//Zの値を得る
 	float Z() const;
+
+	void X(float f);
+	void Y(float f);
+	void Z(float f);
 private:
 	//3D各軸での値を設定
 	float mX, mY, mZ;

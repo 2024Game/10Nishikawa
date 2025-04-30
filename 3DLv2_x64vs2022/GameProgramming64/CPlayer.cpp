@@ -74,7 +74,8 @@ void CPlayer::Update() {
 		mRotation = mRotation + ROTATION_XV;
 	}
 	//スペースキー入力で弾発射
-	if (mInput.Key(VK_SPACE)) {
+	if (mInput.Key(VK_SPACE))
+	{
 		CBullet* bullet = new CBullet();
 		bullet->Set(0.1f, 1.5f);
 		bullet->Position(CVector(0.0f, 0.0f, 10.0f) * mMatrix);

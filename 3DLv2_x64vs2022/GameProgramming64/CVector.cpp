@@ -90,3 +90,17 @@ float CVector::Z() const
 	return mZ;
 }
 
+void CVector::X(float f)
+{
+	mX = f;
+}
+
+void CVector::Y(float f)
+{
+	mY = f;
+}
+
+void CVector::Z(float f)
+{
+	mZ = f;
+}
