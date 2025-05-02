@@ -15,6 +15,7 @@
 #include "CCamera.h"
 
 #include "CModelX.h"
+#include "CMatrix.h"
 
 class CApplication
 {
@@ -38,6 +39,7 @@ public:
 	//繰り返し実行するプログラム
 	void Update();
 private:
+	CMatrix mMatrix;
 	static CUi* spUi;	//UIクラスのポインタ
 
 	//モデルからコライダを生成

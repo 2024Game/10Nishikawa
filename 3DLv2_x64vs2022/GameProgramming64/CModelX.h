@@ -21,6 +21,7 @@ class CModelX
 public:
 	CModelX();
 	~CModelX();
+	void Render();
 	//ノードの読み飛ばし
 	void SkipNode();
 	//単語の取り出し
@@ -47,6 +48,7 @@ public:
 	~CMesh();
 	//読み込み処理
 	void Init(CModelX* model);
+	void Render();
 private:
 	int mNormalNum;	//法線数
 	CVector* mpNormal;//法線ベクトル
@@ -66,6 +68,7 @@ public:
 	CModelXFrame(CModelX* model);
 	//デストラクタ
 	~CModelXFrame();
+	void Render();
 private:
 	CMesh* mpMesh;	//Meshデータ
 	std::vector<CModelXFrame*> mChild;  //子フレームの配列
