@@ -92,7 +92,7 @@ int main(int argc, char** argv)
 	glfwMakeContextCurrent(window);
 
 
-	glClearColor(0.7f, 0.7f, 0.7f, 1.0f);
+	glClearColor(0.7f, 0.7f, 0.8f, 1.0f);
 
 	// GLEW ‚ğ‰Šú‰»‚·‚é
 	glewExperimental = GL_TRUE;
