@@ -1,6 +1,7 @@
 #ifndef CMATERIAL_H
 #define CMATERIAL_H
 #include "CTexture.h"
+#include "CModelX.h"
 
 #define MATERIAL_NAME_LEN 64 //名前の長さ
 
@@ -8,7 +9,8 @@
 マテリアルクラス
 マテリアルのデータを扱う
 */
-class CMaterial {
+class CMaterial
+{
 public:
 	//頂点数の設定
 	//VertexNum(頂点数)
@@ -24,6 +26,10 @@ public:
 
 	//デフォルトコンストラクタ
 	CMaterial();
+
+	CMaterial(CModelX* model);
+	~CMaterial();
+
 	//マテリアルを有効にする
 	void Enabled();
 	//マテリアルの名前の取得
@@ -34,6 +40,12 @@ public:
 	//mDiffuse配列の取得
 	float* Diffuse();
 private:
+	float mPower;
+	float mSpecular[3];
+	float mEmissive[3];
+	//テクスチャファイル名
+	char* mpTextureFilename;
+
 	//マテリアル毎の頂点数
 	int mVertexNum;
 

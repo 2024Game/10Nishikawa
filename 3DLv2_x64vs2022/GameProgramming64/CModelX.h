@@ -4,8 +4,10 @@
 #include <vector>	//vectorクラスのインクルード（動的配列）
 #include "CMatrix.h"	//マトリクスクラスのインクルード
 #include "CVector.h"
+//#include "CMaterial.h"
 class CModelX;		// CModelXクラスの宣言
 class CModelXFrame;	// CModelXFrameクラスの宣言
+class CMaterial;	//マテリアルの宣言
 
 #define MODEL_FILE "res\\sample.blend.x"  //入力ファイル名
 //領域開放をマクロ化
@@ -28,6 +30,7 @@ public:
 	char* GetToken();
 	char* Token();
 	void Load(const char* file);
+	bool EOT(); // トークンが無くなったらtrue
 
 private:
 	std::vector<CModelXFrame*> mFrame;  //フレームの配列
@@ -36,7 +39,6 @@ private:
 	//cが区切り文字ならtrueを返す
 	bool IsDelimiter(char c);
 };
-
 
 //CMeshクラスの定義
 class CMesh
@@ -50,6 +52,11 @@ public:
 	void Init(CModelX* model);
 	void Render();
 private:
+	int mMaterialNum;	//マテリアル数
+	int mMaterialIndexNum;//マテリアル番号数（面数）
+	int* mpMaterialIndex;	  //マテリアル番号
+	std::vector<CMaterial*> mMaterial;//マテリアルデータ
+
 	int mNormalNum;	//法線数
 	CVector* mpNormal;//法線ベクトル
 	int mFaceNum;	//面数
@@ -57,8 +64,6 @@ private:
 	int mVertexNum;	//頂点数
 	CVector* mpVertex;	//頂点データ
 };
-
-
 
 class CModelXFrame
 {
