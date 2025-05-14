@@ -9,6 +9,7 @@ class CModelX;		// CModelXクラスの宣言
 class CModelXFrame;	// CModelXFrameクラスの宣言
 class CMaterial;	//マテリアルの宣言
 class CSkinWeights; //スキンウェイトクラス
+class CAnimationSet; //アニメーションセットクラス
 
 #define MODEL_FILE "res\\sample.blend.x"  //入力ファイル名
 //領域開放をマクロ化
@@ -21,6 +22,7 @@ Xファイル形式の3Dモデルデータをプログラムで認識する
 class CModelX
 {
 	friend CModelXFrame;
+	friend CAnimationSet;
 public:
 	CModelX();
 	~CModelX();
@@ -34,6 +36,8 @@ public:
 	bool EOT(); // トークンが無くなったらtrue
 
 private:
+	//アニメーションセットの配列
+	std::vector<CAnimationSet*> mAnimationSet;
 	std::vector<CModelXFrame*> mFrame;  //フレームの配列
 	char* mpPointer;
 	char mToken[1024];
@@ -106,6 +110,20 @@ private:
 	int* mpIndex;	//頂点番号配列
 	float* mpWeight;	//頂点ウェイト配列
 	CMatrix mOffset;	//オフセットマトリックス
+};
+
+/*
+ CAnimationSet
+ アニメーションセット
+*/
+class CAnimationSet
+{
+public:
+	CAnimationSet(CModelX* model);
+	~CAnimationSet();
+private:
+	//アニメーションセット名
+	char* mpName;
 };
 
 #endif // !CMODELX_H

@@ -68,6 +68,10 @@ CModelX::~CModelX()
 	{
 		delete mFrame[0];
 	}
+	for (size_t i = 0; i < mAnimationSet.size(); i++)
+	{
+		delete mAnimationSet[i];
+	}
 }
 
 /*
@@ -148,6 +152,11 @@ void CModelX::Load(const char* file)
 		{
 			//フレームを作成する
 			new CModelXFrame(this);
+		}
+		//単語がAnimationSetの場合
+		else if (strcmp(mToken, "AnimationSet") == 0)
+		{
+			new CAnimationSet(this);
 		}
 	}
 
@@ -252,7 +261,9 @@ CModelXFrame::CModelXFrame(CModelX* model)
 	//デバッグバージョンのみ有効
 #ifdef _DEBUG
 	//printf("%s\n", mpName);
+	// =====
 	mTransformMatrix.Print();
+	// =====
 #endif
 }
 
@@ -514,17 +525,20 @@ CSkinWeights::CSkinWeights(CModelX* model)
 		{
 			mpWeight[i] = atof(model->GetToken());
 		}
-
+#ifdef _DEBUG
 		for (int i = 0; i < mIndexNum; i++)
 		{
 			printf("%i %f\n", mpIndex[i], mpWeight[i]); // 課題　10
 		}
+#endif
 	}
 	//オフセット行列取得 =======　課題　10　=========
 	int j = 1;
 	for (int i = 0; i < 16; i++)
 	{
 		mOffset.M()[i] = atof(model->GetToken());
+		#ifdef _DEBUG
+		// mOffset.Print();
 		if (j % 4 == 0)
 		{
 			printf("%f\n", mOffset.M()[i]);
@@ -533,8 +547,8 @@ CSkinWeights::CSkinWeights(CModelX* model)
 		{
 			printf("%f ", mOffset.M()[i]);
 		}
-		
 		j++;
+		#endif
 	}
 	// ==========================================
 
@@ -546,4 +560,38 @@ CSkinWeights::~CSkinWeights()
 	SAFE_DELETE_ARRAY(mpFrameName);
 	SAFE_DELETE_ARRAY(mpIndex);
 	SAFE_DELETE_ARRAY(mpWeight);
+}
+
+/*
+CAnimationSet
+*/
+CAnimationSet::CAnimationSet(CModelX* model)
+	: mpName(nullptr)
+{
+	model->mAnimationSet.push_back(this);
+	model->GetToken();	// Animation Name
+	//アニメーションセット名を退避
+	mpName = new char[strlen(model->Token()) + 1];
+
+	strcpy(mpName, model->Token());
+	model->GetToken(); // {
+	while (!model->EOT())
+	{
+		model->GetToken(); // } or Animation
+		if (strchr(model->Token(), '}'))break;
+		if (strcmp(model->Token(), "Animation") == 0)
+		{
+			//とりあえず読み飛ばし
+			model->SkipNode();
+		}
+	}
+	//デバッグバージョンのみ有効
+#ifdef _DEBUG
+	printf("AnimationSet:%s\n", mpName);
+#endif
+}
+
+CAnimationSet::~CAnimationSet()
+{
+	SAFE_DELETE_ARRAY(mpName);
 }
