@@ -23,6 +23,18 @@ public:
 	//CMatrix * CMatrix の演算結果を返す
 	const CMatrix operator*(const CMatrix& m) const;
 
+	//*演算子のオーバーロード
+	//CMatrix * float の演算結果を返す
+	CMatrix operator*(const float& x) const;
+
+	//+演算子のオーバーロード
+	//CMatrix1 + CMatrix2 の演算結果を返す
+	CMatrix operator+(const CMatrix& m) const;
+
+	//+=演算子のオーバーロード
+	//CMatrix1 += CMatrix2 の演算を行う
+	void operator+=(const CMatrix& m);
+
 	//行列値の代入
 	//M(行数, 列数, 値)
 	void M(int row, int col, float value);

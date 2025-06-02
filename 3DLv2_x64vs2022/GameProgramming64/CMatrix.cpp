@@ -80,6 +80,48 @@ const CMatrix CMatrix::operator*(const CMatrix& m) const
 
 }
 
+// ‰Û‘è14-1
+CMatrix CMatrix::operator*(const float& x) const
+{
+	CMatrix t;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			t.mM[i][j] = mM[i][j] * x;
+		}
+	}
+
+	return t;
+}
+
+// ‰Û‘è14-2
+CMatrix CMatrix::operator+(const CMatrix& m) const
+{
+	CMatrix t;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			t.mM[i][j] = mM[i][j] + m.mM[i][j];
+		}
+	}
+
+	return t;
+}
+
+// ‰Û‘è14-3
+void CMatrix::operator+=(const CMatrix& m)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			mM[i][j] += m.mM[i][j];
+		}
+	}
+}
+
 void CMatrix::M(int row, int col, float value)
 {
 	mM[row][col] = value;
