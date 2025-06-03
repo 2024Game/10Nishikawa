@@ -275,6 +275,11 @@ void CModelX::AnimateFrame()
 
 }
 
+std::vector<CModelXFrame*>& CModelX::Frames()
+{
+	return mFrame;
+}
+
 /*
 * IsDelimiter(c)
 * cが\t \r \n スペースなどの空白文字
@@ -396,6 +401,28 @@ void CModelXFrame::Render()
 int CModelXFrame::Index()
 {
 	return mIndex;
+}
+
+/*
+ AnimateCombined
+ 合成行列の作成
+*/
+void CModelXFrame::AnimateCombined(CMatrix* parent)
+{
+	//自分の変換行列に、親からの変換行列を掛ける
+	mCombinedMatrix = mTransformMatrix * (*parent);
+	//子フレームの合成行列を作成する
+	for (size_t i = 0; i < mChild.size(); i++)
+	{
+		mChild[i]->AnimateCombined(&mCombinedMatrix);
+		//デバッグバージョンのみ有効
+	}
+#ifdef _DEBUG //--------------------------------------課題 15
+
+	printf("Frame:%s\n", mpName);
+	mCombinedMatrix.Print();
+
+#endif
 }
 
 CMesh::CMesh()
