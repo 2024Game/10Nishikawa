@@ -52,6 +52,11 @@ CVector CVector::operator+(const CVector& v) const
 	return CVector(mX + v.mX, mY + v.mY, mZ + v.mZ);
 }
 
+void CVector::operator+=(const CVector& v)
+{
+	mX += v.mX, mY += v.mY, mZ += v.mZ;
+}
+
 CVector::CVector()
 	: mX(0.0f)
 	, mY(0.0f)
