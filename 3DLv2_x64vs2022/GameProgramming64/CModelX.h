@@ -95,6 +95,8 @@ private:
 	CVector* mpVertex;	//頂点データ
 	CVector* mpAnimateVertex;  //アニメーション用頂点
 	CVector* mpAnimateNormal;  //アニメーション用法線
+	//テクスチャ座標データ
+	float* mpTextureCoords;
 };
 
 class CModelXFrame
