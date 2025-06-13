@@ -72,6 +72,11 @@ CModelX::~CModelX()
 	{
 		delete mAnimationSet[i];
 	}
+	//マテリアルの解放
+	for (size_t i = 0; i < mMaterial.size(); i++)
+	{
+		delete mMaterial[i];
+	}
 }
 
 /*
@@ -147,8 +152,18 @@ void CModelX::Load(const char* file)
 	while (*mpPointer != '\0')
 	{
 		GetToken();	//単語の取得
+		//template 読み飛ばし
+		if (strcmp(mToken, "template") == 0)
+		{
+			SkipNode();
+		}
+		//Material の時
+		else if (strcmp(mToken, "Material") == 0)
+		{
+			new CMaterial(this);
+		}
 		//単語がFrameの場合
-		if (strcmp(mToken, "Frame") == 0)
+		else if (strcmp(mToken, "Frame") == 0)
 		{
 			//フレームを作成する
 			new CModelXFrame(this);
@@ -314,6 +329,28 @@ void CModelX::AnimateVertex()
 	}
 }
 
+CMaterial* CModelX::FindMaterial(char* name)
+{
+	//マテリアル配列のイテレータ作成
+	std::vector<CMaterial*>::iterator itr;
+	//マテリアル配列を先頭から順に検索
+	for (itr = mMaterial.begin(); itr != mMaterial.end(); itr++)
+	{
+		//名前が一致すればマテリアルのポインタを返却
+		if (strcmp(name, (*itr)->Name()) == 0)
+		{
+			return *itr;
+		}
+	}
+	//無い時はnullptrを返却
+	return nullptr;
+}
+
+std::vector<CMaterial*>& CModelX::Material()
+{
+	return mMaterial;
+}
+
 /*
 * IsDelimiter(c)
 * cが\t \r \n スペースなどの空白文字
@@ -323,9 +360,16 @@ void CModelX::AnimateVertex()
 bool CModelX::IsDelimiter(char c)
 {
 	//isspace(c)
+	if (c < 0)
+	{
+		return false;
+	}
 	//cが空白文字なら0以外を返す
 	if (isspace(c) != 0)
+	{
 		return true;
+	}
+	
 	/*
 	strchr(文字列, 文字)
 	文字列に文字が含まれていれば、
@@ -597,6 +641,14 @@ void CMesh::Init(CModelX* model)
 				if (strcmp(model->Token(), "Material") == 0)
 				{
 					mMaterial.push_back(new CMaterial(model));
+				}
+				else
+				{
+					// {  既出
+					model->GetToken();	//MaterialName
+					mMaterial.push_back(
+						model->FindMaterial(model->Token()));
+					model->GetToken();	// }
 				}
 			}
 			model->GetToken();	// } //End of MeshMaterialList
