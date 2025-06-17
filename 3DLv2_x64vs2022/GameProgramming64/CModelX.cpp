@@ -280,12 +280,13 @@ void CModelX::AnimateFrame()
 		}
 	}
 	*/
-
+	/*
 	for (size_t i = 0; i < mFrame.size(); i++)
 	{
 		printf("Frame:%s\n", mFrame[i]->mpName);
 		mFrame[i]->mTransformMatrix.Print();
 	}
+	*/
 	//-----------------------------------------------------------------------
 	//printf("Frame:%s\n", mpName);
 	// =====
@@ -445,7 +446,7 @@ CModelXFrame::CModelXFrame(CModelX* model)
 #ifdef _DEBUG
 	//printf("%s\n", mpName);
 	// =====
-	mTransformMatrix.Print();
+	//mTransformMatrix.Print();
 	// =====
 #endif
 }
@@ -682,7 +683,7 @@ void CMesh::Init(CModelX* model)
 		}
 	}
 
-	
+/*
 #ifdef _DEBUG
 	//デバッグバージョンのみ有効	課題5.2
 	printf("VertexNum:%d\n", mVertexNum);
@@ -705,6 +706,7 @@ void CMesh::Init(CModelX* model)
 		//printf("%10f %10f %10f\n", mpNormal[i].X(), mpNormal[i].Y(), mpNormal[i].Z());
 	}
 #endif
+*/
 }
 
 /*
@@ -797,7 +799,7 @@ CSkinWeights::CSkinWeights(CModelX* model)
 	//フレーム名エリア確保、設定
 	mpFrameName = new char[strlen(model->Token()) + 1];
 	strcpy(mpFrameName, model->Token());
-	printf("SkinWeights:%s\n", mpFrameName);
+	//printf("SkinWeights:%s\n", mpFrameName);
 
 	//頂点番号数取得
 	mIndexNum = atoi(model->GetToken());
@@ -825,6 +827,7 @@ CSkinWeights::CSkinWeights(CModelX* model)
 #endif
 	}
 	//オフセット行列取得 =======　課題　10　=========
+	/*
 	int j = 1;
 	for (int i = 0; i < 16; i++)
 	{
@@ -842,6 +845,7 @@ CSkinWeights::CSkinWeights(CModelX* model)
 		j++;
 		#endif
 	}
+	*/
 	// ==========================================
 
 	model->GetToken();	// }
@@ -884,7 +888,7 @@ CAnimationSet::CAnimationSet(CModelX* model)
 	mMaxTime = mAnimation[0]->mpKey[mAnimation[0]->mKeyNum - 1].mTime;
 	//デバッグバージョンのみ有効
 #ifdef _DEBUG
-	printf("AnimationSet:%s\n", mpName);
+	//printf("AnimationSet:%s\n", mpName);
 #endif
 }
 
@@ -1099,8 +1103,8 @@ CAnimation::CAnimation(CModelX* model)
 	}
 	//デバッグバージョンのみ有効
 #ifdef _DEBUG
-	printf("Animation : %s\n", mpFrameName);
-	CAnimationKey:mpKey->mMatrix.Print();
+	//printf("Animation : %s\n", mpFrameName);
+	//CAnimationKey:mpKey->mMatrix.Print();
 #endif
 }
 

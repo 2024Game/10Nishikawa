@@ -17,6 +17,8 @@
 #include "CModelX.h"
 #include "CMatrix.h"
 
+#include "CXCharacter.h"
+
 class CApplication
 {
 public:
@@ -45,7 +47,6 @@ private:
 	//モデルからコライダを生成
 	CColliderMesh mColliderMesh;
 
-
 	//モデルビューの逆行列
 	static CMatrix mModelViewInverse;
 
@@ -73,4 +74,7 @@ private:
 	CEnemy* mpEnemy;
 
 	CModelX mModelX;
+
+	//キャラクタのインスタンス
+	CXCharacter mCharacter;
 };
