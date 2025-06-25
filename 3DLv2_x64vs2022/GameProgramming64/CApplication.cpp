@@ -49,7 +49,7 @@ void CApplication::Start()
 	mModelX.Load(MODEL_FILE);
 
 	//キャラクターにモデルを設定
-	mCharacter.Init(&mModelX);
+	mXPlayer.Init(&mModelX);
 
 	mFont.Load("FontG.png", 1, 4096 / 64);
 
@@ -63,6 +63,7 @@ void CApplication::Update()
 	アニメーションが終了したら、一つ大きいアニメーション番号で、
 	キャラクタクラスのChangeAnimationメソッドを呼び出します。
 	*/
+	/*
 	mCharacter.ChangeAnimation(anim, true, 60);
 	
 	if (mCharacter.IsAnimationFinished())
@@ -74,9 +75,10 @@ void CApplication::Update()
 			anim = 1;
 		}
 	}
+	*/
 	
 	//キャラクタークラスの更新
-	mCharacter.Update(mMatrix);
+	mXPlayer.Update();
 
 	/*最初のアニメーションの現在時間を45にする
 	mModelX.AnimationSet()[0]->Time(mModelX.AnimationSet()[0]->Time() + 1.0f);
@@ -139,7 +141,7 @@ void CApplication::Update()
 
 	//モデル描画
 	//mModelX.Render();
-	mCharacter.Render();
+	mXPlayer.Render();
 
 	//2D描画開始
 	CCamera::Start(0, 800, 0, 600);
