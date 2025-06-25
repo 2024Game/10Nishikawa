@@ -52,10 +52,29 @@ void CApplication::Start()
 	mCharacter.Init(&mModelX);
 
 	mFont.Load("FontG.png", 1, 4096 / 64);
+
+	anim = 1;
 }
 
 void CApplication::Update()
 {
+	//歩くアニメーションに切り替える
+	/*
+	アニメーションが終了したら、一つ大きいアニメーション番号で、
+	キャラクタクラスのChangeAnimationメソッドを呼び出します。
+	*/
+	mCharacter.ChangeAnimation(anim, true, 60);
+	
+	if (mCharacter.IsAnimationFinished())
+	{
+		printf("Index:%i\n",mCharacter.AnimationIndex());
+		anim++;
+		if (anim == 12)
+		{
+			anim = 1;
+		}
+	}
+	
 	//キャラクタークラスの更新
 	mCharacter.Update(mMatrix);
 

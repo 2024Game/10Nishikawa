@@ -498,8 +498,8 @@ void CModelXFrame::AnimateCombined(CMatrix* parent)
 	}
 #ifdef _DEBUG //--------------------------------------課題 15
 
-	printf("Frame:%s\n", mpName);
-	mCombinedMatrix.Print();
+	//printf("Frame:%s\n", mpName);
+	//mCombinedMatrix.Print();
 
 #endif
 }
@@ -822,12 +822,12 @@ CSkinWeights::CSkinWeights(CModelX* model)
 #ifdef _DEBUG
 		for (int i = 0; i < mIndexNum; i++)
 		{
-			printf("%i %f\n", mpIndex[i], mpWeight[i]); // 課題　10
+			//printf("%i %f\n", mpIndex[i], mpWeight[i]); // 課題　10
 		}
 #endif
 	}
 	//オフセット行列取得 =======　課題　10　=========
-	/*
+	
 	int j = 1;
 	for (int i = 0; i < 16; i++)
 	{
@@ -836,16 +836,15 @@ CSkinWeights::CSkinWeights(CModelX* model)
 		// mOffset.Print();
 		if (j % 4 == 0)
 		{
-			printf("%f\n", mOffset.M()[i]);
+			//printf("%f\n", mOffset.M()[i]);
 		}
 		else
 		{
-			printf("%f ", mOffset.M()[i]);
+			//printf("%f ", mOffset.M()[i]);
 		}
 		j++;
 		#endif
 	}
-	*/
 	// ==========================================
 
 	model->GetToken();	// }

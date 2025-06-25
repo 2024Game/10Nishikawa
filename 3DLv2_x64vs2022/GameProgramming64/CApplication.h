@@ -77,4 +77,6 @@ private:
 
 	//キャラクタのインスタンス
 	CXCharacter mCharacter;
+
+	int anim;
 };
