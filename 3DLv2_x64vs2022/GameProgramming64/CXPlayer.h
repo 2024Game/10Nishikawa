@@ -12,5 +12,6 @@ public:
 
 private:
 	CInput mInput;
+	bool isAttack = false;
 };
 #endif // !CXPLAYER_H
