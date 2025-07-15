@@ -1,5 +1,10 @@
 #include "CXPlayer.h"
 
+CXPlayer::CXPlayer()
+	: mColSphereBody(this, nullptr, CVector(), 0.5f)
+{
+}
+
 void CXPlayer::Update()
 {
 	if (!isAttack)
@@ -54,4 +59,11 @@ void CXPlayer::Update()
 		}
 	}
 	CXCharacter::Update();
+}
+
+void CXPlayer::Init(CModelX* model)
+{
+	CXCharacter::Init(model);
+	//çáê¨çsóÒÇÃê›íË
+	//mColSphereBody.Matrix(&mpCombinedMatrix[8]);
 }
