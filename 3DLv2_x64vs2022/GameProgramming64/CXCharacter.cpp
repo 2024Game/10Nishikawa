@@ -1,6 +1,7 @@
 #include "CXCharacter.h"
 
 CXCharacter::CXCharacter()
+	:mpCombinedMatrix(nullptr)
 {
 	mScale = CVector(1.0f, 1.0f, 1.0f);
 }
@@ -25,6 +26,8 @@ void CXCharacter::Init(CModelX* model)
 		Time(mAnimationFrame);
 	//アニメーションの重みを1.0（100%)にする
 	mpModel->AnimationSet()[mAnimationIndex]->Weight(1.0f);
+	// 合成行列退避エリアの確保
+	mpCombinedMatrix = new CMatrix[model->Frames().size()];
 }
 
 /*
@@ -68,6 +71,18 @@ void CXCharacter::Update()
 */
 void CXCharacter::Update(CMatrix& matrix)
 {
+	/*
+	課題　22
+	合成行列の退避前にこの操作を置けばいいのは分かったのですが、
+	正確な位置が分かりません。。。
+	*/
+	//全てのアニメーションの重みを0.0（0%)にする
+	for (int i = 0; i < mpModel->AnimationSet().size(); i++)
+	{
+		mpModel->AnimationSet()[i]->Weight(0.0f);
+	}
+	mpModel->AnimationSet()[mAnimationIndex]->Weight(1.0f);
+
 	//最後まで再生する
 	if (mAnimationFrame <= mAnimationFrameSize)
 	{
@@ -95,12 +110,20 @@ void CXCharacter::Update(CMatrix& matrix)
 					MaxTime());
 		}
 	}
+
 	//フレームの変換行列をアニメーションで更新する
 	mpModel->AnimateFrame();
 	//フレームの合成行列を計算する
 	mpModel->Frames()[0]->AnimateCombined(&matrix);
+	// 合成行列の退避
+	for (size_t i = 0; i < mpModel->Frames().size(); i++)
+	{
+		mpCombinedMatrix[i] =
+			mpModel->Frames()[i]->CombinedMatrix();
+	}
+	//22にて削除
 	//頂点にアニメーションを適用する
-	mpModel->AnimateVertex();
+	//mpModel->AnimateVertex();
 }
 
 /*
@@ -108,6 +131,8 @@ void CXCharacter::Update(CMatrix& matrix)
 */
 void CXCharacter::Render()
 {
+	// 頂点にアニメーションを適用する
+	mpModel->AnimateVertex(mpCombinedMatrix);
 	mpModel->Render();
 }
 

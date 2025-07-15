@@ -48,6 +48,7 @@ public:
 	void SetSkinWeightFrameIndex();
 	//頂点にアニメーションを適用
 	void AnimateVertex();
+	void AnimateVertex(CMatrix*);
 	//マテリアルの検索
 	CMaterial* FindMaterial(char* name);
 	//マテリアル配列の取得
@@ -78,6 +79,7 @@ public:
 	void SetSkinWeightFrameIndex(CModelX* model);
 	//頂点にアニメーション適用
 	void AnimateVertex(CModelX* model);
+	void AnimateVertex(CMatrix*);
 private:
 	//スキンウェイト
 	std::vector<CSkinWeights*> mSkinWeights;

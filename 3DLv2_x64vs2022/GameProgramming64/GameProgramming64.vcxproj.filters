@@ -224,5 +224,8 @@
     <ClInclude Include="CXPlayer.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="CXEnemy.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
