@@ -47,6 +47,7 @@
     <ClCompile Include="CUI.cpp" />
     <ClCompile Include="CVector.cpp" />
     <ClCompile Include="CXCharacter.cpp" />
+    <ClCompile Include="CXEnemy.cpp" />
     <ClCompile Include="CXPlayer.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

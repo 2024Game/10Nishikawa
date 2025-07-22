@@ -84,6 +84,8 @@ void CApplication::Update()
 	
 	//キャラクタークラスの更新
 	mXPlayer.Update();
+	//コライダの描画
+	CCollisionManager::Instance()->Render();
 	//敵の更新
 	mXEnemy.Update();
 

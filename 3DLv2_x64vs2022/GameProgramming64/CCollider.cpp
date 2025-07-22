@@ -241,3 +241,8 @@ void CCollider::Render() {
 	glutWireSphere(mRadius, 16, 16);
 	glPopMatrix();
 }
+
+void CCollider::Matrix(CMatrix* m)
+{
+	mpMatrix = m;
+}

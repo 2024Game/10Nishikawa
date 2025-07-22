@@ -15,7 +15,9 @@ public:
 
 private:
 	//コライダの宣言
+	CCollider mColSphereHead;	//頭
 	CCollider mColSphereBody;	//体のコライダ
+	CCollider mColSphereSword;	//剣
 	CInput mInput;
 	bool isAttack = false;
 };
