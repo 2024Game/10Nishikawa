@@ -245,4 +245,5 @@ void CCollider::Render() {
 void CCollider::Matrix(CMatrix* m)
 {
 	mpMatrix = m;
+	printf("%s\n",)
 }
