@@ -35,7 +35,6 @@ CTexture* CApplication::Texture()
 	return &mTexture;
 }
 
-
 CMatrix CApplication::mModelViewInverse;
 
 const CMatrix& CApplication::ModelViewInverse()
@@ -84,8 +83,6 @@ void CApplication::Update()
 	
 	//キャラクタークラスの更新
 	mXPlayer.Update();
-	//コライダの描画
-	CCollisionManager::Instance()->Render();
 	//敵の更新
 	mXEnemy.Update();
 
@@ -153,6 +150,9 @@ void CApplication::Update()
 	mXPlayer.Render();
 	//敵描画
 	mXEnemy.Render();
+
+	//コライダの描画
+	CCollisionManager::Instance()->Render();
 
 	//2D描画開始
 	CCamera::Start(0, 800, 0, 600);
