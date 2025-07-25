@@ -9,6 +9,8 @@ class CXEnemy : public CXCharacter
 public:
 	CXEnemy();
 	void Init(CModelX* model);
+	//Õ“Ëˆ—
+	void Collision(CCollider* m, CCollider* o);
 private:
 	//ƒRƒ‰ƒCƒ_‚ÌéŒ¾
 	CCollider mColSphereHead;	//“ª

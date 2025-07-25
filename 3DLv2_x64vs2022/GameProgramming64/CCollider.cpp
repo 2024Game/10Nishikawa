@@ -65,6 +65,27 @@ bool FuncCollisionTriangleLine (
 	return true;
 }
 
+CCollider::ETag CCollider::Tag()
+{
+	return mTag;
+}
+
+void CCollider::SetTag(int t)
+{
+	switch (t)
+	{
+	default:
+		break;
+	case (0):
+		mTag = ETag::EBODY;
+		break;
+	case (1):
+		mTag = ETag::ESWORD;
+		break;
+	}
+	
+}
+
 void CCollider::ChangePriority()
 {
 	//自分の座標×親の変換行列を掛けてワールド座標を求める
@@ -203,15 +224,17 @@ bool CCollider::Collision(CCollider* m, CCollider* o)
 	return false;
 }
 
-CCollider::~CCollider() {
+CCollider::~CCollider()
+{
 	//コリジョンリストから削除
 	CCollisionManager::Instance()->Remove(this);
 }
 
 CCollider::CCollider(CCharacter3* parent, CMatrix* matrix,
-	const CVector& position, float radius)
+	const CVector& position, float radius, ETag tag)
 	: CCollider() 
 {
+	mTag = tag;//タグの設定
 	//親設定
 	mpParent = parent;
 	//親行列設定

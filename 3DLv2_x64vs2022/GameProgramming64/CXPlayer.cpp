@@ -73,4 +73,5 @@ void CXPlayer::Init(CModelX* model)
 	mColSphereBody.Matrix(&mpCombinedMatrix[8]);
 	//Œ•
 	mColSphereSword.Matrix(&mpCombinedMatrix[21]);
+	mColSphereSword.SetTag(1);
 }

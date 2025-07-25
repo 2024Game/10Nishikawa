@@ -154,6 +154,9 @@ void CApplication::Update()
 	//コライダの描画
 	CCollisionManager::Instance()->Render();
 
+	//衝突処理
+	CCollisionManager::Instance()->Collision();
+
 	//2D描画開始
 	CCamera::Start(0, 800, 0, 600);
 

@@ -18,3 +18,18 @@ void CXEnemy::Init(CModelX* model)
 	//剣
 	mColSphereSword.Matrix(&mpCombinedMatrix[21]);
 }
+
+void CXEnemy::Collision(CCollider* m, CCollider* o)
+{
+	if (m->Type() == CCollider::EType::ESPHERE
+		&& o->Type() == CCollider::EType::ESPHERE
+		&& m->Tag() == CCollider::ETag::EBODY
+		&& o->Tag() == CCollider::ETag::ESWORD)
+	{
+		if (m->Collision(m, o))
+		{
+			//30フレームかけてダウンし、繰り返さない
+			ChangeAnimation(11, false, 30);
+		}
+	}
+}

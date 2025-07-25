@@ -7,9 +7,18 @@ class CCollisionManager;
 コライダクラス
 衝突判定データ
 */
-class CCollider : public CTransform, public CTask {
+class CCollider : public CTransform, public CTask
+{
 	friend CCollisionManager;
 public:
+	enum class ETag
+	{
+		EBODY,	//体
+		ESWORD,	//剣
+	};
+	ETag Tag();// タグの取得
+	void SetTag(int t);
+
 	//優先度の変更
 	virtual void ChangePriority();
 
@@ -46,7 +55,7 @@ public:
 	//コンストラクタ
 	//CCollider(親, 親行列, 位置, 半径)
 	CCollider(CCharacter3* parent, CMatrix* matrix,
-		const CVector& position, float radius);
+		const CVector& position, float radius,ETag tag = ETag::EBODY);
 	//親ポインタの取得
 	CCharacter3* Parent();
 	//描画
@@ -55,6 +64,7 @@ public:
 	void Matrix(CMatrix* m);
 protected:
 	EType mType;//コライダタイプ
+	ETag mTag;//タグ
 	//頂点
 	CVector mV[3];
 
