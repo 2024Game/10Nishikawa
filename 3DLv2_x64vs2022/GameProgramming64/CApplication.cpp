@@ -54,10 +54,13 @@ void CApplication::Start()
 
 	anim = 1;
 
+	mKnight.Load("res\\knight\\knight_low.x");
 	//“G‚Ì‰Šúİ’è
-	mXEnemy.Init(&mModelX);
+	//mXEnemy.Init(&mModelX);
+	mXEnemy.Init(&mKnight);
 	//“G‚Ì”z’u
 	mXEnemy.Position(CVector(7.0f, 0.0f, 0.0f));
+
 }
 
 void CApplication::Update()

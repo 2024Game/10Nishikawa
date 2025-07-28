@@ -74,13 +74,13 @@ private:
 	//CCharacter mRectangle;
 	static CTexture mTexture;
 	CEnemy* mpEnemy;
-
 	CModelX mModelX;
 
 	//キャラクタのインスタンス
 	CXPlayer mXPlayer;
 	//敵のインスタンス
 	CXEnemy mXEnemy;
-
+	//Knightのインスタンス
+	CModelX mKnight;
 	int anim;
 };

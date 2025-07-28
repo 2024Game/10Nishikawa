@@ -107,6 +107,7 @@ class CModelXFrame
 	friend CAnimation;
 	friend CAnimationSet;
 public:
+	CModelXFrame();
 	//コンストラクタ
 	CModelXFrame(CModelX* model);
 	//デストラクタ
