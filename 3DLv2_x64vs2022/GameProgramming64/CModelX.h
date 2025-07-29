@@ -62,6 +62,9 @@ public:
 	*/
 	void SeparateAnimationSet(
 		int idx, int start, int end, const char* name);
+	bool IsLoaded();
+	//アニメーションセットの追加
+	void AddAnimationSet(const char* file);
 private:
 	//アニメーションセットの配列
 	std::vector<CAnimationSet*> mAnimationSet;
@@ -71,6 +74,7 @@ private:
 	//cが区切り文字ならtrueを返す
 	bool IsDelimiter(char c);
 	std::vector<CMaterial*> mMaterial;  //マテリアル配列
+	bool mLoaded;
 };
 
 //CMeshクラスの定義

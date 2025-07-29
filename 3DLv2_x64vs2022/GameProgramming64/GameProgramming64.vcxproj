@@ -38,6 +38,7 @@
     <ClCompile Include="CMatrix.cpp" />
     <ClCompile Include="CModel.cpp" />
     <ClCompile Include="CModelX.cpp" />
+    <ClCompile Include="CPaladin.cpp" />
     <ClCompile Include="CPlayer.cpp" />
     <ClCompile Include="CSound.cpp" />
     <ClCompile Include="CTaskManager.cpp" />
@@ -71,6 +72,7 @@
     <ClInclude Include="CMatrix.h" />
     <ClInclude Include="CModel.h" />
     <ClInclude Include="CModelX.h" />
+    <ClInclude Include="CPaladin.h" />
     <ClInclude Include="CPlayer.h" />
     <ClInclude Include="CSound.h" />
     <ClInclude Include="CTask.h" />

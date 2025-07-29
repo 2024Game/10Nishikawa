@@ -73,6 +73,11 @@ void CApplication::Start()
 	mXEnemy.Position(CVector(7.0f, 0.0f, 0.0f));
 	// mXEnemyのアニメーションを待機に変更します。
 	mXEnemy.ChangeAnimation(2, true, 200);
+
+	mpPaladin = new CPaladin();
+	mpPaladin->Position(CVector(-1.0f, 0.0f, 5.0f));
+	//アニメーションを１で60フレーム繰り返しに設定
+	mpPaladin->ChangeAnimation(1, true, 60);
 }
 
 void CApplication::Update()
@@ -100,6 +105,8 @@ void CApplication::Update()
 	mXPlayer.Update();
 	//敵の更新
 	mXEnemy.Update();
+
+	mpPaladin->Update();
 
 	/*最初のアニメーションの現在時間を45にする
 	mModelX.AnimationSet()[0]->Time(mModelX.AnimationSet()[0]->Time() + 1.0f);
@@ -165,6 +172,8 @@ void CApplication::Update()
 	mXPlayer.Render();
 	//敵描画
 	mXEnemy.Render();
+
+	mpPaladin->Render();
 
 	//コライダの描画
 	CCollisionManager::Instance()->Render();
