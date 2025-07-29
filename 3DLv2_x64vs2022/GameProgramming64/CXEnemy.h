@@ -15,6 +15,8 @@ private:
 	//コライダの宣言
 	CCollider mColSphereHead;	//頭
 	CCollider mColSphereBody;	//体のコライダ
-	CCollider mColSphereSword;	//剣
+	CCollider mColSphereSword0;	//剣 1
+	CCollider mColSphereSword1;	//剣 2
+	CCollider mColSphereSword2;	//剣 3
 };
 #endif // !CXENEMY_H
