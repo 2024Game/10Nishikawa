@@ -11,6 +11,7 @@
 */
 class CMaterial
 {
+	friend CMyShader;
 public:
 	//’¸“_”‚Ìİ’è
 	//VertexNum(’¸“_”)
