@@ -21,6 +21,7 @@
 #include "CXPlayer.h"
 #include "CXEnemy.h"
 #include "CPaladin.h"
+#include "CActionCamera.h"
 
 class CApplication
 {
@@ -76,6 +77,9 @@ private:
 	static CTexture mTexture;
 	CEnemy* mpEnemy;
 	CModelX mModelX;
+
+	//CActionCameraのインスタンス
+	CActionCamera mActionCamera;
 
 	//キャラクタのインスタンス
 	CXPlayer mXPlayer;

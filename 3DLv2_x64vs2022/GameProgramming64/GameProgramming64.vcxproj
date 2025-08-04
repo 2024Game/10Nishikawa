@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CActionCamera.cpp" />
     <ClCompile Include="CApplication.cpp" />
     <ClCompile Include="CBillBoard.cpp" />
     <ClCompile Include="CBullet.cpp" />
@@ -55,6 +56,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CActionCamera.h" />
     <ClInclude Include="CApplication.h" />
     <ClInclude Include="CBillBoard.h" />
     <ClInclude Include="CBullet.h" />

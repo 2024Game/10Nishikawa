@@ -78,6 +78,9 @@ void CApplication::Start()
 	mpPaladin->Position(CVector(-1.0f, 0.0f, 5.0f));
 	//アニメーションを１で60フレーム繰り返しに設定
 	mpPaladin->ChangeAnimation(1, true, 60);
+
+	//カメラの設定
+	mActionCamera.Set(5.0f, -15.0f, 180.0f);
 }
 
 void CApplication::Update()
@@ -123,6 +126,7 @@ void CApplication::Update()
 	//フレームの合成行列を計算する
 	//mModelX.Frames()[0]->AnimateCombined(&mMatrix);
 	
+	/*
 	//カメラのパラメータを作成する
 	CVector e, c, u;//視点、注視点、上方向
 	//視点を求める
@@ -133,6 +137,13 @@ void CApplication::Update()
 	u = CVector(0.0f, 1.0f, 0.0f);
 	//カメラの設定
 	gluLookAt(e.X(), e.Y(), e.Z(), c.X(), c.Y(), c.Z(), u.X(), u.Y(), u.Z());
+	*/
+
+	// カメラ設定
+	mActionCamera.Position(mXPlayer.Position() + CVector(0.0f, 2.0f, 0.0f));
+	mActionCamera.Update();
+	mActionCamera.Render();
+
 	//モデルビュー行列の取得
 	glGetFloatv(GL_MODELVIEW_MATRIX, mModelViewInverse.M());
 	//逆行列の取得
@@ -141,6 +152,7 @@ void CApplication::Update()
 	mModelViewInverse.M(1, 3, 0);
 	mModelViewInverse.M(2, 3, 0);
 
+	/*
 	//X軸＋回転
 	if (mInput.Key('K'))
 	{
@@ -163,6 +175,7 @@ void CApplication::Update()
 	}
 	//行列設定
 	//glMultMatrixf(mMatrix.M());
+	*/
 
 	//頂点にアニメーションを適用する
 	//mModelX.AnimateVertex();
