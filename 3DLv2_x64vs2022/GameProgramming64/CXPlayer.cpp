@@ -33,7 +33,6 @@ void CXPlayer::Update()
 			//Z軸方向の値を回転させ移動させる
 			mPosition = mPosition + CVector(0.0f, 0.0f, 0.1f) * mMatrixRotate;
 		}
-		
 		*/
 
 		if (mInput.Key(VK_SPACE))
@@ -42,6 +41,9 @@ void CXPlayer::Update()
 				return;
 			isAttack = true;
 			ChangeAnimation(3, false, 30);
+			// 移動中に攻撃をするとアニメーションがストップするので
+			// 攻撃したら処理を抜けています
+			return;
 		}
 
 		// 課題30ーーーーーーーーーーーーーーーーーーーーーーーーーー
@@ -74,6 +76,7 @@ void CXPlayer::Update()
 		{
 			move = move - cameraZ;
 		}
+		
 		//移動あり
 		if (move.Length() > 0.0f)
 		{
