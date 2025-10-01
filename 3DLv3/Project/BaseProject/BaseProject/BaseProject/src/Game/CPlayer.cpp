@@ -151,8 +151,8 @@ void CPlayer::UpdateAttackWait()
 		mIsPlayedSlashSE = true;
 	}
 
-	// 斬撃エフェクトを生成していないかつ、アニメーションが35%以上進行したら、
-	if (!mIsSpawnedSlashEffect && GetAnimationFrameRatio() >= 0.35f)
+	// 斬撃エフェクトを生成していないかつ、アニメーションが45%以上進行したら、
+	if (!mIsSpawnedSlashEffect && GetAnimationFrameRatio() >= 0.45f)
 	{
 		// 斬撃エフェクトを生成して、正面方向へ飛ばす
 		CSlash* slash = new CSlash
@@ -435,8 +435,11 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		{
 			// 坂道で滑らないように、押し戻しベクトルのXとZの値を0にする
 			CVector adjust = hit.adjust;
-			adjust.X(0.0f);
-			adjust.Z(0.0f);
+			//adjust.X(0.0f);
+			//adjust.Z(0.0f);
+			// 滑る設定
+			//adjust.X(hit.adjust.X() * 5);
+			//adjust.Z(hit.adjust.Z() * 5);
 
 			Position(Position() + adjust * hit.weight);
 
