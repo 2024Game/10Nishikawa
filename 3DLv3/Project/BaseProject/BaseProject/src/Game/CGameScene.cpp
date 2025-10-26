@@ -36,7 +36,7 @@ void CGameScene::Load()
 	CResourceManager::Load<CModel>(		"Field",			"Field\\field.obj");
 	CResourceManager::Load<CModel>(		"FieldCube",		"Field\\Object\\cube.obj");
 	CResourceManager::Load<CModel>(		"FieldCylinder",	"Field\\Object\\cylinder.obj");
-	CResourceManager::Load<CModelX>(	"Player",			"Character\\Player\\player.x");
+	CResourceManager::Load<CModel>(		"Player",			"Character\\PlayerBoat\\PlayerBoat.obj");
 	CResourceManager::Load<CModelX>(	"Cactus",			"Character\\Enemy\\Cactus\\cactus.x");
 	CResourceManager::Load<CModel>(		"CactusNeedle",		"Character\\Enemy\\Cactus\\needle.obj");
 	CResourceManager::Load<CTexture>(	"Laser",			"Effect\\laser.png");
@@ -55,6 +55,7 @@ void CGameScene::Load()
 	CCactus* cactus = new CCactus();
 	cactus->Position(0.0f, 0.0f, -100.0f);
 
+	// Player‚ðì¬
 	CPlayer* player = new CPlayer();
 	player->Scale(1.0f, 1.0f, 1.0f);
 

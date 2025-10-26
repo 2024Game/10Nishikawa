@@ -391,6 +391,9 @@
     <ClCompile Include="src\BaseSystem\CShader.cpp">
       <Filter>ソース ファイル\BaseSystem\Shader</Filter>
     </ClCompile>
+    <ClCompile Include="Barrel.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -707,6 +710,9 @@
     </ClInclude>
     <ClInclude Include="src\BaseSystem\CShader.h">
       <Filter>ソース ファイル\BaseSystem\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Barrel.h">
+      <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
