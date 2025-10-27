@@ -12,28 +12,12 @@ CBarrel::CBarrel(const CVector& pos, const CVector& dir,
 {
 	Position(pos);
 	Rotation(CQuaternion::LookRotation(dir, CVector::up));
-
-	// 軌跡のエフェクトを作成
-	mpTrailEffect = new CTrailEffect
-	(
-		ETag::eBullet,	// オブジェクトタグ
-		this,
-		nullptr,
-		CVector(0.0f, 0.0f, 0.0f),
-		0.01f,			// 更新間隔（時間）
-		30.0f,			// 更新間隔（距離）
-		2.0f,			// 開始時の軌跡の幅
-		0.0f,			// 終了時の軌跡の幅
-		0.0625f			// 表示時間
-	);
-	mpTrailEffect->SetTexture("Laser");
-	mpTrailEffect->SetColor(CColor(1.0f, 0.75f, 0.25f, 1.0f));
 }
 
 // デストラクタ
 CBarrel::~CBarrel()
 {
-	mpTrailEffect->SetOwner(nullptr);
+	
 }
 
 // 更新

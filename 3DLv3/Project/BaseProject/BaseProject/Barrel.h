@@ -3,7 +3,7 @@
 #include "CModel.h"
 class CTrailEffect;
 
-// 弾丸クラス
+// 樽爆弾クラス
 class CBarrel : public CObjectBase
 {
 public:
@@ -26,7 +26,6 @@ public:
 	void Render() override;
 
 private:
-	CTrailEffect* mpTrailEffect;	// 弾丸の軌跡のエフェクト
 	float mMoveSpeed;				// 移動速度
 	float mFlyingDistance;			// 飛距離
 	float mCurrentFlyingDistance;	// 現在の飛距離
