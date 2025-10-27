@@ -5,6 +5,7 @@
 #include "Maths.h"
 #include "CColliderCapsule.h"
 #include "CColliderSphere.h"
+#include "CBarrel.h"
 
 #define BODY_HEIGHT 16.0f	// 本体のコライダーの高さ
 #define BODY_RADIUS 3.0f	// 本体のコライダーの幅
@@ -164,6 +165,20 @@ void CPlayer::Update()
 
 	// 移動
 	Position(Position() + mMoveSpeed);
+
+	// ホイールクリックで弾丸発射
+	if (CInput::PushKey(VK_MBUTTON))
+	{
+		// 弾丸を生成
+		new CBarrel
+		(
+			// 発射位置
+			Position() + CVector(0.0f, 10.0f, 0.0f) + VectorZ() * 20.0f,
+			VectorZ(),	// 発射方向
+			1000.0f,	// 移動距離
+			1000.0f		// 飛距離
+		);
+	}
 
 	// プレイヤーを移動方向へ向ける
 	CVector current = VectorZ();

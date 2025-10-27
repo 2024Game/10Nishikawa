@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Barrel.cpp" />
+    <ClCompile Include="CBarrel.cpp" />
     <ClCompile Include="src\BaseSystem\BGMData.cpp" />
     <ClCompile Include="src\BaseSystem\Blend.cpp" />
     <ClCompile Include="src\BaseSystem\CBGMManager.cpp" />
@@ -111,7 +111,7 @@
     <ClCompile Include="src\Test\CMeasure.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Barrel.h" />
+    <ClInclude Include="CBarrel.h" />
     <ClInclude Include="src\BaseSystem\BGMData.h" />
     <ClInclude Include="src\BaseSystem\Blend.h" />
     <ClInclude Include="src\BaseSystem\CBGMManager.h" />

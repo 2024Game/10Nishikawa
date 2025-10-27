@@ -1,4 +1,4 @@
-#include "Barrel.h"
+#include "CBarrel.h"
 #include "CTrailEffect.h"
 #include "Primitive.h"
 
