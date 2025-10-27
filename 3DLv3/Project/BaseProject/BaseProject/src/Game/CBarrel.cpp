@@ -1,55 +1,81 @@
 #include "CBarrel.h"
-#include "CTrailEffect.h"
-#include "Primitive.h"
+#include "CColliderSphere.h"
+#include "CCharaBase.h"
 
 // コンストラクタ
-CBarrel::CBarrel(const CVector& pos, const CVector& dir,
-	float speed, float distance)
-	: CObjectBase(ETag::eBullet, ETaskPriority::eDefault, 0, ETaskPauseType::eGame)
+CBarrel::CBarrel(float speed, float dist)
+	: CObjectBase(ETag::eEnemy, ETaskPriority::eWeapon, 0, ETaskPauseType::eGame)
+	, mpModel(nullptr)
+	, mpCollider(nullptr)
 	, mMoveSpeed(speed)
-	, mFlyingDistance(distance)
-	, mCurrentFlyingDistance(0.0f)
+	, mMoveDist(dist)
+	, mCurrDist(0.0f)
 {
-	Position(pos);
-	Rotation(CQuaternion::LookRotation(dir, CVector::up));
+	// 針を黄色にする
+	mColor = CColor::white;
+
+	// モデルデータ取得
+	mpModel = CResourceManager::Get<CModel>("Barrel");
+
+	// コライダーを作成
+	mpCollider = new CColliderSphere
+	(
+		this, ELayer::eAttackCol,
+		3.0f
+	);
+	// プレイヤーとフィールドと衝突するように設定
+	mpCollider->SetCollisionTags({ ETag::eEnemy/*, ETag::eField*/ });
+	mpCollider->SetCollisionLayers({ ELayer::eEnemy, ELayer::eField });
 }
 
 // デストラクタ
 CBarrel::~CBarrel()
 {
-	
+	// コライダー削除
+	SAFE_DELETE(mpCollider);
+}
+
+// 衝突処理
+void CBarrel::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
+{
+	// プレイヤーに衝突した
+	if (other->Layer() == ELayer::ePlayer)
+	{
+		// プレイヤーにダメージを与える
+		CCharaBase* chara = dynamic_cast<CCharaBase*>(other->Owner());
+		if (chara != nullptr)
+		{
+			chara->TakeDamage(1, this);
+		}
+	}
+
+	// 何かにぶつかったら、自身を削除
+	Kill();
 }
 
 // 更新
 void CBarrel::Update()
 {
-	if (IsKill()) return;
+	// このフレームで移動距離を求める
+	float moveDist = mMoveSpeed * Times::DeltaTime();
 
-	// 残り飛距離が0ならば、弾丸削除
-	float remain = mFlyingDistance - mCurrentFlyingDistance;
-	if (remain <= 0.0f)
+	// 移動距離分、移動させる
+	CVector pos = Position();
+	pos += VectorZ() * moveDist;
+	Position(pos);
+
+	// 移動した距離を加算
+	mCurrDist += moveDist;
+	// 移動出来る距離を超えたら、自身を削除
+	if (mCurrDist >= mMoveDist)
 	{
 		Kill();
-		return;
 	}
-
-	// 移動速度を計算
-	// 移動速度が残りの飛距離より大きい場合は、
-	// 残りの飛距離を移動速度とする
-	float moveSpeed = mMoveSpeed * Times::DeltaTime();
-	if (abs(moveSpeed) > remain)
-	{
-		moveSpeed = remain * (moveSpeed < 0.0f ? -1.0f : 1.0f);
-	}
-
-	// 弾丸を正面方向に移動
-	Position(Position() + VectorZ() * moveSpeed);
-	// 現在の飛距離を更新
-	mCurrentFlyingDistance += abs(moveSpeed);
 }
 
 // 描画
 void CBarrel::Render()
 {
-	Primitive::DrawSphere(Matrix(), 0.1f, mColor);
+	mpModel->SetColor(mColor);
+	mpModel->Render(Matrix());
 }

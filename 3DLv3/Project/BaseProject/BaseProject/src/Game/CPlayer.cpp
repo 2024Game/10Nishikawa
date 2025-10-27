@@ -11,6 +11,8 @@
 #define BODY_RADIUS 3.0f	// 本体のコライダーの幅
 #define MOVE_SPEED 0.75f	// 移動速度
 
+#define BARREL_OFFSET_POS CVector(0.0f, 1.5f, -8.5f)
+
 // プレイヤーのインスタンス
 CPlayer* CPlayer::spInstance = nullptr;
 
@@ -169,15 +171,7 @@ void CPlayer::Update()
 	// ホイールクリックで弾丸発射
 	if (CInput::PushKey(VK_MBUTTON))
 	{
-		// 弾丸を生成
-		new CBarrel
-		(
-			// 発射位置
-			Position() + CVector(0.0f, 10.0f, 0.0f) + VectorZ() * 20.0f,
-			VectorZ(),	// 発射方向
-			1000.0f,	// 移動距離
-			1000.0f		// 飛距離
-		);
+		DropBarrel();
 	}
 
 	// プレイヤーを移動方向へ向ける
@@ -194,6 +188,17 @@ void CPlayer::Update()
 	CDebugPrint::Print("PlayerState:%d\n", mState);
 
 	CDebugPrint::Print("FPS:%f\n", Times::FPS());
+}
+
+// 樽を発射
+void CPlayer::DropBarrel()
+{
+	CVector pos = Position() + Rotation() * BARREL_OFFSET_POS;
+	CVector under = -VectorY();
+	CVector dir = CQuaternion(0.0f, 0.0f, 0.0f) * under;
+	CBarrel* barrel = new CBarrel(2, 50);
+	barrel->Position(pos);
+	barrel->Rotation(CQuaternion::LookRotation(dir));
 }
 
 // ダメージを受ける

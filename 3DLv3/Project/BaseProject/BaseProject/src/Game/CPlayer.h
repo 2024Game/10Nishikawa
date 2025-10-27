@@ -23,6 +23,8 @@ public:
 	// 更新
 	void Update();
 
+	void DropBarrel();
+
 	// ダメージを受ける
 	void TakeDamage(int damage, CObjectBase* causer) override;
 

@@ -11,7 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CBarrel.cpp" />
     <ClCompile Include="src\BaseSystem\BGMData.cpp" />
     <ClCompile Include="src\BaseSystem\Blend.cpp" />
     <ClCompile Include="src\BaseSystem\CBGMManager.cpp" />
@@ -76,6 +75,7 @@
     <ClCompile Include="src\BaseSystem\Maths.cpp" />
     <ClCompile Include="src\BaseSystem\System.cpp" />
     <ClCompile Include="src\Game\CApplication.cpp" />
+    <ClCompile Include="src\Game\CBarrel.cpp" />
     <ClCompile Include="src\Game\CBullet.cpp" />
     <ClCompile Include="src\Game\CCactus.cpp" />
     <ClCompile Include="src\Game\CCactusNeedle.cpp" />
@@ -111,7 +111,6 @@
     <ClCompile Include="src\Test\CMeasure.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CBarrel.h" />
     <ClInclude Include="src\BaseSystem\BGMData.h" />
     <ClInclude Include="src\BaseSystem\Blend.h" />
     <ClInclude Include="src\BaseSystem\CBGMManager.h" />
@@ -185,6 +184,7 @@
     <ClInclude Include="src\BaseSystem\Times.h" />
     <ClInclude Include="src\Define.h" />
     <ClInclude Include="src\Game\CApplication.h" />
+    <ClInclude Include="src\Game\CBarrel.h" />
     <ClInclude Include="src\Game\CBullet.h" />
     <ClInclude Include="src\Game\CCactus.h" />
     <ClInclude Include="src\Game\CCactusNeedle.h" />

@@ -391,7 +391,7 @@
     <ClCompile Include="src\BaseSystem\CShader.cpp">
       <Filter>ソース ファイル\BaseSystem\Shader</Filter>
     </ClCompile>
-    <ClCompile Include="CBarrel.cpp">
+    <ClCompile Include="src\Game\CBarrel.cpp">
       <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClCompile>
   </ItemGroup>
@@ -711,7 +711,7 @@
     <ClInclude Include="src\BaseSystem\CShader.h">
       <Filter>ソース ファイル\BaseSystem\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="CBarrel.h">
+    <ClInclude Include="src\Game\CBarrel.h">
       <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClInclude>
   </ItemGroup>
