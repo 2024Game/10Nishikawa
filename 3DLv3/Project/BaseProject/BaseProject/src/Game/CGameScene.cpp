@@ -69,7 +69,7 @@ void CGameScene::Load()
 	//);
 
 	// CGameCamera2のテスト
-	CVector atPos = player->Position() + CVector(0.0f, 10.0f, 0.0f);
+	CVector atPos = player->Position() + CVector(0.0f, 5.0f, 0.0f);
 	CGameCamera2* mainCamera = new CGameCamera2
 	(
 		atPos + CVector(0.0f, 0.0f, 40.0f),
@@ -77,6 +77,9 @@ void CGameScene::Load()
 	);
 
 	mainCamera->SetFollowTargetTf(player);
+
+	// Playerにカメラのポインターを渡す
+	player->SetCamera(mainCamera);
 
 	// ゲームメニューを作成
 	mpGameMenu = new CGameMenu();

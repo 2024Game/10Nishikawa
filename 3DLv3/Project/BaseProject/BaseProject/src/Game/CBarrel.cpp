@@ -3,13 +3,15 @@
 #include "CCharaBase.h"
 
 // コンストラクタ
-CBarrel::CBarrel(float speed, float dist)
+CBarrel::CBarrel(float speed, float dist, CPlayer* player , CGameCamera2* camera)
 	: CObjectBase(ETag::eEnemy, ETaskPriority::eWeapon, 0, ETaskPauseType::eGame)
 	, mpModel(nullptr)
 	, mpCollider(nullptr)
 	, mMoveSpeed(speed)
 	, mMoveDist(dist)
 	, mCurrDist(0.0f)
+	, mpPlayer(player)
+	, mpCamera(camera)
 {
 	// 針を黄色にする
 	mColor = CColor::white;
@@ -69,6 +71,13 @@ void CBarrel::Update()
 	// 移動出来る距離を超えたら、自身を削除
 	if (mCurrDist >= mMoveDist)
 	{
+		// カメラの追従をプレイヤーに返す
+		mpCamera->SetFollowTargetTf(mpPlayer);
+		mpCamera->SetFollowTargetOffset(CVector(0.0f, 5.0f, 0.0f));
+
+		// Playerのステートを変更
+		mpPlayer->SetState(1);
+
 		Kill();
 	}
 }

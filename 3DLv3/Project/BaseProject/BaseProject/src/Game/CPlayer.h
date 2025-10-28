@@ -2,6 +2,7 @@
 //キャラクタクラスのインクルード
 #include "CCharaBase.h"
 #include "CModel.h"
+#include "CGameCamera2.h"
 
 class CCollider;
 
@@ -39,6 +40,10 @@ public:
 	// 描画
 	void Render();
 
+	void SetCamera(CGameCamera2* camera);
+
+	void SetState(int stateNum);
+
 private:
 	// オブジェクト削除を伝える
 	void DeleteObject(CObjectBase* obj) override;
@@ -61,6 +66,7 @@ private:
 	enum class EState
 	{
 		eIdle,		// 待機
+		eMovable,	// 移動可能
 		eHit,		// 仰け反り
 	};
 	// 状態を切り替え
@@ -75,4 +81,6 @@ private:
 
 	CModel* mpModel;			// 本体のモデルデータ
 	CCollider* mpBodyCol;		// 本体のコライダー
+
+	CGameCamera2* mpCamera;		// カメラのポインター
 };

@@ -9,7 +9,7 @@
 
 #define BODY_HEIGHT 16.0f	// 本体のコライダーの高さ
 #define BODY_RADIUS 3.0f	// 本体のコライダーの幅
-#define MOVE_SPEED 0.75f	// 移動速度
+#define MOVE_SPEED  0.5f	// 移動速度
 
 #define BARREL_OFFSET_POS CVector(0.0f, 1.5f, -8.5f)
 
@@ -19,7 +19,7 @@ CPlayer* CPlayer::spInstance = nullptr;
 // コンストラクタ
 CPlayer::CPlayer()
 	: CCharaBase(ETag::ePlayer, ETaskPriority::ePlayer)
-	, mState(EState::eIdle)
+	, mState(EState::eMovable)
 	, mStateStep(0)
 	, mElapsedTime(0.0f)
 	, mMoveSpeedY(0.0f)
@@ -160,7 +160,7 @@ void CPlayer::Update()
 	}
 
 	// 待機中とは、移動処理を行う
-	if (mState == EState::eIdle)
+	if (mState == EState::eMovable)
 	{
 		UpdateMove();
 	}
@@ -169,8 +169,9 @@ void CPlayer::Update()
 	Position(Position() + mMoveSpeed);
 
 	// ホイールクリックで弾丸発射
-	if (CInput::PushKey(VK_MBUTTON))
+	if (CInput::PushKey(VK_MBUTTON) && mState == EState::eMovable)
 	{
+		ChangeState(EState::eIdle);
 		DropBarrel();
 	}
 
@@ -196,9 +197,16 @@ void CPlayer::DropBarrel()
 	CVector pos = Position() + Rotation() * BARREL_OFFSET_POS;
 	CVector under = -VectorY();
 	CVector dir = CQuaternion(0.0f, 0.0f, 0.0f) * under;
-	CBarrel* barrel = new CBarrel(2, 50);
+	CBarrel* barrel = new CBarrel(3, 50, this, mpCamera);
 	barrel->Position(pos);
 	barrel->Rotation(CQuaternion::LookRotation(dir));
+
+	// カメラの追従を樽に移す
+	mpCamera->SetFollowTargetTf(barrel);
+	mpCamera->SetFollowTargetOffset(CVector(0.0f, 0.0f, 0.0f));
+
+	// 移動を停止
+	mMoveSpeed = CVector::zero;
 }
 
 // ダメージを受ける
@@ -274,4 +282,21 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 void CPlayer::Render()
 {
 	mpModel->Render(Matrix());
+}
+
+void CPlayer::SetCamera(CGameCamera2* camera)
+{
+	mpCamera = camera;
+}
+
+void CPlayer::SetState(int stateNum)
+{
+	if (stateNum == 0)
+	{
+		ChangeState(EState::eIdle);
+	}
+	else if (stateNum == 1)
+	{
+		ChangeState(EState::eMovable);
+	}
 }
