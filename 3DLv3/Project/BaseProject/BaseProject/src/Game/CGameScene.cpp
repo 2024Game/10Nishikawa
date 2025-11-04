@@ -48,7 +48,7 @@ void CGameScene::Load()
 	CResourceManager::Load<CModel>(		"Sword",			"Weapon\\Sword\\sword.obj");
 	CResourceManager::Load<CModel>(		"Shield",			"Weapon\\Shield\\shield.obj");
 
-	CResourceManager::Load<CModelX>(	"RainbowTrout",		"Character\\Enemy\\RainbowTrout\\RainbowTrout.x");
+	CResourceManager::Load<CModelX>(	"RainbowTrout",		"Character\\Enemy\\RainbowTrout\\RainbowTrout01.x");
 
 	// ƒQ[ƒ€BGM‚ð“Ç‚Ýž‚Ý
 	CBGMManager::Instance()->Play(EBGMType::eGame);

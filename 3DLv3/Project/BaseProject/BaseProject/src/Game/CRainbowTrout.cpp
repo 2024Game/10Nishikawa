@@ -4,7 +4,7 @@
 #include "Maths.h"
 #include "CCactusNeedle.h"
 
-#define ANIM_PATH "Character\\Enemy\\Cactus\\Anim\\"
+#define ANIM_PATH "Character\\Enemy\\RainbowTrout\\Anim\\"
 #define BODY_HEIGHT 13.0f
 #define BODY_RADIUS 5.0f
 #define GAUGE_OFFSET_Y 15.0f
