@@ -5,7 +5,7 @@
 #include "CCactusNeedle.h"
 
 #define ANIM_PATH "Character\\Enemy\\RainbowTrout\\Anim\\"
-#define BODY_HEIGHT 13.0f
+#define BODY_HEIGHT 130.0f
 #define BODY_RADIUS 5.0f
 #define GAUGE_OFFSET_Y 15.0f
 #define DEATH_WAIT_TIME 3.0f
@@ -35,7 +35,7 @@
 const std::vector<CEnemy::AnimData> ANIM_DATA =
 {
 	{ "",						true,	0.0f,	1.0f	},	// Tポーズ
-	{ ANIM_PATH"idle.x",		true,	40.0f,	1.0f	},	// 待機
+	{ ANIM_PATH"idle.x",		true,	241.0f,	1.0f	},	// 待機
 };
 
 // コンストラクタ
