@@ -394,6 +394,9 @@
     <ClCompile Include="src\Game\CBarrel.cpp">
       <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CRainbowTrout.cpp">
+      <Filter>ソース ファイル\Game\Character\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -713,6 +716,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\CBarrel.h">
       <Filter>ソース ファイル\Game\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CRainbowTrout.h">
+      <Filter>ソース ファイル\Game\Character\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
