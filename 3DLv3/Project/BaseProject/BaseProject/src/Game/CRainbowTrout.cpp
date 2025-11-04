@@ -36,12 +36,6 @@ const std::vector<CEnemy::AnimData> ANIM_DATA =
 {
 	{ "",						true,	0.0f,	1.0f	},	// Tポーズ
 	{ ANIM_PATH"idle.x",		true,	40.0f,	1.0f	},	// 待機
-	{ ANIM_PATH"idle_battle.x",	true,	36.0f,	1.0f	},	// 戦闘中の待機
-	{ ANIM_PATH"walk.x",		true,	62.0f,	1.0f	},	// 歩行
-	{ ANIM_PATH"attack.x",		false,	42.0f,	1.0f	},	// パンチ攻撃
-	{ ANIM_PATH"attack2.x",		false,	52.0f,	1.0f	},	// 針攻撃
-	{ ANIM_PATH"hit.x",			false,	46.0f,	1.0f	},	// 仰け反り
-	{ ANIM_PATH"death.x",		false,	46.0f,	1.0f	},	// 死亡
 };
 
 // コンストラクタ

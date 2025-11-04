@@ -48,7 +48,7 @@ void CGameScene::Load()
 	CResourceManager::Load<CModel>(		"Sword",			"Weapon\\Sword\\sword.obj");
 	CResourceManager::Load<CModel>(		"Shield",			"Weapon\\Shield\\shield.obj");
 
-	CResourceManager::Load<CModelX>(	"RainbowTrout",		"Character\\Enemy\\RainbowTrout\\RainbowTrout01.x");
+	CResourceManager::Load<CModelX>(	"RainbowTrout",		"Character\\Enemy\\RainbowTrout\\RainbowTrout.x");
 
 	// ゲームBGMを読み込み
 	CBGMManager::Instance()->Play(EBGMType::eGame);
@@ -58,6 +58,10 @@ void CGameScene::Load()
 	// サボテンの敵を作成
 	CCactus* cactus = new CCactus();
 	cactus->Position(0.0f, 0.0f, -100.0f);
+
+	// サボテンの敵を作成
+	CRainbowTrout* rainbowTrout = new CRainbowTrout();
+	rainbowTrout->Position(0.0f, 0.0f, -150.0f);
 
 	// Playerを作成
 	CPlayer* player = new CPlayer();
@@ -87,9 +91,7 @@ void CGameScene::Load()
 	// ゲームメニューを作成
 	mpGameMenu = new CGameMenu();
 
-	// サボテンの敵を作成
-	CRainbowTrout* rainbowTrout = new CRainbowTrout();
-	rainbowTrout->Position(0.0f, 0.0f, -150.0f);
+	
 }
 
 //シーンの更新処理
