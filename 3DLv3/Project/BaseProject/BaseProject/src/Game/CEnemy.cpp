@@ -161,7 +161,7 @@ void CEnemy::ChangeState(int state)
 void CEnemy::Update()
 {
 	// èdóÕ
-	mMoveSpeedY -= GRAVITY;
+	//mMoveSpeedY -= GRAVITY;
 
 	// à⁄ìÆ
 	CVector moveSpeed = mMoveSpeed + CVector(0.0f, mMoveSpeedY, 0.0f);

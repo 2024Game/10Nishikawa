@@ -7,8 +7,8 @@
 #include "CColliderSphere.h"
 #include "CBarrel.h"
 
-#define BODY_HEIGHT 16.0f	// 本体のコライダーの高さ
-#define BODY_RADIUS 3.0f	// 本体のコライダーの幅
+#define BODY_HEIGHT 15.0f	// 本体のコライダーの高さ
+#define BODY_RADIUS 2.5f	// 本体のコライダーの幅
 #define MOVE_SPEED  0.5f	// 移動速度
 
 #define BARREL_OFFSET_POS CVector(0.0f, 1.5f, -8.5f)
@@ -39,8 +39,8 @@ CPlayer::CPlayer()
 	mpBodyCol = new CColliderCapsule
 	(
 		this, ELayer::ePlayer,
-		CVector(0.0f, BODY_RADIUS, 0.0f),
-		CVector(0.0f, BODY_HEIGHT - BODY_RADIUS, 0.0f),
+		CVector(0.0f, BODY_RADIUS, BODY_RADIUS - 7.0f),
+		CVector(0.0f, BODY_RADIUS, BODY_HEIGHT - BODY_RADIUS - 7.0f),
 		BODY_RADIUS
 	);
 	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::eRideableObject, ETag::eEnemy });

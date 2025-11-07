@@ -91,7 +91,6 @@
     <ClCompile Include="src\Game\CImage.cpp" />
     <ClCompile Include="src\Game\CMoveFloor.cpp" />
     <ClCompile Include="src\Game\CPlayer.cpp" />
-    <ClCompile Include="src\Game\CRainbowTrout.cpp" />
     <ClCompile Include="src\Game\CRideableObject.cpp" />
     <ClCompile Include="src\Game\CRotateFloor.cpp" />
     <ClCompile Include="src\Game\CSlash.cpp" />
@@ -100,6 +99,7 @@
     <ClCompile Include="src\Game\CTitleUI.cpp" />
     <ClCompile Include="src\Game\CWeapon.cpp" />
     <ClCompile Include="src\Game\CXCharacter.cpp" />
+    <ClCompile Include="src\Game\CFish.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Test\CBootMenuScene.cpp" />
     <ClCompile Include="src\Test\CColBase.cpp" />
@@ -201,7 +201,6 @@
     <ClInclude Include="src\Game\CImage.h" />
     <ClInclude Include="src\Game\CMoveFloor.h" />
     <ClInclude Include="src\Game\CPlayer.h" />
-    <ClInclude Include="src\Game\CRainbowTrout.h" />
     <ClInclude Include="src\Game\CRideableObject.h" />
     <ClInclude Include="src\Game\CRotateFloor.h" />
     <ClInclude Include="src\Game\CSlash.h" />
@@ -210,6 +209,7 @@
     <ClInclude Include="src\Game\CTitleScene.h" />
     <ClInclude Include="src\Game\CWeapon.h" />
     <ClInclude Include="src\Game\CXCharacter.h" />
+    <ClInclude Include="src\Game\CFish.h" />
     <ClInclude Include="src\Test\CBootMenuScene.h" />
     <ClInclude Include="src\Test\CColBase.h" />
     <ClInclude Include="src\Test\CColCapsule.h" />

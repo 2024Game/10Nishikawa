@@ -394,7 +394,7 @@
     <ClCompile Include="src\Game\CBarrel.cpp">
       <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CRainbowTrout.cpp">
+    <ClCompile Include="src\Game\CFish.cpp">
       <Filter>ソース ファイル\Game\Character\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
@@ -717,7 +717,7 @@
     <ClInclude Include="src\Game\CBarrel.h">
       <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CRainbowTrout.h">
+    <ClInclude Include="src\Game\CFish.h">
       <Filter>ソース ファイル\Game\Character\Enemy</Filter>
     </ClInclude>
   </ItemGroup>

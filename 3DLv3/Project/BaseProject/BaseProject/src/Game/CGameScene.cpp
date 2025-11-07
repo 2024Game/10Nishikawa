@@ -1,4 +1,4 @@
-#include "CGameScene.h"
+ï»¿#include "CGameScene.h"
 #include "CSceneManager.h"
 #include "CField.h"
 #include "CPlayer.h"
@@ -9,30 +9,29 @@
 #include "CBGMManager.h"
 #include "CLineEffect.h"
 #include "CCactus.h"
-#include "CRainbowTrout.h"
 
-//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CGameScene::CGameScene()
 	: CSceneBase(EScene::eGame)
 	, mpGameMenu(nullptr)
 {
 }
 
-//ƒfƒXƒgƒ‰ƒNƒ^
+//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CGameScene::~CGameScene()
 {
 }
 
-//ƒV[ƒ““Ç‚İ‚İ
+//ã‚·ãƒ¼ãƒ³èª­ã¿è¾¼ã¿
 void CGameScene::Load()
 {
-	// ƒQ[ƒ€‰æ–Ê‚ÍƒJ[ƒ\ƒ‹”ñ•\¦
+	// ã‚²ãƒ¼ãƒ ç”»é¢ã¯ã‚«ãƒ¼ã‚½ãƒ«éè¡¨ç¤º
 	CInput::ShowCursor(false);
-	// ”wŒiFİ’è
+	// èƒŒæ™¯è‰²è¨­å®š
 	System::SetClearColor(0.1921569f, 0.3019608f, 0.4745098f, 1.0f);
 
-	//‚±‚±‚ÅƒQ[ƒ€’†‚É•K—v‚È
-	//ƒŠƒ\[ƒX‚Ì“Ç‚İ‚İ‚âƒNƒ‰ƒX‚Ì¶¬‚ğs‚¤
+	//ã“ã“ã§ã‚²ãƒ¼ãƒ ä¸­ã«å¿…è¦ãª
+	//ãƒªã‚½ãƒ¼ã‚¹ã®èª­ã¿è¾¼ã¿ã‚„ã‚¯ãƒ©ã‚¹ã®ç”Ÿæˆã‚’è¡Œã†
 
 	CResourceManager::Load<CModel>(		"Field",			"Field\\field.obj");
 	CResourceManager::Load<CModel>(		"FieldCube",		"Field\\Object\\cube.obj");
@@ -48,26 +47,63 @@ void CGameScene::Load()
 	CResourceManager::Load<CModel>(		"Sword",			"Weapon\\Sword\\sword.obj");
 	CResourceManager::Load<CModel>(		"Shield",			"Weapon\\Shield\\shield.obj");
 
-	CResourceManager::Load<CModelX>(	"RainbowTrout",		"Character\\Enemy\\RainbowTrout\\RainbowTrout_x3.x");
+	CResourceManager::Load<CModelX>(	"RainbowTrout",		"Character\\Enemy\\RainbowTrout\\RainbowTrout_x5.x");
 
-	// ƒQ[ƒ€BGM‚ğ“Ç‚İ‚İ
+	// ã‚²ãƒ¼ãƒ BGMã‚’èª­ã¿è¾¼ã¿
 	CBGMManager::Instance()->Play(EBGMType::eGame);
 
-	new CField();
+	CField* field1 = new CField();
+	CField* field2 = new CField();
+	field2->Position(0.0f, -425.0f, 0.0f);
 
-	// ƒTƒ{ƒeƒ“‚Ì“G‚ğì¬
+	// ã‚µãƒœãƒ†ãƒ³ã®æ•µã‚’ä½œæˆ
 	CCactus* cactus = new CCactus();
 	cactus->Position(0.0f, 0.0f, -100.0f);
+	cactus->Scale(1.0f, 1.0f, 1.0f);
 
-	// ƒTƒ{ƒeƒ“‚Ì“G‚ğì¬
-	CRainbowTrout* rainbowTrout = new CRainbowTrout();
-	rainbowTrout->Position(0.0f, 0.0f, -150.0f);
+	// ãƒ©ãƒ³ãƒ€ãƒ åˆæœŸåŒ–ï¼ˆLoad() ã®æœ€åˆã§ä¸€åº¦ã ã‘å‘¼ã¶ï¼‰
+	srand(static_cast<unsigned int>(time(nullptr)));
 
-	// Player‚ğì¬
+	// RainbowTroutã‚’ãƒ©ãƒ³ãƒ€ãƒ ã«25ä½“ç”Ÿæˆ
+	for (int i = 0; i < 50; ++i)
+	{
+		float x = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500ã€œ500
+		float y = -50.0f + static_cast<float>(rand()) / RAND_MAX * 35.0f;    // -50ã€œ-15
+		float z = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500ã€œ500
+		float scale = 0.5f + static_cast<float>(rand()) / RAND_MAX * 1.5f;   // 0.5ã€œ2.0
+
+		CRainbowTrout* rainbowTrout = new CRainbowTrout();
+		rainbowTrout->Position(x, y, z);
+		rainbowTrout->Scale(scale, scale, scale);
+
+		// æƒ…å ±ã‚’ä¿å­˜
+		FishInfo info;
+		info.typeName = "RainbowTrout";
+		info.scale = scale;
+		info.position = CVector(x, y, z);
+		fishInfoList.push_back(info);
+		fishObjects.push_back(rainbowTrout);
+	}
+
+	/*
+	for (size_t i = 0; i < fishInfoList.size(); ++i)
+	{
+		const FishInfo& info = fishInfoList[i];
+		CDebugPrint::Print("Fish[%d] Type: %s, Scale: %.2f\n", static_cast<int>(i), info.typeName.c_str(), info.scale);
+	}
+	*/
+
+	for (size_t i = 0; i < fishInfoList.size(); ++i)
+	{
+		const FishInfo& info = fishInfoList[i];
+		std::cout << "Fish[" << i << "] Type: " << info.typeName << ", Scale: " << info.scale << std::endl;
+	}
+
+	// Playerã‚’ä½œæˆ
 	CPlayer* player = new CPlayer();
 	player->Scale(1.0f, 1.0f, 1.0f);
 
-	// CGameCamera‚ÌƒeƒXƒg
+	// CGameCameraã®ãƒ†ã‚¹ãƒˆ
 	//CGameCamera* mainCamera = new CGameCamera
 	//(
 	//	//CVector(5.0f, -15.0f, 180.0f),
@@ -75,7 +111,7 @@ void CGameScene::Load()
 	//	player->Position()
 	//);
 
-	// CGameCamera2‚ÌƒeƒXƒg
+	// CGameCamera2ã®ãƒ†ã‚¹ãƒˆ
 	CVector atPos = player->Position() + CVector(0.0f, 5.0f, 0.0f);
 	CGameCamera2* mainCamera = new CGameCamera2
 	(
@@ -85,19 +121,17 @@ void CGameScene::Load()
 
 	mainCamera->SetFollowTargetTf(player);
 
-	// Player‚ÉƒJƒƒ‰‚Ìƒ|ƒCƒ“ƒ^[‚ğ“n‚·
+	// Playerã«ã‚«ãƒ¡ãƒ©ã®ãƒã‚¤ãƒ³ã‚¿ãƒ¼ã‚’æ¸¡ã™
 	player->SetCamera(mainCamera);
 
-	// ƒQ[ƒ€ƒƒjƒ…[‚ğì¬
+	// ã‚²ãƒ¼ãƒ ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’ä½œæˆ
 	mpGameMenu = new CGameMenu();
-
-	
 }
 
-//ƒV[ƒ“‚ÌXVˆ—
+//ã‚·ãƒ¼ãƒ³ã®æ›´æ–°å‡¦ç†
 void CGameScene::Update()
 {
-	// BGMÄ¶’†‚Å‚È‚¯‚ê‚ÎABGM‚ğÄ¶
+	// BGMå†ç”Ÿä¸­ã§ãªã‘ã‚Œã°ã€BGMã‚’å†ç”Ÿ
 	//if (!mpGameBGM->IsPlaying())
 	//{
 	//	mpGameBGM->PlayLoop(-1, 1.0f, false, 1.0f);
@@ -108,7 +142,7 @@ void CGameScene::Update()
 		CSceneManager::Instance()->LoadScene(EScene::eTitle);
 	}
 
-	// ƒQ[ƒ€ƒƒjƒ…[‚ğŠJ‚¢‚Ä‚È‚¯‚ê‚ÎA[‚l]ƒL[‚Åƒƒjƒ…[‚ğŠJ‚­
+	// ã‚²ãƒ¼ãƒ ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’é–‹ã„ã¦ãªã‘ã‚Œã°ã€[ï¼­]ã‚­ãƒ¼ã§ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’é–‹ã
 	if (!mpGameMenu->IsOpened())
 	{
 		if (CInput::PushKey('M'))
@@ -116,4 +150,99 @@ void CGameScene::Update()
 			mpGameMenu->Open();
 		}
 	}
+
+	DrawMiniMap();
+}
+
+// ãƒŸãƒ‹ãƒãƒƒãƒ—ã‚’æç”»ã™ã‚‹
+void CGameScene::DrawMiniMap()
+{
+	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦è§£åƒåº¦
+	const float screenWidth = 1080.0f;
+	const float screenHeight = 720.0f;
+
+	// ãƒŸãƒ‹ãƒãƒƒãƒ—è¨­å®š
+	const float mapWorldRadius = 300.0f;
+	const float mapPixelRadius = 100.0f;
+	const float mapCenterX = 150.0f;
+	const float mapCenterY = 150.0f; // å·¦ä¸‹å›ºå®š
+
+	CPlayer* player = CPlayer::Instance();
+	if (!player) return;
+	CVector playerPos = player->Position();
+
+	// --- é­šã®ä½ç½®æ›´æ–° ---
+	for (size_t i = 0; i < fishInfoList.size(); ++i)
+	{
+		if (i < fishObjects.size() && fishObjects[i])
+		{
+			fishInfoList[i].position = fishObjects[i]->Position();
+		}
+	}
+
+	// --- æ·±åº¦ç„¡åŠ¹åŒ–ã—ã¦2Dãƒ¢ãƒ¼ãƒ‰ã¸ ---
+	glPushAttrib(GL_ALL_ATTRIB_BITS); // â† ç¾åœ¨ã®GLçŠ¶æ…‹ã‚’å…¨ä¿å­˜
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// --- å°„å½±è¡Œåˆ— ---
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	glOrtho(0, screenWidth, screenHeight, 0, -1, 1);
+
+	// --- ãƒ¢ãƒ‡ãƒ«è¡Œåˆ— ---
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	// --- èƒŒæ™¯å†† ---
+	DrawFilledCircle(mapCenterX, mapCenterY, mapPixelRadius, 0.15f, 0.15f, 0.15f, 0.7f);
+
+	// --- é­šã‚’æã ---
+	for (const auto& fish : fishInfoList)
+	{
+		float dx = fish.position.X() - playerPos.X();
+		float dz = fish.position.Z() - playerPos.Z();
+		float dist = sqrtf(dx * dx + dz * dz);
+		if (dist > mapWorldRadius) continue;
+
+		float scale = mapPixelRadius / mapWorldRadius;
+		float mapX = dx * scale;
+		float mapY = dz * scale;
+
+		float drawX = mapCenterX + mapX;
+		float drawY = mapCenterY - mapY;
+
+		DrawFilledCircle(drawX, drawY, 3.0f, 1.0f, 0.3f, 0.3f, 1.0f);
+	}
+
+	// --- ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ ---
+	DrawFilledCircle(mapCenterX, mapCenterY, 5.0f, 0.2f, 1.0f, 0.2f, 1.0f);
+
+	// --- è¡Œåˆ—ã¨çŠ¶æ…‹ã‚’æˆ»ã™ ---
+	glPopMatrix(); // modelview
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopAttrib(); // â† GLçŠ¶æ…‹ã‚’å…¨ã¦å¾©å…ƒ
+}
+
+// å††ã‚„ç‚¹ã‚’æãè£œåŠ©é–¢æ•°
+void CGameScene::DrawFilledCircle(float cx, float cy, float radius, float r, float g, float b, float a)
+{
+	glColor4f(r, g, b, a);
+	glBegin(GL_TRIANGLE_FAN);
+	glVertex2f(cx, cy); // ä¸­å¿ƒ
+	const int numSegments = 32;
+	for (int i = 0; i <= numSegments; i++)
+	{
+		float theta = 2.0f * 3.1415926f * float(i) / float(numSegments);
+		float x = radius * cosf(theta);
+		float y = radius * sinf(theta);
+		glVertex2f(cx + x, cy + y);
+	}
+	glEnd();
 }
