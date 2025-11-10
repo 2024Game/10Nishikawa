@@ -9,9 +9,11 @@ public:
     virtual void Show() const = 0;
 
     // コンストラクタ
-    CFish();
+    CFish(const std::string& fishTypeName);
     // デストラクタ
-    ~CFish();
+    virtual ~CFish();
+
+	const std::string& GetFishTypeName() const;
 
     // ダメージを受ける
     void TakeDamage(int damage, CObjectBase* causer) override;
@@ -49,8 +51,9 @@ protected:
 	// 死亡状態の更新処理
 	void UpdateDeath();
 
+	std::string mFishTypeName;		// 魚の種類名
 	bool mIsBattle;					// 戦闘状態か
-	float mIdletime;			// 待機状態時の待機時間
+	float mIdletime;				// 待機状態時の待機時間
 	CVector mTargetPos;				// 目的地
 };
 

@@ -2,22 +2,32 @@
 #include "CColliderCapsule.h"
 #include "CColliderSphere.h"
 #include "Maths.h"
+#include "CFishManager.h"
 
 #define MOVE_SPEED 10.0f
 #define LOOKAT_SPEED 0.1f
 #define BATTLE_IDLE_TIME_MIN 5.0f
 #define BATTLE_IDLE_TIME_MAX 15.0f
 
-CFish::CFish()
+CFish::CFish(const std::string& fishTypeName)
 	: mIsBattle(false)
+	, mFishTypeName(fishTypeName)
 	, mIdletime(0.0f)
 	, mTargetPos(CVector(0.0f, 0.0f, 0.0f))
 {
-
+	// CFishManagerのリストに自分を追加
+	CFishManager::Instance()->Add(this);
 }
 
 CFish::~CFish()
 {
+	// CFishManagerのリストから自分を削除
+	CFishManager::Instance()->Remove(this);
+}
+
+const std::string& CFish::GetFishTypeName() const
+{
+	return mFishTypeName;
 }
 
 void CFish::TakeDamage(int damage, CObjectBase* causer)
@@ -197,6 +207,7 @@ void CFish::UpdateDeath()
 
 
 CRainbowTrout::CRainbowTrout()
+	:CFish("RainbowTrout")
 {
 #define ANIM_PATH "Character\\Enemy\\RainbowTrout\\Anim\\"
 #define BODY_HEIGHT 7.0f

@@ -98,6 +98,9 @@
     <Filter Include="ソース ファイル\BaseSystem\Shader">
       <UniqueIdentifier>{c19b8829-5f60-4c9d-9e2f-960d58050af5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\UI\GameUI">
+      <UniqueIdentifier>{de38870b-518f-442b-824a-78b809d099aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -396,6 +399,12 @@
     </ClCompile>
     <ClCompile Include="src\Game\CFish.cpp">
       <Filter>ソース ファイル\Game\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CFishManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CMinimap.cpp">
+      <Filter>ソース ファイル\Game\UI\GameUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -718,6 +727,12 @@
       <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CFish.h">
+      <Filter>ソース ファイル\Game\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CMinimap.h">
+      <Filter>ソース ファイル\Game\UI\GameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CFishManager.h">
       <Filter>ソース ファイル\Game\Character\Enemy</Filter>
     </ClInclude>
   </ItemGroup>

@@ -9,6 +9,7 @@
 #include "CBGMManager.h"
 #include "CLineEffect.h"
 #include "CCactus.h"
+#include "CMinimap.h"
 
 //コンストラクタ
 CGameScene::CGameScene()
@@ -75,28 +76,6 @@ void CGameScene::Load()
 		CRainbowTrout* rainbowTrout = new CRainbowTrout();
 		rainbowTrout->Position(x, y, z);
 		rainbowTrout->Scale(scale, scale, scale);
-
-		// 情報を保存
-		FishInfo info;
-		info.typeName = "RainbowTrout";
-		info.scale = scale;
-		info.position = CVector(x, y, z);
-		fishInfoList.push_back(info);
-		fishObjects.push_back(rainbowTrout);
-	}
-
-	/*
-	for (size_t i = 0; i < fishInfoList.size(); ++i)
-	{
-		const FishInfo& info = fishInfoList[i];
-		CDebugPrint::Print("Fish[%d] Type: %s, Scale: %.2f\n", static_cast<int>(i), info.typeName.c_str(), info.scale);
-	}
-	*/
-
-	for (size_t i = 0; i < fishInfoList.size(); ++i)
-	{
-		const FishInfo& info = fishInfoList[i];
-		std::cout << "Fish[" << i << "] Type: " << info.typeName << ", Scale: " << info.scale << std::endl;
 	}
 
 	// Playerを作成
@@ -126,6 +105,9 @@ void CGameScene::Load()
 
 	// ゲームメニューを作成
 	mpGameMenu = new CGameMenu();
+
+	// ミニマップを生成
+	new CMinimap();
 }
 
 //シーンの更新処理
@@ -151,98 +133,5 @@ void CGameScene::Update()
 		}
 	}
 
-	DrawMiniMap();
 }
 
-// ミニマップを描画する
-void CGameScene::DrawMiniMap()
-{
-	// ウィンドウ解像度
-	const float screenWidth = 1080.0f;
-	const float screenHeight = 720.0f;
-
-	// ミニマップ設定
-	const float mapWorldRadius = 300.0f;
-	const float mapPixelRadius = 100.0f;
-	const float mapCenterX = 150.0f;
-	const float mapCenterY = 150.0f; // 左下固定
-
-	CPlayer* player = CPlayer::Instance();
-	if (!player) return;
-	CVector playerPos = player->Position();
-
-	// --- 魚の位置更新 ---
-	for (size_t i = 0; i < fishInfoList.size(); ++i)
-	{
-		if (i < fishObjects.size() && fishObjects[i])
-		{
-			fishInfoList[i].position = fishObjects[i]->Position();
-		}
-	}
-
-	// --- 深度無効化して2Dモードへ ---
-	glPushAttrib(GL_ALL_ATTRIB_BITS); // ← 現在のGL状態を全保存
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_LIGHTING);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	// --- 射影行列 ---
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-	glOrtho(0, screenWidth, screenHeight, 0, -1, 1);
-
-	// --- モデル行列 ---
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
-
-	// --- 背景円 ---
-	DrawFilledCircle(mapCenterX, mapCenterY, mapPixelRadius, 0.15f, 0.15f, 0.15f, 0.7f);
-
-	// --- 魚を描く ---
-	for (const auto& fish : fishInfoList)
-	{
-		float dx = fish.position.X() - playerPos.X();
-		float dz = fish.position.Z() - playerPos.Z();
-		float dist = sqrtf(dx * dx + dz * dz);
-		if (dist > mapWorldRadius) continue;
-
-		float scale = mapPixelRadius / mapWorldRadius;
-		float mapX = dx * scale;
-		float mapY = dz * scale;
-
-		float drawX = mapCenterX + mapX;
-		float drawY = mapCenterY - mapY;
-
-		DrawFilledCircle(drawX, drawY, 3.0f, 1.0f, 0.3f, 0.3f, 1.0f);
-	}
-
-	// --- プレイヤー ---
-	DrawFilledCircle(mapCenterX, mapCenterY, 5.0f, 0.2f, 1.0f, 0.2f, 1.0f);
-
-	// --- 行列と状態を戻す ---
-	glPopMatrix(); // modelview
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glPopAttrib(); // ← GL状態を全て復元
-}
-
-// 円や点を描く補助関数
-void CGameScene::DrawFilledCircle(float cx, float cy, float radius, float r, float g, float b, float a)
-{
-	glColor4f(r, g, b, a);
-	glBegin(GL_TRIANGLE_FAN);
-	glVertex2f(cx, cy); // 中心
-	const int numSegments = 32;
-	for (int i = 0; i <= numSegments; i++)
-	{
-		float theta = 2.0f * 3.1415926f * float(i) / float(numSegments);
-		float x = radius * cosf(theta);
-		float y = radius * sinf(theta);
-		glVertex2f(cx + x, cy + y);
-	}
-	glEnd();
-}

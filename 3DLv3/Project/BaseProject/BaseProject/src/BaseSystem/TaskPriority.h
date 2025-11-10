@@ -17,6 +17,8 @@ enum class ETaskPriority
 	eBillboard,	// ビルボードイメージ
 	eUI3D,		// 3D空間に配置するUI
 
+	eManager,	// 管理クラス関連
+
 	eCamera,	// カメラ
 
 	// 2D関連
