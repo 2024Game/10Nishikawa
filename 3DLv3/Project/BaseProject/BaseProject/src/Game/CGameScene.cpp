@@ -57,19 +57,14 @@ void CGameScene::Load()
 	CField* field2 = new CField();
 	field2->Position(0.0f, -425.0f, 0.0f);
 
-	// サボテンの敵を作成
-	CCactus* cactus = new CCactus();
-	cactus->Position(0.0f, 0.0f, -100.0f);
-	cactus->Scale(1.0f, 1.0f, 1.0f);
-
 	// ランダム初期化（Load() の最初で一度だけ呼ぶ）
 	srand(static_cast<unsigned int>(time(nullptr)));
 
 	// RainbowTroutをランダムに25体生成
-	for (int i = 0; i < 50; ++i)
+	for (int i = 0; i < 25; ++i)
 	{
 		float x = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
-		float y = -50.0f + static_cast<float>(rand()) / RAND_MAX * 35.0f;    // -50〜-15
+		float y = -75.0f + static_cast<float>(rand()) / RAND_MAX * 50.0f;    // -75〜-25
 		float z = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
 		float scale = 0.5f + static_cast<float>(rand()) / RAND_MAX * 1.5f;   // 0.5〜2.0
 

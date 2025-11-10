@@ -6,8 +6,9 @@
 
 #define MOVE_SPEED 10.0f
 #define LOOKAT_SPEED 0.1f
-#define BATTLE_IDLE_TIME_MIN 5.0f
-#define BATTLE_IDLE_TIME_MAX 15.0f
+#define IDLE_TIME_MIN 10.0f
+#define IDLE_TIME_MAX 30.0f
+#define DEATH_WAIT_TIME 2.0f
 
 CFish::CFish(const std::string& fishTypeName)
 	: mIsBattle(false)
@@ -119,8 +120,8 @@ void CFish::UpdateIdle()
 			// ランダムで待機時間を決定
 			mIdletime = Math::Rand
 			(
-				BATTLE_IDLE_TIME_MIN,
-				BATTLE_IDLE_TIME_MAX
+				IDLE_TIME_MIN,
+				IDLE_TIME_MAX
 			);
 		}
 		mStateStep++;
@@ -145,8 +146,14 @@ void CFish::UpdateIdle()
 			float dist = vec.Length();
 
 			// ランダムな座標を設定
+			/*
 			float randX = Math::Rand(-500.0f, 500.0f);
 			float randY = Math::Rand(-400.0f, -25.0f);
+			float randZ = Math::Rand(-500.0f, 500.0f);
+			mTargetPos = CVector(randX, randY, randZ);
+			*/
+			float randX = Math::Rand(-500.0f, 500.0f);
+			float randY = Math::Rand(-75.0f, -25.0f);
 			float randZ = Math::Rand(-500.0f, 500.0f);
 			mTargetPos = CVector(randX, randY, randZ);
 
@@ -196,19 +203,39 @@ void CFish::UpdateMove()
 
 void CFish::UpdateHit()
 {
+	
 }
 
 void CFish::UpdateDeath()
 {
+	// ステップごとに処理を分ける
+	switch (mStateStep)
+	{
+		// ステップ0：死亡アニメーション再生
+	case 0:
+		mStateStep++;
+		break;
+		// ステップ1：アニメーション終了待ち
+	case 1:
+		mStateStep++;
+		break;
+		// ステップ2：死亡後の待ち
+	case 2:
+		if (mElapsedTime < DEATH_WAIT_TIME)
+		{
+			mElapsedTime += Times::DeltaTime();
+		}
+		// 待ち時間が終了したら、削除
+		else
+		{
+			Kill();
+		}
+		break;
+	}
 }
 
 
 
-
-
-CRainbowTrout::CRainbowTrout()
-	:CFish("RainbowTrout")
-{
 #define ANIM_PATH "Character\\Enemy\\RainbowTrout\\Anim\\"
 #define BODY_HEIGHT 7.0f
 #define BODY_RADIUS 1.15f
@@ -220,11 +247,10 @@ CRainbowTrout::CRainbowTrout()
 #define ATTACK_END_FRAME 30.0f
 #define ATTACK_COL_RADIUS 6.0f
 #define ATTACK_COL_POS CVector(0.0f, 2.5f, 5.0f)
-#define CHAISE_SPEED 20.0f
-#define LOOKAT_SPEED 90.0f
-#define BATTLE_IDLE_TIME_MIN 2.0f
-#define BATTLE_IDLE_TIME_MAX 5.0f
 
+CRainbowTrout::CRainbowTrout()
+	:CFish("RainbowTrout")
+{
 	// 敵のアニメーションデータのテーブル
 	const std::vector<CEnemy::AnimData> ANIM_DATA =
 	{

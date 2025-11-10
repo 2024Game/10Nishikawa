@@ -23,9 +23,13 @@ public:
 private:
 	CModel* mpModel;		// 樽のモデルデータ
 	CCollider* mpCollider;	// 樽のコライダー
+	CCollider* mpAttackCol;	// 攻撃用のコライダー
 	float mMoveSpeed;		// 移動速度
 	float mMoveDist;		// 移動できる距離
 	float mCurrDist;		// 現在の移動距離
+
+	bool mAttackTriggered = false;   // 攻撃コライダーを有効にしたか
+	float mKillTimer = 0.0f;         // Killまでの経過時間
 
 	CPlayer* mpPlayer;
 	CGameCamera2* mpCamera;

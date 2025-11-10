@@ -3,7 +3,7 @@
 // コンストラクタ
 CCharaBase::CCharaBase(ETag tag, ETaskPriority prio, int sortOrder, ETaskPauseType pause)
 	: CObjectBase(tag, prio, sortOrder, pause)
-	, mMaxHp(10)
+	, mMaxHp(1)
 	, mHp(mMaxHp)
 {
 }

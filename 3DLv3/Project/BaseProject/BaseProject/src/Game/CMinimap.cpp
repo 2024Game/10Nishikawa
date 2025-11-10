@@ -1,11 +1,14 @@
-#include "CMinimap.h"
+ï»¿#include "CMinimap.h"
 #include "CPlayer.h"
 #include "CFish.h"
 #include "CFishManager.h"
 
 CMinimap::CMinimap()
 {
-
+	SetPos(1280.0f - 125.0f, 125.0f);
+	CVector2 size = CVector2(175.0f, 175.0f);
+	SetSize(size);
+	SetCenter(size * 0.5f);
 }
 
 CMinimap::~CMinimap()
@@ -14,28 +17,32 @@ CMinimap::~CMinimap()
 
 void CMinimap::Render()
 {
-	// ƒEƒBƒ“ƒhƒE‰ğ‘œ“x
-	const float screenWidth = 1080.0f;
+	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦è§£åƒåº¦
+	const float screenWidth = 1280.0f;
 	const float screenHeight = 720.0f;
 
-	// ƒ~ƒjƒ}ƒbƒvİ’è
+	// ãƒŸãƒ‹ãƒãƒƒãƒ—è¨­å®š
 	const float mapWorldRadius = 300.0f;
-	const float mapPixelRadius = 100.0f;
-	const float mapCenterX = 150.0f;
-	const float mapCenterY = 150.0f; // ¶‰ºŒÅ’è
 
 	CPlayer* player = CPlayer::Instance();
 	if (!player) return;
 	CVector playerPos = player->Position();
 
-	// --- [“x–³Œø‰»‚µ‚Ä2Dƒ‚[ƒh‚Ö ---
+
+	CVector forward = player->VectorZ(); // å‰æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ï¼ˆXZå¹³é¢ã®ã¿ä½¿ç”¨ï¼‰
+	// 2DãƒŸãƒ‹ãƒãƒƒãƒ—ã§ã®å›è»¢è§’ã‚’è¨ˆç®—
+	float rad = atan2f(forward.X(), forward.Z()); // X,Zã‹ã‚‰è§’åº¦å–å¾—
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‰ãŒä¸Šã«ãªã‚‹ã‚ˆã†ã« rad ã‚’ä½¿ã†
+
+
+	// --- æ·±åº¦ç„¡åŠ¹åŒ–ã—ã¦2Dãƒ¢ãƒ¼ãƒ‰ã¸ ---
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	// --- ”wŒi‰~ ---
-	DrawFilledCircle(mapCenterX, mapCenterY, mapPixelRadius, 0.15f, 0.15f, 0.15f, 0.7f);
+	// --- èƒŒæ™¯å†† ---
+	DrawFilledCircle(mPosition.X(), mPosition.Y(), mSize.X() * 0.5f, 0.15f, 0.15f, 0.15f, 0.7f);
 
-	// --- ‹›‚ğ•`‚­ ---
+	// --- é­šã‚’æã ---
 	const std::vector<CFish*> fishes = CFishManager::Instance()->GetFishes();
 	for (CFish* fish : fishes)
 	{
@@ -44,18 +51,19 @@ void CMinimap::Render()
 		float dist = sqrtf(dx * dx + dz * dz);
 		if (dist > mapWorldRadius) continue;
 
-		float scale = mapPixelRadius / mapWorldRadius;
-		float mapX = dx * scale;
-		float mapY = dz * scale;
+		// Forwardãƒ™ã‚¯ãƒˆãƒ«ã«åˆã‚ã›ã¦å›è»¢
+		float rotatedX = dx * cosf(rad) - dz * sinf(rad);
+		float rotatedZ = dx * sinf(rad) + dz * cosf(rad);
 
-		float drawX = mapCenterX + mapX;
-		float drawY = mapCenterY - mapY;
+		float scale = mSize.X() * 0.5f / mapWorldRadius;
+		float drawX = mPosition.X() - rotatedX * scale;
+		float drawY = mPosition.Y() - rotatedZ * scale;
 
 		DrawFilledCircle(drawX, drawY, 3.0f, 1.0f, 0.3f, 0.3f, 1.0f);
 	}
 
-	// --- ƒvƒŒƒCƒ„[ ---
-	DrawFilledCircle(mapCenterX, mapCenterY, 5.0f, 0.2f, 1.0f, 0.2f, 1.0f);
+	// --- ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ ---
+	DrawFilledCircle(mPosition.X(), mPosition.Y(), 5.0f, 0.2f, 1.0f, 0.2f, 1.0f);
 
 	glDisable(GL_BLEND);
 }
@@ -64,7 +72,7 @@ void CMinimap::DrawFilledCircle(float cx, float cy, float radius, float r, float
 {
 	glColor4f(r, g, b, a);
 	glBegin(GL_TRIANGLE_FAN);
-	glVertex2f(cx, cy); // ’†S
+	glVertex2f(cx, cy); // ä¸­å¿ƒ
 	const int numSegments = 32;
 	for (int i = 0; i <= numSegments; i++)
 	{
