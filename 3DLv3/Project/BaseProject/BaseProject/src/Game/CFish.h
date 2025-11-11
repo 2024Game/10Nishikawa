@@ -1,6 +1,6 @@
 #pragma once
-#include <iostream>
 #include "CEnemy.h"
+#include <iostream>
 
 // 基底クラス
 class CFish : public CEnemy
@@ -36,80 +36,23 @@ protected:
 		eDeath,		// 死亡
 	};
 
-	// 戦闘相手の方へ向く
-	void LookAtTargetPos();
+	// 目的地の方へ向く
+	virtual void LookAtTargetPos();
 
 	// 状態切り替え
-	void ChangeState(int state) override;
+	virtual void ChangeState(int state) override;
 
 	// 待機状態の更新処理
-	void UpdateIdle();
+	virtual void UpdateIdle();
 	// 回遊時の更新処理
-	void UpdateMove();
+	virtual void UpdateMove();
 	// 仰け反り状態の更新処理
-	void UpdateHit();
+	virtual void UpdateHit();
 	// 死亡状態の更新処理
-	void UpdateDeath();
+	virtual void UpdateDeath();
 
 	std::string mFishTypeName;		// 魚の種類名
 	bool mIsBattle;					// 戦闘状態か
 	float mIdletime;				// 待機状態時の待機時間
 	CVector mTargetPos;				// 目的地
-};
-
-
-
-// 派生クラス
-class CRainbowTrout : public CFish
-{
-public:
-	// コンストラクタ
-	CRainbowTrout();
-	// デストラクタ
-	~CRainbowTrout();
-    void Show() const override
-    {
-        std::cout << "ニジマス\n";
-    }
-
-private:
-	// アニメーションの種類
-	enum class EAnimType
-	{
-		None = -1,
-
-		eTPose,		// Tポーズ
-		eIdle,		// 待機
-		eHit,		// 仰け反り
-		eDeath,		// 死亡
-
-		Num
-	};
-};
-
-class Tuna : public CFish
-{
-public:
-    void Show() const override
-    {
-        std::cout << "マグロ\n";
-    }
-};
-
-class Shrimp : public CFish
-{
-public:
-    void Show() const override
-    {
-        std::cout << "エビ\n";
-    }
-};
-
-class Octopus : public CFish
-{
-public:
-    void Show() const override
-    {
-        std::cout << "タコ\n";
-    }
 };

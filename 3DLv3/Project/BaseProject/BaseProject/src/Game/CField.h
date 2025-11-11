@@ -17,7 +17,7 @@ private:
 	CModel* mpModel;
 	CColliderMesh* mpColliderMesh;
 
-	CModel* mpCubeModel;
+	CModel* mpSeaSandModel;
 	CModel* mpCylinderModel;
 
 	TexAnimData mEffectAnimData;

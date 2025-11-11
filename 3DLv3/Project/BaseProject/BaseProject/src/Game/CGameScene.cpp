@@ -11,6 +11,8 @@
 #include "CCactus.h"
 #include "CMinimap.h"
 
+#include "CRainbowTrout.h"
+
 //コンストラクタ
 CGameScene::CGameScene()
 	: CSceneBase(EScene::eGame)
@@ -35,6 +37,7 @@ void CGameScene::Load()
 	//リソースの読み込みやクラスの生成を行う
 
 	CResourceManager::Load<CModel>(		"Field",			"Field\\field.obj");
+	CResourceManager::Load<CModel>(		"SeaSand",			"Field\\SeaSand.obj");
 	CResourceManager::Load<CModel>(		"FieldCube",		"Field\\Object\\cube.obj");
 	CResourceManager::Load<CModel>(		"FieldCylinder",	"Field\\Object\\cylinder.obj");
 	CResourceManager::Load<CModel>(		"Player",			"Character\\PlayerBoat\\PlayerBoat.obj");
@@ -44,9 +47,12 @@ void CGameScene::Load()
 	CResourceManager::Load<CTexture>(	"Laser",			"Effect\\laser.png");
 	CResourceManager::Load<CTexture>(	"LightningBolt",	"Effect\\lightning_bolt.png");
 	CResourceManager::Load<CModel>(		"Slash",			"Effect\\slash.obj");
-	CResourceManager::Load<CSound>(		"SlashSound",		"Sound\\SE\\slash.wav");
+	
 	CResourceManager::Load<CModel>(		"Sword",			"Weapon\\Sword\\sword.obj");
 	CResourceManager::Load<CModel>(		"Shield",			"Weapon\\Shield\\shield.obj");
+
+	CResourceManager::Load<CSound>(		"ExplosionSound",	"Sound\\SE\\Explosion.wav");
+	CResourceManager::Load<CSound>(		"FishfinderSound",	"Sound\\SE\\fishfinder.wav");
 
 	CResourceManager::Load<CModelX>(	"RainbowTrout",		"Character\\Enemy\\RainbowTrout\\RainbowTrout_x5.x");
 
@@ -54,14 +60,15 @@ void CGameScene::Load()
 	CBGMManager::Instance()->Play(EBGMType::eGame);
 
 	CField* field1 = new CField();
-	CField* field2 = new CField();
-	field2->Position(0.0f, -425.0f, 0.0f);
+	//CField* field2 = new CField();
+	//field2->Position(0.0f, -425.0f, 0.0f);
 
 	// ランダム初期化（Load() の最初で一度だけ呼ぶ）
 	srand(static_cast<unsigned int>(time(nullptr)));
 
-	// RainbowTroutをランダムに25体生成
-	for (int i = 0; i < 25; ++i)
+	// 魚の出現数は100匹が限界そう
+	// RainbowTroutをランダムに20体生成
+	for (int i = 0; i < 20; ++i)
 	{
 		float x = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
 		float y = -75.0f + static_cast<float>(rand()) / RAND_MAX * 50.0f;    // -75〜-25

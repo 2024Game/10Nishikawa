@@ -5,7 +5,7 @@
 
 #define BODY_HEIGHT 3.0f	// 本体のコライダーの高さ
 #define BODY_RADIUS 1.5f	// 本体のコライダーの幅
-#define ATTACK_COL_RADIUS 75.0f
+#define ATTACK_COL_RADIUS 25.0f
 #define ATTACK_COL_POS CVector(0.0f, 0.5f, 0.0f)
 
 // コンストラクタ
@@ -14,6 +14,7 @@ CBarrel::CBarrel(float speed, float dist, CPlayer* player , CGameCamera2* camera
 	, mpModel(nullptr)
 	, mpCollider(nullptr)
 	, mpAttackCol(nullptr)
+	, mpExplosionSound(nullptr)
 	, mMoveSpeed(speed)
 	, mMoveDist(dist)
 	, mCurrDist(0.0f)
@@ -51,6 +52,9 @@ CBarrel::CBarrel(float speed, float dist, CPlayer* player , CGameCamera2* camera
 	mpAttackCol->Position(ATTACK_COL_POS);
 	// 攻撃コライダーを最初はオフにしておく
 	mpAttackCol->SetEnable(false);
+
+	// SEデータ取得
+	mpExplosionSound = CResourceManager::Get<CSound>("ExplosionSound");
 }
 
 // デストラクタ
@@ -93,6 +97,8 @@ void CBarrel::Update()
 	// 移動出来る距離を超えたら、攻撃コライダーを有効にしてタイマー開始
 	if (!mAttackTriggered && mCurrDist >= mMoveDist)
 	{
+		mpExplosionSound->Play();
+
 		// 攻撃コライダーをオンにする
 		mpAttackCol->SetEnable(true);
 
@@ -103,11 +109,11 @@ void CBarrel::Update()
 		mKillTimer = 0.0f;
 	}
 
-	// 攻撃コライダーを有効にしてから1秒経過したらKill
+	// 攻撃コライダーを有効にしてから2秒経過したらKill
 	if (mAttackTriggered)
 	{
 		mKillTimer += Times::DeltaTime();
-		if (mKillTimer >= 1.0f)
+		if (mKillTimer >= 2.0f)
 		{
 			// カメラの追従をプレイヤーに返す
 			mpCamera->SetFollowTargetTf(mpPlayer);

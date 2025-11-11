@@ -4,11 +4,15 @@
 #include "CFishManager.h"
 
 CMinimap::CMinimap()
+	:mpFishfinderSound(nullptr)
 {
 	SetPos(1280.0f - 125.0f, 125.0f);
 	CVector2 size = CVector2(175.0f, 175.0f);
 	SetSize(size);
 	SetCenter(size * 0.5f);
+	mUpdateTimer = 0.0f;
+	// SEデータ取得
+	mpFishfinderSound = CResourceManager::Get<CSound>("FishfinderSound");
 }
 
 CMinimap::~CMinimap()
@@ -17,54 +21,60 @@ CMinimap::~CMinimap()
 
 void CMinimap::Render()
 {
-	// ウィンドウ解像度
 	const float screenWidth = 1280.0f;
 	const float screenHeight = 720.0f;
-
-	// ミニマップ設定
-	const float mapWorldRadius = 300.0f;
+	const float mapWorldRadius = 250.0f;
 
 	CPlayer* player = CPlayer::Instance();
 	if (!player) return;
 	CVector playerPos = player->Position();
 
+	CVector forward = player->VectorZ();
+	float rad = atan2f(forward.X(), forward.Z());
 
-	CVector forward = player->VectorZ(); // 前方向ベクトル（XZ平面のみ使用）
-	// 2Dミニマップでの回転角を計算
-	float rad = atan2f(forward.X(), forward.Z()); // X,Zから角度取得
-	// プレイヤーの前が上になるように rad を使う
-
-
-	// --- 深度無効化して2Dモードへ ---
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	// --- 背景円 ---
-	DrawFilledCircle(mPosition.X(), mPosition.Y(), mSize.X() * 0.5f, 0.15f, 0.15f, 0.15f, 0.7f);
+	DrawFilledCircle(mPosition.X(), mPosition.Y(), mSize.X() * 0.5f, 0.1f, 0.1f, 0.1f, 0.7f);
 
-	// --- 魚を描く ---
 	const std::vector<CFish*> fishes = CFishManager::Instance()->GetFishes();
-	for (CFish* fish : fishes)
+
+	// 5秒ごとに魚の座標リストを更新
+	mUpdateTimer += Times::DeltaTime();
+	if (mUpdateTimer >= 5.0f)
 	{
-		float dx = fish->Position().X() - playerPos.X();
-		float dz = fish->Position().Z() - playerPos.Z();
+		mFishMapInfos.clear();
+		mFishMapInfos.reserve(fishes.size());
+
+		for (CFish* fish : fishes)
+		{
+			FishMapInfo info;
+			info.position = fish->Position();
+			mFishMapInfos.push_back(info);
+		}
+		mpFishfinderSound->Play(0.1f,true);
+		mUpdateTimer = 0.0f;
+	}
+
+	// 🐟 登録済み魚座標を描画
+	for (const FishMapInfo& info : mFishMapInfos)
+	{
+		float dx = info.position.X() - playerPos.X();
+		float dz = info.position.Z() - playerPos.Z();
 		float dist = sqrtf(dx * dx + dz * dz);
 		if (dist > mapWorldRadius) continue;
 
-		// Forwardベクトルに合わせて回転
-		float rotatedX = dx * cosf(rad) - dz * sinf(rad);
+		float rotatedX = -(dx * cosf(rad) - dz * sinf(rad));
 		float rotatedZ = dx * sinf(rad) + dz * cosf(rad);
 
 		float scale = mSize.X() * 0.5f / mapWorldRadius;
-		float drawX = mPosition.X() - rotatedX * scale;
+		float drawX = mPosition.X() + rotatedX * scale;
 		float drawY = mPosition.Y() - rotatedZ * scale;
 
-		DrawFilledCircle(drawX, drawY, 3.0f, 1.0f, 0.3f, 0.3f, 1.0f);
+		DrawFilledCircle(drawX, drawY, 3.0f, 1.0f, 0.25f, 0.25f, 1.0f);
 	}
 
-	// --- プレイヤー ---
 	DrawFilledCircle(mPosition.X(), mPosition.Y(), 5.0f, 0.2f, 1.0f, 0.2f, 1.0f);
-
 	glDisable(GL_BLEND);
 }
 
