@@ -52,7 +52,8 @@ protected:
 	virtual void UpdateDeath();
 
 	std::string mFishTypeName;		// 魚の種類名
-	bool mIsBattle;					// 戦闘状態か
+	bool mIsInvincibility;			// 無敵状態か
+	float mInvincibilityTime;
 	float mIdletime;				// 待機状態時の待機時間
 	CVector mTargetPos;				// 目的地
 };

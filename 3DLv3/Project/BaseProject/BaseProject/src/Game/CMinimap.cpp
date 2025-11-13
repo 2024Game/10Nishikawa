@@ -6,7 +6,7 @@
 CMinimap::CMinimap()
 	:mpFishfinderSound(nullptr)
 {
-	SetPos(1280.0f - 125.0f, 125.0f);
+	SetPos(WINDOW_WIDTH - 125.0f, 125.0f);
 	CVector2 size = CVector2(175.0f, 175.0f);
 	SetSize(size);
 	SetCenter(size * 0.5f);

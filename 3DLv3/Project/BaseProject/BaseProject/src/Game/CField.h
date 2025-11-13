@@ -18,6 +18,7 @@ private:
 	CColliderMesh* mpColliderMesh;
 
 	CModel* mpSeaSandModel;
+	CModel* mpSkyboxModel;
 	CModel* mpCylinderModel;
 
 	TexAnimData mEffectAnimData;

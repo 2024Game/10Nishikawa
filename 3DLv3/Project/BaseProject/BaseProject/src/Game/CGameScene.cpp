@@ -10,8 +10,11 @@
 #include "CLineEffect.h"
 #include "CCactus.h"
 #include "CMinimap.h"
+#include "CGameSceneUI.h"
 
 #include "CRainbowTrout.h"
+#include "CStripedBass.h"
+#include "CTuna.h"
 
 //コンストラクタ
 CGameScene::CGameScene()
@@ -38,6 +41,7 @@ void CGameScene::Load()
 
 	CResourceManager::Load<CModel>(		"Field",			"Field\\field.obj");
 	CResourceManager::Load<CModel>(		"SeaSand",			"Field\\SeaSand.obj");
+	CResourceManager::Load<CModel>(		"Skybox",			"Skybox\\Skybox2.obj");
 	CResourceManager::Load<CModel>(		"FieldCube",		"Field\\Object\\cube.obj");
 	CResourceManager::Load<CModel>(		"FieldCylinder",	"Field\\Object\\cylinder.obj");
 	CResourceManager::Load<CModel>(		"Player",			"Character\\PlayerBoat\\PlayerBoat.obj");
@@ -55,6 +59,8 @@ void CGameScene::Load()
 	CResourceManager::Load<CSound>(		"FishfinderSound",	"Sound\\SE\\fishfinder.wav");
 
 	CResourceManager::Load<CModelX>(	"RainbowTrout",		"Character\\Enemy\\RainbowTrout\\RainbowTrout_x5.x");
+	CResourceManager::Load<CModelX>(	"StripedBass",		"Character\\Enemy\\StripedBass\\StripedBass_x0.5.x");
+	CResourceManager::Load<CModelX>(	"Tuna",				"Character\\Enemy\\Tuna\\Tuna.x");
 
 	// ゲームBGMを読み込み
 	CBGMManager::Instance()->Play(EBGMType::eGame);
@@ -67,7 +73,7 @@ void CGameScene::Load()
 	srand(static_cast<unsigned int>(time(nullptr)));
 
 	// 魚の出現数は100匹が限界そう
-	// RainbowTroutをランダムに20体生成
+	// RainbowTroutをランダムにN体生成
 	for (int i = 0; i < 20; ++i)
 	{
 		float x = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
@@ -80,9 +86,36 @@ void CGameScene::Load()
 		rainbowTrout->Scale(scale, scale, scale);
 	}
 
+	// StripedBassをランダムにN体生成
+	for (int i = 0; i < 15; ++i)
+	{
+		float x = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
+		float y = -125.0f + static_cast<float>(rand()) / RAND_MAX * 50.0f;    // -125〜-75
+		float z = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
+		float scale = 0.5f + static_cast<float>(rand()) / RAND_MAX * 1.5f;   // 0.5〜2.0
+
+		CStripedBass* stripedBass = new CStripedBass();
+		stripedBass->Position(x, y, z);
+		stripedBass->Scale(scale, scale, scale);
+	}
+
+	// TunaをランダムにN体生成
+	for (int i = 0; i < 10; ++i)
+	{
+		float x = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
+		float y = -175.0f + static_cast<float>(rand()) / RAND_MAX * 50.0f;    // -175〜-125
+		float z = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
+		float scale = 0.5f + static_cast<float>(rand()) / RAND_MAX * 1.5f;   // 0.5〜2.0
+
+		CTuna* tuna = new CTuna();
+		tuna->Position(x, y, z);
+		tuna->Scale(scale, scale, scale);
+	}
+
 	// Playerを作成
 	CPlayer* player = new CPlayer();
 	player->Scale(1.0f, 1.0f, 1.0f);
+	player->Position(0.0f, -0.5f, 0.0f);
 
 	// CGameCameraのテスト
 	//CGameCamera* mainCamera = new CGameCamera
@@ -110,6 +143,9 @@ void CGameScene::Load()
 
 	// ミニマップを生成
 	new CMinimap();
+
+	// UI作成
+	new CGameSceneUI();
 }
 
 //シーンの更新処理

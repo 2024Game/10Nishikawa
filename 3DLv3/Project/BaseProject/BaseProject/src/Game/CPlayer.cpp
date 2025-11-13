@@ -39,8 +39,8 @@ CPlayer::CPlayer()
 	mpBodyCol = new CColliderCapsule
 	(
 		this, ELayer::ePlayer,
-		CVector(0.0f, BODY_RADIUS, BODY_RADIUS - 7.0f),
-		CVector(0.0f, BODY_RADIUS, BODY_HEIGHT - BODY_RADIUS - 7.0f),
+		CVector(0.0f, BODY_RADIUS + 0.5f, BODY_RADIUS - 7.0f),
+		CVector(0.0f, BODY_RADIUS + 0.5f, BODY_HEIGHT - BODY_RADIUS - 7.0f),
 		BODY_RADIUS
 	);
 	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::eRideableObject, ETag::eEnemy });
@@ -186,8 +186,7 @@ void CPlayer::Update()
 	CVector pos = Position();
 	CDebugPrint::Print("PlayerHP:%d / %d\n", mHp, mMaxHp);
 	CDebugPrint::Print("PlayerPos:%.2f, %.2f, %.2f\n", pos.X(), pos.Y(), pos.Z());
-	CDebugPrint::Print("PlayerState:%d\n", mState);
-
+	// CDebugPrint::Print("PlayerState:%d\n", mState);
 	CDebugPrint::Print("FPS:%f\n", Times::FPS());
 }
 

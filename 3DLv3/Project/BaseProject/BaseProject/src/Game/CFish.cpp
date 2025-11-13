@@ -3,7 +3,8 @@
 #include "CFishManager.h"
 
 CFish::CFish(const std::string& fishTypeName)
-	: mIsBattle(false)
+	: mIsInvincibility(false)
+	, mInvincibilityTime(3.0f)
 	, mFishTypeName(fishTypeName)
 	, mIdletime(0.0f)
 	, mTargetPos(CVector(0.0f, 0.0f, 0.0f))
@@ -25,6 +26,9 @@ const std::string& CFish::GetFishTypeName() const
 
 void CFish::TakeDamage(int damage, CObjectBase* causer)
 {
+	mInvincibilityTime = 3.0f;
+	if (mIsInvincibility) return;
+
 	// ベースクラスのダメージ処理を呼び出す
 	CEnemy::TakeDamage(damage, causer);
 
@@ -32,13 +36,10 @@ void CFish::TakeDamage(int damage, CObjectBase* causer)
 	if (!IsDeath())
 	{
 		// 仰け反り状態へ移行
-		ChangeState((int)EState::eHit);
-
-		// 戦闘状態へ切り替え
-		mIsBattle = true;
+		// ChangeState((int)EState::eHit);
 
 		// 移動を停止
-		mMoveSpeed = CVector::zero;
+		// mMoveSpeed = CVector::zero;
 	}
 }
 
@@ -56,6 +57,17 @@ void CFish::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 
 void CFish::Update()
 {
+	if (mInvincibilityTime > 0.0f)
+	{
+		mInvincibilityTime -= Times::DeltaTime();
+	}
+	if (mInvincibilityTime < 0.0f)
+	{
+		mInvincibilityTime = 0.0f;
+	}
+
+	mIsInvincibility = (mInvincibilityTime == 0.0f) ? false : true;
+
 	// 状態に合わせて、更新処理を切り替える
 	switch ((EState)mState)
 	{
@@ -71,7 +83,6 @@ void CFish::Update()
 
 	// 敵のベースクラスの更新
 	CEnemy::Update();
-
 }
 
 void CFish::LookAtTargetPos()

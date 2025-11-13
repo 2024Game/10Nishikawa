@@ -88,6 +88,7 @@
     <ClCompile Include="src\Game\CGameCamera2.cpp" />
     <ClCompile Include="src\Game\CGameMenu.cpp" />
     <ClCompile Include="src\Game\CGameScene.cpp" />
+    <ClCompile Include="src\Game\CGameSceneUI.cpp" />
     <ClCompile Include="src\Game\CGaugeUI3D.cpp" />
     <ClCompile Include="src\Game\CImage.cpp" />
     <ClCompile Include="src\Game\CMinimap.cpp" />
@@ -97,9 +98,11 @@
     <ClCompile Include="src\Game\CRideableObject.cpp" />
     <ClCompile Include="src\Game\CRotateFloor.cpp" />
     <ClCompile Include="src\Game\CSlash.cpp" />
+    <ClCompile Include="src\Game\CStripedBass.cpp" />
     <ClCompile Include="src\Game\CSword.cpp" />
     <ClCompile Include="src\Game\CTitleScene.cpp" />
     <ClCompile Include="src\Game\CTitleUI.cpp" />
+    <ClCompile Include="src\Game\CTuna.cpp" />
     <ClCompile Include="src\Game\CWeapon.cpp" />
     <ClCompile Include="src\Game\CXCharacter.cpp" />
     <ClCompile Include="src\Game\CFish.cpp" />
@@ -201,6 +204,7 @@
     <ClInclude Include="src\Game\CGameCamera2.h" />
     <ClInclude Include="src\Game\CGameMenu.h" />
     <ClInclude Include="src\Game\CGameScene.h" />
+    <ClInclude Include="src\Game\CGameSceneUI.h" />
     <ClInclude Include="src\Game\CGaugeUI3D.h" />
     <ClInclude Include="src\Game\CImage.h" />
     <ClInclude Include="src\Game\CMinimap.h" />
@@ -210,9 +214,11 @@
     <ClInclude Include="src\Game\CRideableObject.h" />
     <ClInclude Include="src\Game\CRotateFloor.h" />
     <ClInclude Include="src\Game\CSlash.h" />
+    <ClInclude Include="src\Game\CStripedBass.h" />
     <ClInclude Include="src\Game\CSword.h" />
     <ClInclude Include="src\Game\CTitleUI.h" />
     <ClInclude Include="src\Game\CTitleScene.h" />
+    <ClInclude Include="src\Game\CTuna.h" />
     <ClInclude Include="src\Game\CWeapon.h" />
     <ClInclude Include="src\Game\CXCharacter.h" />
     <ClInclude Include="src\Game\CFish.h" />

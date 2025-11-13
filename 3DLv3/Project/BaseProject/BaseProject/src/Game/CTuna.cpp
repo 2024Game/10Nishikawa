@@ -1,36 +1,36 @@
-#include "CRainbowTrout.h"
+#include "CTuna.h"
 #include "CColliderCapsule.h"
 #include "Maths.h"
 #include <iostream>
 
-#define ANIM_PATH "Character\\Enemy\\RainbowTrout\\Anim\\"
-#define BODY_HEIGHT 7.0f
-#define BODY_RADIUS 1.1f
-#define BODY_COL_OFFSET 4.5f
-#define GAUGE_OFFSET_Y 5.0f
+#define ANIM_PATH "Character\\Enemy\\Tuna\\Anim\\"
+#define BODY_HEIGHT 36.0f
+#define BODY_RADIUS 4.5f
+#define BODY_COL_OFFSET 19.0f
+#define GAUGE_OFFSET_Y 8.0f
 
-#define MOVE_SPEED 7.5f
+#define MOVE_SPEED 20.0f
 #define LOOKAT_SPEED 0.5f
-#define IDLE_TIME_MIN 10.0f
-#define IDLE_TIME_MAX 20.0f
+#define IDLE_TIME_MIN 5.0f
+#define IDLE_TIME_MAX 15.0f
 
 #define DEATH_WAIT_TIME 2.0f
 
-CRainbowTrout::CRainbowTrout()
-	:CFish("RainbowTrout")
+CTuna::CTuna()
+	:CFish("Tuna")
 {
 	// 敵のアニメーションデータのテーブル
 	const std::vector<CEnemy::AnimData> ANIM_DATA =
 	{
-		{ "",						true,	0.0f,	1.0f	},	// Tポーズ
-		{ ANIM_PATH"idle_x5.x",		true,	241.0f,	1.0f	},	// 待機
+		{ "",					true,	0.0f,	1.0f},	// Tポーズ
+		{ ANIM_PATH"Tuna.x",	true,	31.0f,	1.0f},	// 待機
 	};
 
 	// ゲージのオフセット位置を設定
 	mGaugeOffsetPos = CVector(0.0f, GAUGE_OFFSET_Y, 0.0f);
 
 	// 敵を初期化
-	InitEnemy("RainbowTrout", &ANIM_DATA);
+	InitEnemy("Tuna", &ANIM_DATA);
 
 	// 最初は待機アニメーションを再生
 	ChangeAnimation((int)EAnimType::eIdle);
@@ -51,11 +51,11 @@ CRainbowTrout::CRainbowTrout()
 	mHp = mMaxHp;
 }
 
-CRainbowTrout::~CRainbowTrout()
+CTuna::~CTuna()
 {
 }
 
-void CRainbowTrout::LookAtTargetPos()
+void CTuna::LookAtTargetPos()
 {
 	// 目的地までの方向ベクトルを求める
 	CVector targetPos = mTargetPos;
@@ -74,13 +74,13 @@ void CRainbowTrout::LookAtTargetPos()
 	Rotation(CQuaternion::LookRotation(forward));
 }
 
-void CRainbowTrout::ChangeState(int state)
+void CTuna::ChangeState(int state)
 {
 	// 状態切り替え
 	CEnemy::ChangeState(state);
 }
 
-void CRainbowTrout::UpdateIdle()
+void CTuna::UpdateIdle()
 {
 	// ステップごとに処理を切り替え
 	switch (mStateStep)
@@ -119,14 +119,8 @@ void CRainbowTrout::UpdateIdle()
 			float dist = vec.Length();
 
 			// ランダムな座標を設定
-			/*
 			float randX = Math::Rand(-500.0f, 500.0f);
-			float randY = Math::Rand(-400.0f, -25.0f);
-			float randZ = Math::Rand(-500.0f, 500.0f);
-			mTargetPos = CVector(randX, randY, randZ);
-			*/
-			float randX = Math::Rand(-500.0f, 500.0f);
-			float randY = Math::Rand(-75.0f, -25.0f);
+			float randY = Math::Rand(-175.0f, -125.0f);
 			float randZ = Math::Rand(-500.0f, 500.0f);
 			mTargetPos = CVector(randX, randY, randZ);
 
@@ -140,7 +134,7 @@ void CRainbowTrout::UpdateIdle()
 	}
 }
 
-void CRainbowTrout::UpdateMove()
+void CTuna::UpdateMove()
 {
 	LookAtTargetPos();
 
@@ -175,12 +169,12 @@ void CRainbowTrout::UpdateMove()
 	}
 }
 
-void CRainbowTrout::UpdateHit()
+void CTuna::UpdateHit()
 {
 
 }
 
-void CRainbowTrout::UpdateDeath()
+void CTuna::UpdateDeath()
 {
 	// ステップごとに処理を分ける
 	switch (mStateStep)

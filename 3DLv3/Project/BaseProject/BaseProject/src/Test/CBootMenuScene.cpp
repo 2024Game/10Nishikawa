@@ -38,10 +38,19 @@ void CBootMenuScene::Load()
 	System::SetClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// メニュー表示用のテキストを追加
+	/*
 	mpText = new CText
 	(
 		nullptr, 24,
 		CVector2(100.0f, 100.0f),
+		CVector2(WINDOW_WIDTH, WINDOW_HEIGHT),
+		CColor::white
+	);
+	*/
+	mpText = new CText
+	(
+		nullptr, 24,
+		CVector2((WINDOW_WIDTH / 2) - 125.0f, (WINDOW_HEIGHT / 2) - 100.0f),
 		CVector2(WINDOW_WIDTH, WINDOW_HEIGHT),
 		CColor::white
 	);

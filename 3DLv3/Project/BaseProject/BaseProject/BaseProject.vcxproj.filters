@@ -400,13 +400,22 @@
     <ClCompile Include="src\Game\CFish.cpp">
       <Filter>ソース ファイル\Game\Character\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CFishManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CMinimap.cpp">
       <Filter>ソース ファイル\Game\UI\GameUI</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CFishManager.cpp">
+      <Filter>ソース ファイル\Game\Character\Enemy</Filter>
+    </ClCompile>
     <ClCompile Include="src\Game\CRainbowTrout.cpp">
+      <Filter>ソース ファイル\Game\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CStripedBass.cpp">
+      <Filter>ソース ファイル\Game\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTuna.cpp">
+      <Filter>ソース ファイル\Game\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGameSceneUI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -739,6 +748,15 @@
       <Filter>ソース ファイル\Game\Character\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CRainbowTrout.h">
+      <Filter>ソース ファイル\Game\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGameSceneUI.h">
+      <Filter>ソース ファイル\Game\UI\GameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CStripedBass.h">
+      <Filter>ソース ファイル\Game\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTuna.h">
       <Filter>ソース ファイル\Game\Character\Enemy</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,9 +3,9 @@
 #include "CColliderSphere.h"
 #include "CEnemy.h"
 
-#define BODY_HEIGHT 3.0f	// 本体のコライダーの高さ
-#define BODY_RADIUS 1.5f	// 本体のコライダーの幅
-#define ATTACK_COL_RADIUS 25.0f
+#define BODY_HEIGHT 3.0f		// 本体のコライダーの高さ
+#define BODY_RADIUS 1.5f		// 本体のコライダーの幅
+#define ATTACK_COL_RADIUS 25.0f	// 爆発半径
 #define ATTACK_COL_POS CVector(0.0f, 0.5f, 0.0f)
 
 // コンストラクタ
