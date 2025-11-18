@@ -26,7 +26,7 @@ CPlayer::CPlayer()
 	,mpModel(nullptr)
 	,mpBodyCol(nullptr)
 {
-	mMaxHp = 100000;
+	mMaxHp = 60;
 	mHp = mMaxHp;
 
 	//インスタンスの設定
@@ -150,6 +150,8 @@ void CPlayer::UpdateMove()
 // 更新
 void CPlayer::Update()
 {
+	
+
 	// 状態に合わせて、更新処理を切り替える
 	switch (mState)
 	{
@@ -168,7 +170,22 @@ void CPlayer::Update()
 	// 移動
 	Position(Position() + mMoveSpeed);
 
-	// ホイールクリックで弾丸発射
+	if (mMoveSpeed.X() != 0 && mMoveSpeed.Z() != 0)
+	{
+		if (mHp > 0)
+		{
+			mHp -= 1.0f * Times::DeltaTime();
+		}
+	}
+	else
+	{
+		if (mHp > 0)
+		{
+			mHp -= 0.2f * Times::DeltaTime();
+		}
+	}
+
+	// ホイールクリックで樽爆弾投下
 	if (CInput::PushKey(VK_MBUTTON) && mState == EState::eMovable)
 	{
 		ChangeState(EState::eIdle);
@@ -184,7 +201,7 @@ void CPlayer::Update()
 	Rotation(CQuaternion::LookRotation(forward));
 
 	CVector pos = Position();
-	CDebugPrint::Print("PlayerHP:%d / %d\n", mHp, mMaxHp);
+	CDebugPrint::Print("PlayerHP:%f / %f\n", mHp, mMaxHp);
 	CDebugPrint::Print("PlayerPos:%.2f, %.2f, %.2f\n", pos.X(), pos.Y(), pos.Z());
 	// CDebugPrint::Print("PlayerState:%d\n", mState);
 	CDebugPrint::Print("FPS:%f\n", Times::FPS());

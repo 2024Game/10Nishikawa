@@ -27,6 +27,6 @@ public:
 	bool IsDeath() const;
 
 protected:
-	int mMaxHp;	// ç≈ëÂHP
-	int mHp;	// åªç›HP
+	float mMaxHp;	// ç≈ëÂHP
+	float mHp;	// åªç›HP
 };

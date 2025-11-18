@@ -9,7 +9,7 @@
 #define BODY_COL_OFFSET 19.0f
 #define GAUGE_OFFSET_Y 8.0f
 
-#define MOVE_SPEED 20.0f
+#define MOVE_SPEED 12.0f
 #define LOOKAT_SPEED 0.5f
 #define IDLE_TIME_MIN 5.0f
 #define IDLE_TIME_MAX 15.0f

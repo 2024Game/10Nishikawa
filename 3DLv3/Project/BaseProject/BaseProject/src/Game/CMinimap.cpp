@@ -71,7 +71,15 @@ void CMinimap::Render()
 		float drawX = mPosition.X() + rotatedX * scale;
 		float drawY = mPosition.Y() - rotatedZ * scale;
 
-		DrawFilledCircle(drawX, drawY, 3.0f, 1.0f, 0.25f, 0.25f, 1.0f);
+		if (info.position.Y() > -75.0f)
+		{
+			DrawFilledCircle(drawX, drawY, 3.0f, 1.0f, 0.25f, 0.25f, 1.0f);
+		}
+		else
+		{
+			DrawFilledCircle(drawX, drawY, 3.0f, 0.6f, 0.15f, 0.15f, 1.0f);
+		}
+
 	}
 
 	DrawFilledCircle(mPosition.X(), mPosition.Y(), 5.0f, 0.2f, 1.0f, 0.2f, 1.0f);
