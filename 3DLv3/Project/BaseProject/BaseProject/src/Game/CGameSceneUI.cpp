@@ -17,7 +17,9 @@ CGameSceneUI::CGameSceneUI()
 		CVector2(100.0f, 100.0f),
 		CColor::white
 	);
+
 	mpText->SetTextAlign(ETextAlignH::eCenter, ETextAlignV::eMiddle);
+
 	// 表示するメニュー情報をテキストに設定
 	std::string str = "Depth\n \n50\n100\n150";
 	mpText->SetText(str.c_str());
@@ -30,9 +32,6 @@ CGameSceneUI::CGameSceneUI()
 		ETaskPauseType::eGame,
 		false, false
 	);
-	//mpGaugeImg->SetWorldUnitPerPixel(WORLD_UNIT_PER_PIXEL);
-	//mpGaugeImg->SetDepthMask(true);
-	mGaugeSize = mpGaugeImg->GetSize();
 
 	// 白イメージを読み込み
 	mpWhiteImg = new CImage
@@ -42,7 +41,6 @@ CGameSceneUI::CGameSceneUI()
 		ETaskPauseType::eGame,
 		false, false
 	);
-	//mpWhiteImg->SetWorldUnitPerPixel(WORLD_UNIT_PER_PIXEL);
 }
 
 CGameSceneUI::~CGameSceneUI()

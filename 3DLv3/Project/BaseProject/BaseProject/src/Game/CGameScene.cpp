@@ -145,7 +145,8 @@ void CGameScene::Load()
 	new CMinimap();
 
 	// UI作成
-	new CGameSceneUI();
+	//new CGameSceneUI();
+	AddTask(new CGameSceneUI);
 }
 
 //シーンの更新処理
