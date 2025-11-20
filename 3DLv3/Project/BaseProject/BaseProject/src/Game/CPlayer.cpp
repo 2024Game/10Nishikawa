@@ -26,7 +26,7 @@ CPlayer::CPlayer()
 	,mpModel(nullptr)
 	,mpBodyCol(nullptr)
 {
-	mMaxHp = 60;
+	mMaxHp = 30.0f;
 	mHp = mMaxHp;
 
 	//インスタンスの設定
@@ -150,8 +150,6 @@ void CPlayer::UpdateMove()
 // 更新
 void CPlayer::Update()
 {
-	
-
 	// 状態に合わせて、更新処理を切り替える
 	switch (mState)
 	{
@@ -167,21 +165,36 @@ void CPlayer::Update()
 		UpdateMove();
 	}
 
-	// 移動
+	// 移動(移動しているときはHPが毎秒1減っていく)
 	Position(Position() + mMoveSpeed);
-
-	if (mMoveSpeed.X() != 0 && mMoveSpeed.Z() != 0)
+	CDebugPrint::Print("mMoveSpeed:%f\n", mMoveSpeed.X());
+	CDebugPrint::Print("mMoveSpeed:%f\n", mMoveSpeed.Z());
+	if (mMoveSpeed.X() == 0.0f && mMoveSpeed.Z() == 0.0f)
 	{
 		if (mHp > 0)
 		{
-			mHp -= 1.0f * Times::DeltaTime();
+			if (mHp >= 0.2f * Times::DeltaTime())
+			{
+				mHp -= 0.2f * Times::DeltaTime();
+			}
+			else
+			{
+				mHp = 0.0f;
+			}
 		}
 	}
 	else
 	{
 		if (mHp > 0)
 		{
-			mHp -= 0.2f * Times::DeltaTime();
+			if (mHp >= 1.0f * Times::DeltaTime())
+			{
+				mHp -= 1.0f * Times::DeltaTime();
+			}
+			else
+			{
+				mHp = 0.0f;
+			}
 		}
 	}
 

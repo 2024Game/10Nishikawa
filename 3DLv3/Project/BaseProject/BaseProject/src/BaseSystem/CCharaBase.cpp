@@ -14,13 +14,13 @@ CCharaBase::~CCharaBase()
 }
 
 // Å‘åHP‚ğæ“¾
-int CCharaBase::GetMaxHp() const
+float CCharaBase::GetMaxHp() const
 {
 	return mMaxHp;
 }
 
 // Œ»İHP‚ğæ“¾
-int CCharaBase::GetHp() const
+float CCharaBase::GetHp() const
 {
 	return mHp;
 }

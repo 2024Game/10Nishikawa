@@ -146,7 +146,7 @@ void CGameScene::Load()
 
 	// UI作成
 	//new CGameSceneUI();
-	AddTask(new CGameSceneUI);
+	AddTask(new CGameSceneUI(player));
 }
 
 //シーンの更新処理
