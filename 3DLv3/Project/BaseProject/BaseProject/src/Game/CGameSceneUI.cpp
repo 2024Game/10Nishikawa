@@ -92,7 +92,7 @@ void CGameSceneUI::Render()
 	mpWhiteImg->SetPos(mGaugePos);
 	mpWhiteImg->SetSize(mGaugeSize);
 	mpWhiteImg->SetColor(CColor::black);
-	mpWhiteImg->SetAlpha(0.5f);
+	mpWhiteImg->SetAlpha(0.45f);
 	mpWhiteImg->Render();
 
 	// バーのサイズ、座標、色を
