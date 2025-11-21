@@ -47,7 +47,7 @@ CRainbowTrout::CRainbowTrout()
 	// フィールドと、プレイヤーの攻撃コライダーとヒットするように設定
 	mpBodyCol->SetCollisionTags({ ETag::ePlayer });
 	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer, ELayer::eAttackCol });
-	mMaxHp = 2;
+	mMaxHp = 10;
 	mHp = mMaxHp;
 }
 

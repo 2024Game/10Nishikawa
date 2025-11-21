@@ -23,10 +23,11 @@ CPlayer::CPlayer()
 	, mStateStep(0)
 	, mElapsedTime(0.0f)
 	, mMoveSpeedY(0.0f)
-	,mpModel(nullptr)
-	,mpBodyCol(nullptr)
+	, mpModel(nullptr)
+	, mpBodyCol(nullptr)
+	, mAttackDamage(10.0f)
 {
-	mMaxHp = 60;
+	mMaxHp = 90;
 	mHp = mMaxHp;
 
 	//インスタンスの設定
@@ -150,8 +151,6 @@ void CPlayer::UpdateMove()
 // 更新
 void CPlayer::Update()
 {
-	
-
 	// 状態に合わせて、更新処理を切り替える
 	switch (mState)
 	{
@@ -174,14 +173,25 @@ void CPlayer::Update()
 	{
 		if (mHp > 0)
 		{
-			mHp -= 1.0f * Times::DeltaTime();
+			if (mHp > 1.0f * Times::DeltaTime())
+			{
+				mHp -= 1.0f * Times::DeltaTime();
+			}
+			else
+			{
+				mHp = 0;
+			}
 		}
 	}
 	else
 	{
-		if (mHp > 0)
+		if (mHp > 0.2f * Times::DeltaTime())
 		{
 			mHp -= 0.2f * Times::DeltaTime();
+		}
+		else
+		{
+			mHp = 0;
 		}
 	}
 
@@ -213,7 +223,7 @@ void CPlayer::DropBarrel()
 	CVector pos = Position() + Rotation() * BARREL_OFFSET_POS;
 	CVector under = -VectorY();
 	CVector dir = CQuaternion(0.0f, 0.0f, 0.0f) * under;
-	CBarrel* barrel = new CBarrel(5, 50, this, mpCamera);
+	CBarrel* barrel = new CBarrel(mAttackDamage, 5, 50, this, mpCamera);
 	barrel->Position(pos);
 	barrel->Rotation(CQuaternion::LookRotation(dir));
 
@@ -315,4 +325,14 @@ void CPlayer::SetState(int stateNum)
 	{
 		ChangeState(EState::eMovable);
 	}
+}
+
+float CPlayer::GetAttackDamage()
+{
+	return mAttackDamage;
+}
+
+void CPlayer::SetAttackDamage(float amount)
+{
+	mAttackDamage = amount;
 }

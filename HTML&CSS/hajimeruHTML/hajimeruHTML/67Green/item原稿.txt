@@ -1,0 +1,13 @@
+ITEM
+
+<img src="image/item1.jpg" alt="ウェア">
+ガーデニング作業をオシャレに。
+6,980円
+
+<img src="image/item2.jpg" alt="鉢植え">
+育てやすいグリーンネックレス。
+1,500円
+
+<img src="image/item3.jpg" alt="ポット">
+インテリアにもなる木製ポット。
+700円

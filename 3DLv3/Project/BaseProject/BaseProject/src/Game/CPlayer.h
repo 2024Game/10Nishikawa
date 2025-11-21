@@ -44,6 +44,9 @@ public:
 
 	void SetState(int stateNum);
 
+	float GetAttackDamage();
+	void SetAttackDamage(float amount);
+
 private:
 	// オブジェクト削除を伝える
 	void DeleteObject(CObjectBase* obj) override;
@@ -83,4 +86,6 @@ private:
 	CCollider* mpBodyCol;		// 本体のコライダー
 
 	CGameCamera2* mpCamera;		// カメラのポインター
+
+	float mAttackDamage = 0.0f;
 };
