@@ -36,7 +36,6 @@ CGameSceneUI::CGameSceneUI(CPlayer* player)
 		ETaskPauseType::eGame,
 		false, false
 	);
-	//mGaugeSize = mpGaugeImg->GetSize();
 	mpGaugeImg->SetSize(mGaugeSize);
 	mpGaugeImg->SetPos(mGaugePos);
 
