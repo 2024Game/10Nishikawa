@@ -1,0 +1,41 @@
+h1{
+color:green;
+font-size:250%;
+}
+div{
+width:640px;
+margin-right:auto;
+margin-left:auto;
+}
+h1,h2,li,footer{
+text-align:center;
+font-family: 'Josefin Slab', serif;
+}
+li{
+list-style:none;
+width:33%;
+float:left;
+}
+ul:after{
+content:"";
+display:block;
+clear:both;
+}
+ul{
+padding:0;
+}
+table{
+width:100%;
+}
+th{
+text-align:left;
+}
+.price{
+text-align:right;
+}
+li a{
+color:#000;
+}
+li a:hover{
+text-decoration:none;
+}
