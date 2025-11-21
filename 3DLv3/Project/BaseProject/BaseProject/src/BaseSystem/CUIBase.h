@@ -52,7 +52,7 @@ public:
 	float GetAlpha() const;
 
 	//XV
-	void Update() override;
+	virtual void Update() override;
 
 protected:
 	bool CollisionPoint(const CVector2& point);

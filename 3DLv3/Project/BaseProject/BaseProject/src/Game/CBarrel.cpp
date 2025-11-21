@@ -9,7 +9,7 @@
 #define ATTACK_COL_POS CVector(0.0f, 0.5f, 0.0f)
 
 // コンストラクタ
-CBarrel::CBarrel(float damage, float speed, float dist, CPlayer* player , CGameCamera2* camera)
+CBarrel::CBarrel(float speed, float dist, CPlayer* player , CGameCamera2* camera)
 	: CObjectBase(ETag::ePlayer, ETaskPriority::eWeapon, 0, ETaskPauseType::eGame)
 	, mpModel(nullptr)
 	, mpCollider(nullptr)
@@ -20,7 +20,6 @@ CBarrel::CBarrel(float damage, float speed, float dist, CPlayer* player , CGameC
 	, mCurrDist(0.0f)
 	, mpPlayer(player)
 	, mpCamera(camera)
-	, mAttackDamage(damage)
 {
 	// 針を黄色にする
 	mColor = CColor::white;
@@ -76,7 +75,7 @@ void CBarrel::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		CEnemy* fish = dynamic_cast<CEnemy*>(other->Owner());
 		if (fish != nullptr)
 		{
-			fish->TakeDamage(mAttackDamage, this);
+			fish->TakeDamage(1, this);
 		}
 	}
 }

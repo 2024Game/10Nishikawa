@@ -9,7 +9,7 @@ class CBarrel : public CObjectBase
 {
 public:
 	// コンストラクタ
-	CBarrel(float damage, float speed, float dist, CPlayer* player, CGameCamera2* camera);
+	CBarrel(float speed, float dist, CPlayer* player, CGameCamera2* camera);
 	// デストラクタ
 	~CBarrel();
 
@@ -32,7 +32,6 @@ private:
 
 	bool mAttackTriggered = false;   // 攻撃コライダーを有効にしたか
 	float mKillTimer = 0.0f;         // Killまでの経過時間
-	float mAttackDamage = 0.0f;
 
 	CPlayer* mpPlayer;
 	CGameCamera2* mpCamera;

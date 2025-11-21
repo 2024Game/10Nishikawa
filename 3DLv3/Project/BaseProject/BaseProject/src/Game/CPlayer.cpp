@@ -23,11 +23,10 @@ CPlayer::CPlayer()
 	, mStateStep(0)
 	, mElapsedTime(0.0f)
 	, mMoveSpeedY(0.0f)
-	, mpModel(nullptr)
-	, mpBodyCol(nullptr)
-	, mAttackDamage(10.0f)
+	,mpModel(nullptr)
+	,mpBodyCol(nullptr)
 {
-	mMaxHp = 90;
+	mMaxHp = 30.0f;
 	mHp = mMaxHp;
 
 	//インスタンスの設定
@@ -166,32 +165,36 @@ void CPlayer::Update()
 		UpdateMove();
 	}
 
-	// 移動
+	// 移動(移動しているときはHPが毎秒1減っていく)
 	Position(Position() + mMoveSpeed);
-
-	if (mMoveSpeed.X() != 0 && mMoveSpeed.Z() != 0)
+	CDebugPrint::Print("mMoveSpeed:%f\n", mMoveSpeed.X());
+	CDebugPrint::Print("mMoveSpeed:%f\n", mMoveSpeed.Z());
+	if (mMoveSpeed.X() == 0.0f && mMoveSpeed.Z() == 0.0f)
 	{
 		if (mHp > 0)
 		{
-			if (mHp > 1.0f * Times::DeltaTime())
+			if (mHp >= 0.2f * Times::DeltaTime())
 			{
-				mHp -= 1.0f * Times::DeltaTime();
+				mHp -= 0.2f * Times::DeltaTime();
 			}
 			else
 			{
-				mHp = 0;
+				mHp = 0.0f;
 			}
 		}
 	}
 	else
 	{
-		if (mHp > 0.2f * Times::DeltaTime())
+		if (mHp > 0)
 		{
-			mHp -= 0.2f * Times::DeltaTime();
-		}
-		else
-		{
-			mHp = 0;
+			if (mHp >= 1.0f * Times::DeltaTime())
+			{
+				mHp -= 1.0f * Times::DeltaTime();
+			}
+			else
+			{
+				mHp = 0.0f;
+			}
 		}
 	}
 
@@ -223,7 +226,7 @@ void CPlayer::DropBarrel()
 	CVector pos = Position() + Rotation() * BARREL_OFFSET_POS;
 	CVector under = -VectorY();
 	CVector dir = CQuaternion(0.0f, 0.0f, 0.0f) * under;
-	CBarrel* barrel = new CBarrel(mAttackDamage, 5, 50, this, mpCamera);
+	CBarrel* barrel = new CBarrel(5, 50, this, mpCamera);
 	barrel->Position(pos);
 	barrel->Rotation(CQuaternion::LookRotation(dir));
 
@@ -325,14 +328,4 @@ void CPlayer::SetState(int stateNum)
 	{
 		ChangeState(EState::eMovable);
 	}
-}
-
-float CPlayer::GetAttackDamage()
-{
-	return mAttackDamage;
-}
-
-void CPlayer::SetAttackDamage(float amount)
-{
-	mAttackDamage = amount;
 }
