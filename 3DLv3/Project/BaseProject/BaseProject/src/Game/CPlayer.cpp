@@ -23,8 +23,9 @@ CPlayer::CPlayer()
 	, mStateStep(0)
 	, mElapsedTime(0.0f)
 	, mMoveSpeedY(0.0f)
-	,mpModel(nullptr)
-	,mpBodyCol(nullptr)
+	, mpModel(nullptr)
+	, mpBodyCol(nullptr)
+	, mFireDepth(50.0)
 {
 	mMaxHp = 30.0f;
 	mHp = mMaxHp;
@@ -150,6 +151,7 @@ void CPlayer::UpdateMove()
 // 更新
 void CPlayer::Update()
 {
+	if (mHp == 0) return;
 	// 状態に合わせて、更新処理を切り替える
 	switch (mState)
 	{
@@ -167,8 +169,8 @@ void CPlayer::Update()
 
 	// 移動(移動しているときはHPが毎秒1減っていく)
 	Position(Position() + mMoveSpeed);
-	CDebugPrint::Print("mMoveSpeed:%f\n", mMoveSpeed.X());
-	CDebugPrint::Print("mMoveSpeed:%f\n", mMoveSpeed.Z());
+	// CDebugPrint::Print("mMoveSpeed:%f\n", mMoveSpeed.X());
+	// CDebugPrint::Print("mMoveSpeed:%f\n", mMoveSpeed.Z());
 	if (mMoveSpeed.X() == 0.0f && mMoveSpeed.Z() == 0.0f)
 	{
 		if (mHp > 0)
@@ -205,6 +207,17 @@ void CPlayer::Update()
 		DropBarrel();
 	}
 
+	if (CInput::GetDeltaMouseWheel() > 0)
+	{
+		if (mFireDepth <= 50.0f) return;
+		mFireDepth -= 50.0f;
+	}
+	else if (CInput::GetDeltaMouseWheel() < 0)
+	{
+		if (mFireDepth >= 400.0f) return;
+		mFireDepth += 50.0f;
+	}
+
 	// プレイヤーを移動方向へ向ける
 	CVector current = VectorZ();
 	CVector target = mMoveSpeed;
@@ -214,10 +227,11 @@ void CPlayer::Update()
 	Rotation(CQuaternion::LookRotation(forward));
 
 	CVector pos = Position();
-	CDebugPrint::Print("PlayerHP:%f / %f\n", mHp, mMaxHp);
-	CDebugPrint::Print("PlayerPos:%.2f, %.2f, %.2f\n", pos.X(), pos.Y(), pos.Z());
+	// CDebugPrint::Print("PlayerHP:%f / %f\n", mHp, mMaxHp);
+	// CDebugPrint::Print("PlayerPos:%.2f, %.2f, %.2f\n", pos.X(), pos.Y(), pos.Z());
 	// CDebugPrint::Print("PlayerState:%d\n", mState);
 	CDebugPrint::Print("FPS:%f\n", Times::FPS());
+	// CDebugPrint::Print("Depth:%f\n", mFireDepth);
 }
 
 // 樽を発射
@@ -226,7 +240,7 @@ void CPlayer::DropBarrel()
 	CVector pos = Position() + Rotation() * BARREL_OFFSET_POS;
 	CVector under = -VectorY();
 	CVector dir = CQuaternion(0.0f, 0.0f, 0.0f) * under;
-	CBarrel* barrel = new CBarrel(5, 50, this, mpCamera);
+	CBarrel* barrel = new CBarrel(10.0f, mFireDepth, this, mpCamera);
 	barrel->Position(pos);
 	barrel->Rotation(CQuaternion::LookRotation(dir));
 
@@ -305,6 +319,11 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			Position(Position() + adjust * hit.weight);
 		}
 	}
+}
+
+float CPlayer::GetDepth()
+{
+	return mFireDepth;
 }
 
 // 描画

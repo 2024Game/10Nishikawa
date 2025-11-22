@@ -1,7 +1,6 @@
 ﻿#include "CGameScene.h"
 #include "CSceneManager.h"
 #include "CField.h"
-#include "CPlayer.h"
 #include "CGameCamera.h"
 #include "CGameCamera2.h"
 #include "CInput.h"
@@ -20,6 +19,9 @@
 CGameScene::CGameScene()
 	: CSceneBase(EScene::eGame)
 	, mpGameMenu(nullptr)
+	, mpPlayer(nullptr)
+	, mpWhistleSE(nullptr)
+	, mInGame(false)
 {
 }
 
@@ -57,6 +59,7 @@ void CGameScene::Load()
 
 	CResourceManager::Load<CSound>(		"ExplosionSound",	"Sound\\SE\\Explosion.wav");
 	CResourceManager::Load<CSound>(		"FishfinderSound",	"Sound\\SE\\fishfinder.wav");
+	CResourceManager::Load<CSound>(		"WhistleSound",		"Sound\\SE\\hoissuru.wav");
 
 	CResourceManager::Load<CModelX>(	"RainbowTrout",		"Character\\Enemy\\RainbowTrout\\RainbowTrout_x5.x");
 	CResourceManager::Load<CModelX>(	"StripedBass",		"Character\\Enemy\\StripedBass\\StripedBass_x0.5.x");
@@ -113,9 +116,9 @@ void CGameScene::Load()
 	}
 
 	// Playerを作成
-	CPlayer* player = new CPlayer();
-	player->Scale(1.0f, 1.0f, 1.0f);
-	player->Position(0.0f, -0.5f, 0.0f);
+	mpPlayer = new CPlayer();
+	mpPlayer->Scale(1.0f, 1.0f, 1.0f);
+	mpPlayer->Position(0.0f, -0.5f, 0.0f);
 
 	// CGameCameraのテスト
 	//CGameCamera* mainCamera = new CGameCamera
@@ -126,17 +129,17 @@ void CGameScene::Load()
 	//);
 
 	// CGameCamera2のテスト
-	CVector atPos = player->Position() + CVector(0.0f, 5.0f, 0.0f);
+	CVector atPos = mpPlayer->Position() + CVector(0.0f, 5.0f, 0.0f);
 	CGameCamera2* mainCamera = new CGameCamera2
 	(
 		atPos + CVector(0.0f, 0.0f, 40.0f),
 		atPos
 	);
 
-	mainCamera->SetFollowTargetTf(player);
+	mainCamera->SetFollowTargetTf(mpPlayer);
 
 	// Playerにカメラのポインターを渡す
-	player->SetCamera(mainCamera);
+	mpPlayer->SetCamera(mainCamera);
 
 	// ゲームメニューを作成
 	mpGameMenu = new CGameMenu();
@@ -146,7 +149,9 @@ void CGameScene::Load()
 
 	// UI作成
 	//new CGameSceneUI();
-	AddTask(new CGameSceneUI(player));
+	AddTask(new CGameSceneUI(mpPlayer));
+
+	mpWhistleSE = CResourceManager::Get<CSound>("WhistleSound");
 }
 
 //シーンの更新処理
@@ -172,5 +177,11 @@ void CGameScene::Update()
 		}
 	}
 
+	if (mpPlayer->GetHp() == 0.0f && !mInGame)
+	{
+		mInGame = true;
+		CBGMManager::Instance()->Play(EBGMType::eNone);
+		mpWhistleSE->Play(0.1f, true);
+	}
 }
 

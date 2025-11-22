@@ -9,6 +9,8 @@ class CBarrel : public CObjectBase
 {
 public:
 	// コンストラクタ
+	/// <param name="speed">樽の沈下速度(m/秒)</param>
+	/// <param name="dist">樽の発火深度</param>
 	CBarrel(float speed, float dist, CPlayer* player, CGameCamera2* camera);
 	// デストラクタ
 	~CBarrel();

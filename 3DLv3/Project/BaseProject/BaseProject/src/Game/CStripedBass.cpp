@@ -162,7 +162,6 @@ void CStripedBass::UpdateMove()
 	// 残り距離分移動して、待機状態へ移行
 	else
 	{
-		CDebugPrint::Print("EState::eIdle\n");
 		mMoveSpeed = dir * dist;
 		ChangeState((int)EState::eIdle);
 		mMoveSpeed = CVector::zero;

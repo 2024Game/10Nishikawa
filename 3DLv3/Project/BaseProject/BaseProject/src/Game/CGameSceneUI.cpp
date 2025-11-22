@@ -24,10 +24,6 @@ CGameSceneUI::CGameSceneUI(CPlayer* player)
 
 	mpText->SetTextAlign(ETextAlignH::eCenter, ETextAlignV::eMiddle);
 
-	// 表示するメニュー情報をテキストに設定
-	std::string str = "Depth\n \n50\n100\n150";
-	mpText->SetText(str.c_str());
-
 	// ゲージのイメージを読み込み
 	mpGaugeImg = new CImage
 	(
@@ -83,6 +79,18 @@ void CGameSceneUI::Update()
 	SetCurrPoint(mpPlayer->GetHp());
 	mpGaugeImg->Update();
 	mpWhiteImg->Update();
+
+	/*
+	// 表示する情報をテキストに設定
+	float depth = mpPlayer->GetDepth();
+	int depthInt = static_cast<int>(depth);   // 小数切り捨て
+	std::string str = "Depth\n \n" + std::to_string(depthInt) + "m";
+	mpText->SetText(str.c_str());
+	*/
+
+	// DepthのUIをセット
+	SetDepthInfo();
+
 	Render();
 }
 
@@ -131,4 +139,45 @@ void CGameSceneUI::ApplyPoint()
 	{
 		mPercent = 1.0f;
 	}
+}
+
+void CGameSceneUI::SetDepthInfo()
+{
+	float depth = mpPlayer->GetDepth();
+	std::string str;
+
+	if (depth == 50.0f)
+	{
+		str = "Depth\n \n>>50m<<\n100m\n150m\n";
+	}
+	else if (depth == 100.0f)
+	{
+		str = "Depth\n \n50m\n>>100m<<\n150m\n";
+	}
+	else if (depth == 150.0f)
+	{
+		str = "Depth\n \n100m\n>>150m<<\n200m\n";
+	}
+	else if (depth == 200.0f)
+	{
+		str = "Depth\n \n150m\n>>200m<<\n250m\n";
+	}
+	else if (depth == 250.0f)
+	{
+		str = "Depth\n \n200m\n>>250m<<\n300m\n";
+	}
+	else if (depth == 300.0f)
+	{
+		str = "Depth\n \n250m\n>>300m<<\n350m\n";
+	}
+	else if (depth == 350.0f)
+	{
+		str = "Depth\n \n300m\n>>350m<<\n400m\n";
+	}
+	else if (depth == 400.0f)
+	{
+		str = "Depth\n \n300m\n350m\n>>400m<<\n";
+	}
+
+	mpText->SetText(str.c_str());
 }

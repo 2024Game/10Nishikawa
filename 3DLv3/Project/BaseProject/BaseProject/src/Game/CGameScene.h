@@ -1,6 +1,7 @@
 #pragma once
 #include "CSceneBase.h"
 #include <memory>
+#include "CPlayer.h"
 #include "CFish.h"
 class CGameMenu;
 class CSound;
@@ -20,4 +21,7 @@ public:
 
 private:
 	CGameMenu* mpGameMenu;
+	CPlayer* mpPlayer;
+	CSound* mpWhistleSE;
+	bool mInGame;
 };

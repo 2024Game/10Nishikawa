@@ -29,6 +29,8 @@ private:
 	// ポイント残量を反映
 	void ApplyPoint();
 
+	void SetDepthInfo();
+
 	CText* mpText;			// 文字列描画用
 	CImage* mpGaugeImg;		// ゲージのイメージ
 	CImage* mpWhiteImg;		// 白イメージ

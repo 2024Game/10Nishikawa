@@ -37,6 +37,8 @@ public:
 	/// <param name="hit">衝突した時の情報</param>
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
+	float GetDepth();
+
 	// 描画
 	void Render();
 
@@ -83,4 +85,6 @@ private:
 	CCollider* mpBodyCol;		// 本体のコライダー
 
 	CGameCamera2* mpCamera;		// カメラのポインター
+
+	float mFireDepth;			// 樽爆弾の発火深度
 };
