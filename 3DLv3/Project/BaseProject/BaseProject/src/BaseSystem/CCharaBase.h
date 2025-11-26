@@ -19,7 +19,7 @@ public:
 	float GetHp() const;
 
 	// ƒ_ƒ[ƒW‚ğó‚¯‚é
-	virtual void TakeDamage(int damage, CObjectBase* causer);
+	virtual void TakeDamage(float damage, CObjectBase* causer);
 
 	// €–S
 	virtual void Death();

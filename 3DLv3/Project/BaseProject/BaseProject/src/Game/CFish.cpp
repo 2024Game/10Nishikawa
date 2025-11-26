@@ -8,6 +8,7 @@ CFish::CFish(const std::string& fishTypeName)
 	, mFishTypeName(fishTypeName)
 	, mIdletime(0.0f)
 	, mTargetPos(CVector(0.0f, 0.0f, 0.0f))
+	, mScore(0.0f)
 {
 	// CFishManagerのリストに自分を追加
 	CFishManager::Instance()->Add(this);
@@ -24,7 +25,7 @@ const std::string& CFish::GetFishTypeName() const
 	return mFishTypeName;
 }
 
-void CFish::TakeDamage(int damage, CObjectBase* causer)
+void CFish::TakeDamage(float damage, CObjectBase* causer)
 {
 	mInvincibilityTime = 3.0f;
 	if (mIsInvincibility) return;
@@ -41,12 +42,17 @@ void CFish::TakeDamage(int damage, CObjectBase* causer)
 		// 移動を停止
 		// mMoveSpeed = CVector::zero;
 	}
+	if (mHp <= 0)
+	{
+		mpPlayer->AddScore(mScore);
+	}
 }
 
 void CFish::Death()
 {
 	// 死亡状態に切り替え
 	ChangeState((int)EState::eDeath);
+
 }
 
 void CFish::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
@@ -83,6 +89,11 @@ void CFish::Update()
 
 	// 敵のベースクラスの更新
 	CEnemy::Update();
+}
+
+float CFish::GetScore()
+{
+	return mScore;
 }
 
 void CFish::LookAtTargetPos()

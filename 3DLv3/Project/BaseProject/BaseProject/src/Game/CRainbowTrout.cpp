@@ -7,7 +7,7 @@
 #define BODY_HEIGHT 7.0f
 #define BODY_RADIUS 1.1f
 #define BODY_COL_OFFSET 4.5f
-#define GAUGE_OFFSET_Y 5.0f
+#define GAUGE_OFFSET_Y 3.5f
 
 #define MOVE_SPEED 7.5f
 #define LOOKAT_SPEED 0.5f
@@ -16,7 +16,7 @@
 
 #define DEATH_WAIT_TIME 2.0f
 
-CRainbowTrout::CRainbowTrout()
+CRainbowTrout::CRainbowTrout(CPlayer* player)
 	:CFish("RainbowTrout")
 {
 	// 敵のアニメーションデータのテーブル
@@ -26,33 +26,48 @@ CRainbowTrout::CRainbowTrout()
 		{ ANIM_PATH"idle_x5.x",		true,	241.0f,	1.0f	},	// 待機
 	};
 
-	// ゲージのオフセット位置を設定
-	mGaugeOffsetPos = CVector(0.0f, GAUGE_OFFSET_Y, 0.0f);
-
 	// 敵を初期化
 	InitEnemy("RainbowTrout", &ANIM_DATA);
 
 	// 最初は待機アニメーションを再生
 	ChangeAnimation((int)EAnimType::eIdle);
 
+	mpPlayer = player;
+
+	mMaxHp = 10.0f;
+	mScore = 10.0f;
+
+	Init();
+}
+
+CRainbowTrout::~CRainbowTrout()
+{
+}
+
+void CRainbowTrout::Init()
+{
+	// ゲージのオフセット位置を設定
+	mGaugeOffsetPos = CVector(0.0f, GAUGE_OFFSET_Y * Scale().X(), 0.0f);
+
+	// コライダー削除
+	SAFE_DELETE(mpBodyCol);
+
 	// 本体のコライダーを作成
 	mpBodyCol = new CColliderCapsule
 	(
 		this, ELayer::eEnemy,
-		CVector(0.0f, 0.0f, BODY_RADIUS - BODY_COL_OFFSET),
-		CVector(0.0f, 0.0f, BODY_HEIGHT - BODY_RADIUS - BODY_COL_OFFSET),
-		BODY_RADIUS
+		CVector(0.0f, 0.0f, (BODY_RADIUS - BODY_COL_OFFSET)),
+		CVector(0.0f, 0.0f, (BODY_HEIGHT - BODY_RADIUS) - BODY_COL_OFFSET),
+		BODY_RADIUS * this->Scale().X()
 	);
 
 	// フィールドと、プレイヤーの攻撃コライダーとヒットするように設定
 	mpBodyCol->SetCollisionTags({ ETag::ePlayer });
 	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer, ELayer::eAttackCol });
-	mMaxHp = 2;
-	mHp = mMaxHp;
-}
 
-CRainbowTrout::~CRainbowTrout()
-{
+	mMaxHp *= Scale().X();
+	mHp = mMaxHp;
+	mScore *= Scale().X();
 }
 
 void CRainbowTrout::LookAtTargetPos()
@@ -181,6 +196,8 @@ void CRainbowTrout::UpdateHit()
 
 void CRainbowTrout::UpdateDeath()
 {
+	mMoveSpeed = CVector::zero;
+
 	// ステップごとに処理を分ける
 	switch (mStateStep)
 	{

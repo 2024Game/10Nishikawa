@@ -5,9 +5,12 @@ class CStripedBass : public CFish
 {
 public:
 	// コンストラクタ
-	CStripedBass();
+	CStripedBass(CPlayer* player);
 	// デストラクタ
 	~CStripedBass();
+
+	void Init();
+
 	void Show() const override
 	{
 		std::cout << "シマスズキ\n";

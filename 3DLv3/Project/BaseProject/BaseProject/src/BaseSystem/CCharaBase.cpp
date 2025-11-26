@@ -26,7 +26,7 @@ float CCharaBase::GetHp() const
 }
 
 // ダメージを受ける
-void CCharaBase::TakeDamage(int damage, CObjectBase* causer)
+void CCharaBase::TakeDamage(float damage, CObjectBase* causer)
 {
 	// 既に死亡していたら、ダメージを受けない
 	if (IsDeath()) return;

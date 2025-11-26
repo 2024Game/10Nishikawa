@@ -11,7 +11,8 @@ public:
 	// コンストラクタ
 	/// <param name="speed">樽の沈下速度(m/秒)</param>
 	/// <param name="dist">樽の発火深度</param>
-	CBarrel(float speed, float dist, CPlayer* player, CGameCamera2* camera);
+	/// <param name="damage">樽のダメージ</param>
+	CBarrel(float speed, float dist, float damage, CPlayer* player, CGameCamera2* camera);
 	// デストラクタ
 	~CBarrel();
 
@@ -34,6 +35,7 @@ private:
 
 	bool mAttackTriggered = false;   // 攻撃コライダーを有効にしたか
 	float mKillTimer = 0.0f;         // Killまでの経過時間
+	float mFireDamage;
 
 	CPlayer* mpPlayer;
 	CGameCamera2* mpCamera;

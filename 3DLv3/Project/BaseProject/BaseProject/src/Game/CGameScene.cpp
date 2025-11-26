@@ -75,6 +75,11 @@ void CGameScene::Load()
 	// ランダム初期化（Load() の最初で一度だけ呼ぶ）
 	srand(static_cast<unsigned int>(time(nullptr)));
 
+	// Playerを作成
+	mpPlayer = new CPlayer();
+	mpPlayer->Scale(1.0f, 1.0f, 1.0f);
+	mpPlayer->Position(0.0f, -0.5f, 0.0f);
+
 	// 魚の出現数は100匹が限界そう
 	// RainbowTroutをランダムにN体生成
 	for (int i = 0; i < 20; ++i)
@@ -84,9 +89,10 @@ void CGameScene::Load()
 		float z = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
 		float scale = 0.5f + static_cast<float>(rand()) / RAND_MAX * 1.5f;   // 0.5〜2.0
 
-		CRainbowTrout* rainbowTrout = new CRainbowTrout();
+		CRainbowTrout* rainbowTrout = new CRainbowTrout(mpPlayer);
 		rainbowTrout->Position(x, y, z);
 		rainbowTrout->Scale(scale, scale, scale);
+		rainbowTrout->Init();
 	}
 
 	// StripedBassをランダムにN体生成
@@ -97,9 +103,10 @@ void CGameScene::Load()
 		float z = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
 		float scale = 0.5f + static_cast<float>(rand()) / RAND_MAX * 1.5f;   // 0.5〜2.0
 
-		CStripedBass* stripedBass = new CStripedBass();
+		CStripedBass* stripedBass = new CStripedBass(mpPlayer);
 		stripedBass->Position(x, y, z);
 		stripedBass->Scale(scale, scale, scale);
+		stripedBass->Init();
 	}
 
 	// TunaをランダムにN体生成
@@ -110,15 +117,11 @@ void CGameScene::Load()
 		float z = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
 		float scale = 0.5f + static_cast<float>(rand()) / RAND_MAX * 1.5f;   // 0.5〜2.0
 
-		CTuna* tuna = new CTuna();
+		CTuna* tuna = new CTuna(mpPlayer);
 		tuna->Position(x, y, z);
 		tuna->Scale(scale, scale, scale);
+		tuna->Init();
 	}
-
-	// Playerを作成
-	mpPlayer = new CPlayer();
-	mpPlayer->Scale(1.0f, 1.0f, 1.0f);
-	mpPlayer->Position(0.0f, -0.5f, 0.0f);
 
 	// CGameCameraのテスト
 	//CGameCamera* mainCamera = new CGameCamera

@@ -131,7 +131,7 @@ void CCactus::AttackEnd()
 }
 
 // ダメージを受ける
-void CCactus::TakeDamage(int damage, CObjectBase* causer)
+void CCactus::TakeDamage(float damage, CObjectBase* causer)
 {
 	// ベースクラスのダメージ処理を呼び出す
 	CEnemy::TakeDamage(damage, causer);

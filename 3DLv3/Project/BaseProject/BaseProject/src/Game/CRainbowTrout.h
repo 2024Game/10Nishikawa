@@ -5,9 +5,12 @@ class CRainbowTrout : public CFish
 {
 public:
 	// コンストラクタ
-	CRainbowTrout();
+	CRainbowTrout(CPlayer* player);
 	// デストラクタ
 	~CRainbowTrout();
+
+	void Init();
+
 	void Show() const override
 	{
 		std::cout << "ニジマス\n";

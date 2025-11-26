@@ -43,7 +43,6 @@ CGameSceneUI::CGameSceneUI(CPlayer* player)
 		ETaskPauseType::eGame,
 		false, false
 	);
-
 }
 
 CGameSceneUI::~CGameSceneUI()

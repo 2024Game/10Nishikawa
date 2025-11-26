@@ -21,8 +21,8 @@ CMinimap::~CMinimap()
 
 void CMinimap::Render()
 {
-	const float screenWidth = 1280.0f;
-	const float screenHeight = 720.0f;
+	const float screenWidth = WINDOW_WIDTH;
+	const float screenHeight = WINDOW_HEIGHT;
 	const float mapWorldRadius = 250.0f;
 
 	CPlayer* player = CPlayer::Instance();

@@ -26,8 +26,10 @@ CPlayer::CPlayer()
 	, mpModel(nullptr)
 	, mpBodyCol(nullptr)
 	, mFireDepth(50.0)
+	, mAttackDamage(50.0f)
+	, mGetScore(0.0f)
 {
-	mMaxHp = 30.0f;
+	mMaxHp = 120.0f;
 	mHp = mMaxHp;
 
 	//インスタンスの設定
@@ -232,6 +234,7 @@ void CPlayer::Update()
 	// CDebugPrint::Print("PlayerState:%d\n", mState);
 	CDebugPrint::Print("FPS:%f\n", Times::FPS());
 	// CDebugPrint::Print("Depth:%f\n", mFireDepth);
+	CDebugPrint::Print("Score:%d\n", (int)mGetScore);
 }
 
 // 樽を発射
@@ -240,7 +243,7 @@ void CPlayer::DropBarrel()
 	CVector pos = Position() + Rotation() * BARREL_OFFSET_POS;
 	CVector under = -VectorY();
 	CVector dir = CQuaternion(0.0f, 0.0f, 0.0f) * under;
-	CBarrel* barrel = new CBarrel(10.0f, mFireDepth, this, mpCamera);
+	CBarrel* barrel = new CBarrel(7.5f, mFireDepth, mAttackDamage, this, mpCamera);
 	barrel->Position(pos);
 	barrel->Rotation(CQuaternion::LookRotation(dir));
 
@@ -253,7 +256,7 @@ void CPlayer::DropBarrel()
 }
 
 // ダメージを受ける
-void CPlayer::TakeDamage(int damage, CObjectBase* causer)
+void CPlayer::TakeDamage(float damage, CObjectBase* causer)
 {
 	// ベースクラスのダメージ処理を呼び出す
 	CCharaBase::TakeDamage(damage, causer);
@@ -324,6 +327,16 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 float CPlayer::GetDepth()
 {
 	return mFireDepth;
+}
+
+int CPlayer::GetScore()
+{
+	return (int)mGetScore;
+}
+
+void CPlayer::AddScore(float amount)
+{
+	mGetScore += amount;
 }
 
 // 描画

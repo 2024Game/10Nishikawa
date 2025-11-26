@@ -27,7 +27,7 @@ public:
 	void DropBarrel();
 
 	// ダメージを受ける
-	void TakeDamage(int damage, CObjectBase* causer) override;
+	void TakeDamage(float damage, CObjectBase* causer) override;
 
 	/// <summary>
 	/// 衝突処理
@@ -38,6 +38,9 @@ public:
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
 	float GetDepth();
+
+	int GetScore();
+	void AddScore(float amount);
 
 	// 描画
 	void Render();
@@ -86,5 +89,8 @@ private:
 
 	CGameCamera2* mpCamera;		// カメラのポインター
 
+	float mAttackDamage;		// 樽爆弾の爆発ダメージ
 	float mFireDepth;			// 樽爆弾の発火深度
+
+	float mGetScore;
 };

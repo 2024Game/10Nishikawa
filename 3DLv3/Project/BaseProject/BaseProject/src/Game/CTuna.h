@@ -5,9 +5,12 @@ class CTuna : public CFish
 {
 public:
 	// コンストラクタ
-	CTuna();
+	CTuna(CPlayer* player);
 	// デストラクタ
 	~CTuna();
+
+	void Init();
+
 	void Show() const override
 	{
 		std::cout << "マグロ\n";

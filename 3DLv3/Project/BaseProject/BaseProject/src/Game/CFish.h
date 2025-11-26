@@ -1,6 +1,7 @@
 #pragma once
 #include "CEnemy.h"
 #include <iostream>
+#include "CPlayer.h"
 
 // 基底クラス
 class CFish : public CEnemy
@@ -16,7 +17,7 @@ public:
 	const std::string& GetFishTypeName() const;
 
     // ダメージを受ける
-    void TakeDamage(int damage, CObjectBase* causer) override;
+    void TakeDamage(float damage, CObjectBase* causer) override;
     // 死亡
     void Death() override;
     // 衝突処理
@@ -24,6 +25,8 @@ public:
 
     // 更新
     void Update() override;
+
+	float GetScore();
 
 protected:
 	
@@ -52,8 +55,10 @@ protected:
 	virtual void UpdateDeath();
 
 	std::string mFishTypeName;		// 魚の種類名
+	float mScore;					// 魚の基礎スコア
 	bool mIsInvincibility;			// 無敵状態か
 	float mInvincibilityTime;
 	float mIdletime;				// 待機状態時の待機時間
 	CVector mTargetPos;				// 目的地
+	CPlayer* mpPlayer;
 };

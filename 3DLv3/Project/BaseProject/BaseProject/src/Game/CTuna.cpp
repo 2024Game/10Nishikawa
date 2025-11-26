@@ -16,8 +16,8 @@
 
 #define DEATH_WAIT_TIME 2.0f
 
-CTuna::CTuna()
-	:CFish("Tuna")
+CTuna::CTuna(CPlayer* player)
+	: CFish("Tuna")
 {
 	// 敵のアニメーションデータのテーブル
 	const std::vector<CEnemy::AnimData> ANIM_DATA =
@@ -26,33 +26,48 @@ CTuna::CTuna()
 		{ ANIM_PATH"Tuna.x",	true,	31.0f,	1.0f},	// 待機
 	};
 
-	// ゲージのオフセット位置を設定
-	mGaugeOffsetPos = CVector(0.0f, GAUGE_OFFSET_Y, 0.0f);
-
 	// 敵を初期化
 	InitEnemy("Tuna", &ANIM_DATA);
 
 	// 最初は待機アニメーションを再生
 	ChangeAnimation((int)EAnimType::eIdle);
 
+	mpPlayer = player;
+
+	mMaxHp = 30;
+	mScore = 250.0f;
+
+	Init();
+}
+
+CTuna::~CTuna()
+{
+}
+
+void CTuna::Init()
+{
+	// ゲージのオフセット位置を設定
+	mGaugeOffsetPos = CVector(0.0f, GAUGE_OFFSET_Y * Scale().X(), 0.0f);
+
+	// コライダー削除
+	SAFE_DELETE(mpBodyCol);
+
 	// 本体のコライダーを作成
 	mpBodyCol = new CColliderCapsule
 	(
 		this, ELayer::eEnemy,
-		CVector(0.0f, 0.0f, BODY_RADIUS - BODY_COL_OFFSET),
-		CVector(0.0f, 0.0f, BODY_HEIGHT - BODY_RADIUS - BODY_COL_OFFSET),
-		BODY_RADIUS
+		CVector(0.0f, 0.0f, (BODY_RADIUS - BODY_COL_OFFSET)),
+		CVector(0.0f, 0.0f, (BODY_HEIGHT - BODY_RADIUS) - BODY_COL_OFFSET),
+		BODY_RADIUS * Scale().X()
 	);
 
 	// フィールドと、プレイヤーの攻撃コライダーとヒットするように設定
 	mpBodyCol->SetCollisionTags({ ETag::ePlayer });
 	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer, ELayer::eAttackCol });
-	mMaxHp = 2;
-	mHp = mMaxHp;
-}
 
-CTuna::~CTuna()
-{
+	mMaxHp *= Scale().X();
+	mHp = mMaxHp;
+	mScore *= Scale().X();
 }
 
 void CTuna::LookAtTargetPos()
@@ -175,6 +190,8 @@ void CTuna::UpdateHit()
 
 void CTuna::UpdateDeath()
 {
+	mMoveSpeed = CVector::zero;
+
 	// ステップごとに処理を分ける
 	switch (mStateStep)
 	{
