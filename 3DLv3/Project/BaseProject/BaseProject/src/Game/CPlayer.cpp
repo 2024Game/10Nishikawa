@@ -25,7 +25,7 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	, mpModel(nullptr)
 	, mpBodyCol(nullptr)
 	, mFireDepth(50.0)
-	, mAttackDamage(50.0f)
+	, mAttackDamage(10.0f)
 	, mGetScore(0.0f)
 	, mpSaveManager(SaveManager)
 {
