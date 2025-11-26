@@ -3,6 +3,7 @@
 #include "CCharaBase.h"
 #include "CModel.h"
 #include "CGameCamera2.h"
+#include "CSaveManager.h"
 
 class CCollider;
 
@@ -17,7 +18,7 @@ public:
 	static CPlayer* Instance();
 
 	// コンストラクタ
-	CPlayer();
+	CPlayer(CSaveManager* SaveManager);
 	// デストラクタ
 	~CPlayer();
 
@@ -88,6 +89,9 @@ private:
 	CCollider* mpBodyCol;		// 本体のコライダー
 
 	CGameCamera2* mpCamera;		// カメラのポインター
+	CSaveManager* mpSaveManager;
+
+	float mPlayerSpeed;
 
 	float mAttackDamage;		// 樽爆弾の爆発ダメージ
 	float mFireDepth;			// 樽爆弾の発火深度

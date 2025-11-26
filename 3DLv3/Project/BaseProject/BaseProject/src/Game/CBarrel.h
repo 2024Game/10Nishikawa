@@ -30,12 +30,13 @@ private:
 	CCollider* mpAttackCol;		// 攻撃用のコライダー
 	CSound* mpExplosionSound;	// 爆発音データ
 	float mMoveSpeed;			// 移動速度
-	float mMoveDist;			// 移動できる距離
-	float mCurrDist;			// 現在の移動距離
+	float mTrackSpeed;			// 追尾速度
+	float mFireDepth;			// 発火深度
 
 	bool mAttackTriggered = false;   // 攻撃コライダーを有効にしたか
 	float mKillTimer = 0.0f;         // Killまでの経過時間
 	float mFireDamage;
+	CVector mTargetPos;
 
 	CPlayer* mpPlayer;
 	CGameCamera2* mpCamera;

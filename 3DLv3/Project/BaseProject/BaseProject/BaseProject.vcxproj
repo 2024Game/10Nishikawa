@@ -90,6 +90,7 @@
     <ClCompile Include="src\Game\CGameScene.cpp" />
     <ClCompile Include="src\Game\CGameSceneUI.cpp" />
     <ClCompile Include="src\Game\CGaugeUI3D.cpp" />
+    <ClCompile Include="src\Game\CHomeScene.cpp" />
     <ClCompile Include="src\Game\CImage.cpp" />
     <ClCompile Include="src\Game\CMinimap.cpp" />
     <ClCompile Include="src\Game\CMoveFloor.cpp" />
@@ -97,6 +98,7 @@
     <ClCompile Include="src\Game\CRainbowTrout.cpp" />
     <ClCompile Include="src\Game\CRideableObject.cpp" />
     <ClCompile Include="src\Game\CRotateFloor.cpp" />
+    <ClCompile Include="src\Game\CSaveManager.cpp" />
     <ClCompile Include="src\Game\CSlash.cpp" />
     <ClCompile Include="src\Game\CStripedBass.cpp" />
     <ClCompile Include="src\Game\CSword.cpp" />
@@ -206,6 +208,7 @@
     <ClInclude Include="src\Game\CGameScene.h" />
     <ClInclude Include="src\Game\CGameSceneUI.h" />
     <ClInclude Include="src\Game\CGaugeUI3D.h" />
+    <ClInclude Include="src\Game\CHomeScene.h" />
     <ClInclude Include="src\Game\CImage.h" />
     <ClInclude Include="src\Game\CMinimap.h" />
     <ClInclude Include="src\Game\CMoveFloor.h" />
@@ -213,6 +216,7 @@
     <ClInclude Include="src\Game\CRainbowTrout.h" />
     <ClInclude Include="src\Game\CRideableObject.h" />
     <ClInclude Include="src\Game\CRotateFloor.h" />
+    <ClInclude Include="src\Game\CSaveManager.h" />
     <ClInclude Include="src\Game\CSlash.h" />
     <ClInclude Include="src\Game\CStripedBass.h" />
     <ClInclude Include="src\Game\CSword.h" />

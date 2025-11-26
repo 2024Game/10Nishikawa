@@ -17,7 +17,7 @@ CDebugPrint::CDebugPrint()
 		nullptr, 24,
 		CVector2::zero,
 		CVector2(WINDOW_WIDTH, WINDOW_HEIGHT),
-		CColor::red,
+		CColor::cyan,
 		ETaskPriority::eDebug,
 		0,
 		ETaskPauseType::eDefault,

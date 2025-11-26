@@ -7,13 +7,13 @@ class CGameMenu;
 class CSound;
 
 //タイトルシーン
-class CGameScene :public CSceneBase
+class CHomeScene :public CSceneBase
 {
 public:
 	//コンストラクタ
-	CGameScene();
+	CHomeScene();
 	//デストラクタ
-	~CGameScene();
+	~CHomeScene();
 	//シーン読み込み
 	void Load();
 	//シーンの更新処理

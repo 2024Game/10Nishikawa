@@ -1,19 +1,22 @@
 ﻿#include "CGameScene.h"
 #include "CSceneManager.h"
-#include "CField.h"
 #include "CGameCamera.h"
 #include "CGameCamera2.h"
 #include "CInput.h"
 #include "CGameMenu.h"
 #include "CBGMManager.h"
 #include "CLineEffect.h"
-#include "CCactus.h"
+
 #include "CMinimap.h"
 #include "CGameSceneUI.h"
+
+#include "CField.h"
 
 #include "CRainbowTrout.h"
 #include "CStripedBass.h"
 #include "CTuna.h"
+
+#include "CSaveManager.h"
 
 //コンストラクタ
 CGameScene::CGameScene()
@@ -21,7 +24,7 @@ CGameScene::CGameScene()
 	, mpGameMenu(nullptr)
 	, mpPlayer(nullptr)
 	, mpWhistleSE(nullptr)
-	, mInGame(false)
+	, mInGame(true)
 {
 }
 
@@ -69,14 +72,19 @@ void CGameScene::Load()
 	CBGMManager::Instance()->Play(EBGMType::eGame);
 
 	CField* field1 = new CField();
-	//CField* field2 = new CField();
-	//field2->Position(0.0f, -425.0f, 0.0f);
 
 	// ランダム初期化（Load() の最初で一度だけ呼ぶ）
 	srand(static_cast<unsigned int>(time(nullptr)));
 
+	mpSaveManager = &CSaveManager::Instance();
+	// セーブファイルがあればロード、なければ初期値のまま
+	if (!mpSaveManager->Load())
+	{
+		mpSaveManager->Reset();
+	}
+
 	// Playerを作成
-	mpPlayer = new CPlayer();
+	mpPlayer = new CPlayer(mpSaveManager);
 	mpPlayer->Scale(1.0f, 1.0f, 1.0f);
 	mpPlayer->Position(0.0f, -0.5f, 0.0f);
 
@@ -166,6 +174,8 @@ void CGameScene::Update()
 	//	mpGameBGM->PlayLoop(-1, 1.0f, false, 1.0f);
 	//}
 
+	CDebugPrint::Print("Money:%d\n", mpSaveManager->data.money);
+
 	if (CInput::PushKey('H'))
 	{
 		CSceneManager::Instance()->LoadScene(EScene::eTitle);
@@ -180,11 +190,13 @@ void CGameScene::Update()
 		}
 	}
 
-	if (mpPlayer->GetHp() == 0.0f && !mInGame)
+	if (mpPlayer->GetHp() == 0.0f && mInGame)
 	{
-		mInGame = true;
+		mInGame = false;
 		CBGMManager::Instance()->Play(EBGMType::eNone);
 		mpWhistleSE->Play(0.1f, true);
+		mpSaveManager->data.money += mpPlayer->GetScore();
+		mpSaveManager->Save();
+		CSceneManager::Instance()->LoadScene(EScene::eHome);
 	}
 }
-

@@ -9,7 +9,6 @@
 
 #define BODY_HEIGHT 15.0f	// 本体のコライダーの高さ
 #define BODY_RADIUS 2.5f	// 本体のコライダーの幅
-#define MOVE_SPEED  0.5f	// 移動速度
 
 #define BARREL_OFFSET_POS CVector(0.0f, 1.5f, -8.5f)
 
@@ -17,7 +16,7 @@
 CPlayer* CPlayer::spInstance = nullptr;
 
 // コンストラクタ
-CPlayer::CPlayer()
+CPlayer::CPlayer(CSaveManager* SaveManager)
 	: CCharaBase(ETag::ePlayer, ETaskPriority::ePlayer)
 	, mState(EState::eMovable)
 	, mStateStep(0)
@@ -28,8 +27,10 @@ CPlayer::CPlayer()
 	, mFireDepth(50.0)
 	, mAttackDamage(50.0f)
 	, mGetScore(0.0f)
+	, mpSaveManager(SaveManager)
 {
-	mMaxHp = 120.0f;
+	mMaxHp = mpSaveManager->GetData().maxHP;
+	mPlayerSpeed = mpSaveManager->GetData().playerSpeed;
 	mHp = mMaxHp;
 
 	//インスタンスの設定
@@ -146,7 +147,7 @@ void CPlayer::UpdateMove()
 	// 求めた移動ベクトルの長さで入力されているか判定
 	if (move.LengthSqr() > 0.0f)
 	{
-		mMoveSpeed += move * MOVE_SPEED;
+		mMoveSpeed += move * mPlayerSpeed;
 	}
 }
 
