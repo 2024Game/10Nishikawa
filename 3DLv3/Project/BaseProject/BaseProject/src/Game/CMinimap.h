@@ -2,6 +2,8 @@
 #include "CUIBase.h"
 #include "CSound.h"
 
+class CImage;
+
 class CMinimap : public CUIBase
 {
 public:
@@ -27,5 +29,6 @@ private:
 
 	std::vector<FishMapInfo> mFishMapInfos;
 
+	CImage* mpRadarImage;		// レーダー背景イメージ
 	CSound* mpFishfinderSound;	// 探知機音データ
 };

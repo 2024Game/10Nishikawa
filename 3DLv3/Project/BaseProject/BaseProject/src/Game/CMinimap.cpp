@@ -2,6 +2,7 @@
 #include "CPlayer.h"
 #include "CFish.h"
 #include "CFishManager.h"
+#include "CImage.h"
 
 CMinimap::CMinimap()
 	:mpFishfinderSound(nullptr)
@@ -13,14 +14,31 @@ CMinimap::CMinimap()
 	mUpdateTimer = 0.0f;
 	// SEデータ取得
 	mpFishfinderSound = CResourceManager::Get<CSound>("FishfinderSound");
+
+	// タイトル画面の背景イメージを生成
+	mpRadarImage = new CImage
+	(
+		"UI/radar.png",
+		ETaskPriority::eUI,
+		0,
+		ETaskPauseType::eDefault,
+		false,
+		false
+	);
+	mpRadarImage->SetSize(size * 1.15f);
+	mpRadarImage->SetCenter((size * 1.15f) * 0.5f);
+	mpRadarImage->SetPos(WINDOW_WIDTH - 125.0f, 125.0f);
+	mpRadarImage->SetAlpha(0.8f);
 }
 
 CMinimap::~CMinimap()
 {
+	SAFE_DELETE(mpRadarImage);
 }
 
 void CMinimap::Render()
 {
+	//mpRadarImage->Update();
 	const float screenWidth = WINDOW_WIDTH;
 	const float screenHeight = WINDOW_HEIGHT;
 	const float mapWorldRadius = 250.0f;
@@ -35,7 +53,9 @@ void CMinimap::Render()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	DrawFilledCircle(mPosition.X(), mPosition.Y(), mSize.X() * 0.5f, 0.1f, 0.1f, 0.1f, 0.7f);
+	//DrawFilledCircle(mPosition.X(), mPosition.Y(), mSize.X() * 0.5f, 0.1f, 0.1f, 0.1f, 0.27f);
+	// レーダー背景描画
+	mpRadarImage->Render();
 
 	const std::vector<CFish*> fishes = CFishManager::Instance()->GetFishes();
 
@@ -56,7 +76,7 @@ void CMinimap::Render()
 		mUpdateTimer = 0.0f;
 	}
 
-	// 🐟 登録済み魚座標を描画
+	// 🐟 登録済みの魚の座標を描画
 	for (const FishMapInfo& info : mFishMapInfos)
 	{
 		float dx = info.position.X() - playerPos.X();
