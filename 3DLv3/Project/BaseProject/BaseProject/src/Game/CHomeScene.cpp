@@ -8,6 +8,7 @@
 #include "CLineEffect.h"
 
 #include "CSaveManager.h"
+#include "CHomeSceneUI.h"
 
 //コンストラクタ
 CHomeScene::CHomeScene()
@@ -47,7 +48,8 @@ void CHomeScene::Load()
 	}
 
 	// UI作成
-	
+	mpCHomeSceneUI = new CHomeSceneUI();
+	AddTask(mpCHomeSceneUI);
 
 	mpWhistleSE = CResourceManager::Get<CSound>("WhistleSound");
 }

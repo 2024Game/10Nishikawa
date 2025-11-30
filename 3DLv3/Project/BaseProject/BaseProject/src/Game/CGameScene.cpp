@@ -72,6 +72,7 @@ void CGameScene::Load()
 	CBGMManager::Instance()->Play(EBGMType::eGame);
 
 	CField* field1 = new CField();
+	field1->Scale(2.0f, 1.0f, 2.0f);
 
 	// ランダム初期化（Load() の最初で一度だけ呼ぶ）
 	srand(static_cast<unsigned int>(time(nullptr)));

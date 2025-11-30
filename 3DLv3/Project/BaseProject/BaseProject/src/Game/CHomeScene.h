@@ -5,6 +5,7 @@
 #include "CFish.h"
 class CGameMenu;
 class CSound;
+class CHomeSceneUI;
 
 //タイトルシーン
 class CHomeScene :public CSceneBase
@@ -24,5 +25,6 @@ private:
 	CSaveManager* mpSaveManager;
 	CPlayer* mpPlayer;
 	CSound* mpWhistleSE;
+	CHomeSceneUI* mpCHomeSceneUI;
 	bool mInGame;
 };

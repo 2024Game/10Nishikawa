@@ -26,7 +26,7 @@ CTitleUI::CTitleUI()
 	, mIsEnd(false)
 {
 	// タイトルロゴのフォントデータを生成
-	mpLogoFont = new CFont("res\\Font\\toroman.ttf");
+	mpLogoFont = new CFont("res\\Font\\toroman.ttf"); //misaki_gothic_2nd.ttf
 	mpLogoFont->SetFontSize(100);
 	mpLogoFont->SetAlignment(FTGL::TextAlignment::ALIGN_CENTER);
 	mpLogoFont->SetLineLength(WINDOW_WIDTH);
@@ -79,6 +79,8 @@ CTitleUI::CTitleUI()
 	mpStartText->SetShadowColor(CColor(0.25f, 0.125f, 0.0f));
 	mpStartText->SetEnableOutline(true);
 	mpStartText->SetOutlineColor(CColor(0.0f, 0.0f, 0.0f));
+
+	
 
 	// [START]ボタンを生成
 	CExpandButton* btn1 = new CExpandButton
