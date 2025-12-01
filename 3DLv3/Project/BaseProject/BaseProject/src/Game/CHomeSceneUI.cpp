@@ -14,6 +14,9 @@ CHomeSceneUI::CHomeSceneUI()
 	, mStateStep(0)
 	, mElapsedTime(0.0f)
 	, mIsEnd(false)
+	, mpLogoFont(nullptr)
+	, mpTitleLogo(nullptr)
+	, mpTitleBg(nullptr)
 {
 	// タイトルロゴのフォントデータを生成
 	mpLogoFont = new CFont("res\\Font\\misaki_gothic_2nd.ttf");
