@@ -1,5 +1,6 @@
 #include "CHomeScene.h"
 #include "CSceneManager.h"
+//#include "CGameScene.h"
 
 #include "CGameCamera.h"
 #include "CGameCamera2.h"
@@ -62,5 +63,20 @@ void CHomeScene::Update()
 	if (CInput::PushKey('H'))
 	{
 		CSceneManager::Instance()->LoadScene(EScene::eTitle);
+	}
+
+	// タイトル画面が
+	if (mpCHomeSceneUI->IsEnd())
+	{
+		// ゲーム開始ならば、ゲームシーンを読み込む
+		if (mpCHomeSceneUI->IsStartGame())
+		{
+			CSceneManager::Instance()->LoadScene(EScene::eGame);
+		}
+		// タイトルへ移行する
+		else if (mpCHomeSceneUI->IsGoTitle())
+		{
+			CSceneManager::Instance()->LoadScene(EScene::eTitle);
+		}
 	}
 }

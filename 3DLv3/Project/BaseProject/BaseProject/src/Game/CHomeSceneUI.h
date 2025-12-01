@@ -13,12 +13,12 @@ public:
 	// デストラクタ
 	~CHomeSceneUI();
 
-	// タイトル画面終了か
+	// ホーム画面終了か
 	bool IsEnd() const;
 	// ゲームを開始するか
 	bool IsStartGame() const;
-	// ゲームを終了するか
-	bool IsExitGame() const;
+	// タイトルへ移行するか
+	bool IsGoTitle() const;
 
 	// 更新
 	void Update() override;
@@ -46,8 +46,13 @@ private:
 	// 状態切り替え
 	void ChangeState(EState state);
 
-	// [START]クリック時のコールバック関数
-	void OnClickStart();
+	// [ゲーム開始]クリック時のコールバック関数
+	void OnClickStartGame();
+	// [タイトルに戻る]クリック時のコールバック関数
+	void OnClickGoTitle();
+
+	// [燃料タンク容量UP]クリック時のコールバック関数
+	void OnClickIncreaseHP();
 	// [OPTION]クリック時のコールバック関数
 	void OnClickOption();
 	// [QUIT]クリック時のコールバック関数

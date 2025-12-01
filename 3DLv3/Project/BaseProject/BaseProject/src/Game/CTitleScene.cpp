@@ -1,6 +1,6 @@
 #include "CTitleScene.h"
 #include "CSceneManager.h"
-#include "CGameScene.h"
+//#include "CGameScene.h"
 #include "CCamera.h"
 #include "CSound.h"
 #include "CBGMManager.h"
