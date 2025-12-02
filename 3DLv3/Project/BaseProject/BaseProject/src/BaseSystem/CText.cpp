@@ -19,6 +19,7 @@ CText::CText(CFont* font, int fontSize, const CVector2& pos,
 	, mIsEnableOutline(false)
 	, mOutlineWidth(1.0f)
 	, mOutlineColor(CColor::black)
+	, mIsShowDebug(false)
 {
 	mPosition = pos;
 	mSize = size;
@@ -27,9 +28,9 @@ CText::CText(CFont* font, int fontSize, const CVector2& pos,
 	if (mpFont == nullptr)
 	{
 		mpFont = new CFont();
-		mpFont->SetFontSize(mFontSize);
-		mpFont->SetLineLength(mSize.X());
 	}
+	mpFont->SetFontSize(mFontSize);
+	mpFont->SetLineLength(mSize.X());
 }
 
 CText::~CText()
@@ -117,6 +118,11 @@ void CText::SetOutlineColor(const CColor& color)
 	mOutlineColor = color;
 }
 
+void CText::SetShowDebug(bool show)
+{
+	mIsShowDebug = show;
+}
+
 void CText::SetText(const char* format, ...)
 {
 	static const int size = 1024;
@@ -196,6 +202,18 @@ void CText::Render()
 	glPushMatrix();
 
 	CVector pos = mPosition;
+
+	if (mIsShowDebug)
+	{
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glBegin(GL_QUADS);
+		glVertex2f(pos.X(), pos.Y());
+		glVertex2f(pos.X(), pos.Y() + mSize.Y());
+		glVertex2f(pos.X() + mSize.X(), pos.Y() + mSize.Y());
+		glVertex2f(pos.X() + mSize.X(), pos.Y());
+		glEnd();
+	}
+
 	if (mTextAlignV == ETextAlignV::eTop)
 	{
 		pos.Y(pos.Y() + mFontSize);

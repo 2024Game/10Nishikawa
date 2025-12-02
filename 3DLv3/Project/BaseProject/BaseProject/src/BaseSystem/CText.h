@@ -48,6 +48,8 @@ public:
 	//void SetOutlineWidth(float width);
 	void SetOutlineColor(const CColor& color);
 
+	void SetShowDebug(bool show);
+
 	void SetText(const char* format, ...);
 	void SetText(const wchar_t* format, ...);
 
@@ -71,4 +73,6 @@ private:
 	bool mIsEnableOutline;
 	float mOutlineWidth;
 	CColor mOutlineColor;
+
+	bool mIsShowDebug;
 };

@@ -57,7 +57,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 			// 項目のアイコンイメージ
 			CImage* img2 = new CImage
 			(
-				"UI/white.png",
+				"UI/btn03_04_light.png",
 				ETaskPriority::eUI,
 				0,
 				ETaskPauseType::eDefault,
@@ -70,9 +70,67 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 			y = 45.0f + j * 115.0f;
 
 			img2->SetPos(x, y);
-			img2->SetColor(0.8f, 0.8f, 0.8f);
 
 			mBgImages.push_back(img2);
+		}
+	}
+
+	// テキスト群を生成
+	for (int i = 0; i < cols; i++)        // 列
+	{
+		for (int j = 0; j < rows; j++)    // 行
+		{
+			float x = 120.0f + i * 920.0f;
+			float y = 40.0f + j * 115.0f;
+
+			// 所持金のテキストを生成
+			CText* newText = new CText
+			(
+				mpLogoFont, 30,
+				CVector2(x, y),
+				CVector2(790.0f, 100.0f),	// <-----ココのサイズを変えても右端が変わらないっぽい
+				CColor(0.11f, 0.1f, 0.1f),
+				ETaskPriority::eUI,
+				0,
+				ETaskPauseType::eDefault,
+				false,
+				false
+			);
+			newText->SetTextAlignV(ETextAlignV::eMiddle);
+			//newText->SetTextAlignH(ETextAlignH::eLeft);
+			newText->SetTextAlignH(ETextAlignH::eRight);
+			newText->SetShowDebug(true);
+
+			int money = static_cast<int>(mpSaveManager->data.money);
+			newText->SetText(("所持金：" + std::to_string(money) + "p\n").c_str());
+
+			// リストに追加
+			mTexts.push_back(newText);
+		}
+	}
+
+	// ボタン群を生成
+	for (int i = 0; i < cols; i++)        // 列
+	{
+		for (int j = 0; j < rows; j++)    // 行
+		{
+			float x = 120.0f + i * 920.0f;
+			float y = 40.0f + j * 115.0f;
+
+			// [燃料タンク増加]ボタンを生成
+			CExpandButton* titleBtn = new CExpandButton
+			(
+				CVector2(WINDOW_WIDTH - (250.0f + 50.0f), WINDOW_HEIGHT - (30.0f + 80.0f)),
+				CVector2((500.0f * 0.9f), (60.0f * 0.9f)),
+				ETaskPriority::eUI, 0, ETaskPauseType::eGame,
+				false, false
+			);
+			// ボタンの画像を読み込み
+			titleBtn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
+			// ボタンクリック時に呼び出されるコールバック関数を設定
+			titleBtn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickGoTitle, this));
+			// ボタンリストに追加
+			mButtons.push_back(titleBtn);
 		}
 	}
 
@@ -173,40 +231,6 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	titleBtn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickGoTitle, this));
 	// ボタンリストに追加
 	mButtons.push_back(titleBtn);
-
-
-	// テキスト群を生成
-	for (int i = 0; i < cols; i++)        // 列
-	{
-		for (int j = 0; j < rows; j++)    // 行
-		{
-			float x = 120.0f + i * 920.0f;
-			float y = 40.0f + j * 115.0f;
-
-			// 所持金のテキストを生成
-			CText* newText = new CText
-			(
-				mpLogoFont, 30,
-				CVector2(x, y),
-				CVector2(900.0f, 100.0f),	// <-----ココのサイズを変えても右端が変わらないっぽい
-				CColor(0.11f, 0.1f, 0.1f),
-				ETaskPriority::eUI,
-				0,
-				ETaskPauseType::eDefault,
-				false,
-				false
-			);
-			newText->SetTextAlignV(ETextAlignV::eMiddle);
-			newText->SetTextAlignH(ETextAlignH::eLeft);
-			//newText->SetTextAlignH(ETextAlignH::eRight);
-
-			int money = static_cast<int>(mpSaveManager->data.money);
-			newText->SetText(("所持金：" + std::to_string(money) + "p\n").c_str());
-
-			// リストに追加
-			mTexts.push_back(newText);
-		}
-	}
 }
 
 CHomeSceneUI::~CHomeSceneUI()
