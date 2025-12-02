@@ -1,5 +1,6 @@
 #pragma once
 #include "CTask.h"
+#include "CSaveManager.h"
 
 class CFont;
 class CImage;
@@ -9,7 +10,7 @@ class CHomeSceneUI : public CTask
 {
 public:
 	// コンストラクタ
-	CHomeSceneUI();
+	CHomeSceneUI(CSaveManager* saveManager);
 	// デストラクタ
 	~CHomeSceneUI();
 
@@ -64,9 +65,12 @@ private:
 	bool mIsEnd;		// タイトル画面終了フラグ
 	int mSelectIndex;	// 現在選択している項目
 
-	CFont* mpLogoFont;	// タイトルロゴのフォント
-	CText* mpTitleLogo;	// タイトルロゴ
-	CImage* mpTitleBg;	// タイトル背景イメージ
-	CText* mpStartText;	// 「CLICK TO START」のテキスト
+	CSaveManager* mpSaveManager;
+	CFont* mpLogoFont;		// タイトルロゴのフォント
+	CText* mpMoneyText;		// 所持金のテキスト
+	CText* mpStatusText;	// ステータスのテキスト
+	CText* mpStartText;		// 「CLICK TO START」のテキスト
 	std::vector<CExpandButton*> mButtons;
+	std::vector<CImage*> mBgImages;
+	std::vector<CText*> mTexts;
 };

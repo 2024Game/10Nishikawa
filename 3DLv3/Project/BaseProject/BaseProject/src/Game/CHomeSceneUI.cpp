@@ -8,15 +8,18 @@
 #include "CExpandButton.h"
 #include "Easing.h"
 
-CHomeSceneUI::CHomeSceneUI()
+
+CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	: CTask(ETaskPriority::eUI, 0, ETaskPauseType::eDefault)
 	, mState(EState::eIdle)
 	, mStateStep(0)
 	, mElapsedTime(0.0f)
 	, mIsEnd(false)
 	, mpLogoFont(nullptr)
-	, mpTitleLogo(nullptr)
-	, mpTitleBg(nullptr)
+	, mpMoneyText(nullptr)
+	, mpStatusText(nullptr)
+	, mpStartText(nullptr)
+	, mpSaveManager(saveManager)
 {
 	// タイトルロゴのフォントデータを生成
 	mpLogoFont = new CFont("res\\Font\\misaki_gothic_2nd.ttf");
@@ -24,12 +27,76 @@ CHomeSceneUI::CHomeSceneUI()
 	mpLogoFont->SetAlignment(FTGL::TextAlignment::ALIGN_LEFT);
 	mpLogoFont->SetLineLength(WINDOW_WIDTH);
 
-	// タイトルロゴのテキストを生成
-	mpTitleLogo = new CText
+	// 背景イメージ達を生成
+	int rows = 9;    // 1列あたりの項目数
+	int cols = 1;    // 列数 <- UIのサイズ的に１列で良かった(つまり頑張り損)
+
+	for (int i = 0; i < cols; i++)        // 列
+	{
+		for (int j = 0; j < rows; j++)    // 行
+		{
+			// 項目の背景イメージ
+			CImage* img1 = new CImage
+			(
+				"UI/white.png",
+				ETaskPriority::eUI,
+				0,
+				ETaskPauseType::eDefault,
+				false,
+				false
+			);
+			img1->SetSize(900.0f, 100.0f);
+
+			float x = 20.0f + i * 920.0f;
+			float y = 40.0f + j * 115.0f;
+
+			img1->SetPos(x, y);
+
+			mBgImages.push_back(img1);
+
+			// 項目のアイコンイメージ
+			CImage* img2 = new CImage
+			(
+				"UI/white.png",
+				ETaskPriority::eUI,
+				0,
+				ETaskPauseType::eDefault,
+				false,
+				false
+			);
+			img2->SetSize(90.0f, 90.0f);
+
+			x = 25.0f + i * 920.0f;
+			y = 45.0f + j * 115.0f;
+
+			img2->SetPos(x, y);
+			img2->SetColor(0.8f, 0.8f, 0.8f);
+
+			mBgImages.push_back(img2);
+		}
+	}
+
+	// 所持金表示枠
+	CImage* gImg = new CImage
+	(
+		"UI/white.png",
+		ETaskPriority::eUI,
+		0,
+		ETaskPauseType::eDefault,
+		false,
+		false
+	);
+	gImg->SetSize(600.0f, 70.0f);
+	gImg->SetPos(WINDOW_WIDTH - 630.0f, 40.0f);
+	// リストに追加
+	mBgImages.push_back(gImg);
+
+	// 所持金のテキストを生成
+	mpMoneyText = new CText
 	(
 		mpLogoFont, 30,
-		CVector2(0.0f, 64.0f),
-		CVector2(WINDOW_WIDTH, WINDOW_HEIGHT),
+		CVector2(WINDOW_WIDTH - 620.0f, 60.0f),
+		CVector2(580.0f, 60.0f),
 		CColor(0.11f, 0.1f, 0.1f),
 		ETaskPriority::eUI,
 		0,
@@ -37,12 +104,50 @@ CHomeSceneUI::CHomeSceneUI()
 		false,
 		false
 	);
-	mpTitleLogo->SetText("燃料タンク容量 Lv.1 cost : 300p\n船体スピード Lv.1 cost : 500p\n");
+	mpMoneyText->SetTextAlignV(ETextAlignV::eMiddle);
+
+	int money = static_cast<int>(mpSaveManager->data.money);
+	mpMoneyText->SetText(("所持金：" + std::to_string(money) + "p\n").c_str());
+	// リストに追加
+	mTexts.push_back(mpMoneyText);
+
+	// ステータス表示枠
+	CImage* stImg = new CImage
+	(
+		"UI/white.png",
+		ETaskPriority::eUI,
+		0,
+		ETaskPauseType::eDefault,
+		false,
+		false
+	);
+	stImg->SetSize(600.0f, 790.0f);
+	stImg->SetPos(WINDOW_WIDTH - 630.0f, 130.0f);
+	// リストに追加
+	mBgImages.push_back(stImg);
+	
+	// ステータスのテキストを生成
+	mpStatusText = new CText
+	(
+		mpLogoFont, 30,
+		CVector2(WINDOW_WIDTH - 630.0f, 130.0f),
+		CVector2(580.0f, 770.0f),
+		CColor(0.11f, 0.1f, 0.1f),
+		ETaskPriority::eUI,
+		0,
+		ETaskPauseType::eDefault,
+		false,
+		false
+	);
+	mpStatusText->SetTextAlignV(ETextAlignV::eMiddle);
+	mpStatusText->SetText("所持金：0p\n");
+	// リストに追加
+	mTexts.push_back(mpStatusText);
 
 	// [ゲーム開始]ボタンを生成
 	CExpandButton* startBtn = new CExpandButton
 	(
-		CVector2(WINDOW_WIDTH - (250.0f + 20.0f), WINDOW_HEIGHT - (30.0f + 20.0f)),
+		CVector2(WINDOW_WIDTH - (250.0f + 50.0f), WINDOW_HEIGHT - (30.0f + 15.0f)),
 		CVector2((500.0f * 0.9f), (60.0f * 0.9f)),
 		ETaskPriority::eUI, 0, ETaskPauseType::eGame,
 		false, false
@@ -53,14 +158,63 @@ CHomeSceneUI::CHomeSceneUI()
 	startBtn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickStartGame, this));
 	// ボタンリストに追加
 	mButtons.push_back(startBtn);
+
+	// [タイトル]ボタンを生成
+	CExpandButton* titleBtn = new CExpandButton
+	(
+		CVector2(WINDOW_WIDTH - (250.0f + 50.0f), WINDOW_HEIGHT - (30.0f + 80.0f)),
+		CVector2((500.0f * 0.9f), (60.0f * 0.9f)),
+		ETaskPriority::eUI, 0, ETaskPauseType::eGame,
+		false, false
+	);
+	// ボタンの画像を読み込み
+	titleBtn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
+	// ボタンクリック時に呼び出されるコールバック関数を設定
+	titleBtn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickGoTitle, this));
+	// ボタンリストに追加
+	mButtons.push_back(titleBtn);
+
+
+	// テキスト群を生成
+	for (int i = 0; i < cols; i++)        // 列
+	{
+		for (int j = 0; j < rows; j++)    // 行
+		{
+			float x = 120.0f + i * 920.0f;
+			float y = 40.0f + j * 115.0f;
+
+			// 所持金のテキストを生成
+			CText* newText = new CText
+			(
+				mpLogoFont, 30,
+				CVector2(x, y),
+				CVector2(900.0f, 100.0f),	// <-----ココのサイズを変えても右端が変わらないっぽい
+				CColor(0.11f, 0.1f, 0.1f),
+				ETaskPriority::eUI,
+				0,
+				ETaskPauseType::eDefault,
+				false,
+				false
+			);
+			newText->SetTextAlignV(ETextAlignV::eMiddle);
+			newText->SetTextAlignH(ETextAlignH::eLeft);
+			//newText->SetTextAlignH(ETextAlignH::eRight);
+
+			int money = static_cast<int>(mpSaveManager->data.money);
+			newText->SetText(("所持金：" + std::to_string(money) + "p\n").c_str());
+
+			// リストに追加
+			mTexts.push_back(newText);
+		}
+	}
 }
 
 CHomeSceneUI::~CHomeSceneUI()
 {
 	SAFE_DELETE(mpLogoFont);
-	SAFE_DELETE(mpTitleLogo);
-	SAFE_DELETE(mpTitleBg);
-	SAFE_DELETE(mpStartText);
+	//SAFE_DELETE(mpMoneyText);
+	//SAFE_DELETE(mpStatusText);
+	//SAFE_DELETE(mpStartText); 
 
 	int size = mButtons.size();
 	for (int i = 0; i < size; i++)
@@ -70,6 +224,24 @@ CHomeSceneUI::~CHomeSceneUI()
 		SAFE_DELETE(btn);
 	}
 	mButtons.clear();
+
+	size = mBgImages.size();
+	for (int i = 0; i < size; i++)
+	{
+		CImage* img = mBgImages[i];
+		mBgImages[i] = nullptr;
+		SAFE_DELETE(img);
+	}
+	mBgImages.clear();
+
+	size = mTexts.size();
+	for (int i = 0; i < size; i++)
+	{
+		CText* txt = mTexts[i];
+		mTexts[i] = nullptr;
+		SAFE_DELETE(txt);
+	}
+	mTexts.clear();
 }
 
 bool CHomeSceneUI::IsEnd() const
@@ -111,19 +283,32 @@ void CHomeSceneUI::Update()
 		break;
 	}
 
-	mpTitleLogo->Update();
 	for (CButton* btn : mButtons)
 	{
 		btn->Update();
+	}
+
+	for (CText* txt : mTexts)
+	{
+		txt->Update();
 	}
 }
 
 void CHomeSceneUI::Render()
 {
-	mpTitleLogo->Render();
+	for (CImage* img : mBgImages)
+	{
+		img->Render();
+	}
+
 	for (CButton* btn : mButtons)
 	{
 		btn->Render();
+	}
+
+	for (CText* txt : mTexts)
+	{
+		txt->Render();
 	}
 }
 

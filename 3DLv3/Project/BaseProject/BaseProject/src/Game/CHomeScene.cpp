@@ -49,7 +49,7 @@ void CHomeScene::Load()
 	}
 
 	// UIçÏê¨
-	mpCHomeSceneUI = new CHomeSceneUI();
+	mpCHomeSceneUI = new CHomeSceneUI(mpSaveManager);
 	AddTask(mpCHomeSceneUI);
 
 	mpWhistleSE = CResourceManager::Get<CSound>("WhistleSound");
