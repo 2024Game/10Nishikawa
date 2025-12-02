@@ -28,12 +28,12 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	mpLogoFont->SetLineLength(WINDOW_WIDTH);
 
 	// 背景イメージ達を生成
-	int rows = 9;    // 1列あたりの項目数
-	int cols = 1;    // 列数 <- UIのサイズ的に１列で良かった(つまり頑張り損)
+	mRows = 9;    // 1列あたりの項目数
+	mCols = 1;    // 列数 <- UIのサイズ的に１列で良かった(つまり頑張り損)
 
-	for (int i = 0; i < cols; i++)        // 列
+	for (int i = 0; i < mCols; i++)        // 列
 	{
-		for (int j = 0; j < rows; j++)    // 行
+		for (int j = 0; j < mRows; j++)    // 行
 		{
 			// 項目の背景イメージ
 			CImage* img1 = new CImage
@@ -75,64 +75,49 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 		}
 	}
 
-	// テキスト群を生成
-	for (int i = 0; i < cols; i++)        // 列
-	{
-		for (int j = 0; j < rows; j++)    // 行
-		{
-			float x = 120.0f + i * 920.0f;
-			float y = 40.0f + j * 115.0f;
-
-			// 所持金のテキストを生成
-			CText* newText = new CText
-			(
-				mpLogoFont, 30,
-				CVector2(x, y),
-				CVector2(790.0f, 100.0f),	// <-----ココのサイズを変えても右端が変わらないっぽい
-				CColor(0.11f, 0.1f, 0.1f),
-				ETaskPriority::eUI,
-				0,
-				ETaskPauseType::eDefault,
-				false,
-				false
-			);
-			newText->SetTextAlignV(ETextAlignV::eMiddle);
-			//newText->SetTextAlignH(ETextAlignH::eLeft);
-			newText->SetTextAlignH(ETextAlignH::eRight);
-			newText->SetShowDebug(true);
-
-			int money = static_cast<int>(mpSaveManager->data.money);
-			newText->SetText(("所持金：" + std::to_string(money) + "p\n").c_str());
-
-			// リストに追加
-			mTexts.push_back(newText);
-		}
-	}
-
 	// ボタン群を生成
-	for (int i = 0; i < cols; i++)        // 列
+	int btnNum = 0;
+	for (int i = 0; i < mCols; i++)        // 列
 	{
-		for (int j = 0; j < rows; j++)    // 行
+		for (int j = 0; j < mRows; j++)    // 行
 		{
-			float x = 120.0f + i * 920.0f;
-			float y = 40.0f + j * 115.0f;
+			float x = 855.0f + i * 920.0f;
+			float y = 90.0f + j * 115.0f;
 
-			// [燃料タンク増加]ボタンを生成
-			CExpandButton* titleBtn = new CExpandButton
+			// ボタンを生成
+			CExpandButton* Btn = new CExpandButton
 			(
-				CVector2(WINDOW_WIDTH - (250.0f + 50.0f), WINDOW_HEIGHT - (30.0f + 80.0f)),
-				CVector2((500.0f * 0.9f), (60.0f * 0.9f)),
+				CVector2(x, y),
+				CVector2(120.0f, 90.0f),
 				ETaskPriority::eUI, 0, ETaskPauseType::eGame,
 				false, false
 			);
-			// ボタンの画像を読み込み
-			titleBtn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
-			// ボタンクリック時に呼び出されるコールバック関数を設定
-			titleBtn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickGoTitle, this));
+
+			switch (btnNum)
+			{
+			case 0:
+				// [燃料タンク増加]ボタンを設定
+				// ボタンの画像を読み込み
+				Btn->LoadButtonImage("UI/btn03_04_light.png", "UI/btn03_04_light.png");
+				// ボタンクリック時に呼び出されるコールバック関数を設定
+				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickIncreaseHP, this));
+				break;
+			case 1:
+				// [船体速度UP]ボタンを設定
+				Btn->LoadButtonImage("UI/btn03_04_light.png", "UI/btn03_04_light.png");
+				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickIncreaseBoatSpeed, this));
+				break;
+			default:
+				Btn->LoadButtonImage("UI/btn03_04_light.png", "UI/btn03_04_light.png");
+				break;
+			}
 			// ボタンリストに追加
-			mButtons.push_back(titleBtn);
+			mButtons.push_back(Btn);
+			btnNum++;
 		}
 	}
+
+	InformationUpdate();
 
 	// 所持金表示枠
 	CImage* gImg = new CImage
@@ -231,6 +216,8 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	titleBtn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickGoTitle, this));
 	// ボタンリストに追加
 	mButtons.push_back(titleBtn);
+
+	
 }
 
 CHomeSceneUI::~CHomeSceneUI()
@@ -266,6 +253,15 @@ CHomeSceneUI::~CHomeSceneUI()
 		SAFE_DELETE(txt);
 	}
 	mTexts.clear();
+
+	size = mURTexts.size();
+	for (int i = 0; i < size; i++)
+	{
+		CText* urtxt = mURTexts[i];
+		mURTexts[i] = nullptr;
+		SAFE_DELETE(urtxt);
+	}
+	mURTexts.clear();
 }
 
 bool CHomeSceneUI::IsEnd() const
@@ -314,7 +310,7 @@ void CHomeSceneUI::Update()
 
 	for (CText* txt : mTexts)
 	{
-		txt->Update();
+		//txt->Update();
 	}
 }
 
@@ -333,6 +329,73 @@ void CHomeSceneUI::Render()
 	for (CText* txt : mTexts)
 	{
 		txt->Render();
+	}
+	
+	for (CText* urtxt : mURTexts)
+	{
+		urtxt->Render();
+	}
+}
+
+void CHomeSceneUI::InformationUpdate()
+{
+	int size = mURTexts.size();
+	for (int i = 0; i < size; i++)
+	{
+		CText* urtxt = mURTexts[i];
+		mURTexts[i] = nullptr;
+		SAFE_DELETE(urtxt);
+	}
+	mURTexts.clear();
+	
+	int infoNum = 0;
+
+	// テキスト群を生成
+	for (int i = 0; i < mCols; i++)        // 列
+	{
+		for (int j = 0; j < mRows; j++)    // 行
+		{
+			float x = 120.0f + i * 920.0f;
+			float y = 40.0f + j * 115.0f;
+
+			// テキストを生成
+			CText* newText = new CText
+			(
+				mpLogoFont, 30,
+				CVector2(x, y),
+				CVector2(790.0f, 100.0f),	// <-----ココのサイズを変えても右端が変わらないっぽい
+				CColor(0.11f, 0.1f, 0.1f),
+				ETaskPriority::eUI,
+				0,
+				ETaskPauseType::eDefault,
+				false,
+				false
+			);
+			newText->SetTextAlignV(ETextAlignV::eMiddle);
+			//newText->SetTextAlignH(ETextAlignH::eLeft);
+			//newText->SetTextAlignH(ETextAlignH::eRight);
+			newText->SetTextAlignH(ETextAlignH::eCenter);
+			//newText->SetShowDebug(true);
+			
+			switch (infoNum)
+			{
+			case 0:
+				newText->SetText
+				(("燃料タンクの容量　Lv." + std::to_string(mpSaveManager->data.fuelTankLv) + "\n" + "レベルごとに5UP").c_str());
+				break;
+			case 1:
+				newText->SetText
+				(("船体速度　Lv." + std::to_string(mpSaveManager->data.playerSpeedLv) + "\n" + "レベルごとに5" + "％UP").c_str());
+				break;
+			default:
+				
+				break;
+			}
+			
+			// リストに追加
+			mURTexts.push_back(newText);
+			infoNum++;
+		}
 	}
 }
 
@@ -378,5 +441,24 @@ void CHomeSceneUI::OnClickGoTitle()
 
 void CHomeSceneUI::OnClickIncreaseHP()
 {
+	int cost = 500 * (mpSaveManager->data.fuelTankLv + 1);
+	if (mpSaveManager->data.money > cost)
+	{
+		mpSaveManager->data.money -= cost;
+		mpSaveManager->data.fuelTankLv++;
+		mpSaveManager->Save();
+		InformationUpdate();
+	}
+}
 
+void CHomeSceneUI::OnClickIncreaseBoatSpeed()
+{
+	int cost = 500 * (mpSaveManager->data.playerSpeedLv + 1);
+	if (mpSaveManager->data.money > cost)
+	{
+		mpSaveManager->data.money -= cost;
+		mpSaveManager->data.playerSpeedLv++;
+		mpSaveManager->Save();
+		InformationUpdate();
+	}
 }

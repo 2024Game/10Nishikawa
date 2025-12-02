@@ -92,6 +92,7 @@ private:
 	CSaveManager* mpSaveManager;
 
 	float mPlayerSpeed;
+	float mBarrelSpeed;
 
 	float mAttackDamage;		// ’M”š’e‚Ì”š”­ƒ_ƒ[ƒW
 	float mFireDepth;			// ’M”š’e‚Ì”­‰Î[“x

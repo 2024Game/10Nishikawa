@@ -4,10 +4,13 @@
 struct SaveData
 {
     int money;
-    float maxHP;
-    float playerSpeed;
-    int barrlSpeed;
-    int blastRadius;
+    int fuelTankLv;
+    int playerSpeedLv;
+    int barrlSpeedLv;
+    int blastPowerLv;
+    int blastRadiusLv;
+    int barrlTrackingLv;
+    int radarRecastTimeLv;
 };
 
 class CSaveManager

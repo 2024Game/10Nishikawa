@@ -25,13 +25,14 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	, mpModel(nullptr)
 	, mpBodyCol(nullptr)
 	, mFireDepth(50.0)
-	, mAttackDamage(10.0f)
 	, mGetScore(0.0f)
 	, mpSaveManager(SaveManager)
 {
-	mMaxHp = mpSaveManager->GetData().maxHP;
-	mPlayerSpeed = mpSaveManager->GetData().playerSpeed;
+	mMaxHp = 60.0f + (mpSaveManager->GetData().fuelTankLv * 5);
+	mPlayerSpeed = 0.5f * (1 + (mpSaveManager->GetData().playerSpeedLv * 0.05f));
 	mHp = mMaxHp;
+	mAttackDamage = 100.0f + (mpSaveManager->GetData().blastPowerLv * 2.5f);
+	mBarrelSpeed = 15.0f + (mpSaveManager->GetData().barrlSpeedLv * 0.5f);
 
 	//インスタンスの設定
 	spInstance = this;
@@ -244,7 +245,7 @@ void CPlayer::DropBarrel()
 	CVector pos = Position() + Rotation() * BARREL_OFFSET_POS;
 	CVector under = -VectorY();
 	CVector dir = CQuaternion(0.0f, 0.0f, 0.0f) * under;
-	CBarrel* barrel = new CBarrel(7.5f, mFireDepth, mAttackDamage, this, mpCamera);
+	CBarrel* barrel = new CBarrel(mBarrelSpeed, mFireDepth, mAttackDamage, this, mpCamera);
 	barrel->Position(pos);
 	barrel->Rotation(CQuaternion::LookRotation(dir));
 

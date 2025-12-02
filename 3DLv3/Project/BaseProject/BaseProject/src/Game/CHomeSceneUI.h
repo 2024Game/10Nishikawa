@@ -26,6 +26,9 @@ public:
 	// 描画
 	void Render() override;
 
+	// 情報更新
+	void InformationUpdate();
+
 private:
 	// 待機状態
 	void UpdateIdle();
@@ -54,6 +57,9 @@ private:
 
 	// [燃料タンク容量UP]クリック時のコールバック関数
 	void OnClickIncreaseHP();
+	// [船体スピードUP]クリック時のコールバック関数
+	void OnClickIncreaseBoatSpeed();
+
 	// [OPTION]クリック時のコールバック関数
 	void OnClickOption();
 	// [QUIT]クリック時のコールバック関数
@@ -65,6 +71,9 @@ private:
 	bool mIsEnd;		// タイトル画面終了フラグ
 	int mSelectIndex;	// 現在選択している項目
 
+	int mRows;    // 1列あたりの項目数
+	int mCols;    // 列数 <- UIのサイズ的に１列で良かった(つまり頑張り損)
+
 	CSaveManager* mpSaveManager;
 	CFont* mpLogoFont;		// タイトルロゴのフォント
 	CText* mpMoneyText;		// 所持金のテキスト
@@ -72,5 +81,6 @@ private:
 	CText* mpStartText;		// 「CLICK TO START」のテキスト
 	std::vector<CExpandButton*> mButtons;
 	std::vector<CImage*> mBgImages;
+	std::vector<CText*> mURTexts; // Update Required Texts (要更新テキスト)
 	std::vector<CText*> mTexts;
 };

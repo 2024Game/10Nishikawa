@@ -19,7 +19,7 @@ CBarrel::CBarrel(float speed, float depth, float damage, CPlayer* player , CGame
 	, mpAttackCol(nullptr)
 	, mpExplosionSound(nullptr)
 	, mMoveSpeed(speed)
-	, mTrackSpeed(1.0f)
+	, mTrackSpeed(50.0f)
 	, mFireDepth(depth)
 	, mpPlayer(player)
 	, mpCamera(camera)
