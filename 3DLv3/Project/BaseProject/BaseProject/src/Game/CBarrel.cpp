@@ -12,14 +12,14 @@
 #define ATTACK_COL_POS CVector(0.0f, 0.5f, 0.0f)
 
 // コンストラクタ
-CBarrel::CBarrel(float speed, float depth, float damage, CPlayer* player , CGameCamera2* camera)
+CBarrel::CBarrel(float speed, float depth, float damage, float trackspeed, CPlayer* player , CGameCamera2* camera)
 	: CObjectBase(ETag::ePlayer, ETaskPriority::eWeapon, 0, ETaskPauseType::eGame)
 	, mpModel(nullptr)
 	, mpCollider(nullptr)
 	, mpAttackCol(nullptr)
 	, mpExplosionSound(nullptr)
 	, mMoveSpeed(speed)
-	, mTrackSpeed(50.0f)
+	, mTrackSpeed(trackspeed)
 	, mFireDepth(depth)
 	, mpPlayer(player)
 	, mpCamera(camera)

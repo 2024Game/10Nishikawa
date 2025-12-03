@@ -1,4 +1,4 @@
-#include "CHomeSceneUI.h"
+ï»¿#include "CHomeSceneUI.h"
 #include "CFont.h"
 #include "CText.h"
 #include "CImage.h"
@@ -21,21 +21,21 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	, mpStartText(nullptr)
 	, mpSaveManager(saveManager)
 {
-	// ƒ^ƒCƒgƒ‹ƒƒS‚ÌƒtƒHƒ“ƒgƒf[ƒ^‚ğ¶¬
+	// ã‚¿ã‚¤ãƒˆãƒ«ãƒ­ã‚´ã®ãƒ•ã‚©ãƒ³ãƒˆãƒ‡ãƒ¼ã‚¿ã‚’ç”Ÿæˆ
 	mpLogoFont = new CFont("res\\Font\\misaki_gothic_2nd.ttf");
 	mpLogoFont->SetFontSize(30);
 	mpLogoFont->SetAlignment(FTGL::TextAlignment::ALIGN_LEFT);
 	mpLogoFont->SetLineLength(WINDOW_WIDTH);
 
-	// ”wŒiƒCƒ[ƒW’B‚ğ¶¬
-	mRows = 9;    // 1—ñ‚ ‚½‚è‚Ì€–Ú”
-	mCols = 1;    // —ñ” <- UI‚ÌƒTƒCƒY“I‚É‚P—ñ‚Å—Ç‚©‚Á‚½(‚Â‚Ü‚èŠæ’£‚è‘¹)
+	// èƒŒæ™¯ã‚¤ãƒ¡ãƒ¼ã‚¸é”ã‚’ç”Ÿæˆ
+	mRows = 9;    // 1åˆ—ã‚ãŸã‚Šã®é …ç›®æ•°
+	mCols = 1;    // åˆ—æ•° <- UIã®ã‚µã‚¤ã‚ºçš„ã«ï¼‘åˆ—ã§è‰¯ã‹ã£ãŸ(ã¤ã¾ã‚Šé ‘å¼µã‚Šæ)
 
-	for (int i = 0; i < mCols; i++)        // —ñ
+	for (int i = 0; i < mCols; i++)        // åˆ—
 	{
-		for (int j = 0; j < mRows; j++)    // s
+		for (int j = 0; j < mRows; j++)    // è¡Œ
 		{
-			// €–Ú‚Ì”wŒiƒCƒ[ƒW
+			// é …ç›®ã®èƒŒæ™¯ã‚¤ãƒ¡ãƒ¼ã‚¸
 			CImage* img1 = new CImage
 			(
 				"UI/white.png",
@@ -54,7 +54,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 
 			mBgImages.push_back(img1);
 
-			// €–Ú‚ÌƒAƒCƒRƒ“ƒCƒ[ƒW
+			// é …ç›®ã®ã‚¢ã‚¤ã‚³ãƒ³ã‚¤ãƒ¡ãƒ¼ã‚¸
 			CImage* img2 = new CImage
 			(
 				"UI/btn03_04_light.png",
@@ -75,16 +75,16 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 		}
 	}
 
-	// ƒ{ƒ^ƒ“ŒQ‚ğ¶¬
+	// ãƒœã‚¿ãƒ³ç¾¤ã‚’ç”Ÿæˆ
 	int btnNum = 0;
-	for (int i = 0; i < mCols; i++)        // —ñ
+	for (int i = 0; i < mCols; i++)        // åˆ—
 	{
-		for (int j = 0; j < mRows; j++)    // s
+		for (int j = 0; j < mRows; j++)    // è¡Œ
 		{
 			float x = 855.0f + i * 920.0f;
 			float y = 90.0f + j * 115.0f;
 
-			// ƒ{ƒ^ƒ“‚ğ¶¬
+			// ãƒœã‚¿ãƒ³ã‚’ç”Ÿæˆ
 			CExpandButton* Btn = new CExpandButton
 			(
 				CVector2(x, y),
@@ -96,22 +96,42 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 			switch (btnNum)
 			{
 			case 0:
-				// [”R—¿ƒ^ƒ“ƒN‘‰Á]ƒ{ƒ^ƒ“‚ğİ’è
-				// ƒ{ƒ^ƒ“‚Ì‰æ‘œ‚ğ“Ç‚İ‚İ
+				// [ç‡ƒæ–™ã‚¿ãƒ³ã‚¯å¢—åŠ ]ãƒœã‚¿ãƒ³ã‚’è¨­å®š
+				// ãƒœã‚¿ãƒ³ã®ç”»åƒã‚’èª­ã¿è¾¼ã¿
 				Btn->LoadButtonImage("UI/btn03_04_light.png", "UI/btn03_04_light.png");
-				// ƒ{ƒ^ƒ“ƒNƒŠƒbƒN‚ÉŒÄ‚Ño‚³‚ê‚éƒR[ƒ‹ƒoƒbƒNŠÖ”‚ğİ’è
+				// ãƒœã‚¿ãƒ³ã‚¯ãƒªãƒƒã‚¯æ™‚ã«å‘¼ã³å‡ºã•ã‚Œã‚‹ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°ã‚’è¨­å®š
 				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickIncreaseHP, this));
 				break;
 			case 1:
-				// [‘D‘Ì‘¬“xUP]ƒ{ƒ^ƒ“‚ğİ’è
+				// [èˆ¹ä½“é€Ÿåº¦UP]ãƒœã‚¿ãƒ³ã‚’è¨­å®š
 				Btn->LoadButtonImage("UI/btn03_04_light.png", "UI/btn03_04_light.png");
 				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickIncreaseBoatSpeed, this));
+				break;
+			case 2:
+				// [çˆ†å¼¾ã®â€‹æ²ˆä¸‹é€Ÿåº¦UP]ãƒœã‚¿ãƒ³ã‚’è¨­å®š
+				Btn->LoadButtonImage("UI/btn03_04_light.png", "UI/btn03_04_light.png");
+				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickIncreaseBarrelSpeed, this));
+				break;
+			case 3:
+				// [çˆ†å¼¾ã®â€‹å¨åŠ›UP]ãƒœã‚¿ãƒ³ã‚’è¨­å®š
+				Btn->LoadButtonImage("UI/btn03_04_light.png", "UI/btn03_04_light.png");
+				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickIncreaseBlastPower, this));
+				break;
+			case 4:
+				// [çˆ†å¼¾ã®â€‹çˆ†ç™ºåŠå¾„UP]ãƒœã‚¿ãƒ³ã‚’è¨­å®š
+				Btn->LoadButtonImage("UI/btn03_04_light.png", "UI/btn03_04_light.png");
+				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickIncreaseBlastRadius, this));
+				break;
+			case 5:
+				// [çˆ†å¼¾ã®â€‹è¿½å°¾æ€§èƒ½UP]ãƒœã‚¿ãƒ³ã‚’è¨­å®š
+				Btn->LoadButtonImage("UI/btn03_04_light.png", "UI/btn03_04_light.png");
+				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickIncreaseBarrelTracking, this));
 				break;
 			default:
 				Btn->LoadButtonImage("UI/btn03_04_light.png", "UI/btn03_04_light.png");
 				break;
 			}
-			// ƒ{ƒ^ƒ“ƒŠƒXƒg‚É’Ç‰Á
+			// ãƒœã‚¿ãƒ³ãƒªã‚¹ãƒˆã«è¿½åŠ 
 			mButtons.push_back(Btn);
 			btnNum++;
 		}
@@ -119,7 +139,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 
 	InformationUpdate();
 
-	// Š‹à•\¦˜g
+	// æ‰€æŒé‡‘è¡¨ç¤ºæ 
 	CImage* gImg = new CImage
 	(
 		"UI/white.png",
@@ -131,10 +151,10 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	);
 	gImg->SetSize(600.0f, 70.0f);
 	gImg->SetPos(WINDOW_WIDTH - 630.0f, 40.0f);
-	// ƒŠƒXƒg‚É’Ç‰Á
+	// ãƒªã‚¹ãƒˆã«è¿½åŠ 
 	mBgImages.push_back(gImg);
 
-	// Š‹à‚ÌƒeƒLƒXƒg‚ğ¶¬
+	// æ‰€æŒé‡‘ã®ãƒ†ã‚­ã‚¹ãƒˆã‚’ç”Ÿæˆ
 	mpMoneyText = new CText
 	(
 		mpLogoFont, 30,
@@ -150,11 +170,11 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	mpMoneyText->SetTextAlignV(ETextAlignV::eMiddle);
 
 	int money = static_cast<int>(mpSaveManager->data.money);
-	mpMoneyText->SetText(("Š‹àF" + std::to_string(money) + "p\n").c_str());
-	// ƒŠƒXƒg‚É’Ç‰Á
+	mpMoneyText->SetText(("æ‰€æŒé‡‘ï¼š" + std::to_string(money) + "p\n").c_str());
+	// ãƒªã‚¹ãƒˆã«è¿½åŠ 
 	mTexts.push_back(mpMoneyText);
 
-	// ƒXƒe[ƒ^ƒX•\¦˜g
+	// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹è¡¨ç¤ºæ 
 	CImage* stImg = new CImage
 	(
 		"UI/white.png",
@@ -166,10 +186,10 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	);
 	stImg->SetSize(600.0f, 790.0f);
 	stImg->SetPos(WINDOW_WIDTH - 630.0f, 130.0f);
-	// ƒŠƒXƒg‚É’Ç‰Á
+	// ãƒªã‚¹ãƒˆã«è¿½åŠ 
 	mBgImages.push_back(stImg);
 	
-	// ƒXƒe[ƒ^ƒX‚ÌƒeƒLƒXƒg‚ğ¶¬
+	// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®ãƒ†ã‚­ã‚¹ãƒˆã‚’ç”Ÿæˆ
 	mpStatusText = new CText
 	(
 		mpLogoFont, 30,
@@ -183,11 +203,18 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 		false
 	);
 	mpStatusText->SetTextAlignV(ETextAlignV::eMiddle);
-	mpStatusText->SetText("Š‹àF0p\n");
-	// ƒŠƒXƒg‚É’Ç‰Á
+	mpStatusText->SetText((
+		"ç‡ƒæ–™ã‚¿ãƒ³ã‚¯ã®å®¹é‡" + std::to_string(30 + (mpSaveManager->data.fuelTankLv * 5)) + "\n"
+		"èˆ¹ä½“é€Ÿåº¦" + std::to_string(30 + (mpSaveManager->data.fuelTankLv * 5)) + "\n"
+		"çˆ†å¼¾ã®æ²ˆä¸‹é€Ÿåº¦" + std::to_string(30 + (mpSaveManager->data.fuelTankLv * 5)) + "\n"
+		"çˆ†å¼¾ã®å¨åŠ›" + std::to_string(30 + (mpSaveManager->data.fuelTankLv * 5)) + "\n"
+		"çˆ†å¼¾ã®çˆ†ç™ºåŠå¾„" + std::to_string(30 + (mpSaveManager->data.fuelTankLv * 5)) + "\n"
+		"çˆ†å¼¾ã®è¿½å°¾æ€§èƒ½" + std::to_string(30 + (mpSaveManager->data.fuelTankLv * 5)) + "\n"
+		).c_str());
+	// ãƒªã‚¹ãƒˆã«è¿½åŠ 
 	mTexts.push_back(mpStatusText);
 
-	// [ƒQ[ƒ€ŠJn]ƒ{ƒ^ƒ“‚ğ¶¬
+	// [ã‚²ãƒ¼ãƒ é–‹å§‹]ãƒœã‚¿ãƒ³ã‚’ç”Ÿæˆ
 	CExpandButton* startBtn = new CExpandButton
 	(
 		CVector2(WINDOW_WIDTH - (250.0f + 50.0f), WINDOW_HEIGHT - (30.0f + 15.0f)),
@@ -195,14 +222,14 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 		ETaskPriority::eUI, 0, ETaskPauseType::eGame,
 		false, false
 	);
-	// ƒ{ƒ^ƒ“‚Ì‰æ‘œ‚ğ“Ç‚İ‚İ
+	// ãƒœã‚¿ãƒ³ã®ç”»åƒã‚’èª­ã¿è¾¼ã¿
 	startBtn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
-	// ƒ{ƒ^ƒ“ƒNƒŠƒbƒN‚ÉŒÄ‚Ño‚³‚ê‚éƒR[ƒ‹ƒoƒbƒNŠÖ”‚ğİ’è
+	// ãƒœã‚¿ãƒ³ã‚¯ãƒªãƒƒã‚¯æ™‚ã«å‘¼ã³å‡ºã•ã‚Œã‚‹ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°ã‚’è¨­å®š
 	startBtn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickStartGame, this));
-	// ƒ{ƒ^ƒ“ƒŠƒXƒg‚É’Ç‰Á
+	// ãƒœã‚¿ãƒ³ãƒªã‚¹ãƒˆã«è¿½åŠ 
 	mButtons.push_back(startBtn);
 
-	// [ƒ^ƒCƒgƒ‹]ƒ{ƒ^ƒ“‚ğ¶¬
+	// [ã‚¿ã‚¤ãƒˆãƒ«]ãƒœã‚¿ãƒ³ã‚’ç”Ÿæˆ
 	CExpandButton* titleBtn = new CExpandButton
 	(
 		CVector2(WINDOW_WIDTH - (250.0f + 50.0f), WINDOW_HEIGHT - (30.0f + 80.0f)),
@@ -210,11 +237,11 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 		ETaskPriority::eUI, 0, ETaskPauseType::eGame,
 		false, false
 	);
-	// ƒ{ƒ^ƒ“‚Ì‰æ‘œ‚ğ“Ç‚İ‚İ
+	// ãƒœã‚¿ãƒ³ã®ç”»åƒã‚’èª­ã¿è¾¼ã¿
 	titleBtn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
-	// ƒ{ƒ^ƒ“ƒNƒŠƒbƒN‚ÉŒÄ‚Ño‚³‚ê‚éƒR[ƒ‹ƒoƒbƒNŠÖ”‚ğİ’è
+	// ãƒœã‚¿ãƒ³ã‚¯ãƒªãƒƒã‚¯æ™‚ã«å‘¼ã³å‡ºã•ã‚Œã‚‹ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°ã‚’è¨­å®š
 	titleBtn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickGoTitle, this));
-	// ƒ{ƒ^ƒ“ƒŠƒXƒg‚É’Ç‰Á
+	// ãƒœã‚¿ãƒ³ãƒªã‚¹ãƒˆã«è¿½åŠ 
 	mButtons.push_back(titleBtn);
 
 	
@@ -271,13 +298,13 @@ bool CHomeSceneUI::IsEnd() const
 
 bool CHomeSceneUI::IsStartGame() const
 {
-	// ‘I‘ğ€–Ú‚ª1‚Â–Ú‚È‚ç‚ÎAƒQ[ƒ€ŠJn
+	// é¸æŠé …ç›®ãŒ1ã¤ç›®ãªã‚‰ã°ã€ã‚²ãƒ¼ãƒ é–‹å§‹
 	return mSelectIndex == 0;
 }
 
 bool CHomeSceneUI::IsGoTitle() const
 {
-	// ‘I‘ğ€–Ú‚ª2‚Â–Ú‚È‚ç‚ÎAƒ^ƒCƒgƒ‹‚ÖˆÚs
+	// é¸æŠé …ç›®ãŒ2ã¤ç›®ãªã‚‰ã°ã€ã‚¿ã‚¤ãƒˆãƒ«ã¸ç§»è¡Œ
 	return mSelectIndex == 1;
 }
 
@@ -285,19 +312,19 @@ void CHomeSceneUI::Update()
 {
 	switch (mState)
 	{
-		// ‘Ò‹@ó‘Ô
+		// å¾…æ©ŸçŠ¶æ…‹
 	case EState::eIdle:
 		UpdateIdle();
 		break;
-		// ƒƒjƒ…[‚ğŠJ‚­
+		// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’é–‹ã
 	case EState::eOpen:
 		UpdateOpen();
 		break;
-		// ƒƒjƒ…[‘I‘ğ
+		// ãƒ¡ãƒ‹ãƒ¥ãƒ¼é¸æŠ
 	case EState::eSelect:
 		UpdateSelect();
 		break;
-		// ƒtƒF[ƒhƒAƒEƒg
+		// ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆ
 	case EState::eFadeOut:
 		UpdateFadeOut();
 		break;
@@ -350,20 +377,20 @@ void CHomeSceneUI::InformationUpdate()
 	
 	int infoNum = 0;
 
-	// ƒeƒLƒXƒgŒQ‚ğ¶¬
-	for (int i = 0; i < mCols; i++)        // —ñ
+	// ãƒ†ã‚­ã‚¹ãƒˆç¾¤ã‚’ç”Ÿæˆ
+	for (int i = 0; i < mCols; i++)        // åˆ—
 	{
-		for (int j = 0; j < mRows; j++)    // s
+		for (int j = 0; j < mRows; j++)    // è¡Œ
 		{
 			float x = 120.0f + i * 920.0f;
 			float y = 40.0f + j * 115.0f;
 
-			// ƒeƒLƒXƒg‚ğ¶¬
+			// ãƒ†ã‚­ã‚¹ãƒˆã‚’ç”Ÿæˆ
 			CText* newText = new CText
 			(
 				mpLogoFont, 30,
 				CVector2(x, y),
-				CVector2(790.0f, 100.0f),	// <-----ƒRƒR‚ÌƒTƒCƒY‚ğ•Ï‚¦‚Ä‚à‰E’[‚ª•Ï‚í‚ç‚È‚¢‚Á‚Û‚¢
+				CVector2(790.0f, 100.0f),	// <-----ã‚³ã‚³ã®ã‚µã‚¤ã‚ºã‚’å¤‰ãˆã¦ã‚‚å³ç«¯ãŒå¤‰ã‚ã‚‰ãªã„ã£ã½ã„
 				CColor(0.11f, 0.1f, 0.1f),
 				ETaskPriority::eUI,
 				0,
@@ -381,18 +408,34 @@ void CHomeSceneUI::InformationUpdate()
 			{
 			case 0:
 				newText->SetText
-				(("”R—¿ƒ^ƒ“ƒN‚Ì—e—Ê@Lv." + std::to_string(mpSaveManager->data.fuelTankLv) + "\n" + "ƒŒƒxƒ‹‚²‚Æ‚É5UP").c_str());
+				(("ç‡ƒæ–™ã‚¿ãƒ³ã‚¯ã®å®¹é‡ã€€Lv." + std::to_string(mpSaveManager->data.fuelTankLv) + "\n" + "ãƒ¬ãƒ™ãƒ«ã”ã¨ã«5UP").c_str());
 				break;
 			case 1:
 				newText->SetText
-				(("‘D‘Ì‘¬“x@Lv." + std::to_string(mpSaveManager->data.playerSpeedLv) + "\n" + "ƒŒƒxƒ‹‚²‚Æ‚É5" + "“UP").c_str());
+				(("èˆ¹ä½“é€Ÿåº¦ã€€Lv." + std::to_string(mpSaveManager->data.playerSpeedLv) + "\n" + "ãƒ¬ãƒ™ãƒ«ã”ã¨ã«5" + "ï¼…UP").c_str());
+				break;
+			case 2:
+				newText->SetText
+				(("çˆ†å¼¾ã®æ²ˆä¸‹é€Ÿåº¦ã€€Lv." + std::to_string(mpSaveManager->data.barrelSpeedLv) + "\n" + "ãƒ¬ãƒ™ãƒ«ã”ã¨ã«0.5(m/s)UP").c_str());
+				break;
+			case 3:
+				newText->SetText
+				(("çˆ†å¼¾ã®å¨åŠ›ã€€Lv." + std::to_string(mpSaveManager->data.blastPowerLv) + "\n" + "ãƒ¬ãƒ™ãƒ«ã”ã¨ã«2.5UP").c_str());
+				break;
+			case 4:
+				newText->SetText
+				(("çˆ†å¼¾ã®çˆ†ç™ºåŠå¾„ã€€Lv." + std::to_string(mpSaveManager->data.blastRadiusLv) + "\n" + "ãƒ¬ãƒ™ãƒ«ã”ã¨ã«2.5(m)UP").c_str());
+				break;
+			case 5:
+				newText->SetText
+				(("çˆ†å¼¾ã®è¿½å°¾æ€§èƒ½ã€€Lv." + std::to_string(mpSaveManager->data.barrelTrackingLv) + "\n" + "ãƒ¬ãƒ™ãƒ«ã”ã¨ã«0.5UP").c_str());
 				break;
 			default:
 				
 				break;
 			}
 			
-			// ƒŠƒXƒg‚É’Ç‰Á
+			// ãƒªã‚¹ãƒˆã«è¿½åŠ 
 			mURTexts.push_back(newText);
 			infoNum++;
 		}
@@ -458,6 +501,54 @@ void CHomeSceneUI::OnClickIncreaseBoatSpeed()
 	{
 		mpSaveManager->data.money -= cost;
 		mpSaveManager->data.playerSpeedLv++;
+		mpSaveManager->Save();
+		InformationUpdate();
+	}
+}
+
+void CHomeSceneUI::OnClickIncreaseBarrelSpeed()
+{
+	int cost = 500 * (mpSaveManager->data.barrelSpeedLv + 1);
+	if (mpSaveManager->data.money > cost)
+	{
+		mpSaveManager->data.money -= cost;
+		mpSaveManager->data.barrelSpeedLv++;
+		mpSaveManager->Save();
+		InformationUpdate();
+	}
+}
+
+void CHomeSceneUI::OnClickIncreaseBlastPower()
+{
+	int cost = 500 * (mpSaveManager->data.blastPowerLv + 1);
+	if (mpSaveManager->data.money > cost)
+	{
+		mpSaveManager->data.money -= cost;
+		mpSaveManager->data.blastPowerLv++;
+		mpSaveManager->Save();
+		InformationUpdate();
+	}
+}
+
+void CHomeSceneUI::OnClickIncreaseBlastRadius()
+{
+	int cost = 500 * (mpSaveManager->data.blastRadiusLv + 1);
+	if (mpSaveManager->data.money > cost)
+	{
+		mpSaveManager->data.money -= cost;
+		mpSaveManager->data.blastRadiusLv++;
+		mpSaveManager->Save();
+		InformationUpdate();
+	}
+}
+
+void CHomeSceneUI::OnClickIncreaseBarrelTracking()
+{
+	int cost = 500 * (mpSaveManager->data.barrelTrackingLv + 1);
+	if (mpSaveManager->data.money > cost)
+	{
+		mpSaveManager->data.money -= cost;
+		mpSaveManager->data.barrelTrackingLv++;
 		mpSaveManager->Save();
 		InformationUpdate();
 	}

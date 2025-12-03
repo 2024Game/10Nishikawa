@@ -23,9 +23,9 @@ void CSaveManager::Reset()
     data.money = 0;
     data.fuelTankLv = 0;
     data.playerSpeedLv = 0;
-    data.barrlSpeedLv = 0;
+    data.barrelSpeedLv = 0;
     data.blastPowerLv = 0;
     data.blastRadiusLv = 0;
-    data.barrlTrackingLv = 0;
+    data.barrelTrackingLv = 0;
     data.radarRecastTimeLv = 0;
 }

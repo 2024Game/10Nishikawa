@@ -6,10 +6,10 @@ struct SaveData
     int money;
     int fuelTankLv;
     int playerSpeedLv;
-    int barrlSpeedLv;
+    int barrelSpeedLv;
     int blastPowerLv;
     int blastRadiusLv;
-    int barrlTrackingLv;
+    int barrelTrackingLv;
     int radarRecastTimeLv;
 };
 

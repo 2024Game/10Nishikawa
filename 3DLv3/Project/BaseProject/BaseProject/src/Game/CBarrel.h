@@ -12,7 +12,8 @@ public:
 	/// <param name="speed">樽の沈下速度(m/秒)</param>
 	/// <param name="dist">樽の発火深度</param>
 	/// <param name="damage">樽のダメージ</param>
-	CBarrel(float speed, float dist, float damage, CPlayer* player, CGameCamera2* camera);
+	/// <param name="trackspeed">樽の追尾性能</param>
+	CBarrel(float speed, float dist, float damage, float trackspeed, CPlayer* player, CGameCamera2* camera);
 	// デストラクタ
 	~CBarrel();
 

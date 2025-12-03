@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "CTask.h"
 #include "CSaveManager.h"
 
@@ -9,78 +9,86 @@ class CExpandButton;
 class CHomeSceneUI : public CTask
 {
 public:
-	// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	CHomeSceneUI(CSaveManager* saveManager);
-	// ƒfƒXƒgƒ‰ƒNƒ^
+	// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	~CHomeSceneUI();
 
-	// ƒz[ƒ€‰æ–ÊI—¹‚©
+	// ãƒ›ãƒ¼ãƒ ç”»é¢çµ‚äº†ã‹
 	bool IsEnd() const;
-	// ƒQ[ƒ€‚ğŠJn‚·‚é‚©
+	// ã‚²ãƒ¼ãƒ ã‚’é–‹å§‹ã™ã‚‹ã‹
 	bool IsStartGame() const;
-	// ƒ^ƒCƒgƒ‹‚ÖˆÚs‚·‚é‚©
+	// ã‚¿ã‚¤ãƒˆãƒ«ã¸ç§»è¡Œã™ã‚‹ã‹
 	bool IsGoTitle() const;
 
-	// XV
+	// æ›´æ–°
 	void Update() override;
-	// •`‰æ
+	// æç”»
 	void Render() override;
 
-	// î•ñXV
+	// æƒ…å ±æ›´æ–°
 	void InformationUpdate();
 
 private:
-	// ‘Ò‹@ó‘Ô
+	// å¾…æ©ŸçŠ¶æ…‹
 	void UpdateIdle();
-	// ƒƒjƒ…[‚ğŠJ‚­
+	// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’é–‹ã
 	void UpdateOpen();
-	// ƒƒjƒ…[‘I‘ğ
+	// ãƒ¡ãƒ‹ãƒ¥ãƒ¼é¸æŠ
 	void UpdateSelect();
-	// ƒtƒF[ƒhƒAƒEƒg
+	// ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆ
 	void UpdateFadeOut();
 
-	// ƒ^ƒCƒgƒ‹‚Ìó‘Ô
+	// ã‚¿ã‚¤ãƒˆãƒ«ã®çŠ¶æ…‹
 	enum class EState
 	{
-		eIdle,		// ‘Ò‹@ó‘Ô
-		eOpen,		// ƒƒjƒ…[‚ğŠJ‚­
-		eSelect,	// ƒƒjƒ…[‘I‘ğ
-		eFadeOut,	// ƒtƒF[ƒhƒAƒEƒg
+		eIdle,		// å¾…æ©ŸçŠ¶æ…‹
+		eOpen,		// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’é–‹ã
+		eSelect,	// ãƒ¡ãƒ‹ãƒ¥ãƒ¼é¸æŠ
+		eFadeOut,	// ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆ
 	};
-	// ó‘ÔØ‚è‘Ö‚¦
+	// çŠ¶æ…‹åˆ‡ã‚Šæ›¿ãˆ
 	void ChangeState(EState state);
 
-	// [ƒQ[ƒ€ŠJn]ƒNƒŠƒbƒN‚ÌƒR[ƒ‹ƒoƒbƒNŠÖ”
+	// [ã‚²ãƒ¼ãƒ é–‹å§‹]ã‚¯ãƒªãƒƒã‚¯æ™‚ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°
 	void OnClickStartGame();
-	// [ƒ^ƒCƒgƒ‹‚É–ß‚é]ƒNƒŠƒbƒN‚ÌƒR[ƒ‹ƒoƒbƒNŠÖ”
+	// [ã‚¿ã‚¤ãƒˆãƒ«ã«æˆ»ã‚‹]ã‚¯ãƒªãƒƒã‚¯æ™‚ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°
 	void OnClickGoTitle();
 
-	// [”R—¿ƒ^ƒ“ƒN—e—ÊUP]ƒNƒŠƒbƒN‚ÌƒR[ƒ‹ƒoƒbƒNŠÖ”
+	// [ç‡ƒæ–™ã‚¿ãƒ³ã‚¯å®¹é‡UP]ã‚¯ãƒªãƒƒã‚¯æ™‚ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°
 	void OnClickIncreaseHP();
-	// [‘D‘ÌƒXƒs[ƒhUP]ƒNƒŠƒbƒN‚ÌƒR[ƒ‹ƒoƒbƒNŠÖ”
+	// [èˆ¹ä½“ã‚¹ãƒ”ãƒ¼ãƒ‰UP]ã‚¯ãƒªãƒƒã‚¯æ™‚ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°
 	void OnClickIncreaseBoatSpeed();
+	// [çˆ†å¼¾ã®â€‹æ²ˆä¸‹é€Ÿåº¦UP]ã‚¯ãƒªãƒƒã‚¯æ™‚ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°
+	void OnClickIncreaseBarrelSpeed();
+	// [çˆ†å¼¾ã®â€‹å¨åŠ›UP]ã‚¯ãƒªãƒƒã‚¯æ™‚ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°
+	void OnClickIncreaseBlastPower();
+	// [çˆ†å¼¾ã®â€‹çˆ†ç™ºåŠå¾„UP]ã‚¯ãƒªãƒƒã‚¯æ™‚ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°
+	void OnClickIncreaseBlastRadius();
+	// [çˆ†å¼¾ã®â€‹è¿½å°¾æ€§èƒ½UP]ã‚¯ãƒªãƒƒã‚¯æ™‚ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°
+	void OnClickIncreaseBarrelTracking();
 
-	// [OPTION]ƒNƒŠƒbƒN‚ÌƒR[ƒ‹ƒoƒbƒNŠÖ”
+	// [OPTION]ã‚¯ãƒªãƒƒã‚¯æ™‚ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°
 	void OnClickOption();
-	// [QUIT]ƒNƒŠƒbƒN‚ÌƒR[ƒ‹ƒoƒbƒNŠÖ”
+	// [QUIT]ã‚¯ãƒªãƒƒã‚¯æ™‚ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°
 	void OnClickQuit();
 
-	EState mState;		// Œ»İ‚Ìó‘Ô
-	int mStateStep;		// ó‘Ô“à‚Å‚ÌƒXƒeƒbƒvŠÇ——p
-	float mElapsedTime;	// Œo‰ßŠÔŒv‘ª—p
-	bool mIsEnd;		// ƒ^ƒCƒgƒ‹‰æ–ÊI—¹ƒtƒ‰ƒO
-	int mSelectIndex;	// Œ»İ‘I‘ğ‚µ‚Ä‚¢‚é€–Ú
+	EState mState;		// ç¾åœ¨ã®çŠ¶æ…‹
+	int mStateStep;		// çŠ¶æ…‹å†…ã§ã®ã‚¹ãƒ†ãƒƒãƒ—ç®¡ç†ç”¨
+	float mElapsedTime;	// çµŒéæ™‚é–“è¨ˆæ¸¬ç”¨
+	bool mIsEnd;		// ã‚¿ã‚¤ãƒˆãƒ«ç”»é¢çµ‚äº†ãƒ•ãƒ©ã‚°
+	int mSelectIndex;	// ç¾åœ¨é¸æŠã—ã¦ã„ã‚‹é …ç›®
 
-	int mRows;    // 1—ñ‚ ‚½‚è‚Ì€–Ú”
-	int mCols;    // —ñ” <- UI‚ÌƒTƒCƒY“I‚É‚P—ñ‚Å—Ç‚©‚Á‚½(‚Â‚Ü‚èŠæ’£‚è‘¹)
+	int mRows;    // 1åˆ—ã‚ãŸã‚Šã®é …ç›®æ•°
+	int mCols;    // åˆ—æ•° <- UIã®ã‚µã‚¤ã‚ºçš„ã«ï¼‘åˆ—ã§è‰¯ã‹ã£ãŸ(ã¤ã¾ã‚Šé ‘å¼µã‚Šæ)
 
 	CSaveManager* mpSaveManager;
-	CFont* mpLogoFont;		// ƒ^ƒCƒgƒ‹ƒƒS‚ÌƒtƒHƒ“ƒg
-	CText* mpMoneyText;		// Š‹à‚ÌƒeƒLƒXƒg
-	CText* mpStatusText;	// ƒXƒe[ƒ^ƒX‚ÌƒeƒLƒXƒg
-	CText* mpStartText;		// uCLICK TO STARTv‚ÌƒeƒLƒXƒg
+	CFont* mpLogoFont;		// ã‚¿ã‚¤ãƒˆãƒ«ãƒ­ã‚´ã®ãƒ•ã‚©ãƒ³ãƒˆ
+	CText* mpMoneyText;		// æ‰€æŒé‡‘ã®ãƒ†ã‚­ã‚¹ãƒˆ
+	CText* mpStatusText;	// ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®ãƒ†ã‚­ã‚¹ãƒˆ
+	CText* mpStartText;		// ã€ŒCLICK TO STARTã€ã®ãƒ†ã‚­ã‚¹ãƒˆ
 	std::vector<CExpandButton*> mButtons;
 	std::vector<CImage*> mBgImages;
-	std::vector<CText*> mURTexts; // Update Required Texts (—vXVƒeƒLƒXƒg)
+	std::vector<CText*> mURTexts; // Update Required Texts (è¦æ›´æ–°ãƒ†ã‚­ã‚¹ãƒˆ)
 	std::vector<CText*> mTexts;
 };
