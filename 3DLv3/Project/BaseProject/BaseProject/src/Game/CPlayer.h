@@ -96,6 +96,7 @@ private:
 
 	float mAttackDamage;		// ’M”š’e‚Ì”š”­ƒ_ƒ[ƒW
 	float mFireDepth;			// ’M”š’e‚Ì”­‰Î[“x
+	float mAttackRadius;		// ’M”š’e‚Ì”š”­”¼Œa
 
 	float mGetScore;
 };

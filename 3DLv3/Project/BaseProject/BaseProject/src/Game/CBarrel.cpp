@@ -12,7 +12,7 @@
 #define ATTACK_COL_POS CVector(0.0f, 0.5f, 0.0f)
 
 // コンストラクタ
-CBarrel::CBarrel(float speed, float depth, float damage, float trackspeed, CPlayer* player , CGameCamera2* camera)
+CBarrel::CBarrel(float speed, float depth, float damage, float trackspeed, float radius, CPlayer* player , CGameCamera2* camera)
 	: CObjectBase(ETag::ePlayer, ETaskPriority::eWeapon, 0, ETaskPauseType::eGame)
 	, mpModel(nullptr)
 	, mpCollider(nullptr)
@@ -24,6 +24,7 @@ CBarrel::CBarrel(float speed, float depth, float damage, float trackspeed, CPlay
 	, mpPlayer(player)
 	, mpCamera(camera)
 	, mFireDamage(damage)
+	, mRadius(radius)
 {
 	// モデルデータ取得
 	mpModel = CResourceManager::Get<CModel>("Barrel");
@@ -44,7 +45,7 @@ CBarrel::CBarrel(float speed, float depth, float damage, float trackspeed, CPlay
 	mpAttackCol = new CColliderSphere
 	(
 		this, ELayer::eAttackCol,
-		ATTACK_COL_RADIUS, true
+		mRadius, true
 	);
 	// 魚のコライダーとのみヒットするように設定
 	mpAttackCol->SetCollisionTags({ ETag::eEnemy });

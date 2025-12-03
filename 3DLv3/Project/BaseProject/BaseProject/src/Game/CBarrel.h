@@ -13,7 +13,8 @@ public:
 	/// <param name="dist">樽の発火深度</param>
 	/// <param name="damage">樽のダメージ</param>
 	/// <param name="trackspeed">樽の追尾性能</param>
-	CBarrel(float speed, float dist, float damage, float trackspeed, CPlayer* player, CGameCamera2* camera);
+	/// <param name="radius">樽の爆発半径</param>
+	CBarrel(float speed, float dist, float damage, float trackspeed, float radius, CPlayer* player, CGameCamera2* camera);
 	// デストラクタ
 	~CBarrel();
 
@@ -33,6 +34,7 @@ private:
 	float mMoveSpeed;			// 移動速度
 	float mTrackSpeed;			// 追尾速度
 	float mFireDepth;			// 発火深度
+	float mRadius;				// 爆発半径
 
 	bool mAttackTriggered = false;   // 攻撃コライダーを有効にしたか
 	float mKillTimer = 0.0f;         // Killまでの経過時間

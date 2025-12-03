@@ -15,17 +15,31 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	, mStateStep(0)
 	, mElapsedTime(0.0f)
 	, mIsEnd(false)
-	, mpLogoFont(nullptr)
+	, mpMoneyFont(nullptr)
+	, mpStatusFont(nullptr)
+	, mpPerkFont(nullptr)
 	, mpMoneyText(nullptr)
 	, mpStatusText(nullptr)
 	, mpStartText(nullptr)
 	, mpSaveManager(saveManager)
 {
-	// タイトルロゴのフォントデータを生成
-	mpLogoFont = new CFont("res\\Font\\misaki_gothic_2nd.ttf");
-	mpLogoFont->SetFontSize(30);
-	mpLogoFont->SetAlignment(FTGL::TextAlignment::ALIGN_LEFT);
-	mpLogoFont->SetLineLength(WINDOW_WIDTH);
+	// 所持金のフォントデータを生成
+	mpMoneyFont = new CFont("res\\Font\\JF-Dot-K12.ttf");
+	mpMoneyFont->SetFontSize(30);
+	mpMoneyFont->SetAlignment(FTGL::TextAlignment::ALIGN_LEFT);
+	mpMoneyFont->SetLineLength(WINDOW_WIDTH);
+
+	// ステータスのフォントデータを生成
+	mpStatusFont = new CFont("res\\Font\\JF-Dot-K12.ttf");
+	mpStatusFont->SetFontSize(30);
+	mpStatusFont->SetAlignment(FTGL::TextAlignment::ALIGN_LEFT);
+	mpStatusFont->SetLineLength(WINDOW_WIDTH);
+
+	// 強化パークのフォントデータを生成
+	mpPerkFont = new CFont("res\\Font\\JF-Dot-K12.ttf");
+	mpPerkFont->SetFontSize(30);
+	mpPerkFont->SetAlignment(FTGL::TextAlignment::ALIGN_LEFT);
+	mpPerkFont->SetLineLength(WINDOW_WIDTH);
 
 	// 背景イメージ達を生成
 	mRows = 9;    // 1列あたりの項目数
@@ -157,7 +171,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	// 所持金のテキストを生成
 	mpMoneyText = new CText
 	(
-		mpLogoFont, 30,
+		mpMoneyFont, 35,
 		CVector2(WINDOW_WIDTH - 620.0f, 60.0f),
 		CVector2(580.0f, 60.0f),
 		CColor(0.11f, 0.1f, 0.1f),
@@ -170,7 +184,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	mpMoneyText->SetTextAlignV(ETextAlignV::eMiddle);
 
 	int money = static_cast<int>(mpSaveManager->data.money);
-	mpMoneyText->SetText(("所持金：" + std::to_string(money) + "p\n").c_str());
+	mpMoneyText->SetText(("所持金：$" + std::to_string(money) + "\n").c_str());
 	// リストに追加
 	mTexts.push_back(mpMoneyText);
 
@@ -192,8 +206,8 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	// ステータスのテキストを生成
 	mpStatusText = new CText
 	(
-		mpLogoFont, 30,
-		CVector2(WINDOW_WIDTH - 630.0f, 130.0f),
+		mpStatusFont, 30,
+		CVector2(WINDOW_WIDTH - 620.0f, 140.0f),
 		CVector2(580.0f, 770.0f),
 		CColor(0.11f, 0.1f, 0.1f),
 		ETaskPriority::eUI,
@@ -203,14 +217,17 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 		false
 	);
 	mpStatusText->SetTextAlignV(ETextAlignV::eMiddle);
+	mpStatusText->SetTextAlignH(ETextAlignH::eLeft);
 	mpStatusText->SetText((
-		"燃料タンクの容量" + std::to_string(30 + (mpSaveManager->data.fuelTankLv * 5)) + "\n"
-		"船体速度" + std::to_string(30 + (mpSaveManager->data.fuelTankLv * 5)) + "\n"
-		"爆弾の沈下速度" + std::to_string(30 + (mpSaveManager->data.fuelTankLv * 5)) + "\n"
-		"爆弾の威力" + std::to_string(30 + (mpSaveManager->data.fuelTankLv * 5)) + "\n"
-		"爆弾の爆発半径" + std::to_string(30 + (mpSaveManager->data.fuelTankLv * 5)) + "\n"
-		"爆弾の追尾性能" + std::to_string(30 + (mpSaveManager->data.fuelTankLv * 5)) + "\n"
+		"燃料タンクの容量 " + std::to_string(30 + (mpSaveManager->data.fuelTankLv * 5)) + "\n"
+		"船体速度 " + std::to_string(0.5f * (1 + (mpSaveManager->data.playerSpeedLv * 0.05f))) + "\n"
+		"爆弾の沈下速度 " + std::to_string(5 + (mpSaveManager->data.barrelSpeedLv * 0.5)) + "\n"
+		"爆弾の威力 " + std::to_string(30 + (mpSaveManager->data.blastPowerLv * 5)) + "\n"
+		"爆弾の爆発半径 " + std::to_string(30 + (mpSaveManager->data.blastRadiusLv * 5)) + "\n"
+		"爆弾の追尾性能 " + std::to_string(30 + (mpSaveManager->data.barrelTrackingLv * 5)) + "\n"
 		).c_str());
+	//mpStatusText->SetShowDebug(true);
+
 	// リストに追加
 	mTexts.push_back(mpStatusText);
 
@@ -249,7 +266,9 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 
 CHomeSceneUI::~CHomeSceneUI()
 {
-	SAFE_DELETE(mpLogoFont);
+	SAFE_DELETE(mpMoneyFont);
+	SAFE_DELETE(mpStatusFont);
+	SAFE_DELETE(mpPerkFont);
 	//SAFE_DELETE(mpMoneyText);
 	//SAFE_DELETE(mpStatusText);
 	//SAFE_DELETE(mpStartText); 
@@ -388,9 +407,9 @@ void CHomeSceneUI::InformationUpdate()
 			// テキストを生成
 			CText* newText = new CText
 			(
-				mpLogoFont, 30,
+				mpPerkFont, 25,
 				CVector2(x, y),
-				CVector2(790.0f, 100.0f),	// <-----ココのサイズを変えても右端が変わらないっぽい
+				CVector2(670.0f, 100.0f),	// <-----ココのサイズを変えても右端が変わらないっぽい
 				CColor(0.11f, 0.1f, 0.1f),
 				ETaskPriority::eUI,
 				0,
@@ -408,7 +427,8 @@ void CHomeSceneUI::InformationUpdate()
 			{
 			case 0:
 				newText->SetText
-				(("燃料タンクの容量　Lv." + std::to_string(mpSaveManager->data.fuelTankLv) + "\n" + "レベルごとに5UP").c_str());
+				(("燃料タンクの容量　Lv." + std::to_string(mpSaveManager->data.fuelTankLv) + "\n" + "レベルごとに5UP\n"
+					"アップグレード費用：" + std::to_string(500 * (mpSaveManager->data.fuelTankLv + 1)) + "\n").c_str());
 				break;
 			case 1:
 				newText->SetText

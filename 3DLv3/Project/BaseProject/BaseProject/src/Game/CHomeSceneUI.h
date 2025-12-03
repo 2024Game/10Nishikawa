@@ -83,10 +83,12 @@ private:
 	int mCols;    // 列数 <- UIのサイズ的に１列で良かった(つまり頑張り損)
 
 	CSaveManager* mpSaveManager;
-	CFont* mpLogoFont;		// タイトルロゴのフォント
-	CText* mpMoneyText;		// 所持金のテキスト
-	CText* mpStatusText;	// ステータスのテキスト
-	CText* mpStartText;		// 「CLICK TO START」のテキスト
+	CFont* mpMoneyFont;			// 所持金のフォント
+	CFont* mpStatusFont;		// ステータスのフォント
+	CFont* mpPerkFont;			// 強化パークのフォント
+	CText* mpMoneyText;			// 所持金のテキスト
+	CText* mpStatusText;		// ステータスのテキスト
+	CText* mpStartText;			// 「CLICK TO START」のテキスト
 	std::vector<CExpandButton*> mButtons;
 	std::vector<CImage*> mBgImages;
 	std::vector<CText*> mURTexts; // Update Required Texts (要更新テキスト)
