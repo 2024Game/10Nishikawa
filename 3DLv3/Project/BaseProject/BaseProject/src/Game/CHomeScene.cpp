@@ -58,11 +58,14 @@ void CHomeScene::Load()
 //シーンの更新処理
 void CHomeScene::Update()
 {
-	CDebugPrint::Print("Money:%d\n", mpSaveManager->data.money);
-
 	if (CInput::PushKey('H'))
 	{
 		CSceneManager::Instance()->LoadScene(EScene::eTitle);
+	}
+	if (CInput::PushKey('R'))
+	{
+		mpSaveManager->Reset();
+		mpCHomeSceneUI->InformationUpdate();
 	}
 
 	// タイトル画面が

@@ -28,4 +28,17 @@ void CSaveManager::Reset()
     data.blastRadiusLv = 0;
     data.barrelTrackingLv = 0;
     data.radarRecastTimeLv = 0;
+#ifdef _DEBUG
+    // SaveData ‚ÌŠe’l‚ğ‰Šú’l‚Éİ’è
+    data.money = 5000;
+    data.fuelTankLv = 0;
+    data.playerSpeedLv = 0;
+    data.barrelSpeedLv = 0;
+    data.blastPowerLv = 0;
+    data.blastRadiusLv = 0;
+    data.barrelTrackingLv = 0;
+    data.radarRecastTimeLv = 0;
+#endif // _DEBUG
+
+    Save();
 }

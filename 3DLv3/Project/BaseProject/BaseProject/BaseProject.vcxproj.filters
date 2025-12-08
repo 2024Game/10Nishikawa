@@ -430,6 +430,9 @@
     <ClCompile Include="src\Game\CHomeSceneUI.cpp">
       <Filter>ソース ファイル\Game\UI\Home</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CJellyfish.cpp">
+      <Filter>ソース ファイル\Game\Character\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -779,6 +782,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\CHomeSceneUI.h">
       <Filter>ソース ファイル\Game\UI\Home</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CJellyfish.h">
+      <Filter>ソース ファイル\Game\Character\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

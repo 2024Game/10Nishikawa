@@ -112,37 +112,37 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 			case 0:
 				// [燃料タンク増加]ボタンを設定
 				// ボタンの画像を読み込み
-				Btn->LoadButtonImage("UI/btn03_04_light.png", "UI/btn03_04_light.png");
+				Btn->LoadButtonImage("UI/btn_upgrade.png", "UI/btn_upgrade.png");
 				// ボタンクリック時に呼び出されるコールバック関数を設定
 				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickIncreaseHP, this));
 				break;
 			case 1:
 				// [船体速度UP]ボタンを設定
-				Btn->LoadButtonImage("UI/btn03_04_light.png", "UI/btn03_04_light.png");
+				Btn->LoadButtonImage("UI/btn_upgrade.png", "UI/btn_upgrade.png");
 				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickIncreaseBoatSpeed, this));
 				break;
 			case 2:
 				// [爆弾の​沈下速度UP]ボタンを設定
-				Btn->LoadButtonImage("UI/btn03_04_light.png", "UI/btn03_04_light.png");
+				Btn->LoadButtonImage("UI/btn_upgrade.png", "UI/btn_upgrade.png");
 				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickIncreaseBarrelSpeed, this));
 				break;
 			case 3:
 				// [爆弾の​威力UP]ボタンを設定
-				Btn->LoadButtonImage("UI/btn03_04_light.png", "UI/btn03_04_light.png");
+				Btn->LoadButtonImage("UI/btn_upgrade.png", "UI/btn_upgrade.png");
 				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickIncreaseBlastPower, this));
 				break;
 			case 4:
 				// [爆弾の​爆発半径UP]ボタンを設定
-				Btn->LoadButtonImage("UI/btn03_04_light.png", "UI/btn03_04_light.png");
+				Btn->LoadButtonImage("UI/btn_upgrade.png", "UI/btn_upgrade.png");
 				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickIncreaseBlastRadius, this));
 				break;
 			case 5:
 				// [爆弾の​追尾性能UP]ボタンを設定
-				Btn->LoadButtonImage("UI/btn03_04_light.png", "UI/btn03_04_light.png");
+				Btn->LoadButtonImage("UI/btn_upgrade.png", "UI/btn_upgrade.png");
 				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickIncreaseBarrelTracking, this));
 				break;
 			default:
-				Btn->LoadButtonImage("UI/btn03_04_light.png", "UI/btn03_04_light.png");
+				Btn->LoadButtonImage("UI/btn_upgrade.png", "UI/btn_upgrade.png");
 				break;
 			}
 			// ボタンリストに追加
@@ -168,26 +168,6 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	// リストに追加
 	mBgImages.push_back(gImg);
 
-	// 所持金のテキストを生成
-	mpMoneyText = new CText
-	(
-		mpMoneyFont, 35,
-		CVector2(WINDOW_WIDTH - 620.0f, 60.0f),
-		CVector2(580.0f, 60.0f),
-		CColor(0.11f, 0.1f, 0.1f),
-		ETaskPriority::eUI,
-		0,
-		ETaskPauseType::eDefault,
-		false,
-		false
-	);
-	mpMoneyText->SetTextAlignV(ETextAlignV::eMiddle);
-
-	int money = static_cast<int>(mpSaveManager->data.money);
-	mpMoneyText->SetText(("所持金：$" + std::to_string(money) + "\n").c_str());
-	// リストに追加
-	mTexts.push_back(mpMoneyText);
-
 	// ステータス表示枠
 	CImage* stImg = new CImage
 	(
@@ -202,34 +182,6 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	stImg->SetPos(WINDOW_WIDTH - 630.0f, 130.0f);
 	// リストに追加
 	mBgImages.push_back(stImg);
-	
-	// ステータスのテキストを生成
-	mpStatusText = new CText
-	(
-		mpStatusFont, 30,
-		CVector2(WINDOW_WIDTH - 620.0f, 140.0f),
-		CVector2(580.0f, 770.0f),
-		CColor(0.11f, 0.1f, 0.1f),
-		ETaskPriority::eUI,
-		0,
-		ETaskPauseType::eDefault,
-		false,
-		false
-	);
-	mpStatusText->SetTextAlignV(ETextAlignV::eMiddle);
-	mpStatusText->SetTextAlignH(ETextAlignH::eLeft);
-	mpStatusText->SetText((
-		"燃料タンクの容量 " + std::to_string(30 + (mpSaveManager->data.fuelTankLv * 5)) + "\n"
-		"船体速度 " + std::to_string(0.5f * (1 + (mpSaveManager->data.playerSpeedLv * 0.05f))) + "\n"
-		"爆弾の沈下速度 " + std::to_string(5 + (mpSaveManager->data.barrelSpeedLv * 0.5)) + "\n"
-		"爆弾の威力 " + std::to_string(30 + (mpSaveManager->data.blastPowerLv * 5)) + "\n"
-		"爆弾の爆発半径 " + std::to_string(30 + (mpSaveManager->data.blastRadiusLv * 5)) + "\n"
-		"爆弾の追尾性能 " + std::to_string(30 + (mpSaveManager->data.barrelTrackingLv * 5)) + "\n"
-		).c_str());
-	//mpStatusText->SetShowDebug(true);
-
-	// リストに追加
-	mTexts.push_back(mpStatusText);
 
 	// [ゲーム開始]ボタンを生成
 	CExpandButton* startBtn = new CExpandButton
@@ -240,7 +192,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 		false, false
 	);
 	// ボタンの画像を読み込み
-	startBtn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
+	startBtn->LoadButtonImage("UI/gogame.png", "UI/gogame.png");
 	// ボタンクリック時に呼び出されるコールバック関数を設定
 	startBtn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickStartGame, this));
 	// ボタンリストに追加
@@ -255,7 +207,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 		false, false
 	);
 	// ボタンの画像を読み込み
-	titleBtn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
+	titleBtn->LoadButtonImage("UI/gotitle.png", "UI/gotitle.png");
 	// ボタンクリック時に呼び出されるコールバック関数を設定
 	titleBtn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickGoTitle, this));
 	// ボタンリストに追加
@@ -396,20 +348,68 @@ void CHomeSceneUI::InformationUpdate()
 	
 	int infoNum = 0;
 
+	// 所持金のテキストを生成
+	mpMoneyText = new CText
+	(
+		mpMoneyFont, 35,
+		CVector2(WINDOW_WIDTH - 620.0f, 60.0f),
+		CVector2(580.0f, 60.0f),
+		CColor(0.11f, 0.1f, 0.1f),
+		ETaskPriority::eUI,
+		0,
+		ETaskPauseType::eDefault,
+		false,
+		false
+	);
+	mpMoneyText->SetTextAlignV(ETextAlignV::eMiddle);
+
+	int money = static_cast<int>(mpSaveManager->data.money);
+	mpMoneyText->SetText(("所持金：$" + std::to_string(money) + "\n").c_str());
+	// リストに追加
+	mURTexts.push_back(mpMoneyText);
+
+	// ステータスのテキストを生成
+	mpStatusText = new CText
+	(
+		mpStatusFont, 30,
+		CVector2(WINDOW_WIDTH - 620.0f, 140.0f),
+		CVector2(580.0f, 770.0f),
+		CColor(0.11f, 0.1f, 0.1f),
+		ETaskPriority::eUI,
+		0,
+		ETaskPauseType::eDefault,
+		false,
+		false
+	);
+	mpStatusText->SetTextAlignV(ETextAlignV::eTop);
+	mpStatusText->SetTextAlignH(ETextAlignH::eLeft);
+	mpStatusText->SetText((
+		"燃料タンクの容量 " + std::to_string(30 + (mpSaveManager->data.fuelTankLv * 5)) + "\n"
+		"船体速度 " + std::to_string(0.5f * (1 + (mpSaveManager->data.playerSpeedLv * 0.05f))) + "\n"
+		"爆弾の沈下速度 " + std::to_string(5 + (mpSaveManager->data.barrelSpeedLv * 0.5)) + "\n"
+		"爆弾の威力 " + std::to_string(10 + (mpSaveManager->data.blastPowerLv * 2.5)) + "\n"
+		"爆弾の爆発半径 " + std::to_string(25 + (mpSaveManager->data.blastRadiusLv * 2.5)) + "\n"
+		"爆弾の追尾性能 " + std::to_string(mpSaveManager->data.barrelTrackingLv * 0.5) + "\n"
+		).c_str());
+	//mpStatusText->SetShowDebug(true);
+
+	// リストに追加
+	mURTexts.push_back(mpStatusText);
+
 	// テキスト群を生成
 	for (int i = 0; i < mCols; i++)        // 列
 	{
 		for (int j = 0; j < mRows; j++)    // 行
 		{
 			float x = 120.0f + i * 920.0f;
-			float y = 40.0f + j * 115.0f;
+			float y = 45.0f + j * 115.0f;
 
 			// テキストを生成
 			CText* newText = new CText
 			(
 				mpPerkFont, 25,
 				CVector2(x, y),
-				CVector2(670.0f, 100.0f),	// <-----ココのサイズを変えても右端が変わらないっぽい
+				CVector2(670.0f, 90.0f),	// <---ココのサイズを変えても右端が変わらないっぽい(解決済み)
 				CColor(0.11f, 0.1f, 0.1f),
 				ETaskPriority::eUI,
 				0,
@@ -421,7 +421,11 @@ void CHomeSceneUI::InformationUpdate()
 			//newText->SetTextAlignH(ETextAlignH::eLeft);
 			//newText->SetTextAlignH(ETextAlignH::eRight);
 			newText->SetTextAlignH(ETextAlignH::eCenter);
-			//newText->SetShowDebug(true);
+
+#ifdef _DEBUG
+			newText->SetShowDebug(true);
+#endif // _DEBUG
+
 			
 			switch (infoNum)
 			{
@@ -432,23 +436,28 @@ void CHomeSceneUI::InformationUpdate()
 				break;
 			case 1:
 				newText->SetText
-				(("船体速度　Lv." + std::to_string(mpSaveManager->data.playerSpeedLv) + "\n" + "レベルごとに5" + "％UP").c_str());
+				(("船体速度　Lv." + std::to_string(mpSaveManager->data.playerSpeedLv) + "\n" + "レベルごとに5" + "％UP\n"
+					"アップグレード費用：" + std::to_string(500 * (mpSaveManager->data.playerSpeedLv + 1)) + "\n").c_str());
 				break;
 			case 2:
 				newText->SetText
-				(("爆弾の沈下速度　Lv." + std::to_string(mpSaveManager->data.barrelSpeedLv) + "\n" + "レベルごとに0.5(m/s)UP").c_str());
+				(("爆弾の沈下速度　Lv." + std::to_string(mpSaveManager->data.barrelSpeedLv) + "\n" + "レベルごとに0.5(m/s)UP\n"
+					"アップグレード費用：" + std::to_string(500 * (mpSaveManager->data.barrelSpeedLv + 1)) + "\n").c_str());
 				break;
 			case 3:
 				newText->SetText
-				(("爆弾の威力　Lv." + std::to_string(mpSaveManager->data.blastPowerLv) + "\n" + "レベルごとに2.5UP").c_str());
+				(("爆弾の威力　Lv." + std::to_string(mpSaveManager->data.blastPowerLv) + "\n" + "レベルごとに2.5UP\n"
+					"アップグレード費用：" + std::to_string(500 * (mpSaveManager->data.blastPowerLv + 1)) + "\n").c_str());
 				break;
 			case 4:
 				newText->SetText
-				(("爆弾の爆発半径　Lv." + std::to_string(mpSaveManager->data.blastRadiusLv) + "\n" + "レベルごとに2.5(m)UP").c_str());
+				(("爆弾の爆発半径　Lv." + std::to_string(mpSaveManager->data.blastRadiusLv) + "\n" + "レベルごとに2.5(m)UP\n"
+					"アップグレード費用：" + std::to_string(500 * (mpSaveManager->data.blastRadiusLv + 1)) + "\n").c_str());
 				break;
 			case 5:
 				newText->SetText
-				(("爆弾の追尾性能　Lv." + std::to_string(mpSaveManager->data.barrelTrackingLv) + "\n" + "レベルごとに0.5UP").c_str());
+				(("爆弾の追尾性能　Lv." + std::to_string(mpSaveManager->data.barrelTrackingLv) + "\n" + "レベルごとに0.5UP\n"
+					"アップグレード費用：" + std::to_string(500 * (mpSaveManager->data.barrelTrackingLv + 1)) + "\n").c_str());
 				break;
 			default:
 				
@@ -505,7 +514,7 @@ void CHomeSceneUI::OnClickGoTitle()
 void CHomeSceneUI::OnClickIncreaseHP()
 {
 	int cost = 500 * (mpSaveManager->data.fuelTankLv + 1);
-	if (mpSaveManager->data.money > cost)
+	if (mpSaveManager->data.money >= cost)
 	{
 		mpSaveManager->data.money -= cost;
 		mpSaveManager->data.fuelTankLv++;
@@ -517,7 +526,7 @@ void CHomeSceneUI::OnClickIncreaseHP()
 void CHomeSceneUI::OnClickIncreaseBoatSpeed()
 {
 	int cost = 500 * (mpSaveManager->data.playerSpeedLv + 1);
-	if (mpSaveManager->data.money > cost)
+	if (mpSaveManager->data.money >= cost)
 	{
 		mpSaveManager->data.money -= cost;
 		mpSaveManager->data.playerSpeedLv++;
@@ -529,7 +538,7 @@ void CHomeSceneUI::OnClickIncreaseBoatSpeed()
 void CHomeSceneUI::OnClickIncreaseBarrelSpeed()
 {
 	int cost = 500 * (mpSaveManager->data.barrelSpeedLv + 1);
-	if (mpSaveManager->data.money > cost)
+	if (mpSaveManager->data.money >= cost)
 	{
 		mpSaveManager->data.money -= cost;
 		mpSaveManager->data.barrelSpeedLv++;
@@ -541,7 +550,7 @@ void CHomeSceneUI::OnClickIncreaseBarrelSpeed()
 void CHomeSceneUI::OnClickIncreaseBlastPower()
 {
 	int cost = 500 * (mpSaveManager->data.blastPowerLv + 1);
-	if (mpSaveManager->data.money > cost)
+	if (mpSaveManager->data.money >= cost)
 	{
 		mpSaveManager->data.money -= cost;
 		mpSaveManager->data.blastPowerLv++;
@@ -553,7 +562,7 @@ void CHomeSceneUI::OnClickIncreaseBlastPower()
 void CHomeSceneUI::OnClickIncreaseBlastRadius()
 {
 	int cost = 500 * (mpSaveManager->data.blastRadiusLv + 1);
-	if (mpSaveManager->data.money > cost)
+	if (mpSaveManager->data.money >= cost)
 	{
 		mpSaveManager->data.money -= cost;
 		mpSaveManager->data.blastRadiusLv++;
@@ -565,7 +574,7 @@ void CHomeSceneUI::OnClickIncreaseBlastRadius()
 void CHomeSceneUI::OnClickIncreaseBarrelTracking()
 {
 	int cost = 500 * (mpSaveManager->data.barrelTrackingLv + 1);
-	if (mpSaveManager->data.money > cost)
+	if (mpSaveManager->data.money >= cost)
 	{
 		mpSaveManager->data.money -= cost;
 		mpSaveManager->data.barrelTrackingLv++;

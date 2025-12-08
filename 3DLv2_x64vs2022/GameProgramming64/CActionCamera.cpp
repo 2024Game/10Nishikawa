@@ -79,4 +79,5 @@ CVector CActionCamera::VectorX()
 CVector CActionCamera::VectorZ()
 {
 	return CVector(-mModelView.M(0, 2), -mModelView.M(1, 2), -mModelView.M(2, 2));
+
 }

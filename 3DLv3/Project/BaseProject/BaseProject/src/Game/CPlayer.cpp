@@ -232,12 +232,16 @@ void CPlayer::Update()
 	Rotation(CQuaternion::LookRotation(forward));
 
 	CVector pos = Position();
+
+#ifdef _DEBUG
 	// CDebugPrint::Print("PlayerHP:%f / %f\n", mHp, mMaxHp);
 	// CDebugPrint::Print("PlayerPos:%.2f, %.2f, %.2f\n", pos.X(), pos.Y(), pos.Z());
 	// CDebugPrint::Print("PlayerState:%d\n", mState);
 	CDebugPrint::Print("FPS:%f\n", Times::FPS());
 	// CDebugPrint::Print("Depth:%f\n", mFireDepth);
 	CDebugPrint::Print("Score:%d\n", (int)mGetScore);
+#endif // _DEBUG
+
 }
 
 // ’M‚ð”­ŽË

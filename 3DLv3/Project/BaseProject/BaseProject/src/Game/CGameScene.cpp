@@ -12,6 +12,7 @@
 
 #include "CField.h"
 
+#include "CJellyfish.h"
 #include "CRainbowTrout.h"
 #include "CStripedBass.h"
 #include "CTuna.h"
@@ -56,14 +57,12 @@ void CGameScene::Load()
 	CResourceManager::Load<CTexture>(	"Laser",			"Effect\\laser.png");
 	CResourceManager::Load<CTexture>(	"LightningBolt",	"Effect\\lightning_bolt.png");
 	CResourceManager::Load<CModel>(		"Slash",			"Effect\\slash.obj");
-	
-	CResourceManager::Load<CModel>(		"Sword",			"Weapon\\Sword\\sword.obj");
-	CResourceManager::Load<CModel>(		"Shield",			"Weapon\\Shield\\shield.obj");
 
 	CResourceManager::Load<CSound>(		"ExplosionSound",	"Sound\\SE\\Explosion.wav");
 	CResourceManager::Load<CSound>(		"FishfinderSound",	"Sound\\SE\\fishfinder.wav");
 	CResourceManager::Load<CSound>(		"WhistleSound",		"Sound\\SE\\hoissuru.wav");
 
+	CResourceManager::Load<CModelX>(	"Jellyfish",		"Character\\Enemy\\Jellyfish\\jellyfish.x");
 	CResourceManager::Load<CModelX>(	"RainbowTrout",		"Character\\Enemy\\RainbowTrout\\RainbowTrout_x5.x");
 	CResourceManager::Load<CModelX>(	"StripedBass",		"Character\\Enemy\\StripedBass\\StripedBass_x0.5.x");
 	CResourceManager::Load<CModelX>(	"Tuna",				"Character\\Enemy\\Tuna\\Tuna.x");
@@ -90,6 +89,21 @@ void CGameScene::Load()
 	mpPlayer->Position(0.0f, -0.5f, 0.0f);
 
 	// 魚の出現数は100匹が限界そう
+	/*
+	// JellyfishをランダムにN体生成
+	for (int i = 0; i < 20; ++i)
+	{
+		float x = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
+		float y = 0.0f;
+		float z = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
+		float scale = 0.5f + static_cast<float>(rand()) / RAND_MAX * 1.5f;   // 0.5〜2.0
+
+		CJellyfish* jellyfish = new CJellyfish(mpPlayer);
+		jellyfish->Position(x, y, z);
+		jellyfish->Scale(scale, scale, scale);
+		jellyfish->Init();
+	}*/
+
 	// RainbowTroutをランダムにN体生成
 	for (int i = 0; i < 20; ++i)
 	{
@@ -175,7 +189,9 @@ void CGameScene::Update()
 	//	mpGameBGM->PlayLoop(-1, 1.0f, false, 1.0f);
 	//}
 
+#ifdef _DEBUG
 	CDebugPrint::Print("Money:%d\n", mpSaveManager->data.money);
+#endif // _DEBUG
 
 	if (CInput::PushKey('H'))
 	{
