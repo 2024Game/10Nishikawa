@@ -77,7 +77,7 @@ void CPlayer::ChangeState(EState state)
 // 待機
 void CPlayer::UpdateIdle()
 {
-	
+	ChangeState(EState::eMovable);
 }
 
 // 仰け反り
@@ -157,6 +157,18 @@ void CPlayer::UpdateMove()
 void CPlayer::Update()
 {
 	if (mHp == 0) return;
+
+	if (mInvincibilityTime > 0.0f)
+	{
+		mInvincibilityTime -= Times::DeltaTime();
+	}
+	if (mInvincibilityTime < 0.0f)
+	{
+		mInvincibilityTime = 0.0f;
+	}
+
+	mIsInvincibility = (mInvincibilityTime == 0.0f) ? false : true;
+
 	// 状態に合わせて、更新処理を切り替える
 	switch (mState)
 	{
@@ -266,6 +278,9 @@ void CPlayer::DropBarrel()
 // ダメージを受ける
 void CPlayer::TakeDamage(float damage, CObjectBase* causer)
 {
+	mInvincibilityTime = 3.0f;
+	if (mIsInvincibility) return;
+
 	// ベースクラスのダメージ処理を呼び出す
 	CCharaBase::TakeDamage(damage, causer);
 

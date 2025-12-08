@@ -25,6 +25,8 @@ public:
 
     // XV
     void Update() override;
+	// •`‰æ
+	void Render() override;
 
 	float GetScore();
 

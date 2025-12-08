@@ -16,6 +16,14 @@ public:
 		std::cout << "クラゲ\n";
 	}
 
+	// 更新
+	void Update() override;
+	// 描画
+	void Render() override;
+
+	// 衝突処理
+	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
+
 private:
 	// アニメーションの種類
 	enum class EAnimType
@@ -44,4 +52,7 @@ private:
 	void UpdateHit() override;
 	// 死亡状態の更新処理
 	void UpdateDeath() override;
+
+	CModel* mpModelObj;
+	CCollider* mpAttackCol;		// 攻撃用のコライダー
 };

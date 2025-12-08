@@ -42,6 +42,8 @@ CStripedBass::CStripedBass(CPlayer* player)
 
 CStripedBass::~CStripedBass()
 {
+	// コライダー削除
+	SAFE_DELETE(mpBodyCol);
 }
 
 void CStripedBass::Init()

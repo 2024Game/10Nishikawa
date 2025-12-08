@@ -1,39 +1,47 @@
 #include "CJellyfish.h"
 #include "CColliderCapsule.h"
+#include "CColliderSphere.h"
 #include "Maths.h"
 #include <iostream>
 
-#define BODY_HEIGHT 7.0f
-#define BODY_RADIUS 1.1f
-#define BODY_COL_OFFSET 4.5f
+#define BODY_HEIGHT 5.0f
+#define BODY_RADIUS 2.5f
+#define BODY_COL_OFFSET 4.0f
 #define GAUGE_OFFSET_Y 3.5f
 
-#define MOVE_SPEED 7.5f
+#define MOVE_SPEED 2.5f
 #define LOOKAT_SPEED 0.5f
-#define IDLE_TIME_MIN 10.0f
-#define IDLE_TIME_MAX 20.0f
+#define IDLE_TIME_MIN 5.0f
+#define IDLE_TIME_MAX 10.0f
 
 #define DEATH_WAIT_TIME 2.0f
 
+#define ATTACK_COL_RADIUS 0.9f
+#define ATTACK_COL_POS CVector(0.0f, -0.25f, 0.0f)
+
 CJellyfish::CJellyfish(CPlayer* player)
 	:CFish("Jellyfish")
+	, mpAttackCol(nullptr)
 {
+	mpModelObj = CResourceManager::Get<CModel>("Jellyfish");
+	/*
 	// 敵のアニメーションデータのテーブル
 	const std::vector<CEnemy::AnimData> ANIM_DATA =
 	{
 		{ "",						true,	0.0f,	1.0f	},	// Tポーズ
 		{ "",						true,	0.0f,	1.0f	},	// Tポーズ
 	};
+	*/
 
 	// 敵を初期化
-	InitEnemy("Jellyfish", &ANIM_DATA);
+	//InitEnemy("Jellyfish", &ANIM_DATA);
 
 	// 最初は待機アニメーションを再生
-	ChangeAnimation((int)EAnimType::eIdle);
+	//ChangeAnimation((int)EAnimType::eIdle);
 
 	mpPlayer = player;
 
-	mMaxHp = 10.0f;
+	mMaxHp = 100.0f;
 	mScore = 0.0f;
 
 	Init();
@@ -41,6 +49,9 @@ CJellyfish::CJellyfish(CPlayer* player)
 
 CJellyfish::~CJellyfish()
 {
+	// コライダー削除
+	SAFE_DELETE(mpBodyCol);
+	SAFE_DELETE(mpAttackCol);
 }
 
 void CJellyfish::Init()
@@ -50,13 +61,14 @@ void CJellyfish::Init()
 
 	// コライダー削除
 	SAFE_DELETE(mpBodyCol);
+	SAFE_DELETE(mpAttackCol);
 
 	// 本体のコライダーを作成
 	mpBodyCol = new CColliderCapsule
 	(
 		this, ELayer::eEnemy,
-		CVector(0.0f, 0.0f, (BODY_RADIUS - BODY_COL_OFFSET)),
-		CVector(0.0f, 0.0f, (BODY_HEIGHT - BODY_RADIUS) - BODY_COL_OFFSET),
+		CVector(0.0f, (BODY_RADIUS - BODY_COL_OFFSET), 0.0f),
+		CVector(0.0f, (BODY_HEIGHT - BODY_RADIUS) - BODY_COL_OFFSET, 0.0f),
 		BODY_RADIUS * this->Scale().X()
 	);
 
@@ -67,6 +79,44 @@ void CJellyfish::Init()
 	mMaxHp *= Scale().X();
 	mHp = mMaxHp;
 	mScore *= Scale().X();
+
+	// 攻撃コライダーを作成
+	mpAttackCol = new CColliderSphere
+	(
+		this, ELayer::eAttackCol,
+		ATTACK_COL_RADIUS * this->Scale().X()
+	);
+	// プレイヤーの本体コライダーとのみヒットするように設定
+	mpAttackCol->SetCollisionTags({ ETag::ePlayer });
+	mpAttackCol->SetCollisionLayers({ ELayer::ePlayer });
+	// 攻撃コライダーの座標を設定
+	mpAttackCol->Position(ATTACK_COL_POS);
+}
+
+void CJellyfish::Update()
+{
+	CFish::Update();
+}
+
+void CJellyfish::Render()
+{
+	CFish::Render();
+	mpModelObj->SetColor(mColor);
+	mpModelObj->Render(Matrix());
+}
+
+void CJellyfish::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
+{
+	// 船に衝突した
+	if (other->Layer() == ELayer::ePlayer)
+	{
+		// 船にダメージを与える
+		CPlayer* player = dynamic_cast<CPlayer*>(other->Owner());
+		if (player != nullptr)
+		{
+			player->TakeDamage(10.0f, this);
+		}
+	}
 }
 
 void CJellyfish::LookAtTargetPos()

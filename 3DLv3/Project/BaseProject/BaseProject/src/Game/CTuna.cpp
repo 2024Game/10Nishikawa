@@ -42,6 +42,8 @@ CTuna::CTuna(CPlayer* player)
 
 CTuna::~CTuna()
 {
+	// コライダー削除
+	SAFE_DELETE(mpBodyCol);
 }
 
 void CTuna::Init()

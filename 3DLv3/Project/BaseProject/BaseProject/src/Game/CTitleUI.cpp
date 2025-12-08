@@ -46,18 +46,20 @@ CTitleUI::CTitleUI()
 	);
 	mpTitleLogo->SetText("ニトロ・アングラー");
 	mpTitleLogo->SetEnableOutline(true);
-	mpTitleLogo->SetOutlineColor(CColor(0.9f, 0.9f, 0.9f));
+	mpTitleLogo->SetColor(CColor(0.9f, 0.3f, 0.1f));
+	mpTitleLogo->SetOutlineColor(CColor(0.2f, 0.2f, 0.2f));
 
 	// タイトル画面の背景イメージを生成
 	mpTitleBg = new CImage
 	(
-		"UI/title_bg.png",
+		"UI/TitleImg.png",
 		ETaskPriority::eUI,
 		0,
 		ETaskPauseType::eDefault,
 		false,
 		false
 	);
+	mpTitleBg->SetSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	// 「CLICK TO START」のテキストを生成
 	mpStartText = new CText

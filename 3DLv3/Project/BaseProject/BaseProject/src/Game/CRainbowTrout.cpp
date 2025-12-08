@@ -11,7 +11,7 @@
 
 #define MOVE_SPEED 7.5f
 #define LOOKAT_SPEED 0.5f
-#define IDLE_TIME_MIN 10.0f
+#define IDLE_TIME_MIN 15.0f
 #define IDLE_TIME_MAX 20.0f
 
 #define DEATH_WAIT_TIME 2.0f
@@ -42,6 +42,8 @@ CRainbowTrout::CRainbowTrout(CPlayer* player)
 
 CRainbowTrout::~CRainbowTrout()
 {
+	// コライダー削除
+	SAFE_DELETE(mpBodyCol);
 }
 
 void CRainbowTrout::Init()

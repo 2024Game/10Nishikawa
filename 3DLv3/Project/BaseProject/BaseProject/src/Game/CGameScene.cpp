@@ -62,7 +62,7 @@ void CGameScene::Load()
 	CResourceManager::Load<CSound>(		"FishfinderSound",	"Sound\\SE\\fishfinder.wav");
 	CResourceManager::Load<CSound>(		"WhistleSound",		"Sound\\SE\\hoissuru.wav");
 
-	CResourceManager::Load<CModelX>(	"Jellyfish",		"Character\\Enemy\\Jellyfish\\jellyfish.x");
+	CResourceManager::Load<CModel>(		"Jellyfish",		"Character\\Enemy\\Jellyfish\\jellyfish.obj");
 	CResourceManager::Load<CModelX>(	"RainbowTrout",		"Character\\Enemy\\RainbowTrout\\RainbowTrout_x5.x");
 	CResourceManager::Load<CModelX>(	"StripedBass",		"Character\\Enemy\\StripedBass\\StripedBass_x0.5.x");
 	CResourceManager::Load<CModelX>(	"Tuna",				"Character\\Enemy\\Tuna\\Tuna.x");
@@ -96,14 +96,20 @@ void CGameScene::Load()
 		float x = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
 		float y = 0.0f;
 		float z = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
-		float scale = 10.5f + static_cast<float>(rand()) / RAND_MAX * 1.5f;   // 0.5〜2.0
+		float scale = 3.0f + static_cast<float>(rand()) / RAND_MAX * 1.0f;   // 1.0〜2.0
+
+		while ((-10.0f < x && x < 10.0f) || (-10.0f < z && z < 10.0f))
+		{
+			x = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f;
+			z = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f;
+		}
 
 		CJellyfish* jellyfish = new CJellyfish(mpPlayer);
 		jellyfish->Position(x, y, z);
 		jellyfish->Scale(scale, scale, scale);
 		jellyfish->Init();
 	}
-
+	
 	// RainbowTroutをランダムにN体生成
 	for (int i = 0; i < 20; ++i)
 	{

@@ -91,6 +91,9 @@ private:
 	CGameCamera2* mpCamera;		// カメラのポインター
 	CSaveManager* mpSaveManager;
 
+	bool mIsInvincibility;			// 無敵状態か
+	float mInvincibilityTime;
+
 	float mPlayerSpeed;
 	float mBarrelSpeed;
 

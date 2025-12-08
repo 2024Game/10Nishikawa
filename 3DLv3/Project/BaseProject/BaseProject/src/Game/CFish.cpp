@@ -4,14 +4,17 @@
 
 CFish::CFish(const std::string& fishTypeName)
 	: mIsInvincibility(false)
-	, mInvincibilityTime(3.0f)
+	, mInvincibilityTime(0.0f)
 	, mFishTypeName(fishTypeName)
 	, mIdletime(0.0f)
 	, mTargetPos(CVector(0.0f, 0.0f, 0.0f))
 	, mScore(0.0f)
 {
-	// CFishManagerのリストに自分を追加
-	CFishManager::Instance()->Add(this);
+	if (mFishTypeName != "Jellyfish")
+	{
+		// CFishManagerのリストに自分を追加
+		CFishManager::Instance()->Add(this);
+	}
 }
 
 CFish::~CFish()
@@ -89,6 +92,11 @@ void CFish::Update()
 
 	// 敵のベースクラスの更新
 	CEnemy::Update();
+}
+
+void CFish::Render()
+{
+	CEnemy::Render();
 }
 
 float CFish::GetScore()
