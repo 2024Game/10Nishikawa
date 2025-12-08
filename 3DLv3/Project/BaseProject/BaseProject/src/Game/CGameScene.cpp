@@ -89,20 +89,20 @@ void CGameScene::Load()
 	mpPlayer->Position(0.0f, -0.5f, 0.0f);
 
 	// 魚の出現数は100匹が限界そう
-	/*
+	
 	// JellyfishをランダムにN体生成
 	for (int i = 0; i < 20; ++i)
 	{
 		float x = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
 		float y = 0.0f;
 		float z = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
-		float scale = 0.5f + static_cast<float>(rand()) / RAND_MAX * 1.5f;   // 0.5〜2.0
+		float scale = 10.5f + static_cast<float>(rand()) / RAND_MAX * 1.5f;   // 0.5〜2.0
 
 		CJellyfish* jellyfish = new CJellyfish(mpPlayer);
 		jellyfish->Position(x, y, z);
 		jellyfish->Scale(scale, scale, scale);
 		jellyfish->Init();
-	}*/
+	}
 
 	// RainbowTroutをランダムにN体生成
 	for (int i = 0; i < 20; ++i)
