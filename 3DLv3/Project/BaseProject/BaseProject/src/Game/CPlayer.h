@@ -50,6 +50,8 @@ public:
 
 	void SetState(int stateNum);
 
+	bool mInAttack;
+
 private:
 	// オブジェクト削除を伝える
 	void DeleteObject(CObjectBase* obj) override;
@@ -75,9 +77,10 @@ private:
 		eMovable,	// 移動可能
 		eHit,		// 仰け反り
 	};
+
 	// 状態を切り替え
 	void ChangeState(EState state);
-
+	  
 	EState mState;				// プレイヤーの状態
 	int mStateStep;				// 状態内のステップ管理用
 	float mElapsedTime;			// 経過時間計測用

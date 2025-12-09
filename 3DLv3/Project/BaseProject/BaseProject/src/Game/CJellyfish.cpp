@@ -9,10 +9,10 @@
 #define BODY_COL_OFFSET 4.0f
 #define GAUGE_OFFSET_Y 3.5f
 
-#define MOVE_SPEED 2.5f
+#define MOVE_SPEED 10.0f
 #define LOOKAT_SPEED 0.5f
-#define IDLE_TIME_MIN 5.0f
-#define IDLE_TIME_MAX 10.0f
+#define IDLE_TIME_MIN 0.5f
+#define IDLE_TIME_MAX 5.0f
 
 #define DEATH_WAIT_TIME 2.0f
 
@@ -28,8 +28,8 @@ CJellyfish::CJellyfish(CPlayer* player)
 	// 敵のアニメーションデータのテーブル
 	const std::vector<CEnemy::AnimData> ANIM_DATA =
 	{
-		{ "",						true,	0.0f,	1.0f	},	// Tポーズ
-		{ "",						true,	0.0f,	1.0f	},	// Tポーズ
+		{ "",	true,	0.0f,	1.0f	},	// Tポーズ
+		{ "",	true,	0.0f,	1.0f	},	// Tポーズ
 	};
 	*/
 

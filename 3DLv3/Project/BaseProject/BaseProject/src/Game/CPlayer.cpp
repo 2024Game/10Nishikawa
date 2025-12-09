@@ -27,6 +27,7 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	, mFireDepth(50.0)
 	, mGetScore(0.0f)
 	, mpSaveManager(SaveManager)
+	, mInAttack(false)
 {
 	mMaxHp = 30.0f + (mpSaveManager->GetData().fuelTankLv * 5);
 	mPlayerSpeed = 0.5f * (1 + (mpSaveManager->GetData().playerSpeedLv * 0.05f));
@@ -77,7 +78,7 @@ void CPlayer::ChangeState(EState state)
 // 待機
 void CPlayer::UpdateIdle()
 {
-	ChangeState(EState::eMovable);
+	//ChangeState(EState::eMovable);
 }
 
 // 仰け反り
@@ -90,7 +91,9 @@ void CPlayer::UpdateHit()
 			break;
 		case 1:
 			// 待機状態へ移行
-			ChangeState(EState::eIdle);
+			//ChangeState(EState::eIdle);
+			// 移動状態へ移行
+			ChangeState(EState::eMovable);
 			break;
 	}
 }
@@ -176,12 +179,14 @@ void CPlayer::Update()
 		case EState::eIdle:			UpdateIdle();		break;
 		// 仰け反り
 		case EState::eHit:			UpdateHit();		break;
+		// 仰け反り
+		case EState::eMovable:		UpdateMove();		break;
 	}
 
 	// 待機中とは、移動処理を行う
 	if (mState == EState::eMovable)
 	{
-		UpdateMove();
+		//UpdateMove();
 	}
 
 	// 移動(移動しているときはHPが毎秒1減っていく)
@@ -221,6 +226,7 @@ void CPlayer::Update()
 	if (CInput::PushKey(VK_MBUTTON) && mState == EState::eMovable)
 	{
 		ChangeState(EState::eIdle);
+		mInAttack = true;
 		DropBarrel();
 	}
 

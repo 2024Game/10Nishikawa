@@ -1,0 +1,41 @@
+# Blender MTL File: 'None'
+# Material Count: 3
+
+newmtl metal
+Ns 249.019608
+Ka 1.000000 1.000000 1.000000
+Kd 0.016035 0.016035 0.016035
+Ks 0.010022 0.010022 0.010022
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Bump -bm 0.350042 C:\\Users\\tanyo\\Downloads\\propeller.fbm\\metal_Normal.png
+map_Kd C:\\Users\\tanyo\\Downloads\\propeller.fbm\\metal_BaseColor.png
+map_Ns C:\\Users\\tanyo\\Downloads\\propeller.fbm\\metal_Roughness.png
+
+newmtl rivet
+Ns 249.019608
+Ka 0.401209 0.401209 0.401209
+Kd 0.326103 0.326103 0.326103
+Ks 0.203814 0.203814 0.203814
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_Bump -bm 0.350042 C:\\Users\\tanyo\\Downloads\\propeller.fbm\\rivet_Normal.png
+map_Kd C:\\Users\\tanyo\\Downloads\\propeller.fbm\\rivet_BaseColor.png
+map_Ns C:\\Users\\tanyo\\Downloads\\propeller.fbm\\rivet_Roughness.png
+
+newmtl wing
+Ns 484.313725
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Bump -bm 0.350042 C:\\Users\\tanyo\\Downloads\\propeller.fbm\\wing_Normal.png
+map_Kd C:\\Users\\tanyo\\Downloads\\propeller.fbm\\wing_BaseColor.png
+map_Ns C:\\Users\\tanyo\\Downloads\\propeller.fbm\\wing_Roughness.png

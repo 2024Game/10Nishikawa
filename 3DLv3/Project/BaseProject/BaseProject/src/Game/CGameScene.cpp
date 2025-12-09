@@ -91,12 +91,12 @@ void CGameScene::Load()
 	// 魚の出現数は100匹が限界そう
 	
 	// JellyfishをランダムにN体生成
-	for (int i = 0; i < 20; ++i)
+	for (int i = 0; i < 30; ++i)
 	{
 		float x = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
 		float y = 0.0f;
 		float z = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
-		float scale = 3.0f + static_cast<float>(rand()) / RAND_MAX * 1.0f;   // 1.0〜2.0
+		float scale = 2.0f + static_cast<float>(rand()) / RAND_MAX * 1.0f;   // 1.0〜2.0
 
 		while ((-10.0f < x && x < 10.0f) || (-10.0f < z && z < 10.0f))
 		{
@@ -106,12 +106,12 @@ void CGameScene::Load()
 
 		CJellyfish* jellyfish = new CJellyfish(mpPlayer);
 		jellyfish->Position(x, y, z);
-		jellyfish->Scale(scale, scale, scale);
+		jellyfish->Scale(scale * 2.5f, scale, scale * 2.5f);
 		jellyfish->Init();
 	}
 	
 	// RainbowTroutをランダムにN体生成
-	for (int i = 0; i < 20; ++i)
+	for (int i = 0; i < 30; ++i)
 	{
 		float x = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
 		float y = -75.0f + static_cast<float>(rand()) / RAND_MAX * 50.0f;    // -75〜-25
@@ -125,7 +125,7 @@ void CGameScene::Load()
 	}
 
 	// StripedBassをランダムにN体生成
-	for (int i = 0; i < 15; ++i)
+	for (int i = 0; i < 20; ++i)
 	{
 		float x = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
 		float y = -125.0f + static_cast<float>(rand()) / RAND_MAX * 50.0f;    // -125〜-75
@@ -213,7 +213,7 @@ void CGameScene::Update()
 		}
 	}
 
-	if (mpPlayer->GetHp() == 0.0f && mInGame)
+	if (mpPlayer->GetHp() == 0.0f && mInGame && !mpPlayer->mInAttack)
 	{
 		mInGame = false;
 		CBGMManager::Instance()->Play(EBGMType::eNone);
@@ -222,4 +222,5 @@ void CGameScene::Update()
 		mpSaveManager->Save();
 		CSceneManager::Instance()->LoadScene(EScene::eHome);
 	}
+
 }

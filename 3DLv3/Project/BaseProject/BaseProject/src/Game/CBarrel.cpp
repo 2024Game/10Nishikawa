@@ -10,11 +10,13 @@
 #define BODY_RADIUS 1.5f			// 本体のコライダーの幅
 #define ATTACK_COL_RADIUS 25.0f		// 爆発半径
 #define ATTACK_COL_POS CVector(0.0f, 0.5f, 0.0f)
+#define P_POS CVector(0.0f, -0.5f, 0.0f)
 
 // コンストラクタ
 CBarrel::CBarrel(float speed, float depth, float damage, float trackspeed, float radius, CPlayer* player , CGameCamera2* camera)
 	: CObjectBase(ETag::ePlayer, ETaskPriority::eWeapon, 0, ETaskPauseType::eGame)
 	, mpModel(nullptr)
+	, mpModel2(nullptr)
 	, mpCollider(nullptr)
 	, mpAttackCol(nullptr)
 	, mpExplosionSound(nullptr)
@@ -28,6 +30,7 @@ CBarrel::CBarrel(float speed, float depth, float damage, float trackspeed, float
 {
 	// モデルデータ取得
 	mpModel = CResourceManager::Get<CModel>("Barrel");
+	mpModel2 = CResourceManager::Get<CModel>("Propeller");
 
 	// 本体のコライダーを作成
 	mpCollider = new CColliderCapsule
@@ -37,6 +40,7 @@ CBarrel::CBarrel(float speed, float depth, float damage, float trackspeed, float
 		CVector(0.0f, BODY_RADIUS, BODY_HEIGHT - BODY_RADIUS - 0.0f),
 		BODY_RADIUS
 	);
+
 	// 魚と衝突するように設定
 	mpCollider->SetCollisionTags({ ETag::eEnemy});
 	mpCollider->SetCollisionLayers({ ELayer::eEnemy, ELayer::eField });
@@ -167,6 +171,7 @@ void CBarrel::Update()
 
 			// Playerのステートを変更
 			mpPlayer->SetState(1);
+			mpPlayer->mInAttack = false;
 
 			Kill();
 		}
@@ -178,4 +183,7 @@ void CBarrel::Render()
 {
 	mpModel->SetColor(mColor);
 	mpModel->Render(Matrix());
+
+	mpModel2->SetColor(mColor);
+	mpModel2->Render(Matrix() * Matrix::CreateTranslation(P_POS));
 }
