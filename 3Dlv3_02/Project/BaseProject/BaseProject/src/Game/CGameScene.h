@@ -1,0 +1,28 @@
+#pragma once
+#include "CSceneBase.h"
+#include <memory>
+#include "CPlayer.h"
+#include "CFish.h"
+class CGameMenu;
+class CSound;
+
+//タイトルシーン
+class CGameScene :public CSceneBase
+{
+public:
+	//コンストラクタ
+	CGameScene();
+	//デストラクタ
+	~CGameScene();
+	//シーン読み込み
+	void Load();
+	//シーンの更新処理
+	void Update();
+
+private:
+	CGameMenu* mpGameMenu;
+	CSaveManager* mpSaveManager;
+	CPlayer* mpPlayer;
+	CSound* mpWhistleSE;
+	bool mInGame;
+};

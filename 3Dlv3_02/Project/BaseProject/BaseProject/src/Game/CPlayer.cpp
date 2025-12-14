@@ -1,0 +1,392 @@
+//プレイヤークラスのインクルード
+#include "CPlayer.h"
+#include "CInput.h"
+#include "CCamera.h"
+#include "Maths.h"
+#include "CColliderCapsule.h"
+#include "CColliderSphere.h"
+#include "CBarrel.h"
+
+#define BODY_HEIGHT 15.0f	// 本体のコライダーの高さ
+#define BODY_RADIUS 2.5f	// 本体のコライダーの幅
+
+#define BARREL_OFFSET_POS CVector(0.0f, 1.5f, -8.5f)
+
+// プレイヤーのインスタンス
+CPlayer* CPlayer::spInstance = nullptr;
+
+// コンストラクタ
+CPlayer::CPlayer(CSaveManager* SaveManager)
+	: CCharaBase(ETag::ePlayer, ETaskPriority::ePlayer)
+	, mState(EState::eMovable)
+	, mStateStep(0)
+	, mElapsedTime(0.0f)
+	, mMoveSpeedY(0.0f)
+	, mpModel(nullptr)
+	, mpBodyCol(nullptr)
+	, mFireDepth(50.0)
+	, mGetScore(0.0f)
+	, mpSaveManager(SaveManager)
+	, mInAttack(false)
+{
+	mMaxHp = 30.0f + (mpSaveManager->GetData().fuelTankLv * 5);
+	mPlayerSpeed = 0.5f * (1 + (mpSaveManager->GetData().playerSpeedLv * 0.05f));
+	mHp = mMaxHp;
+	mAttackDamage = 10.0f + (mpSaveManager->GetData().blastPowerLv * 2.5f);
+	mBarrelSpeed = 5.0f + (mpSaveManager->GetData().barrelSpeedLv * 0.5f);
+	mAttackRadius = 25.0 + (mpSaveManager->GetData().blastRadiusLv * 2.5f);
+
+	//インスタンスの設定
+	spInstance = this;
+
+	// モデルデータ取得
+	mpModel = CResourceManager::Get<CModel>("Player");
+
+	// 本体のコライダーを作成
+	mpBodyCol = new CColliderCapsule
+	(
+		this, ELayer::ePlayer,
+		CVector(0.0f, BODY_RADIUS + 0.5f, BODY_RADIUS - 7.0f),
+		CVector(0.0f, BODY_RADIUS + 0.5f, BODY_HEIGHT - BODY_RADIUS - 7.0f),
+		BODY_RADIUS
+	);
+	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::eRideableObject, ETag::eEnemy });
+	mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy, ELayer::eAttackCol });
+}
+
+CPlayer::~CPlayer()
+{
+	// コライダーを削除
+	SAFE_DELETE(mpBodyCol);
+}
+
+CPlayer* CPlayer::Instance()
+{
+	return spInstance;
+}
+
+// 状態を切り替え
+void CPlayer::ChangeState(EState state)
+{
+	if (mState == state) return;
+
+	mState = state;
+	mStateStep = 0;
+	mElapsedTime = 0.0f;
+}
+
+// 待機
+void CPlayer::UpdateIdle()
+{
+	//ChangeState(EState::eMovable);
+}
+
+// 仰け反り
+void CPlayer::UpdateHit()
+{
+	switch (mStateStep)
+	{
+		case 0:
+			mStateStep++;
+			break;
+		case 1:
+			// 待機状態へ移行
+			//ChangeState(EState::eIdle);
+			// 移動状態へ移行
+			ChangeState(EState::eMovable);
+			break;
+	}
+}
+
+// オブジェクト削除を伝える
+void CPlayer::DeleteObject(CObjectBase* obj)
+{
+	
+}
+
+// キーの入力情報から移動ベクトルを求める
+CVector CPlayer::CalcMoveVec() const
+{
+	CVector move = CVector::zero;
+
+	// キーの入力ベクトルを取得
+	CVector input = CVector::zero;
+	if (CInput::Key('W'))		input.Y(-1.0f);
+	else if (CInput::Key('S'))	input.Y(1.0f);
+	if (CInput::Key('A'))		input.X(-1.0f);
+	else if (CInput::Key('D'))	input.X(1.0f);
+
+	// 入力ベクトルの長さで入力されているか判定
+	if (input.LengthSqr() > 0.0f)
+	{
+		// 上方向ベクトル
+		CVector up = CVector::up;
+		// カメラの向きに合わせた移動ベクトルに変換
+		CCamera* mainCamera = CCamera::MainCamera();
+		CVector camForward = mainCamera->VectorZ();
+		camForward.Y(0.0f);
+		camForward.Normalize();
+		// カメラの正面方向ベクトルと上方向ベクトルの外積から
+		// 横方向の移動ベクトルを求める
+		CVector moveSide = CVector::Cross(up, camForward);
+		// 横方向の移動ベクトルと上方向ベクトルの外積から
+		// 正面方向の移動ベクトルを求める
+		CVector moveForward = CVector::Cross(moveSide, up);
+
+		// 求めた各方向の移動ベクトルから、
+		// 最終的なプレイヤーの移動ベクトルを求める
+		move = moveForward * input.Y() + moveSide * input.X();
+		move.Normalize();
+	}
+
+	return move;
+}
+
+// 移動の更新処理
+void CPlayer::UpdateMove()
+{
+	mMoveSpeed = CVector::zero;
+
+	// プレイヤーの移動ベクトルを求める
+	CVector move = CalcMoveVec();
+	// 求めた移動ベクトルの長さで入力されているか判定
+	if (move.LengthSqr() > 0.0f)
+	{
+		mMoveSpeed += move * mPlayerSpeed;
+	}
+}
+
+// 更新
+void CPlayer::Update()
+{
+	if (mHp == 0) return;
+
+	if (mInvincibilityTime > 0.0f)
+	{
+		mInvincibilityTime -= Times::DeltaTime();
+	}
+	if (mInvincibilityTime < 0.0f)
+	{
+		mInvincibilityTime = 0.0f;
+	}
+
+	mIsInvincibility = (mInvincibilityTime == 0.0f) ? false : true;
+
+	// 状態に合わせて、更新処理を切り替える
+	switch (mState)
+	{
+		// 待機状態
+		case EState::eIdle:			UpdateIdle();		break;
+		// 仰け反り
+		case EState::eHit:			UpdateHit();		break;
+		// 仰け反り
+		case EState::eMovable:		UpdateMove();		break;
+	}
+
+	// 待機中とは、移動処理を行う
+	if (mState == EState::eMovable)
+	{
+		//UpdateMove();
+	}
+
+	// 移動(移動しているときはHPが毎秒1減っていく)
+	Position(Position() + mMoveSpeed);
+	// CDebugPrint::Print("mMoveSpeed:%f\n", mMoveSpeed.X());
+	// CDebugPrint::Print("mMoveSpeed:%f\n", mMoveSpeed.Z());
+	if (mMoveSpeed.X() == 0.0f && mMoveSpeed.Z() == 0.0f)
+	{
+		if (mHp > 0)
+		{
+			if (mHp >= 0.2f * Times::DeltaTime())
+			{
+				mHp -= 0.2f * Times::DeltaTime();
+			}
+			else
+			{
+				mHp = 0.0f;
+			}
+		}
+	}
+	else
+	{
+		if (mHp > 0)
+		{
+			if (mHp >= 1.0f * Times::DeltaTime())
+			{
+				mHp -= 1.0f * Times::DeltaTime();
+			}
+			else
+			{
+				mHp = 0.0f;
+			}
+		}
+	}
+
+	// ホイールクリックで樽爆弾投下
+	if (CInput::PushKey(VK_MBUTTON) && mState == EState::eMovable)
+	{
+		ChangeState(EState::eIdle);
+		mInAttack = true;
+		DropBarrel();
+	}
+
+	if (CInput::GetDeltaMouseWheel() > 0)
+	{
+		if (mFireDepth <= 50.0f) return;
+		mFireDepth -= 50.0f;
+	}
+	else if (CInput::GetDeltaMouseWheel() < 0)
+	{
+		if (mFireDepth >= 400.0f) return;
+		mFireDepth += 50.0f;
+	}
+
+	// プレイヤーを移動方向へ向ける
+	CVector current = VectorZ();
+	CVector target = mMoveSpeed;
+	target.Y(0.0f);
+	target.Normalize();
+	CVector forward = CVector::Slerp(current, target, 0.125f);
+	Rotation(CQuaternion::LookRotation(forward));
+
+	CVector pos = Position();
+
+#ifdef _DEBUG
+	// CDebugPrint::Print("PlayerHP:%f / %f\n", mHp, mMaxHp);
+	// CDebugPrint::Print("PlayerPos:%.2f, %.2f, %.2f\n", pos.X(), pos.Y(), pos.Z());
+	// CDebugPrint::Print("PlayerState:%d\n", mState);
+	CDebugPrint::Print("FPS:%f\n", Times::FPS());
+	// CDebugPrint::Print("Depth:%f\n", mFireDepth);
+	CDebugPrint::Print("Score:%d\n", (int)mGetScore);
+#endif // _DEBUG
+
+}
+
+// 樽を発射
+void CPlayer::DropBarrel()
+{
+	CVector pos = Position() + Rotation() * BARREL_OFFSET_POS;
+	CVector under = -VectorY();
+	CVector dir = CQuaternion(0.0f, 0.0f, 0.0f) * under;
+	int trackspeed = mpSaveManager->data.barrelTrackingLv * 0.5f; // <- メンバ変数にするのとどっちが効率的なんだろうか？
+	CBarrel* barrel = new CBarrel(mBarrelSpeed, mFireDepth, mAttackDamage, trackspeed, mAttackRadius, this, mpCamera);
+	barrel->Position(pos);
+	barrel->Rotation(CQuaternion::LookRotation(dir));
+
+	// カメラの追従を樽に移す
+	mpCamera->SetFollowTargetTf(barrel);
+	mpCamera->SetFollowTargetOffset(CVector(0.0f, 0.0f, 0.0f));
+
+	// 移動を停止
+	mMoveSpeed = CVector::zero;
+}
+
+// ダメージを受ける
+void CPlayer::TakeDamage(float damage, CObjectBase* causer)
+{
+	mInvincibilityTime = 3.0f;
+	if (mIsInvincibility) return;
+
+	// ベースクラスのダメージ処理を呼び出す
+	CCharaBase::TakeDamage(damage, causer);
+
+	// 死亡していなければ、
+	if (!IsDeath())
+	{
+		// 仰け反り状態へ移行
+		ChangeState(EState::eHit);
+
+		// 移動を停止
+		mMoveSpeed = CVector::zero;
+	}
+}
+
+// 衝突処理
+void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
+{
+	// 本体のコライダーの衝突判定
+	if (self == mpBodyCol)
+	{
+		// フィールドとの衝突
+		if (other->Layer() == ELayer::eField)
+		{
+			// 坂道で滑らないように、押し戻しベクトルのXとZの値を0にする
+			CVector adjust = hit.adjust;
+			adjust.X(0.0f);
+			adjust.Z(0.0f);
+
+			Position(Position() + adjust * hit.weight);
+
+			// 衝突した地面が床か天井かを内積で判定
+			CVector normal = hit.adjust.Normalized();
+			float dot = CVector::Dot(normal, CVector::up);
+			// 内積の結果がプラスであれば、床と衝突した
+			if (dot >= 0.0f)
+			{
+				// 落下などで床に上から衝突した時（下移動）のみ
+				// 上下の移動速度を0にする
+				if (mMoveSpeedY < 0.0f)
+				{
+					mMoveSpeedY = 0.0f;
+				}
+			}
+			// 内積の結果がマイナスであれば、天井と衝突した
+			else
+			{
+				// ジャンプなどで天井に下から衝突した時（上移動）のみ
+				// 上下の移動速度を0にする
+				if (mMoveSpeedY > 0.0f)
+				{
+					mMoveSpeedY = 0.0f;
+				}
+			}
+		}
+		// 敵と衝突した場合
+		else if (other->Layer() == ELayer::eEnemy)
+		{
+			// 横方向にのみ押し戻すため、
+			// 押し戻しベクトルのYの値を0にする
+			CVector adjust = hit.adjust;
+			adjust.Y(0.0f);
+			Position(Position() + adjust * hit.weight);
+		}
+	}
+}
+
+float CPlayer::GetDepth()
+{
+	return mFireDepth;
+}
+
+int CPlayer::GetScore()
+{
+	return (int)mGetScore;
+}
+
+void CPlayer::AddScore(float amount)
+{
+	mGetScore += amount;
+}
+
+// 描画
+void CPlayer::Render()
+{
+	mpModel->Render(Matrix());
+}
+
+void CPlayer::SetCamera(CGameCamera2* camera)
+{
+	mpCamera = camera;
+}
+
+void CPlayer::SetState(int stateNum)
+{
+	if (stateNum == 0)
+	{
+		ChangeState(EState::eIdle);
+	}
+	else if (stateNum == 1)
+	{
+		ChangeState(EState::eMovable);
+	}
+}

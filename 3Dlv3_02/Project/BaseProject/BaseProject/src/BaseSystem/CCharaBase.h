@@ -1,0 +1,32 @@
+#pragma once
+#include "CObjectBase.h"
+
+/// <summary>
+/// キャラクターのベースクラス
+/// </summary>
+class CCharaBase : public CObjectBase
+{
+public:
+	// コンストラクタ
+	CCharaBase(ETag tag, ETaskPriority prio, int sortOrder = 0,
+		ETaskPauseType pause = ETaskPauseType::eGame);
+	// デストラクタ
+	virtual ~CCharaBase();
+
+	// 最大HPを取得
+	float GetMaxHp() const;
+	// 現在HPを取得
+	float GetHp() const;
+
+	// ダメージを受ける
+	virtual void TakeDamage(float damage, CObjectBase* causer);
+
+	// 死亡
+	virtual void Death();
+	// 死んでいるかどうか
+	bool IsDeath() const;
+
+protected:
+	float mMaxHp;	// 最大HP
+	float mHp;	// 現在HP
+};
