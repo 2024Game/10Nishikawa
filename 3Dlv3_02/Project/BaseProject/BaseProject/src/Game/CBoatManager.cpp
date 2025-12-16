@@ -1,40 +1,40 @@
-#include "CFishManager.h"
-#include "CFish.h"
+#include "CBoatManager.h"
+#include "CBoat.h"
 
 // staticメンバ変数は定義しないといけないのでnullptrで初期化
-CFishManager* CFishManager::msInstance = nullptr;
+CBoatManager* CBoatManager::msInstance = nullptr;
 
-CFishManager::CFishManager()
+CBoatManager::CBoatManager()
 	:CTask(ETaskPriority::eManager)
 {
 }
 
-CFishManager::~CFishManager()
+CBoatManager::~CBoatManager()
 {
 	msInstance = nullptr;
 }
 
-CFishManager* CFishManager::Instance()
+CBoatManager* CBoatManager::Instance()
 {
 	// 仮のシングルトンパターン(コピーは作れてしまう)
 	if (msInstance == nullptr)
 	{
-		msInstance = new CFishManager();
+		msInstance = new CBoatManager();
 	}
 	return msInstance;
 }
 
-const std::vector<CFish*>& CFishManager::GetFishes() const
+const std::vector<CBoat*>& CBoatManager::GetBoats() const
 {
-	return mFishes;
+	return mBoats;
 }
 
-void CFishManager::Add(CFish* fish)
+void CBoatManager::Add(CBoat* boat)
 {
-	mFishes.push_back(fish);
+	mBoats.push_back(boat);
 }
 
-void CFishManager::Remove(CFish* fish)
+void CBoatManager::Remove(CBoat* boat)
 {
 	/*
 		std::vector<int> v = {1, 2, 3, 2, 4};
@@ -46,6 +46,6 @@ void CFishManager::Remove(CFish* fish)
 		v = {1, 3, 4, ?, ?} ← 2は前方に詰められて消えたように見えるが、サイズは変わっていない
 		v.erase(it, v.end()); // ← ここで本当に削除
 	*/
-	auto result = std::remove(mFishes.begin(), mFishes.end(), fish);
-	mFishes.erase(result, mFishes.end());
+	auto result = std::remove(mBoats.begin(), mBoats.end(), boat);
+	mBoats.erase(result, mBoats.end());
 }

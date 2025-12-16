@@ -4,17 +4,17 @@
 #include "CPlayer.h"
 
 // 基底クラス
-class CFish : public CEnemy
+class CBoat : public CEnemy
 {
 public:
     virtual void Show() const = 0;
 
     // コンストラクタ
-    CFish(const std::string& fishTypeName);
+    CBoat(const std::string& boatTypeName);
     // デストラクタ
-    virtual ~CFish();
+    virtual ~CBoat();
 
-	const std::string& GetFishTypeName() const;
+	const std::string& GetBoatTypeName() const;
 
     // ダメージを受ける
     void TakeDamage(float damage, CObjectBase* causer) override;
@@ -56,7 +56,7 @@ protected:
 	// 死亡状態の更新処理
 	virtual void UpdateDeath();
 
-	std::string mFishTypeName;		// 魚の種類名
+	std::string mBoatTypeName;		// 魚の種類名
 	float mScore;					// 魚の基礎スコア
 	bool mIsInvincibility;			// 無敵状態か
 	float mInvincibilityTime;

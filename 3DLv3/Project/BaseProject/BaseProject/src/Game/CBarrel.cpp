@@ -187,7 +187,7 @@ void CBarrel::Render()
 	mpModel2->SetColor(mColor);
 
 	// P_POS を Barrel のワールド座標で適用したい場合
-	CMatrix trans = Matrix() * CMatrix::Translate(P_POS);
+	//CMatrix trans = Matrix() * CMatrix::Translate(P_POS);
 
-	mpModel2->Render(trans);
+	//mpModel2->Render(trans);
 }

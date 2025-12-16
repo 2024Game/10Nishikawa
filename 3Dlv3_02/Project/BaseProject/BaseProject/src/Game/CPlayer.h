@@ -91,6 +91,8 @@ private:
 	CModel* mpModel;			// 本体のモデルデータ
 	CCollider* mpBodyCol;		// 本体のコライダー
 
+	CModel* mpModel2;			// 大砲のモデル
+
 	CGameCamera2* mpCamera;		// カメラのポインター
 	CSaveManager* mpSaveManager;
 

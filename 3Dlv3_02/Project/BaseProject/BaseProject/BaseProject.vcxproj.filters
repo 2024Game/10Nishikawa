@@ -400,13 +400,13 @@
     <ClCompile Include="src\Game\CBarrel.cpp">
       <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CFish.cpp">
+    <ClCompile Include="src\Game\CBoat.cpp">
       <Filter>ソース ファイル\Game\Character\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CMinimap.cpp">
       <Filter>ソース ファイル\Game\UI\GameUI</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CFishManager.cpp">
+    <ClCompile Include="src\Game\CBoatManager.cpp">
       <Filter>ソース ファイル\Game\Character\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CRainbowTrout.cpp">
@@ -753,13 +753,13 @@
     <ClInclude Include="src\Game\CBarrel.h">
       <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CFish.h">
+    <ClInclude Include="src\Game\CBoat.h">
       <Filter>ソース ファイル\Game\Character\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CMinimap.h">
       <Filter>ソース ファイル\Game\UI\GameUI</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CFishManager.h">
+    <ClInclude Include="src\Game\CBoatManager.h">
       <Filter>ソース ファイル\Game\Character\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CRainbowTrout.h">

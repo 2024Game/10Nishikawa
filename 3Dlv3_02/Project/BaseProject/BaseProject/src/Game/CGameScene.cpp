@@ -52,7 +52,7 @@ void CGameScene::Load()
 	CResourceManager::Load<CModel>(		"FieldCylinder",	"Field\\Object\\cylinder.obj");
 	CResourceManager::Load<CModel>(		"Player",			"Character\\PlayerBoat\\PlayerBoat.obj");
 	CResourceManager::Load<CModel>(		"Barrel",			"Objects\\Barrel\\barrel.obj");
-	CResourceManager::Load<CModel>(		"Propeller",		"Objects\\Barrel\\propeller.obj");
+	CResourceManager::Load<CModel>(		"Cannon",			"Objects\\Cannon\\cannon.obj");
 	CResourceManager::Load<CModelX>(	"Cactus",			"Character\\Enemy\\Cactus\\cactus.x");
 	CResourceManager::Load<CModel>(		"CactusNeedle",		"Character\\Enemy\\Cactus\\needle.obj");
 	CResourceManager::Load<CTexture>(	"Laser",			"Effect\\laser.png");
@@ -60,13 +60,15 @@ void CGameScene::Load()
 	CResourceManager::Load<CModel>(		"Slash",			"Effect\\slash.obj");
 
 	CResourceManager::Load<CSound>(		"ExplosionSound",	"Sound\\SE\\Explosion.wav");
-	CResourceManager::Load<CSound>(		"FishfinderSound",	"Sound\\SE\\fishfinder.wav");
+	CResourceManager::Load<CSound>(		"BoatfinderSound",	"Sound\\SE\\fishfinder.wav");
 	CResourceManager::Load<CSound>(		"WhistleSound",		"Sound\\SE\\hoissuru.wav");
 
 	CResourceManager::Load<CModel>(		"Jellyfish",		"Character\\Enemy\\Jellyfish\\jellyfish.obj");
 	CResourceManager::Load<CModelX>(	"RainbowTrout",		"Character\\Enemy\\RainbowTrout\\RainbowTrout_x5.x");
 	CResourceManager::Load<CModelX>(	"StripedBass",		"Character\\Enemy\\StripedBass\\StripedBass_x0.5.x");
 	CResourceManager::Load<CModelX>(	"Tuna",				"Character\\Enemy\\Tuna\\Tuna.x");
+
+	CResourceManager::Load<CModel>(		"Boat1",			"Objects\\Boats\\Boat1\\Boat1.obj");
 
 	// ゲームBGMを読み込み
 	CBGMManager::Instance()->Play(EBGMType::eGame);
@@ -90,14 +92,14 @@ void CGameScene::Load()
 	mpPlayer->Position(0.0f, -0.5f, 0.0f);
 
 	// 魚の出現数は100匹が限界そう
-	
+	/*
 	// JellyfishをランダムにN体生成
 	for (int i = 0; i < 30; ++i)
 	{
 		float x = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
 		float y = 0.0f;
 		float z = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f; // -500〜500
-		float scale = 2.0f + static_cast<float>(rand()) / RAND_MAX * 1.0f;   // 1.0〜2.0
+		float scale = 1.0f + static_cast<float>(rand()) / RAND_MAX * 0.0f;   // 1.0〜2.0
 
 		while ((-10.0f < x && x < 10.0f) || (-10.0f < z && z < 10.0f))
 		{
@@ -105,10 +107,10 @@ void CGameScene::Load()
 			z = -500.0f + static_cast<float>(rand()) / RAND_MAX * 1000.0f;
 		}
 
-		CJellyfish* jellyfish = new CJellyfish(mpPlayer);
-		jellyfish->Position(x, y, z);
-		jellyfish->Scale(scale * 2.5f, scale, scale * 2.5f);
-		jellyfish->Init();
+		CJellyfish* jellyboat = new CJellyfish(mpPlayer);
+		jellyboat->Position(x, y, z);
+		jellyboat->Scale(scale, scale, scale);
+		jellyboat->Init();
 	}
 	
 	// RainbowTroutをランダムにN体生成
@@ -152,7 +154,7 @@ void CGameScene::Load()
 		tuna->Scale(scale, scale, scale);
 		tuna->Init();
 	}
-
+	*/
 	// CGameCameraのテスト
 	//CGameCamera* mainCamera = new CGameCamera
 	//(

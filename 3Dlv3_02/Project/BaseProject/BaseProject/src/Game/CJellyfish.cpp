@@ -20,10 +20,10 @@
 #define ATTACK_COL_POS CVector(0.0f, -0.25f, 0.0f)
 
 CJellyfish::CJellyfish(CPlayer* player)
-	:CFish("Jellyfish")
+	:CBoat("Boat1")
 	, mpAttackCol(nullptr)
 {
-	mpModelObj = CResourceManager::Get<CModel>("Jellyfish");
+	mpModelObj = CResourceManager::Get<CModel>("Boat1");
 	/*
 	// 敵のアニメーションデータのテーブル
 	const std::vector<CEnemy::AnimData> ANIM_DATA =
@@ -95,12 +95,12 @@ void CJellyfish::Init()
 
 void CJellyfish::Update()
 {
-	CFish::Update();
+	CBoat::Update();
 }
 
 void CJellyfish::Render()
 {
-	CFish::Render();
+	CBoat::Render();
 	mpModelObj->SetColor(mColor);
 	mpModelObj->Render(Matrix());
 }
@@ -222,7 +222,7 @@ void CJellyfish::UpdateMove()
 	float moveDist = MOVE_SPEED * Times::DeltaTime();
 	float dist = vec.Length();
 
-	//CDebugPrint::Print("FishDist:%.2f\n", dist);
+	//CDebugPrint::Print("BoatDist:%.2f\n", dist);
 
 	if (dist > moveDist)
 	{

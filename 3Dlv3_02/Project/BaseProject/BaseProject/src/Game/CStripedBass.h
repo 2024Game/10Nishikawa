@@ -1,7 +1,7 @@
 #pragma once
-#include "CFish.h"
+#include "CBoat.h"
 
-class CStripedBass : public CFish
+class CStripedBass : public CBoat
 {
 public:
 	// コンストラクタ

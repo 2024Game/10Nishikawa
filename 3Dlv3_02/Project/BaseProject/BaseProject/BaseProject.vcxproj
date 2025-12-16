@@ -81,7 +81,7 @@
     <ClCompile Include="src\Game\CCactusNeedle.cpp" />
     <ClCompile Include="src\Game\CEnemy.cpp" />
     <ClCompile Include="src\Game\CField.cpp" />
-    <ClCompile Include="src\Game\CFishManager.cpp" />
+    <ClCompile Include="src\Game\CBoatManager.cpp" />
     <ClCompile Include="src\Game\CFlame.cpp" />
     <ClCompile Include="src\Game\CFlamethrower.cpp" />
     <ClCompile Include="src\Game\CGameCamera.cpp" />
@@ -109,7 +109,7 @@
     <ClCompile Include="src\Game\CTuna.cpp" />
     <ClCompile Include="src\Game\CWeapon.cpp" />
     <ClCompile Include="src\Game\CXCharacter.cpp" />
-    <ClCompile Include="src\Game\CFish.cpp" />
+    <ClCompile Include="src\Game\CBoat.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Test\CBootMenuScene.cpp" />
     <ClCompile Include="src\Test\CColBase.cpp" />
@@ -201,7 +201,7 @@
     <ClInclude Include="src\Game\CCactusNeedle.h" />
     <ClInclude Include="src\Game\CEnemy.h" />
     <ClInclude Include="src\Game\CField.h" />
-    <ClInclude Include="src\Game\CFishManager.h" />
+    <ClInclude Include="src\Game\CBoatManager.h" />
     <ClInclude Include="src\Game\CFlame.h" />
     <ClInclude Include="src\Game\CFlamethrower.h" />
     <ClInclude Include="src\Game\CGameCamera.h" />
@@ -229,7 +229,7 @@
     <ClInclude Include="src\Game\CTuna.h" />
     <ClInclude Include="src\Game\CWeapon.h" />
     <ClInclude Include="src\Game\CXCharacter.h" />
-    <ClInclude Include="src\Game\CFish.h" />
+    <ClInclude Include="src\Game\CBoat.h" />
     <ClInclude Include="src\Test\CBootMenuScene.h" />
     <ClInclude Include="src\Test\CColBase.h" />
     <ClInclude Include="src\Test\CColCapsule.h" />
