@@ -71,7 +71,7 @@ void CGameScene::Load()
 	//soldier1->Position(10.0f, 10.0f, -100.0f);
 
 	// 兵士の敵をランダムにN体生成
-	for (int i = 0; i < 2; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		float x = -100.0f + static_cast<float>(rand()) / RAND_MAX * 200.0f; // -100〜100
 		float y = 10.0f;
