@@ -22,13 +22,13 @@ private:
 
 	float mUpdateTimer = 0.0f;         // 更新までの経過時間
 
-	struct FishMapInfo
+	struct BoatMapInfo
 	{
 		CVector position; // 5秒ごとに更新される魚の位置
 	};
 
-	std::vector<FishMapInfo> mFishMapInfos;
+	std::vector<BoatMapInfo> mBoatMapInfos;
 
 	CImage* mpRadarImage;		// レーダー背景イメージ
-	CSound* mpFishfinderSound;	// 探知機音データ
+	CSound* mpBoatfinderSound;	// 探知機音データ
 };

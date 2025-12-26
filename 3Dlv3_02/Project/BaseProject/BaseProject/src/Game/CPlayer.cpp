@@ -11,6 +11,7 @@
 #define BODY_RADIUS 2.5f	// 本体のコライダーの幅
 
 #define BARREL_OFFSET_POS CVector(0.0f, 1.5f, -8.5f)
+#define P_POS CVector(0.0f, 2.5f, 0.0f)
 
 // プレイヤーのインスタンス
 CPlayer* CPlayer::spInstance = nullptr;
@@ -23,6 +24,7 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	, mElapsedTime(0.0f)
 	, mMoveSpeedY(0.0f)
 	, mpModel(nullptr)
+	, mpModel2(nullptr)
 	, mpBodyCol(nullptr)
 	, mFireDepth(50.0)
 	, mGetScore(0.0f)
@@ -41,6 +43,7 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 
 	// モデルデータ取得
 	mpModel = CResourceManager::Get<CModel>("Player");
+	mpModel2 = CResourceManager::Get<CModel>("Cannon");
 
 	// 本体のコライダーを作成
 	mpBodyCol = new CColliderCapsule
@@ -372,6 +375,15 @@ void CPlayer::AddScore(float amount)
 void CPlayer::Render()
 {
 	mpModel->Render(Matrix());
+
+	mpModel2->SetColor(mColor);
+
+	// P_POS を Barrel のワールド座標で適用したい場合
+	CMatrix trans;
+	trans.Translate(P_POS);
+	CMatrix mtx = Matrix() * trans;
+
+	mpModel2->Render(mtx);
 }
 
 void CPlayer::SetCamera(CGameCamera2* camera)

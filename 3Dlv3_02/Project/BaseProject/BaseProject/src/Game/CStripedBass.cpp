@@ -17,7 +17,7 @@
 #define DEATH_WAIT_TIME 2.0f
 
 CStripedBass::CStripedBass(CPlayer* player)
-	:CFish("StripedBass")
+	:CBoat("StripedBass")
 {
 	// 敵のアニメーションデータのテーブル
 	const std::vector<CEnemy::AnimData> ANIM_DATA =
@@ -169,7 +169,7 @@ void CStripedBass::UpdateMove()
 	float moveDist = MOVE_SPEED * Times::DeltaTime();
 	float dist = vec.Length();
 
-	//CDebugPrint::Print("FishDist:%.2f\n", dist);
+	//CDebugPrint::Print("BoatDist:%.2f\n", dist);
 
 	if (dist > moveDist)
 	{

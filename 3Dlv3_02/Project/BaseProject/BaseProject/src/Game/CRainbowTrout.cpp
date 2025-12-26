@@ -17,7 +17,7 @@
 #define DEATH_WAIT_TIME 2.0f
 
 CRainbowTrout::CRainbowTrout(CPlayer* player)
-	:CFish("RainbowTrout")
+	:CBoat("RainbowTrout")
 {
 	// 敵のアニメーションデータのテーブル
 	const std::vector<CEnemy::AnimData> ANIM_DATA =
@@ -175,7 +175,7 @@ void CRainbowTrout::UpdateMove()
 	float moveDist = MOVE_SPEED * Times::DeltaTime();
 	float dist = vec.Length();
 
-	//CDebugPrint::Print("FishDist:%.2f\n", dist);
+	//CDebugPrint::Print("BoatDist:%.2f\n", dist);
 
 	if (dist > moveDist)
 	{

@@ -3,20 +3,18 @@
 #include "CColliderSphere.h"
 #include "CEnemy.h"
 
-#include "CFish.h"
-#include "CFishManager.h"
+#include "CBoat.h"
+#include "CBoatManager.h"
 
 #define BODY_HEIGHT 3.0f			// 本体のコライダーの高さ
 #define BODY_RADIUS 1.5f			// 本体のコライダーの幅
 #define ATTACK_COL_RADIUS 25.0f		// 爆発半径
 #define ATTACK_COL_POS CVector(0.0f, 0.5f, 0.0f)
-#define P_POS CVector(0.0f, -0.5f, 0.0f)
 
 // コンストラクタ
 CBarrel::CBarrel(float speed, float depth, float damage, float trackspeed, float radius, CPlayer* player , CGameCamera2* camera)
 	: CObjectBase(ETag::ePlayer, ETaskPriority::eWeapon, 0, ETaskPauseType::eGame)
 	, mpModel(nullptr)
-	, mpModel2(nullptr)
 	, mpCollider(nullptr)
 	, mpAttackCol(nullptr)
 	, mpExplosionSound(nullptr)
@@ -30,7 +28,6 @@ CBarrel::CBarrel(float speed, float depth, float damage, float trackspeed, float
 {
 	// モデルデータ取得
 	mpModel = CResourceManager::Get<CModel>("Barrel");
-	mpModel2 = CResourceManager::Get<CModel>("Propeller");
 
 	// 本体のコライダーを作成
 	mpCollider = new CColliderCapsule
@@ -78,10 +75,10 @@ void CBarrel::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 	if (other->Layer() == ELayer::eEnemy)
 	{
 		// 魚にダメージを与える
-		CEnemy* fish = dynamic_cast<CEnemy*>(other->Owner());
-		if (fish != nullptr)
+		CEnemy* boat = dynamic_cast<CEnemy*>(other->Owner());
+		if (boat != nullptr)
 		{
-			fish->TakeDamage(mFireDamage, this);
+			boat->TakeDamage(mFireDamage, this);
 		}
 	}
 }
@@ -96,31 +93,31 @@ void CBarrel::Update()
 	pos += VectorZ() * moveDist;
 	Position(pos);
 
-	const std::vector<CFish*> fishes = CFishManager::Instance()->GetFishes();
+	const std::vector<CBoat*> boates = CBoatManager::Instance()->GetBoats();
 	mTargetPos = CVector(Position().X(), -mFireDepth, Position().Z());
 
-	// ここでfishesの中からmTargetPosに一番近い魚にmTrackSpeedで近づかせたい
+	// ここでboatesの中からmTargetPosに一番近い魚にmTrackSpeedで近づかせたい
 	// 追尾処理（3Dで一番近い敵に近づく）
-	CFish* nearestFish = nullptr;
+	CBoat* nearestBoat = nullptr;
 	float minDistSq = FLT_MAX;
 
-	for (CFish* fish : fishes)
+	for (CBoat* boat : boates)
 	{
 		// ターゲット位置に対する距離を計算
-		CVector diff = fish->Position() - mTargetPos;
+		CVector diff = boat->Position() - mTargetPos;
 		float distSq = diff.X() * diff.X() + diff.Y() * diff.Y() + diff.Z() * diff.Z();
 
 		if (distSq < minDistSq)
 		{
 			minDistSq = distSq;
-			nearestFish = fish;
+			nearestBoat = boat;
 		}
 	}
 
-	if (nearestFish && !mAttackTriggered)
+	if (nearestBoat && !mAttackTriggered)
 	{
 		// ターゲットのXZ座標
-		CVector targetXZ(nearestFish->Position().X(), Position().Y(), nearestFish->Position().Z());
+		CVector targetXZ(nearestBoat->Position().X(), Position().Y(), nearestBoat->Position().Z());
 		CVector dir = targetXZ - Position();
 
 		// XZ平面距離
@@ -183,11 +180,4 @@ void CBarrel::Render()
 {
 	mpModel->SetColor(mColor);
 	mpModel->Render(Matrix());
-
-	mpModel2->SetColor(mColor);
-
-	// P_POS を Barrel のワールド座標で適用したい場合
-	//CMatrix trans = Matrix() * CMatrix::Translate(P_POS);
-
-	//mpModel2->Render(trans);
 }

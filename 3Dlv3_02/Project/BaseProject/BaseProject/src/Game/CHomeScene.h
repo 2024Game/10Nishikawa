@@ -2,7 +2,7 @@
 #include "CSceneBase.h"
 #include <memory>
 #include "CPlayer.h"
-#include "CFish.h"
+#include "CBoat.h"
 class CGameMenu;
 class CSound;
 class CHomeSceneUI;

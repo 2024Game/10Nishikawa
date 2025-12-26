@@ -1,34 +1,34 @@
-#include "CFish.h"
+#include "CBoat.h"
 #include "Maths.h"
-#include "CFishManager.h"
+#include "CBoatManager.h"
 
-CFish::CFish(const std::string& fishTypeName)
+CBoat::CBoat(const std::string& boatTypeName)
 	: mIsInvincibility(false)
 	, mInvincibilityTime(0.0f)
-	, mFishTypeName(fishTypeName)
+	, mBoatTypeName(boatTypeName)
 	, mIdletime(0.0f)
 	, mTargetPos(CVector(0.0f, 0.0f, 0.0f))
 	, mScore(0.0f)
 {
-	if (mFishTypeName != "Jellyfish")
+	if (mBoatTypeName != "Jellyfish")
 	{
-		// CFishManagerのリストに自分を追加
-		CFishManager::Instance()->Add(this);
+		// CBoatManagerのリストに自分を追加
+		CBoatManager::Instance()->Add(this);
 	}
 }
 
-CFish::~CFish()
+CBoat::~CBoat()
 {
-	// CFishManagerのリストから自分を削除
-	CFishManager::Instance()->Remove(this);
+	// CBoatManagerのリストから自分を削除
+	CBoatManager::Instance()->Remove(this);
 }
 
-const std::string& CFish::GetFishTypeName() const
+const std::string& CBoat::GetBoatTypeName() const
 {
-	return mFishTypeName;
+	return mBoatTypeName;
 }
 
-void CFish::TakeDamage(float damage, CObjectBase* causer)
+void CBoat::TakeDamage(float damage, CObjectBase* causer)
 {
 	mInvincibilityTime = 3.0f;
 	if (mIsInvincibility) return;
@@ -51,20 +51,20 @@ void CFish::TakeDamage(float damage, CObjectBase* causer)
 	}
 }
 
-void CFish::Death()
+void CBoat::Death()
 {
 	// 死亡状態に切り替え
 	ChangeState((int)EState::eDeath);
 
 }
 
-void CFish::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
+void CBoat::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
 	// ベースの衝突処理を呼び出す
 	CEnemy::Collision(self, other, hit);
 }
 
-void CFish::Update()
+void CBoat::Update()
 {
 	if (mInvincibilityTime > 0.0f)
 	{
@@ -94,37 +94,37 @@ void CFish::Update()
 	CEnemy::Update();
 }
 
-void CFish::Render()
+void CBoat::Render()
 {
 	CEnemy::Render();
 }
 
-float CFish::GetScore()
+float CBoat::GetScore()
 {
 	return mScore;
 }
 
-void CFish::LookAtTargetPos()
+void CBoat::LookAtTargetPos()
 {
 }
 
-void CFish::ChangeState(int state)
+void CBoat::ChangeState(int state)
 {
 }
 
-void CFish::UpdateIdle()
+void CBoat::UpdateIdle()
 {
 }
 
-void CFish::UpdateMove()
+void CBoat::UpdateMove()
 {
 }
 
-void CFish::UpdateHit()
+void CBoat::UpdateHit()
 {
 }
 
-void CFish::UpdateDeath()
+void CBoat::UpdateDeath()
 {
 }
 

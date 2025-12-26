@@ -1,11 +1,11 @@
 ﻿#include "CMinimap.h"
 #include "CPlayer.h"
-#include "CFish.h"
-#include "CFishManager.h"
+#include "CBoat.h"
+#include "CBoatManager.h"
 #include "CImage.h"
 
 CMinimap::CMinimap()
-	:mpFishfinderSound(nullptr)
+	:mpBoatfinderSound(nullptr)
 {
 	SetPos(WINDOW_WIDTH - 125.0f, 125.0f);
 	CVector2 size = CVector2(175.0f, 175.0f);
@@ -13,7 +13,7 @@ CMinimap::CMinimap()
 	SetCenter(size * 0.5f);
 	mUpdateTimer = 0.0f;
 	// SEデータ取得
-	mpFishfinderSound = CResourceManager::Get<CSound>("FishfinderSound");
+	mpBoatfinderSound = CResourceManager::Get<CSound>("BoatfinderSound");
 
 	// タイトル画面の背景イメージを生成
 	mpRadarImage = new CImage
@@ -57,27 +57,27 @@ void CMinimap::Render()
 	// レーダー背景描画
 	mpRadarImage->Render();
 
-	const std::vector<CFish*> fishes = CFishManager::Instance()->GetFishes();
+	const std::vector<CBoat*> boates = CBoatManager::Instance()->GetBoats();
 
 	// 5秒ごとに魚の座標リストを更新
 	mUpdateTimer += Times::DeltaTime();
 	if (mUpdateTimer >= 5.0f)
 	{
-		mFishMapInfos.clear();
-		mFishMapInfos.reserve(fishes.size());
+		mBoatMapInfos.clear();
+		mBoatMapInfos.reserve(boates.size());
 
-		for (CFish* fish : fishes)
+		for (CBoat* boat : boates)
 		{
-			FishMapInfo info;
-			info.position = fish->Position();
-			mFishMapInfos.push_back(info);
+			BoatMapInfo info;
+			info.position = boat->Position();
+			mBoatMapInfos.push_back(info);
 		}
-		mpFishfinderSound->Play(0.1f,true);
+		mpBoatfinderSound->Play(0.1f,true);
 		mUpdateTimer = 0.0f;
 	}
 
 	// 🐟 登録済みの魚の座標を描画
-	for (const FishMapInfo& info : mFishMapInfos)
+	for (const BoatMapInfo& info : mBoatMapInfos)
 	{
 		float dx = info.position.X() - playerPos.X();
 		float dz = info.position.Z() - playerPos.Z();

@@ -28,7 +28,6 @@ public:
 
 private:
 	CModel* mpModel;			// 樽のモデルデータ
-	CModel* mpModel2;			// プロペラのモデル
 	CCollider* mpCollider;		// 樽のコライダー
 	CCollider* mpAttackCol;		// 攻撃用のコライダー
 	CSound* mpExplosionSound;	// 爆発音データ
