@@ -53,7 +53,7 @@
 // 先行入力のコライダーの半径
 #define TA_COL_RADIUS 25.0f
 // 先行入力のコライダーのオフセット座標
-#define TA_COL_OFFSET_POS CVector(0.0f, 4.0f, 0.0f)
+#define TA_COL_OFFSET_POS CVector(0.0f, 4.0f, 2.5f)
 
 // プレイヤーのインスタンス
 CPlayer* CPlayer::spInstance = nullptr;
@@ -451,6 +451,8 @@ void CPlayer::UpdateAttackX()
 		// 斬撃エフェクトの生成済みフラグを初期化
 		mIsSpawnedSlashEffect = false;
 
+		mAttackVec = VectorZ();
+
 		mStateStep++;
 		break;
 	case 1:
@@ -474,6 +476,8 @@ void CPlayer::UpdateAttackX()
 		if (GetAnimationFrame() >= ATTACKX_START_FRAME + 85.0f)
 		{
 			CObjectBase::AttackStart();
+			mInAttack = true;
+			mAttackTimer = 0.0f;
 			mStateStep++;
 		}
 		break;
@@ -483,7 +487,18 @@ void CPlayer::UpdateAttackX()
 			// 攻撃終了
 			AttackEnd();
 
+			mInAttack = false;
+
 			mStateStep++;
+		}
+
+		if (mInAttack)
+		{
+			mAttackTimer += Times::DeltaTime();
+
+			// 1秒あたりの移動速度
+			CVector move = mAttackVec * 30.0f * Times::DeltaTime();
+			Position(Position() + move);
 		}
 		break;
 	case 4:

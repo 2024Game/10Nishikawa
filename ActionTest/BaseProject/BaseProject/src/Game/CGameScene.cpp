@@ -127,7 +127,7 @@ void CGameScene::Update()
 	}
 
 	mTimeCount++;
-	if (mTimeCount >= 6000)
+	if (mTimeCount >= (60 * 180))
 	{
 		float x = -450.0f + static_cast<float>(rand()) / RAND_MAX * 900.0f; // -450〜450
 		float y = 10.0f;

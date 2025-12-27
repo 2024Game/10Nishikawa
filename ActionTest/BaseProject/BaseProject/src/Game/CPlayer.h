@@ -170,6 +170,9 @@ private:
 	CSword* mpSword;
 
 	bool mNextAttack; //˜A‘±UŒ‚‚ª—\–ñ‚³‚ê‚Ä‚¢‚é‚©‚Ç‚¤‚©
+	CVector mAttackVec;
+	float mAttackTimer = 0.0f;
+	bool mInAttack = false;
 
 	CVector mAvoidVec;
 	float mAvoidTimer = 0.0f;

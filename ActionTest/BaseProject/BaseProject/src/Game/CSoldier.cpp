@@ -15,11 +15,12 @@
 
 #define GAUGE_OFFSET_Y 15.0f
 #define DEATH_WAIT_TIME 3.0f
-#define ATTACK_RANGE 15.0f
+
 #define LOOKAT_SPEED 90.0f
 #define BATTLE_IDLE_TIME_MIN 0.1f
 #define BATTLE_IDLE_TIME_MAX 0.5f
-#define ATTACK2_DIST 50.0f				// 針攻撃を行う距離
+#define ATTACK2_DIST 50.0f			// 駆け寄ってくる距離
+#define ATTACK_RANGE 30.0f			// 攻撃を行う距離
 #define ATTACK2_PROB 75				// 2段目攻撃を行う確率（パーセント）
 #define ATTACKX_PROB 50				// X段目攻撃を行う確率（パーセント）
 
@@ -44,12 +45,12 @@
 #define KICK_END_FRAME 40.0f		// 蹴り攻撃の終了フレーム
 #define KICK_COL_RADIUS 7.5f		// 蹴り攻撃のコライダーの半径
 // 蹴り攻撃のコライダーのオフセット座標
-#define KICK_COL_OFFSET_POS CVector(0.0f, 4.0f, 5.0f)
+#define KICK_COL_OFFSET_POS CVector(0.0f, 4.0f, 2.5f)
 
 // 先行入力のコライダーの半径
 #define TA_COL_RADIUS 25.0f
 // 先行入力のコライダーのオフセット座標
-#define TA_COL_OFFSET_POS CVector(0.0f, 4.0f, 0.0f)
+#define TA_COL_OFFSET_POS CVector(0.0f, 4.0f, 5.0f)
 
 // 敵のアニメーションデータのテーブル
 const std::vector<CEnemy::AnimData> ANIM_DATA =
@@ -648,50 +649,73 @@ void CSoldier::UpdateAttack2()
 
 void CSoldier::UpdateAttackX()
 {
-	// ステップごとに処理を分ける
 	switch (mStateStep)
 	{
-		// ステップ0：攻撃アニメーション再生
 	case 0:
+		// 先行入力コライダーをオンにする
+		mpTACol->SetEnable(true);
+
+		mpSword->Rotation(ATTACKX_SWORD_OFFSET_ROT);
+		// 攻撃アニメーションを開始
 		ChangeAnimation((int)EAnimType::eAttackX, true);
+		// 斬撃SEの再生済みフラグを初期化
+		mIsPlayedSlashSE = false;
+		// 斬撃エフェクトの生成済みフラグを初期化
+		mIsSpawnedSlashEffect = false;
+
+		mAttackVec = VectorZ();
+
 		mStateStep++;
 		break;
-		// ステップ1：攻撃開始
 	case 1:
-		// 攻撃を開始するまで、徐々に戦闘相手の方向へ向く
-		LookAtBattleTarget();
-
-		// 攻撃開始フレームまで経過したか
 		if (GetAnimationFrame() >= ATTACKX_START_FRAME)
 		{
 			// 斬撃SEを再生
 			mpSlashSE->Play();
-			// 攻撃開始処理を呼び出す
+			// 攻撃開始
 			AttackStart();
-			mStateStep++;
-		}
-		break;
-		// ステップ2：攻撃終了
-	case 2:
-		// 攻撃終了フレームまで経過したか
-		if (GetAnimationFrame() >= ATTACKX_END_FRAME)
-		{
-			// 攻撃終了処理を呼び出す
-			AttackEnd();
 
 			mStateStep++;
 		}
 		break;
-		// ステップ3：攻撃アニメーション終了待ち
+	case 2:
+		if (GetAnimationFrame() >= ATTACKX_START_FRAME + 85.0f)
+		{
+			CObjectBase::AttackStart();
+			mInAttack = true;
+			mAttackTimer = 0.0f;
+			mStateStep++;
+		}
+		break;
 	case 3:
-		// アニメーション終了したら、待機状態へ戻す
+		if (GetAnimationFrame() >= ATTACKX_END_FRAME)
+		{
+			// 攻撃終了
+			AttackEnd();
+
+			mInAttack = false;
+
+			mStateStep++;
+		}
+
+		if (mInAttack)
+		{
+			mAttackTimer += Times::DeltaTime();
+
+			// 1秒あたりの移動速度
+			CVector move = mAttackVec * 30.0f * Times::DeltaTime();
+			Position(Position() + move);
+		}
+
+		break;
+	case 4:
+		// 攻撃アニメーションが終了したら、
 		if (IsAnimationFinished())
 		{
+			mpSword->Rotation(SWORD_OFFSET_ROT);
 			// 待機状態へ移行
 			ChangeState((int)EState::eIdle);
 			ChangeAnimation((int)EAnimType::eIdle);
-			mNextAttack = false;
-			CObjectBase::AttackStart();
 		}
 		break;
 	}
