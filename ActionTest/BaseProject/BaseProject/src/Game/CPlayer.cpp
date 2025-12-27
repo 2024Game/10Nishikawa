@@ -95,7 +95,7 @@ CPlayer::CPlayer()
 	, mpSword(nullptr)
 	, mNextAttack(false)
 {
-	mMaxHp = 100;
+	mMaxHp = 1000.0f;
 	mHp = mMaxHp;
 
 	//インスタンスの設定
@@ -213,7 +213,17 @@ void CPlayer::ChangeAnimation(EAnimType type, bool restart)
 	if (!(EAnimType::None < type && type < EAnimType::Num)) return;
 	AnimData data = ANIM_DATA[(int)type];
 	CXCharacter::ChangeAnimation((int)type, data.loop, data.frameLength, restart);
-	CXCharacter::SetAnimationSpeed(data.speed);
+	if (
+		type == EAnimType::eAttack1 ||
+		type == EAnimType::eAttack2 ||
+		type == EAnimType::eAttackX)
+	{
+		CXCharacter::SetAnimationSpeed(data.speed * 1.0f);
+	}
+	else
+	{
+		CXCharacter::SetAnimationSpeed(data.speed);
+	}
 }
 
 // 状態を切り替え
@@ -298,6 +308,8 @@ void CPlayer::UpdateAttack1()
 			// 斬撃エフェクトの生成済みフラグを初期化
 			mIsSpawnedSlashEffect = false;
 
+			mAttackVec = VectorZ();
+
 			mStateStep++;
 			break;
 		case 1:
@@ -307,6 +319,9 @@ void CPlayer::UpdateAttack1()
 				mpSlashSE->Play();
 				// 攻撃開始
 				AttackStart();
+
+				mInAttack = true;
+				mAttackTimer = 0.0f;
 
 				mStateStep++;
 			}
@@ -324,6 +339,8 @@ void CPlayer::UpdateAttack1()
 				// 攻撃終了
 				AttackEnd();
 
+				mInAttack = false;
+
 				mStateStep++;
 			}
 
@@ -333,6 +350,14 @@ void CPlayer::UpdateAttack1()
 				mNextAttack = true;
 			}
 
+			if (mInAttack)
+			{
+				mAttackTimer += Times::DeltaTime();
+
+				// 1秒あたりの移動速度
+				CVector move = mAttackVec * 10.0f * Times::DeltaTime();
+				Position(Position() + move);
+			}
 			break;
 		case 3:
 			// 攻撃アニメーションが終了したら、
@@ -370,6 +395,8 @@ void CPlayer::UpdateAttack2()
 		// 斬撃エフェクトの生成済みフラグを初期化
 		mIsSpawnedSlashEffect = false;
 
+		mAttackVec = VectorZ();
+
 		mStateStep++;
 		break;
 	case 1:
@@ -379,6 +406,9 @@ void CPlayer::UpdateAttack2()
 			mpSlashSE->Play();
 			// 攻撃開始
 			AttackStart();
+
+			mInAttack = true;
+			mAttackTimer = 0.0f;
 
 			// 左クリックで連続攻撃を予約
 			if (CInput::PushKey(VK_LBUTTON))
@@ -402,6 +432,8 @@ void CPlayer::UpdateAttack2()
 			// 攻撃終了
 			AttackEnd();
 
+			mInAttack = false;
+
 			mStateStep++;
 		}
 
@@ -411,6 +443,14 @@ void CPlayer::UpdateAttack2()
 			mNextAttack = true;
 		}
 
+		if (mInAttack)
+		{
+			mAttackTimer += Times::DeltaTime();
+
+			// 1秒あたりの移動速度
+			CVector move = mAttackVec * 10.0f * Times::DeltaTime();
+			Position(Position() + move);
+		}
 		break;
 	case 3:
 		// 攻撃アニメーションが終了したら、
@@ -642,6 +682,8 @@ void CPlayer::UpdateHit()
 	switch (mStateStep)
 	{
 		case 0:
+			// 先行入力コライダーは最初はオフにしておく
+			mpTACol->SetEnable(false);
 			// 仰け反りアニメーションを開始
 			ChangeAnimation(EAnimType::eHit, true);
 			mStateStep++;
@@ -911,7 +953,7 @@ void CPlayer::Update()
 	mpSword->UpdateMtx();
 
 	CVector pos = Position();
-	CDebugPrint::Print("PlayerHP:%d / %d\n", mHp, mMaxHp);
+	CDebugPrint::Print("PlayerHP:%f / %f\n", mHp, mMaxHp);
 	CDebugPrint::Print("PlayerPos:%.2f, %.2f, %.2f\n", pos.X(), pos.Y(), pos.Z());
 	CDebugPrint::Print("PlayerGrounded:%s\n", mIsGrounded ? "true" : "false");
 	CDebugPrint::Print("PlayerState:%d\n", mState);
@@ -966,7 +1008,7 @@ void CPlayer::AttackEnd()
 }
 
 // ダメージを受ける
-void CPlayer::TakeDamage(int damage, CObjectBase* causer)
+void CPlayer::TakeDamage(float damage, CObjectBase* causer)
 {
 	// ベースクラスのダメージ処理を呼び出す
 	CXCharacter::TakeDamage(damage, causer);

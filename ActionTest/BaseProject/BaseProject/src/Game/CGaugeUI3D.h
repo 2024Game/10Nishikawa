@@ -16,9 +16,9 @@ public:
 	void SetOwner(CObjectBase* owner);
 
 	// 最大値を設定
-	void SetMaxPoint(int point);
+	void SetMaxPoint(float point);
 	// 現在値を設定
-	void SetCurrPoint(int point);
+	void SetCurrPoint(float point);
 	// ポイント残量の割合を設定（0.0～1.0）
 	void SetPercent(float per);
 
@@ -37,7 +37,7 @@ private:
 	CImage3D* mpWhiteImg;	// 白イメージ
 
 	CVector2 mGaugeSize;	// ゲージのイメージのサイズ
-	int mMaxPoint;			// 最大値
-	int mCurrPoint;			// 現在値
+	float mMaxPoint;		// 最大値
+	float mCurrPoint;		// 現在値
 	float mPercent;			// ポイント残量の割合
 };

@@ -18,7 +18,7 @@ public:
 	void AttackEnd() override;
 
 	// ƒ_ƒ[ƒW‚ğó‚¯‚é
-	void TakeDamage(int damage, CObjectBase* causer) override;
+	void TakeDamage(float damage, CObjectBase* causer) override;
 	// €–S
 	void Death() override;
 	// Õ“Ëˆ—

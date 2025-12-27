@@ -78,14 +78,14 @@ void CGaugeUI3D::ApplyPoint()
 }
 
 // Å‘å’l‚ğİ’è
-void CGaugeUI3D::SetMaxPoint(int point)
+void CGaugeUI3D::SetMaxPoint(float point)
 {
 	mMaxPoint = point;
 	ApplyPoint();
 }
 
 // Œ»İ’l‚ğİ’è
-void CGaugeUI3D::SetCurrPoint(int point)
+void CGaugeUI3D::SetCurrPoint(float point)
 {
 	mCurrPoint = point;
 	ApplyPoint();

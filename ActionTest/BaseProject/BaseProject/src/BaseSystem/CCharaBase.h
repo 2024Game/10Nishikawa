@@ -14,12 +14,12 @@ public:
 	virtual ~CCharaBase();
 
 	// Å‘åHP‚ğæ“¾
-	int GetMaxHp() const;
+	float GetMaxHp() const;
 	// Œ»İHP‚ğæ“¾
-	int GetHp() const;
+	float GetHp() const;
 
 	// ƒ_ƒ[ƒW‚ğó‚¯‚é
-	virtual void TakeDamage(int damage, CObjectBase* causer);
+	virtual void TakeDamage(float damage, CObjectBase* causer);
 
 	// €–S
 	virtual void Death();
@@ -27,6 +27,6 @@ public:
 	bool IsDeath() const;
 
 protected:
-	int mMaxHp;	// Å‘åHP
-	int mHp;	// Œ»İHP
+	float mMaxHp;	// Å‘åHP
+	float mHp;	// Œ»İHP
 };

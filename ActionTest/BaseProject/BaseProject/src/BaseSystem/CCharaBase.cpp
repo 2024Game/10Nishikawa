@@ -3,7 +3,7 @@
 // コンストラクタ
 CCharaBase::CCharaBase(ETag tag, ETaskPriority prio, int sortOrder, ETaskPauseType pause)
 	: CObjectBase(tag, prio, sortOrder, pause)
-	, mMaxHp(10)
+	, mMaxHp(100.0f)
 	, mHp(mMaxHp)
 {
 }
@@ -14,19 +14,19 @@ CCharaBase::~CCharaBase()
 }
 
 // 最大HPを取得
-int CCharaBase::GetMaxHp() const
+float CCharaBase::GetMaxHp() const
 {
 	return mMaxHp;
 }
 
 // 現在HPを取得
-int CCharaBase::GetHp() const
+float CCharaBase::GetHp() const
 {
 	return mHp;
 }
 
 // ダメージを受ける
-void CCharaBase::TakeDamage(int damage, CObjectBase* causer)
+void CCharaBase::TakeDamage(float damage, CObjectBase* causer)
 {
 	// 既に死亡していたら、ダメージを受けない
 	if (IsDeath()) return;

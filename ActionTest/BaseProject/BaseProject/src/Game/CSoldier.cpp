@@ -17,8 +17,8 @@
 #define DEATH_WAIT_TIME 3.0f
 
 #define LOOKAT_SPEED 90.0f
-#define BATTLE_IDLE_TIME_MIN 0.1f
-#define BATTLE_IDLE_TIME_MAX 0.5f
+#define BATTLE_IDLE_TIME_MIN 0.5f
+#define BATTLE_IDLE_TIME_MAX 2.0f
 #define ATTACK2_DIST 50.0f			// 駆け寄ってくる距離
 #define ATTACK_RANGE 30.0f			// 攻撃を行う距離
 #define ATTACK2_PROB 75				// 2段目攻撃を行う確率（パーセント）
@@ -224,7 +224,7 @@ void CSoldier::AttackEnd()
 }
 
 // ダメージを受ける
-void CSoldier::TakeDamage(int damage, CObjectBase* causer)
+void CSoldier::TakeDamage(float damage, CObjectBase* causer)
 {
 	// ベースクラスのダメージ処理を呼び出す
 	CEnemy::TakeDamage(damage, causer);
@@ -388,70 +388,51 @@ void CSoldier::UpdateIdle()
 			// ステップ0：待機時間をランダムで決定
 		case 0:
 			// 待機時間が決まってなければ
-			if (mBattleIdletime <= 0.0f)
-			{
-				// ランダムで待機時間を決定
-				mBattleIdletime = Math::Rand
-				(
-					BATTLE_IDLE_TIME_MIN,
-					BATTLE_IDLE_TIME_MAX
-				);
-			}
+			// 待機時間なし
 			mStateStep++;
 			break;
 			// ステップ1：待機時間の経過待ち
 		case 1:
-			// 戦闘時の待機時間待ち
-			if (mElapsedTime < mBattleIdletime)
-			{
-				mElapsedTime += Times::DeltaTime();
-			}
-			// 待機時間が経過した
-			else
-			{
-				// 次の状態（デフォルトは追跡状態）
-				EState nextState = EState::eChase;
+			// 次の状態（デフォルトは追跡状態）
+			EState nextState = EState::eChase;
 
-				// 戦闘相手までの距離を求める
-				CVector targetPos = mpBattleTarget->Position();
-				CVector vec = targetPos - Position();
-				vec.Y(0.0f);
-				float dist = vec.Length();
-				// 戦闘相手までの距離が離れていたら、
-				if (dist >= ATTACK2_DIST)
+			// 戦闘相手までの距離を求める
+			CVector targetPos = mpBattleTarget->Position();
+			CVector vec = targetPos - Position();
+			vec.Y(0.0f);
+			float dist = vec.Length();
+			// 戦闘相手までの距離が離れていたら、
+			if (dist >= ATTACK2_DIST)
+			{
+				/*
+				// 一定確率で、針攻撃に変更
+				int rand = Math::Rand(0, 99);
+				if (rand < ATTACK2_PROB)
 				{
-					/*
-					// 一定確率で、針攻撃に変更
-					int rand = Math::Rand(0, 99);
-					if (rand < ATTACK2_PROB)
+					// 歩行アニメーションを再生
+					ChangeAnimation((int)EAnimType::eRun);
+
+					// 残り距離が移動距離より大きい場合は、移動距離分移動
+					CVector dir = vec.Normalized();
+					float moveDist = RUN_SPEED * Times::DeltaTime();
+					if (dist > moveDist)
 					{
-						// 歩行アニメーションを再生
-						ChangeAnimation((int)EAnimType::eRun);
-
-						// 残り距離が移動距離より大きい場合は、移動距離分移動
-						CVector dir = vec.Normalized();
-						float moveDist = RUN_SPEED * Times::DeltaTime();
-						if (dist > moveDist)
-						{
-							mMoveSpeed = dir * moveDist;
-						}
-						// 残り距離の方が小さい場合は、
-						// 残り距離分移動して、待機状態へ移行
-						else
-						{
-							mMoveSpeed = dir * dist;
-							ChangeState((int)EState::eIdle);
-						}
+						mMoveSpeed = dir * moveDist;
 					}
-					*/
+					// 残り距離の方が小さい場合は、
+					// 残り距離分移動して、待機状態へ移行
+					else
+					{
+						mMoveSpeed = dir * dist;
+						ChangeState((int)EState::eIdle);
+					}
 				}
-
-				// 次の状態へ移行
-				ChangeState((int)nextState);
-
-				// 戦闘待機時間を初期化
-				mBattleIdletime = 0.0f;
+				*/
 			}
+
+			// 次の状態へ移行
+			ChangeState((int)nextState);
+
 			break;
 		}
 	}
@@ -521,7 +502,7 @@ void CSoldier::UpdateChase()
 	LookAtBattleTarget();
 }
 
-// パンチ攻撃時の更新処理
+// 斬り攻撃1の更新処理
 void CSoldier::UpdateAttack1()
 {
 	// ステップごとに処理を分ける
@@ -530,6 +511,7 @@ void CSoldier::UpdateAttack1()
 		// ステップ0：攻撃アニメーション再生
 	case 0:
 		ChangeAnimation((int)EAnimType::eAttack1, true);
+		mAttackVec = VectorZ();
 		mStateStep++;
 		break;
 		// ステップ1：攻撃開始
@@ -544,6 +526,10 @@ void CSoldier::UpdateAttack1()
 			mpSlashSE->Play();
 			// 攻撃開始処理を呼び出す
 			AttackStart();
+
+			mInAttack = true;
+			mAttackTimer = 0.0f;
+
 			mStateStep++;
 		}
 		break;
@@ -558,7 +544,17 @@ void CSoldier::UpdateAttack1()
 			// 一定確率で、連続攻撃を予約
 			int rand = Math::Rand(0, 99);
 			if (rand < ATTACK2_PROB) mNextAttack = true;
+			mInAttack = false;
 			mStateStep++;
+		}
+
+		if (mInAttack)
+		{
+			mAttackTimer += Times::DeltaTime();
+
+			// 1秒あたりの移動速度
+			CVector move = mAttackVec * 10.0f * Times::DeltaTime();
+			Position(Position() + move);
 		}
 		break;
 		// ステップ3：攻撃アニメーション終了待ち
@@ -860,6 +856,8 @@ void CSoldier::UpdateHit()
 	{
 		// ステップ0：仰け反りアニメーション再生
 	case 0:
+		// 先行入力コライダーは最初はオフにしておく
+		mpTACol->SetEnable(false);
 		ChangeAnimation((int)EAnimType::eHit, true);
 		mStateStep++;
 		break;
