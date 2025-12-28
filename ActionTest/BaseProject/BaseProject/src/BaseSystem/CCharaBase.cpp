@@ -25,6 +25,16 @@ float CCharaBase::GetHp() const
 	return mHp;
 }
 
+float CCharaBase::GetMaxSt() const
+{
+	return mMaxSt;
+}
+
+float CCharaBase::GetSt() const
+{
+	return mSt;
+}
+
 // ダメージを受ける
 void CCharaBase::TakeDamage(float damage, CObjectBase* causer)
 {
@@ -42,6 +52,35 @@ void CCharaBase::TakeDamage(float damage, CObjectBase* causer)
 	else
 	{
 		mHp -= damage;
+	}
+}
+
+void CCharaBase::GainStamina(float amount)
+{
+	// 回復したスタミナが最大値から現在値を引いた値以上なら
+	if (amount >= mMaxSt - mSt)
+	{
+		// スタミナをMaxにする
+		mSt = mMaxSt;
+	}
+	else
+	{
+		mSt += amount;
+	}
+}
+
+void CCharaBase::UseStamina(float amount)
+{
+	// 消費したスタミナが現在値以上なら
+	if (amount >= mSt)
+	{
+		// スタミナを0にする
+		mSt = 0;
+	}
+	// 現在値の方が多い場合は、値分減らす
+	else
+	{
+		mSt -= amount;
 	}
 }
 

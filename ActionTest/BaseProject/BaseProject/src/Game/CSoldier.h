@@ -130,6 +130,9 @@ private:
 	float mAttackTimer = 0.0f;
 	bool mInAttack = false;
 
+	float mA1StCost;
+	float mAvoidStCost;
+
 	CVector mAvoidVec;
 	float mAvoidTimer = 0.0f;
 	float mAvoidDuration = 0.25f;   // 0.5•b

@@ -18,12 +18,20 @@ CEnemy::CEnemy()
 	, mGroundNormal(CVector::up)
 	, mpBodyCol(nullptr)
 	, mpHpGauge(nullptr)
+	, mpStGauge(nullptr)
 	, mIsGravity(true)
 {
 	// HPゲージを作成
 	mpHpGauge = new CGaugeUI3D(this);
 	mpHpGauge->SetMaxPoint(mMaxHp);
 	mpHpGauge->SetCurrPoint(mHp);
+	mpHpGauge->SetGaugeTypeNum(1);
+
+	// スタミナゲージを作成
+	mpStGauge = new CGaugeUI3D(this);
+	mpStGauge->SetMaxPoint(mMaxSt);
+	mpStGauge->SetCurrPoint(mSt);
+	mpStGauge->SetGaugeTypeNum(2);
 }
 
 // デストラクタ
@@ -38,6 +46,12 @@ CEnemy::~CEnemy()
 		mpHpGauge->SetOwner(nullptr);
 		mpHpGauge->Kill();
 	}
+	// スタミナゲージが存在したら、一緒に削除する
+	if (mpStGauge != nullptr)
+	{
+		mpStGauge->SetOwner(nullptr);
+		mpStGauge->Kill();
+	}
 }
 
 // オブジェクト削除を伝える関数
@@ -48,6 +62,12 @@ void CEnemy::DeleteObject(CObjectBase* obj)
 	if (obj == mpHpGauge)
 	{
 		mpHpGauge = nullptr;
+	}
+	// 削除されたのがスタミナゲージであれば、
+	// スタミナゲージのポインタを空にする
+	if (obj == mpStGauge)
+	{
+		mpStGauge = nullptr;
 	}
 }
 
@@ -185,11 +205,21 @@ void CEnemy::Update()
 	CXCharacter::Update();
 
 	mIsGrounded = false;
-
+	
 	// HPゲージを更新
-	mpHpGauge->Position(Position() + mGaugeOffsetPos);
+	mpHpGauge->Position(Position() + mHpGaugeOffsetPos);
 	mpHpGauge->SetMaxPoint(mMaxHp);
 	mpHpGauge->SetCurrPoint(mHp);
+
+	// スタミナゲージを更新
+	mpStGauge->Position(Position() + mStGaugeOffsetPos);
+	mpStGauge->SetMaxPoint(mMaxSt);
+	mpStGauge->SetCurrPoint(mSt);
+
+	if (mHp > 0.0f)
+	{
+		CCharaBase::GainStamina(10 * Times::DeltaTime());
+	}
 }
 
 // 描画

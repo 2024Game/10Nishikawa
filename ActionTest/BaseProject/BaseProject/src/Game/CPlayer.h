@@ -169,6 +169,9 @@ private:
 	// Œ•‚ÌƒNƒ‰ƒX
 	CSword* mpSword;
 
+	float mA1StCost;
+	float mAvoidStCost;
+
 	bool mNextAttack; //˜A‘±UŒ‚‚ª—\–ñ‚³‚ê‚Ä‚¢‚é‚©‚Ç‚¤‚©
 	CVector mAttackVec;
 	float mAttackTimer = 0.0f;

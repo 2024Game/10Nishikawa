@@ -132,11 +132,24 @@ void CGaugeUI3D::Render()
 		// バーの座標を調整
 		CVector2 barPos = mGaugeSize - barSize;
 		mpWhiteImg->SetOffsetPos(-barPos);
-		// バーの色を設定
-		CColor barColor = CColor::green;
-		if (mPercent <= 0.2f) barColor = CColor::red;
-		else if (mPercent <= 0.5f)barColor = CColor::yellow;
-		mpWhiteImg->SetColor(barColor);
+		switch (mGaugeTypeNum)
+		{
+		case 1:
+			// バーの色を設定
+			mBarColor = CColor::green;
+			if (mPercent <= 0.2f) mBarColor = CColor::red;
+			else if (mPercent <= 0.5f)mBarColor = CColor::yellow;
+			break;
+
+		case 2:
+			// バーの色を設定
+			mBarColor = CColor::blue;
+			break;
+
+		default:
+			break;
+		}
+		mpWhiteImg->SetColor(mBarColor);
 		// バーを描画
 		mpWhiteImg->Render();
 	}
@@ -146,4 +159,9 @@ void CGaugeUI3D::Render()
 
 	// 行列を戻す
 	glPopMatrix();
+}
+
+void CGaugeUI3D::SetGaugeTypeNum(int num)
+{
+	mGaugeTypeNum = num;
 }

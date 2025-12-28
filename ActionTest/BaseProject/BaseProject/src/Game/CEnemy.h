@@ -71,8 +71,10 @@ protected:
 
 	CCollider* mpBodyCol;	// 本体のコライダー
 
-	CGaugeUI3D* mpHpGauge;	// HPゲージ
-	CVector mGaugeOffsetPos;// ゲージのオフセット座標
+	CGaugeUI3D* mpHpGauge;		// HPゲージ
+	CVector mHpGaugeOffsetPos;	// HPゲージのオフセット座標
+	CGaugeUI3D* mpStGauge;		// スタミナゲージ
+	CVector mStGaugeOffsetPos;	// スタミナゲージのオフセット座標
 };
 
 #endif

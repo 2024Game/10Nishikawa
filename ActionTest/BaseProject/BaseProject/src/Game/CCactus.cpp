@@ -56,7 +56,8 @@ CCactus::CCactus()
 	mHp = mMaxHp;
 
 	// ゲージのオフセット位置を設定
-	mGaugeOffsetPos = CVector(0.0f, GAUGE_OFFSET_Y, 0.0f);
+	mHpGaugeOffsetPos = CVector(0.0f, GAUGE_OFFSET_Y, 0.0f);
+	mStGaugeOffsetPos = CVector(0.0f, GAUGE_OFFSET_Y - 1.0f, 0.0f);
 
 	// 敵を初期化
 	InitEnemy("Cactus", &ANIM_DATA);

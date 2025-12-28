@@ -51,7 +51,7 @@
 #define KICK_COL_OFFSET_POS CVector(0.0f, 4.0f, 5.0f)
 
 // 先行入力のコライダーの半径
-#define TA_COL_RADIUS 25.0f
+#define TA_COL_RADIUS 27.5f
 // 先行入力のコライダーのオフセット座標
 #define TA_COL_OFFSET_POS CVector(0.0f, 4.0f, 2.5f)
 
@@ -94,9 +94,13 @@ CPlayer::CPlayer()
 	, mMotionBlurRemainTime(0.0f)
 	, mpSword(nullptr)
 	, mNextAttack(false)
+	, mA1StCost(20.0f)
+	, mAvoidStCost(30.0f)
 {
-	mMaxHp = 1000.0f;
+	mMaxHp = 100.0f;
 	mHp = mMaxHp;
+	mMaxSt = 100.0f;
+	mSt = mMaxSt;
 
 	//インスタンスの設定
 	spInstance = this;
@@ -250,8 +254,10 @@ void CPlayer::UpdateIdle()
 	if (mIsGrounded)
 	{
 		// 左クリックで斬撃攻撃へ移行
-		if (CInput::PushKey(VK_LBUTTON))
+		if (CInput::PushKey(VK_LBUTTON) && mSt >= mA1StCost)
 		{
+			CCharaBase::UseStamina(mA1StCost);
+
 			// 先行入力コライダーをオンにする
 			mpTACol->SetEnable(true);
 
@@ -273,8 +279,9 @@ void CPlayer::UpdateIdle()
 			ChangeState(EState::eJumpStart);
 		}
 		// 右クリックで回避へ移行
-		else if (CInput::PushKey(VK_RBUTTON) && CInput::Key('D'))
+		else if (CInput::PushKey(VK_RBUTTON) && CInput::Key('D') && mSt >= mAvoidStCost)
 		{
+			CCharaBase::UseStamina(mAvoidStCost);
 			mMoveSpeed = CVector::zero;
 			// プレイヤーの移動ベクトルを求める
 			mAvoidVec = CalcMoveVec();
@@ -282,8 +289,9 @@ void CPlayer::UpdateIdle()
 			mIsGravity = false;
 			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
 		}
-		else if (CInput::PushKey(VK_RBUTTON) && CInput::Key('A'))
+		else if (CInput::PushKey(VK_RBUTTON) && CInput::Key('A') && mSt >= mAvoidStCost)
 		{
+			CCharaBase::UseStamina(mAvoidStCost);
 			mMoveSpeed = CVector::zero;
 			// プレイヤーの移動ベクトルを求める
 			mAvoidVec = CalcMoveVec();
@@ -371,10 +379,19 @@ void CPlayer::UpdateAttack1()
 				}
 				else
 				{
-					// 攻撃2段目へ移行
-					ChangeState(EState::eAttack2);
 					mNextAttack = false;
 					CObjectBase::AttackStart();
+					if (mSt >= mA1StCost)
+					{
+						CCharaBase::UseStamina(mA1StCost);
+						// 攻撃2段目へ移行
+						ChangeState(EState::eAttack2);
+					}
+					else
+					{
+						// 待機状態へ移行
+						ChangeState(EState::eIdle);
+					}
 				}
 			}
 			break;
@@ -464,10 +481,19 @@ void CPlayer::UpdateAttack2()
 			}
 			else
 			{
-				// 攻撃X段目へ移行
-				ChangeState(EState::eAttackX);
 				mNextAttack = false;
 				CObjectBase::AttackStart();
+				if (mSt >= mA1StCost)
+				{
+					CCharaBase::UseStamina(mA1StCost);
+					// 攻撃X段目へ移行
+					ChangeState(EState::eAttackX);
+				}
+				else
+				{
+					// 待機状態へ移行
+					ChangeState(EState::eIdle);
+				}
 			}
 
 		}
@@ -676,6 +702,10 @@ void CPlayer::UpdateAvoidR()
 	}
 }
 
+void CPlayer::UpdateAvoidL()
+{
+}
+
 // 仰け反り
 void CPlayer::UpdateHit()
 {
@@ -881,6 +911,11 @@ void CPlayer::Update()
 		UpdateMove();
 	}
 
+	if (mHp > 0.0f)
+	{
+		CCharaBase::GainStamina(10 * Times::DeltaTime());
+	}
+
 	if (mIsGravity)
 	{
 		mMoveSpeedY -= GRAVITY;
@@ -905,7 +940,7 @@ void CPlayer::Update()
 		new CBullet
 		(
 			// 発射位置
-			Position() + CVector(0.0f, 10.0f, 0.0f) + VectorZ() * 20.0f,
+			Position() + CVector(0.0f, 10.0f, 0.0f) + VectorZ() * 5.0f,
 			VectorZ(),	// 発射方向
 			1000.0f,	// 移動距離
 			1000.0f		// 飛距離
@@ -954,6 +989,7 @@ void CPlayer::Update()
 
 	CVector pos = Position();
 	CDebugPrint::Print("PlayerHP:%f / %f\n", mHp, mMaxHp);
+	CDebugPrint::Print("PlayerST:%f / %f\n", mSt, mMaxSt);
 	CDebugPrint::Print("PlayerPos:%.2f, %.2f, %.2f\n", pos.X(), pos.Y(), pos.Z());
 	CDebugPrint::Print("PlayerGrounded:%s\n", mIsGrounded ? "true" : "false");
 	CDebugPrint::Print("PlayerState:%d\n", mState);

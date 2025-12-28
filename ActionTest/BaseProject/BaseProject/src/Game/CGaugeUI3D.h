@@ -27,6 +27,8 @@ public:
 	// 描画
 	void Render() override;
 
+	void SetGaugeTypeNum(int num);
+
 private:
 	// ポイント残量を反映
 	void ApplyPoint();
@@ -40,4 +42,6 @@ private:
 	float mMaxPoint;		// 最大値
 	float mCurrPoint;		// 現在値
 	float mPercent;			// ポイント残量の割合
+	int mGaugeTypeNum;		// ゲージのタイプ 1:HP 2:ST
+	CColor mBarColor;
 };
