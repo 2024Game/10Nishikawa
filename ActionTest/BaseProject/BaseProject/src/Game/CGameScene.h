@@ -1,6 +1,7 @@
 #pragma once
 #include "CSceneBase.h"
 #include "CPlayer.h"
+#include "CEnemy.h"
 class CGameMenu;
 class CSound;
 
@@ -18,7 +19,27 @@ public:
 	void Update();
 
 private:
+	//戦闘準備時の更新処理
+	void UpdateBattleReserve();
+	//戦闘時の更新処理
+	void UpdateBattle();
+	//戦闘結果時の更新処理
+	void UpdateBattleResult();
+	// ゲームの状態
+	enum class EState
+	{
+		ebattlereserve,		// 戦闘準備時
+		ebattle,			// 戦闘時
+		ebattleresult,		// 戦闘結果時
+	};
+	// 状態を切り替え
+	void ChangeState(EState state);
+
+	EState mState;				// ゲームの状態
+	int mStateStep;				// 状態内のステップ管理用
+	float mElapsedTime;			// 経過時間計測用
 	CGameMenu* mpGameMenu;
 	CPlayer* mpPlayer;
+	CEnemy* mpEnemy;
 	int mTimeCount;
 };

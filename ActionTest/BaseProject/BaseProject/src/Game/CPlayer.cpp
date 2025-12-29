@@ -32,6 +32,7 @@
 #define ATTACK2_END_FRAME 100.0f	// 斬り攻撃2の終了フレーム
 #define ATTACKX_START_FRAME 35.0f	// 斬り攻撃Xの開始フレーム
 #define ATTACKX_END_FRAME 210.0f	// 斬り攻撃Xの終了フレーム
+#define DEATH_END_FRAME 110.0f		// 死亡の終了フレーム
 
 
 
@@ -72,9 +73,11 @@ const CPlayer::AnimData CPlayer::ANIM_DATA[] =
 	{ ANIM_PATH"jump_start.x",	false,	25.0f,	1.0f	},	// ジャンプ開始
 	{ ANIM_PATH"jump.x",		true,	1.0f,	1.0f	},	// ジャンプ中
 	{ ANIM_PATH"jump_end.x",	false,	26.0f,	1.0f	},	// ジャンプ終了
-	{ ANIM_PATH"avoidR.x",		true,	189.0f,	2.5f	},	// 回避:右
-	{ ANIM_PATH"avoidL.x",		true,	189.0f,	2.5f	},	// 回避:左
+	{ ANIM_PATH"avoidR.x",		false,	189.0f,	2.5f	},	// 回避:右
+	{ ANIM_PATH"avoidL.x",		false,	189.0f,	2.5f	},	// 回避:左
 	{ ANIM_PATH"hit.x",			false,	44.0f,	1.0f	},	// 仰け反り
+	{ ANIM_PATH"death.x",		false,	182.0f,	1.0f	},	// 死亡
+	{ ANIM_PATH"victory.x",		true,	271.0f,	1.0f	},	// 勝利
 };
 // ToDo 連続攻撃が予約されたときは前のアニメーションの
 // 終わりのフレームを短くしたほうがいいかも
@@ -82,7 +85,7 @@ const CPlayer::AnimData CPlayer::ANIM_DATA[] =
 // コンストラクタ
 CPlayer::CPlayer()
 	: CXCharacter(ETag::ePlayer, ETaskPriority::ePlayer)
-	, mState(EState::eIdle)
+	, mState(EState::eReserve)
 	, mStateStep(0)
 	, mElapsedTime(0.0f)
 	, mMoveSpeedY(0.0f)
@@ -94,8 +97,8 @@ CPlayer::CPlayer()
 	, mMotionBlurRemainTime(0.0f)
 	, mpSword(nullptr)
 	, mNextAttack(false)
-	, mA1StCost(20.0f)
-	, mAvoidStCost(30.0f)
+	, mA1StCost(25.0f)
+	, mAvoidStCost(20.0f)
 {
 	mMaxHp = 100.0f;
 	mHp = mMaxHp;
@@ -247,6 +250,11 @@ void CPlayer::ChangeState(EState state)
 	mElapsedTime = 0.0f;
 }
 
+void CPlayer::UpdateReserve()
+{
+
+}
+
 // 待機
 void CPlayer::UpdateIdle()
 {
@@ -363,7 +371,7 @@ void CPlayer::UpdateAttack1()
 				mAttackTimer += Times::DeltaTime();
 
 				// 1秒あたりの移動速度
-				CVector move = mAttackVec * 10.0f * Times::DeltaTime();
+				CVector move = mAttackVec * 5.0f * Times::DeltaTime();
 				Position(Position() + move);
 			}
 			break;
@@ -730,6 +738,65 @@ void CPlayer::UpdateHit()
 	}
 }
 
+void CPlayer::UpdateDeath()
+{
+	switch (mStateStep)
+	{
+	case 0:
+		// 死亡アニメーションを開始
+		ChangeAnimation(EAnimType::eDeath, true);
+		mDeathVec = -VectorZ();
+		mToDeath = true;
+		mDeathTimer = 0.0f;
+		mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
+		mStateStep++;
+		break;
+	case 1:
+		if (GetAnimationFrame() >= DEATH_END_FRAME)
+		{
+			mToDeath = false;
+			mStateStep++;
+		}
+
+		if (mToDeath)
+		{
+			mDeathTimer += Times::DeltaTime();
+
+			// 1秒あたりの移動速度
+			CVector move = mDeathVec * 20.0f * Times::DeltaTime();
+			Position(Position() + move);
+		}
+		break;
+	case 2:
+		// 死亡アニメーションが終了したら、
+		if (IsAnimationFinished())
+		{
+			mStateStep++;
+		}
+		break;
+	case 3:
+		
+		break;
+	}
+}
+
+void CPlayer::UpdateVictory()
+{
+	switch (mStateStep)
+	{
+	case 0:
+		// 勝利アニメーションを再生
+		ChangeAnimation(EAnimType::eVictory);
+		mStateStep++;
+		break;
+	case 1:
+		mStateStep++;
+		break;
+	case 2:
+		break;
+	}
+}
+
 // オブジェクト削除を伝える
 void CPlayer::DeleteObject(CObjectBase* obj)
 {
@@ -878,6 +945,8 @@ void CPlayer::Update()
 	// 状態に合わせて、更新処理を切り替える
 	switch (mState)
 	{
+		// 戦闘準備状態
+		case EState::eReserve:		UpdateReserve();	break;
 		// 待機状態
 		case EState::eIdle:			UpdateIdle();		break;
 		// 斬り攻撃1
@@ -900,6 +969,10 @@ void CPlayer::Update()
 		case EState::eAvoidL:		UpdateAvoidR();		break;
 		// 仰け反り
 		case EState::eHit:			UpdateHit();		break;
+		// 死亡
+		case EState::eDeath:		UpdateDeath();		break;
+		// 勝利
+		case EState::eVictory:		UpdateVictory();	break;
 	}
 
 	// 待機中とジャンプ中は、移動処理を行う
@@ -999,6 +1072,20 @@ void CPlayer::Update()
 	CDebugPrint::Print("FPS:%f\n", Times::FPS());
 }
 
+void CPlayer::SetInBattle(int state)
+{
+	if (state == 0)
+	{
+		// 待機状態へ移行
+		ChangeState(EState::eIdle);
+	}
+	if (state == 2)
+	{
+		// 勝利状態へ移行
+		ChangeState(EState::eVictory);
+	}
+}
+
 // 攻撃中か
 bool CPlayer::IsAttacking() const
 {
@@ -1063,6 +1150,13 @@ void CPlayer::TakeDamage(float damage, CObjectBase* causer)
 
 		// 移動を停止
 		mMoveSpeed = CVector::zero;
+	}
+	else
+	{
+		// 移動を停止
+		mMoveSpeed = CVector::zero;
+		// 死亡状態へ移行
+		ChangeState(EState::eDeath);
 	}
 }
 

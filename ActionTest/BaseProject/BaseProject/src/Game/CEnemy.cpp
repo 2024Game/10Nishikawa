@@ -159,6 +159,10 @@ void CEnemy::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 	}
 }
 
+void CEnemy::SetInBattle(int state)
+{
+}
+
 // アニメーション切り替え
 void CEnemy::ChangeAnimation(int type, bool restart)
 {

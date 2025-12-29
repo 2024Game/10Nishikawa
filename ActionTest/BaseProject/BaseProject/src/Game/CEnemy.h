@@ -38,6 +38,9 @@ public:
 	/// <param name="hit">衝突した時の情報</param>
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
+	// CGameSceneから状態の移行指示を受け取る
+	virtual void SetInBattle(int state);
+
 	// 更新
 	void Update() override;
 	// 描画
@@ -59,6 +62,8 @@ protected:
 	int mStateStep;			// 状態内のステップ管理用
 	float mElapsedTime;		// 経過時間計測用
 	bool mIsGravity;
+	CVector mDeathVec;
+	bool mToDeath = false;
 
 	// アニメーションデータのテーブル
 	const std::vector<AnimData>* mpAnimData;

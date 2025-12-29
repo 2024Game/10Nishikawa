@@ -30,6 +30,7 @@
 #define ATTACK2_END_FRAME 100.0f	// 斬り攻撃2の終了フレーム
 #define ATTACKX_START_FRAME 35.0f	// 斬り攻撃Xの開始フレーム
 #define ATTACKX_END_FRAME 210.0f	// 斬り攻撃Xの終了フレーム
+#define DEATH_END_FRAME 110.0f		// 死亡の終了フレーム
 
 
 // 剣のオフセット座標
@@ -70,7 +71,8 @@ const std::vector<CEnemy::AnimData> ANIM_DATA =
 	{ ANIM_PATH"avoidR.x",		true,	189.0f,	2.5f	},	// 回避:右
 	{ ANIM_PATH"avoidL.x",		true,	189.0f,	2.5f	},	// 回避:左
 	{ ANIM_PATH"hit.x",			false,	44.0f,	1.0f	},	// 仰け反り
-	{ "",						true,	0.0f,	1.0f	},	// Tポーズ
+	{ ANIM_PATH"death.x",		false,	182.0f,	1.0f	},	// 死亡
+	{ ANIM_PATH"victory.x",		true,	271.0f,	1.0f	},	// 勝利
 };
 
 // コンストラクタ
@@ -83,12 +85,12 @@ CSoldier::CSoldier(CPlayer* player)
 	, mIsBattle(true)
 	, mBattleIdletime(0.0f)
 	, mpBattleTarget(nullptr)
-	, mA1StCost(20.0f)
-	, mAvoidStCost(30.0f)
+	, mA1StCost(25.0f)
+	, mAvoidStCost(20.0f)
 {
-	mMaxHp = 100;
+	mMaxHp = 100.0f;
 	mHp = mMaxHp;
-	mMaxSt = 100;
+	mMaxSt = 100.0f;
 	mSt = mMaxSt;
 	mpBattleTarget = player;
 
@@ -376,6 +378,10 @@ void CSoldier::ChangeState(int state)
 	CEnemy::ChangeState(state);
 }
 
+void CSoldier::UpdateReserve()
+{
+}
+
 // 待機状態の更新処理
 void CSoldier::UpdateIdle()
 {
@@ -571,7 +577,7 @@ void CSoldier::UpdateAttack1()
 			mAttackTimer += Times::DeltaTime();
 
 			// 1秒あたりの移動速度
-			CVector move = mAttackVec * 10.0f * Times::DeltaTime();
+			CVector move = mAttackVec * 5.0f * Times::DeltaTime();
 			Position(Position() + move);
 		}
 		break;
@@ -933,18 +939,36 @@ void CSoldier::UpdateDeath()
 	case 0:
 		mMoveSpeed = CVector::zero;
 		ChangeAnimation((int)EAnimType::eDeath, true);
+		mDeathVec = -VectorZ();
+		mToDeath = true;
+		mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
 		mStateStep++;
 		break;
-		// ステップ1：アニメーション終了待ち
+		// ステップ1：死亡アニメーション着地待ち
 	case 1:
+		if (GetAnimationFrame() >= DEATH_END_FRAME)
+		{
+			mToDeath = false;
+			mStateStep++;
+		}
+
+		if (mToDeath)
+		{
+			// 1秒あたりの移動速度
+			CVector move = mDeathVec * 20.0f * Times::DeltaTime();
+			Position(Position() + move);
+		}
+		break;
+		// ステップ2：アニメーション終了待ち
+	case 2:
 		// 死亡アニメーションが終了したら、削除
 		if (IsAnimationFinished())
 		{
 			mStateStep++;
 		}
 		break;
-		// ステップ2：死亡後の待ち
-	case 2:
+		// ステップ3：死亡後の待ち
+	case 3:
 		if (mElapsedTime < DEATH_WAIT_TIME)
 		{
 			mElapsedTime += Times::DeltaTime();
@@ -958,30 +982,51 @@ void CSoldier::UpdateDeath()
 	}
 }
 
+void CSoldier::UpdateVictory()
+{
+	switch (mStateStep)
+	{
+	case 0:
+		// 勝利アニメーションを再生
+		ChangeAnimation((int)EAnimType::eVictory);
+		mStateStep++;
+		break;
+	case 1:
+		mStateStep++;
+		break;
+	case 2:
+		break;
+	}
+}
+
 // 更新
 void CSoldier::Update()
 {
 	// 状態に合わせて、更新処理を切り替える
 	switch ((EState)mState)
 	{
+		// 戦闘準備状態
+	case EState::eReserve:	UpdateReserve();	break;
 		// 待機状態
-	case EState::eIdle:		UpdateIdle();	break;
+	case EState::eIdle:		UpdateIdle();		break;
 		// 追いかける
-	case EState::eChase:	UpdateChase();	break;
+	case EState::eChase:	UpdateChase();		break;
 		// 斬り攻撃1
-	case EState::eAttack1:	UpdateAttack1(); break;
+	case EState::eAttack1:	UpdateAttack1();	break;
 		// 斬り攻撃2
-	case EState::eAttack2:	UpdateAttack2(); break;
+	case EState::eAttack2:	UpdateAttack2();	break;
 		// 斬り攻撃X
-	case EState::eAttackX:	UpdateAttackX(); break;
+	case EState::eAttackX:	UpdateAttackX();	break;
 		// 回避:右
-	case EState::eAvoidR:	UpdateAvoidR();	break;
+	case EState::eAvoidR:	UpdateAvoidR();		break;
 		// 回避:左
-	case EState::eAvoidL:	UpdateAvoidL();	break;
+	case EState::eAvoidL:	UpdateAvoidL();		break;
 		// 仰け反り
-	case EState::eHit:		UpdateHit();	break;
+	case EState::eHit:		UpdateHit();		break;
 		// 死亡状態
-	case EState::eDeath:	UpdateDeath();	break;
+	case EState::eDeath:	UpdateDeath();		break;
+		// 勝利
+	case EState::eVictory:	UpdateVictory();	break;
 	}
 
 	// 敵のベースクラスの更新
@@ -1003,3 +1048,16 @@ void CSoldier::Update()
 	CDebugPrint::Print("EnemyAnimType:%d\n", mAnimType);
 }
 
+void CSoldier::SetInBattle(int state)
+{
+	if (state == 0)
+	{
+		// 待機状態へ移行
+		ChangeState((int)EState::eIdle);
+	}
+	if (state == 2)
+	{
+		// 勝利状態へ移行
+		ChangeState((int)EState::eVictory);
+	}
+}

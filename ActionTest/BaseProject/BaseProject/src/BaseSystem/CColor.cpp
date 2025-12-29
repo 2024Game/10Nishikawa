@@ -9,7 +9,26 @@ const CColor CColor::blue(0.0f, 0.0f, 1.0f, 1.0f);
 const CColor CColor::cyan(0.0f, 1.0f, 1.0f, 1.0f);
 const CColor CColor::magenta(1.0f, 0.0f, 1.0f, 1.0f);
 const CColor CColor::yellow(1.0f, 1.0f, 0.0f, 1.0f);
+const CColor CColor::orange(1.0f, 0.5f, 0.0f, 1.0f);
+const CColor CColor::pink(1.0f, 0.4f, 0.7f, 1.0f);
+const CColor CColor::purple(0.5f, 0.0f, 0.5f, 1.0f);
 const CColor CColor::clear(0.0f, 0.0f, 0.0f, 0.0f);
+
+const CColor CColor::darkGray(0.25f, 0.25f, 0.25f, 1.0f);
+const CColor CColor::lightGray(0.75f, 0.75f, 0.75f, 1.0f);
+
+const CColor CColor::darkRed(0.5f, 0.0f, 0.0f, 1.0f);
+const CColor CColor::darkGreen(0.0f, 0.5f, 0.0f, 1.0f);
+const CColor CColor::darkBlue(0.0f, 0.0f, 0.5f, 1.0f);
+
+const CColor CColor::lightRed(1.0f, 0.5f, 0.5f, 1.0f);
+const CColor CColor::lightGreen(0.5f, 1.0f, 0.5f, 1.0f);
+const CColor CColor::lightBlue(0.5f, 0.5f, 1.0f, 1.0f);
+
+const CColor CColor::navy(0.0f, 0.0f, 0.4f, 1.0f);
+const CColor CColor::skyBlue(0.4f, 0.7f, 1.0f, 1.0f);
+const CColor CColor::teal(0.0f, 0.5f, 0.5f, 1.0f);
+
 
 CColor::CColor()
 	: mR(1.0f), mG(1.0f), mB(1.0f), mA(1.0f)

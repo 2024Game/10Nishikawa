@@ -26,6 +26,9 @@ public:
 	// 更新
 	void Update();
 
+	// CGameSceneから状態の移行指示を受け取る
+	void SetInBattle(int state);
+
 	// 攻撃中か
 	bool IsAttacking() const override;
 	// 攻撃開始
@@ -54,6 +57,8 @@ private:
 	// キーの入力情報から移動ベクトルを求める
 	CVector CalcMoveVec() const;
 
+	// 戦闘準備状態
+	void UpdateReserve();
 	// 待機状態
 	void UpdateIdle();
 	// 斬り攻撃1
@@ -76,6 +81,10 @@ private:
 	void UpdateAvoidL();
 	// 仰け反り
 	void UpdateHit();
+	// 死亡
+	void UpdateDeath();
+	// 勝利
+	void UpdateVictory();
 
 	// 移動の更新処理
 	void UpdateMove();
@@ -102,6 +111,8 @@ private:
 		eAvoidR,	// 回避:右
 		eAvoidL,	// 回避:左
 		eHit,		// 仰け反り
+		eDeath,		// 死亡
+		eVictory,	// 勝利
 
 		Num
 	};
@@ -125,6 +136,7 @@ private:
 	// プレイヤーの状態
 	enum class EState
 	{
+		eReserve,	// 戦闘準備
 		eIdle,		// 待機
 		eAttack1,	// 斬り攻撃1
 		eAttack2,	// 斬り攻撃2
@@ -136,6 +148,8 @@ private:
 		eAvoidR,	// 回避:右
 		eAvoidL,	// 回避:左
 		eHit,		// 仰け反り
+		eDeath,		// 死亡
+		eVictory,	// 勝利
 	};
 	// 状態を切り替え
 	void ChangeState(EState state);
@@ -181,4 +195,8 @@ private:
 	float mAvoidTimer = 0.0f;
 	float mAvoidDuration = 0.25f;   // 0.5秒
 	bool  mAvoidMoving = false;
+
+	CVector mDeathVec;
+	float mDeathTimer = 0.0f;
+	bool mToDeath = false;
 };

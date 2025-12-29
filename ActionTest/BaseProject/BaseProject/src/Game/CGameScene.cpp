@@ -14,8 +14,12 @@
 //コンストラクタ
 CGameScene::CGameScene()
 	: CSceneBase(EScene::eGame)
+	, mState(EState::ebattlereserve)
 	, mpGameMenu(nullptr)
+	, mpPlayer(nullptr)
 	, mTimeCount(0)
+	, mElapsedTime(0.0f)
+	, mStateStep(0)
 {
 }
 
@@ -58,28 +62,18 @@ void CGameScene::Load()
 
 	// Playerを作成
 	mpPlayer = new CPlayer();
+	mpPlayer->Rotation(CVector(0.0f, 180.0f, 0.0f));
 	mpPlayer->Scale(1.0f, 1.0f, 1.0f);
+	mpPlayer->Position(0.0f, 5.0f, 100.0f);
 
 	// サボテンの敵を作成
 	//CCactus* cactus = new CCactus();
 	//cactus->Scale(1.5f, 1.5f, 1.5f);
 	//cactus->Position(0.0f, 20.0f, -100.0f);
 
-	// 兵士の敵を作成
-	//CSoldier* soldier1 = new CSoldier();
-	//soldier1->Scale(1.0f, 1.0f, 1.0f);
-	//soldier1->Position(10.0f, 10.0f, -100.0f);
-
-	// 兵士の敵をランダムにN体生成
-	for (int i = 0; i < 1; ++i)
-	{
-		float x = -100.0f + static_cast<float>(rand()) / RAND_MAX * 200.0f; // -100〜100
-		float y = 10.0f;
-		float z = -100.0f + static_cast<float>(rand()) / RAND_MAX * 200.0f; // -100〜100
-
-		CSoldier* soldier = new CSoldier(mpPlayer);
-		soldier->Position(x, y, z);
-	}
+	// 兵士の敵を1体生成
+	mpEnemy = new CSoldier(mpPlayer);
+	mpEnemy->Position(0.0f, 5.0f, -100.0f);
 
 	// CGameCameraのテスト
 	//CGameCamera* mainCamera = new CGameCamera
@@ -106,6 +100,17 @@ void CGameScene::Load()
 //シーンの更新処理
 void CGameScene::Update()
 {
+	// 状態に合わせて、更新処理を切り替える
+	switch (mState)
+	{
+		// 戦闘準備状態
+	case EState::ebattlereserve:	UpdateBattleReserve();		break;
+		// 待機状態
+	case EState::ebattle:			UpdateBattle();				break;
+		// 戦闘結果状態
+	case EState::ebattleresult:		UpdateBattleResult();		break;
+	}
+
 	// BGM再生中でなければ、BGMを再生
 	//if (!mpGameBGM->IsPlaying())
 	//{
@@ -125,9 +130,45 @@ void CGameScene::Update()
 			mpGameMenu->Open();
 		}
 	}
+	CDebugPrint::Print("ElapsedTime:%f\n", mElapsedTime);
+}
 
+void CGameScene::UpdateBattleReserve()
+{
+	switch (mStateStep)
+	{
+	case 0:
+		mStateStep++;
+		break;
+
+	case 1:
+		// 戦闘準備時の待機時間待ち
+		if (mElapsedTime < 5.0f)
+		{
+			mElapsedTime += Times::DeltaTime();
+		}
+		// 待機時間が経過した
+		else
+		{
+			mStateStep++;
+		}
+		break;
+
+	case 2:
+		mpPlayer->SetInBattle(0);
+		mpEnemy->SetInBattle(0);
+		// 戦闘状態へ移行
+		ChangeState(EState::ebattle);
+		mStateStep++;
+		break;
+	}
+}
+
+void CGameScene::UpdateBattle()
+{
+	/*
 	mTimeCount++;
-	if (mTimeCount >= (60 * 240))
+	if (mTimeCount >= (60 * 120))
 	{
 		float x = -450.0f + static_cast<float>(rand()) / RAND_MAX * 900.0f; // -450〜450
 		float y = 10.0f;
@@ -137,4 +178,67 @@ void CGameScene::Update()
 		soldier1->Position(x, y, z);
 		mTimeCount = 0;
 	}
+	*/
+	if (mpPlayer->GetHp() <= 0.0f || mpEnemy->GetHp() <= 0.0f)
+	{
+		ChangeState(EState::ebattleresult);
+	}
+}
+
+void CGameScene::UpdateBattleResult()
+{
+	switch (mStateStep)
+	{
+	case 0:
+		mStateStep++;
+		break;
+
+	case 1:
+		// 戦闘準備時の待機時間待ち
+		if (mElapsedTime < 3.0f)
+		{
+			mElapsedTime += Times::DeltaTime();
+		}
+		// 待機時間が経過した
+		else
+		{
+			mStateStep++;
+		}
+		break;
+
+	case 2:
+		if (mpPlayer->GetHp() <= 0.0f)
+		{
+			mpEnemy->SetInBattle(2);
+			mStateStep++;
+		}
+		else if (mpEnemy->GetHp() <= 0.0f)
+		{
+			mpPlayer->SetInBattle(2);
+			mStateStep++;
+		}
+		break;
+
+	case 3:
+		// 待機時間待ち
+		if (mElapsedTime < 10.0f)
+		{
+			mElapsedTime += Times::DeltaTime();
+		}
+		// 待機時間が経過した
+		else
+		{
+			CSceneManager::Instance()->LoadScene(EScene::eTitle);
+		}
+		break;
+	}
+}
+
+void CGameScene::ChangeState(EState state)
+{
+	if (mState == state) return;
+
+	mState = state;
+	mStateStep = 0;
+	mElapsedTime = 0.0f;
 }

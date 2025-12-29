@@ -36,6 +36,9 @@ public:
 	// 更新
 	void Update() override;
 
+	// CGameSceneから状態の移行指示を受け取る
+	void SetInBattle(int state);
+
 private:
 	// アニメーションの種類
 	enum class EAnimType
@@ -58,13 +61,15 @@ private:
 		eAvoidL,	// 回避:左			13
 		eHit,		// 仰け反り			14
 		eDeath,		// 死亡				15
+		eVictory,	// 勝利				16
 		
 		Num
 	};
 
-	// プレイヤーの状態
+	// 敵の状態
 	enum class EState
 	{
+		eReserve,	// 戦闘準備
 		eIdle,		// 待機
 		eChase,		// 追いかける
 		eAttack1,	// 斬り攻撃1
@@ -78,6 +83,7 @@ private:
 		eAvoidL,	// 回避:左
 		eHit,		// 仰け反り
 		eDeath,		// 死亡
+		eVictory,	// 勝利
 	};
 
 	// 戦闘相手の方へ向く
@@ -89,6 +95,8 @@ private:
 	// 状態切り替え
 	void ChangeState(int state) override;
 
+	// 戦闘準備状態
+	void UpdateReserve();
 	// 待機状態の更新処理
 	void UpdateIdle();
 	// 追いかける時の更新処理
@@ -109,6 +117,8 @@ private:
 	void UpdateHit();
 	// 死亡状態の更新処理
 	void UpdateDeath();
+	// 勝利
+	void UpdateVictory();
 
 	CCollider* mpKickCol;			// 蹴り攻撃用コライダー
 	CCollider* mpTACol;				// 先行入力(Type Ahead)用コライダー

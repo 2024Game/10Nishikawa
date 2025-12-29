@@ -143,7 +143,7 @@ void CGaugeUI3D::Render()
 
 		case 2:
 			// ƒo[‚ÌF‚ğİ’è
-			mBarColor = CColor::blue;
+			mBarColor = CColor::skyBlue;
 			break;
 
 		default:

@@ -38,8 +38,41 @@ public:
 	const static CColor magenta;
 	// 黄色 [1, 1, 0, 1]
 	const static CColor yellow;
+	// オレンジ [1.0f, 0.5f, 0.0f, 1.0f]
+	const static CColor CColor::orange;
+	// ピンク [1.0f, 0.4f, 0.7f, 1.0f]
+	const static CColor CColor::pink;
+	// 紫色 [0.5f, 0.0f, 0.5f, 1.0f]
+	const static CColor CColor::purple;
 	// 透明 [0, 0, 0, 0]
 	const static CColor clear;
+
+	// darkGray [0.25f, 0.25f, 0.25f, 1.0f]
+	const static CColor darkGray;
+	// lightGray [0.75f, 0.75f, 0.75f, 1.0f]
+	const static CColor lightGray;
+
+	// darkRed [0.5f, 0.0f, 0.0f, 1.0f]
+	const static CColor darkRed;
+	// darkGreen [0.0f, 0.5f, 0.0f, 1.0f]
+	const static CColor darkGreen;
+	// darkBlue [0.0f, 0.0f, 0.5f, 1.0f]
+	const static CColor darkBlue;
+
+	// lightRed [1.0f, 0.5f, 0.5f, 1.0f]
+	const static CColor lightRed;
+	// lightGreen [0.5f, 1.0f, 0.5f, 1.0f]
+	const static CColor lightGreen;
+	// lightBlue [0.5f, 0.5f, 1.0f, 1.0f]
+	const static CColor lightBlue;
+
+	// navy [0.0f, 0.0f, 0.4f, 1.0f]
+	const static CColor navy;
+	// skyBlue [0.4f, 0.7f, 1.0f, 1.0f]
+	const static CColor skyBlue;
+	// teal [0.0f, 0.5f, 0.5f, 1.0f]
+	const static CColor teal;
+
 
 private:
 	// RGBA各色
