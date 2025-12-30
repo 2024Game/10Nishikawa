@@ -57,8 +57,8 @@
 const std::vector<CEnemy::AnimData> ANIM_DATA =
 {
 	{ "",						true,	0.0f,	1.0f	},	// Tポーズ
-	{ ANIM_PATH"idle.x",		true,	153.0f,	1.0f	},	// 待機
-	{ ANIM_PATH"idle2.x",		true,	153.0f,	1.0f	},	// 待機(戦闘中)
+	{ ANIM_PATH"idle.x",		true,	121.0f,	1.0f	},	// 待機
+	{ ANIM_PATH"idle2.x",		true,	121.0f,	1.0f	},	// 待機(戦闘中)
 	{ ANIM_PATH"walk.x",		true,	82.0f,	1.5f	},	// 歩行
 	{ ANIM_PATH"run.x",			true,	39.0f,	1.5f	},	// ダッシュ
 	{ ANIM_PATH"GSSlash1.x",	false,	77.0f,	1.25f	},	// 斬り攻撃
@@ -76,7 +76,7 @@ const std::vector<CEnemy::AnimData> ANIM_DATA =
 };
 
 // コンストラクタ
-CSoldier::CSoldier(CPlayer* player)
+CSoldier::CSoldier(CPlayer* player, int level)
 	: mpRideObject(nullptr)
 	, mIsPlayedSlashSE(false)
 	, mIsSpawnedSlashEffect(false)
@@ -85,13 +85,9 @@ CSoldier::CSoldier(CPlayer* player)
 	, mIsBattle(true)
 	, mBattleIdletime(0.0f)
 	, mpBattleTarget(nullptr)
-	, mA1StCost(25.0f)
-	, mAvoidStCost(20.0f)
+	, mA1StCost(0.0f)
+	, mAvoidStCost(0.0f)
 {
-	mMaxHp = 100.0f;
-	mHp = mMaxHp;
-	mMaxSt = 100.0f;
-	mSt = mMaxSt;
 	mpBattleTarget = player;
 
 	// ゲージのオフセット位置を設定
@@ -163,6 +159,9 @@ CSoldier::CSoldier(CPlayer* player)
 	mpTACol->Position(TA_COL_OFFSET_POS);
 	// 先行入力コライダーは最初はオフにしておく
 	mpTACol->SetEnable(false);
+
+	mLevel = level;
+	InitStatus();
 }
 
 // デストラクタ
@@ -180,6 +179,38 @@ CSoldier::~CSoldier()
 		mpSword->SetOwner(nullptr);
 		mpSword->Kill();
 	}
+}
+
+void CSoldier::InitStatus()
+{
+	// レベルに合わせて、ステータスを切り替える
+	switch (mLevel)
+	{
+	case 1:
+		mMaxHp = 80.0f;
+		mMaxSt = 100.0f;
+		mGainSt = 10.0f;
+		mA1StCost = 30.0f;
+		mAvoidStCost = 25.0f;
+		break;
+	case 2:
+		mMaxHp = 100.0f;
+		mMaxSt = 100.0f;
+		mGainSt = 12.5f;
+		mA1StCost = 25.0f;
+		mAvoidStCost = 20.0f;
+		break;
+	case 3:
+		mMaxHp = 150.0f;
+		mMaxSt = 100.0f;
+		mGainSt = 15.0f;
+		mA1StCost = 22.5f;
+		mAvoidStCost = 18.0f;
+		break;
+	}
+
+	mHp = mMaxHp;
+	mSt = mMaxSt;
 }
 
 // 攻撃中か

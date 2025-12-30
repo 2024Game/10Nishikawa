@@ -63,7 +63,7 @@ CPlayer* CPlayer::spInstance = nullptr;
 const CPlayer::AnimData CPlayer::ANIM_DATA[] =
 {
 	{ "",						true,	0.0f,	1.0f	},	// Tƒ|[ƒY
-	{ ANIM_PATH"idle.x",		true,	153.0f,	1.0f	},	// ‘Ò‹@
+	{ ANIM_PATH"idle.x",		true,	121.0f,	1.0f	},	// ‘Ò‹@
 	{ ANIM_PATH"walk.x",		true,	82.0f,	1.5f	},	// •às
 	{ ANIM_PATH"run.x",			true,	39.0f,	1.5f	},	// ƒ_ƒbƒVƒ…
 	{ ANIM_PATH"GSSlash1.x",	false,	77.0f,	1.25f	},	// Ža‚èUŒ‚
@@ -356,7 +356,7 @@ void CPlayer::UpdateAttack1()
 				AttackEnd();
 
 				mInAttack = false;
-
+				mMoveSpeed = CVector::zero;
 				mStateStep++;
 			}
 
@@ -371,8 +371,7 @@ void CPlayer::UpdateAttack1()
 				mAttackTimer += Times::DeltaTime();
 
 				// 1•b‚ ‚½‚è‚ÌˆÚ“®‘¬“x
-				CVector move = mAttackVec * 5.0f * Times::DeltaTime();
-				Position(Position() + move);
+				mMoveSpeed = mAttackVec * 5.0f * Times::DeltaTime();
 			}
 			break;
 		case 3:
@@ -458,7 +457,7 @@ void CPlayer::UpdateAttack2()
 			AttackEnd();
 
 			mInAttack = false;
-
+			mMoveSpeed = CVector::zero;
 			mStateStep++;
 		}
 
@@ -473,8 +472,7 @@ void CPlayer::UpdateAttack2()
 			mAttackTimer += Times::DeltaTime();
 
 			// 1•b‚ ‚½‚è‚ÌˆÚ“®‘¬“x
-			CVector move = mAttackVec * 10.0f * Times::DeltaTime();
-			Position(Position() + move);
+			mMoveSpeed = mAttackVec * 10.0f * Times::DeltaTime();
 		}
 		break;
 	case 3:
@@ -562,7 +560,7 @@ void CPlayer::UpdateAttackX()
 			AttackEnd();
 
 			mInAttack = false;
-
+			mMoveSpeed = CVector::zero;
 			mStateStep++;
 		}
 
@@ -571,8 +569,7 @@ void CPlayer::UpdateAttackX()
 			mAttackTimer += Times::DeltaTime();
 
 			// 1•b‚ ‚½‚è‚ÌˆÚ“®‘¬“x
-			CVector move = mAttackVec * 30.0f * Times::DeltaTime();
-			Position(Position() + move);
+			mMoveSpeed = mAttackVec * 30.0f * Times::DeltaTime();
 		}
 		break;
 	case 4:
@@ -686,12 +683,12 @@ void CPlayer::UpdateAvoidR()
 			mAvoidTimer += Times::DeltaTime();
 
 			// 1•b‚ ‚½‚è‚ÌˆÚ“®‘¬“x
-			CVector move = mAvoidVec * 300.0f * Times::DeltaTime();
-			Position(Position() + move);
+			mMoveSpeed = mAvoidVec * 300.0f * Times::DeltaTime();
 
 			if (mAvoidTimer >= mAvoidDuration)
 			{
 				mAvoidMoving = false;
+				mMoveSpeed = CVector::zero;
 				mStateStep++;
 			}
 		}
@@ -755,6 +752,7 @@ void CPlayer::UpdateDeath()
 		if (GetAnimationFrame() >= DEATH_END_FRAME)
 		{
 			mToDeath = false;
+			mMoveSpeed = CVector::zero;
 			mStateStep++;
 		}
 
@@ -763,8 +761,7 @@ void CPlayer::UpdateDeath()
 			mDeathTimer += Times::DeltaTime();
 
 			// 1•b‚ ‚½‚è‚ÌˆÚ“®‘¬“x
-			CVector move = mDeathVec * 20.0f * Times::DeltaTime();
-			Position(Position() + move);
+			mMoveSpeed = mDeathVec * 20.0f * Times::DeltaTime();
 		}
 		break;
 	case 2:

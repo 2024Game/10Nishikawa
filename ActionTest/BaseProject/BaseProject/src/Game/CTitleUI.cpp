@@ -27,14 +27,14 @@ CTitleUI::CTitleUI()
 {
 	// タイトルロゴのフォントデータを生成
 	mpLogoFont = new CFont("res\\Font\\toroman.ttf");
-	mpLogoFont->SetFontSize(128);
+	mpLogoFont->SetFontSize(64);
 	mpLogoFont->SetAlignment(FTGL::TextAlignment::ALIGN_CENTER);
 	mpLogoFont->SetLineLength(WINDOW_WIDTH);
 
 	// タイトルロゴのテキストを生成
 	mpTitleLogo = new CText
 	(
-		mpLogoFont, 128,
+		mpLogoFont, 64,
 		CVector2(0.0f, 32.0f),
 		CVector2(WINDOW_WIDTH, WINDOW_HEIGHT),
 		CColor(0.11f, 0.1f, 0.1f),
@@ -44,7 +44,7 @@ CTitleUI::CTitleUI()
 		false,
 		false
 	);
-	mpTitleLogo->SetText("タイトルロゴ");
+	mpTitleLogo->SetText("グラディエーターズリフト");
 	mpTitleLogo->SetEnableOutline(true);
 	mpTitleLogo->SetOutlineColor(CColor(0.9f, 0.9f, 0.9f));
 

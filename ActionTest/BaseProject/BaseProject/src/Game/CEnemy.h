@@ -76,6 +76,8 @@ protected:
 
 	CCollider* mpBodyCol;	// 本体のコライダー
 
+	int mLevel;				// 敵のレベル
+	float mGainSt;			// スタミナ回復量
 	CGaugeUI3D* mpHpGauge;		// HPゲージ
 	CVector mHpGaugeOffsetPos;	// HPゲージのオフセット座標
 	CGaugeUI3D* mpStGauge;		// スタミナゲージ

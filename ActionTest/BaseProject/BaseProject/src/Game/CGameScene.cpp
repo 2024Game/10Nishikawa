@@ -40,6 +40,7 @@ void CGameScene::Load()
 	//リソースの読み込みやクラスの生成を行う
 
 	CResourceManager::Load<CModel>(		"Field",			"Field\\field.obj");
+	CResourceManager::Load<CModel>(		"Arena",			"Field\\Arena\\arena.obj");
 	CResourceManager::Load<CModel>(		"FieldCube",		"Field\\Object\\cube.obj");
 	CResourceManager::Load<CModel>(		"FieldCylinder",	"Field\\Object\\cylinder.obj");
 
@@ -58,7 +59,8 @@ void CGameScene::Load()
 	// ゲームBGMを読み込み
 	CBGMManager::Instance()->Play(EBGMType::eGame);
 
-	new CField();
+	CField* arena = new CField();
+	arena->Scale(1.1f, 1.0f, 1.1f);
 
 	// Playerを作成
 	mpPlayer = new CPlayer();
@@ -72,7 +74,7 @@ void CGameScene::Load()
 	//cactus->Position(0.0f, 20.0f, -100.0f);
 
 	// 兵士の敵を1体生成
-	mpEnemy = new CSoldier(mpPlayer);
+	mpEnemy = new CSoldier(mpPlayer,1);
 	mpEnemy->Position(0.0f, 5.0f, -100.0f);
 
 	// CGameCameraのテスト

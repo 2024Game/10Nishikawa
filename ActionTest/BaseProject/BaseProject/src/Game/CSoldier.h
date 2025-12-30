@@ -15,9 +15,11 @@ class CSoldier : public CEnemy
 {
 public:
 	// コンストラクタ
-	CSoldier(CPlayer* player);
+	CSoldier(CPlayer* player, int level);
 	// デストラクタ
 	~CSoldier();
+
+	void InitStatus();
 
 	// 攻撃中か
 	bool IsAttacking() const override;
@@ -120,6 +122,11 @@ private:
 	// 勝利
 	void UpdateVictory();
 
+
+	// ステータス関連
+	float mA1StCost;
+	float mAvoidStCost;
+
 	CCollider* mpKickCol;			// 蹴り攻撃用コライダー
 	CCollider* mpTACol;				// 先行入力(Type Ahead)用コライダー
 	CTransform* mpRideObject;
@@ -139,9 +146,6 @@ private:
 	CVector mAttackVec;
 	float mAttackTimer = 0.0f;
 	bool mInAttack = false;
-
-	float mA1StCost;
-	float mAvoidStCost;
 
 	CVector mAvoidVec;
 	float mAvoidTimer = 0.0f;

@@ -20,6 +20,8 @@ CEnemy::CEnemy()
 	, mpHpGauge(nullptr)
 	, mpStGauge(nullptr)
 	, mIsGravity(true)
+	, mLevel(0)
+	, mGainSt(0.0f)
 {
 	// HPƒQ[ƒW‚ðì¬
 	mpHpGauge = new CGaugeUI3D(this);
@@ -222,7 +224,7 @@ void CEnemy::Update()
 
 	if (mHp > 0.0f)
 	{
-		CCharaBase::GainStamina(10 * Times::DeltaTime());
+		CCharaBase::GainStamina(mGainSt * Times::DeltaTime());
 	}
 }
 

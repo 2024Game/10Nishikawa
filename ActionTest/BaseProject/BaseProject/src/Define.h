@@ -1,13 +1,13 @@
 #pragma once
 
-#define GAME_TITLE "GameTitle"	//ゲームタイトル
+#define GAME_TITLE "Gladiator's Lift"	//ゲームタイトル
 
 #define WINDOW_WIDTH 1280		//ウィンドウの幅
 #define WINDOW_HEIGHT 720		//ウィンドウの高さ
 
 #define CAMERA_FOVY 60.0f		//カメラの画角
 #define CAMERA_ZNEAR 0.01f		//カメラの描画最短距離
-#define CAMERA_ZFAR 1000.0f		//カメラの描画最長距離
+#define CAMERA_ZFAR 10000.0f		//カメラの描画最長距離
 
 //#define FULL_SCREEN	//フルスクリーンにする場合は定義する
 
