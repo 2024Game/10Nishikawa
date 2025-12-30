@@ -54,7 +54,7 @@
 // 先行入力のコライダーの半径
 #define TA_COL_RADIUS 27.5f
 // 先行入力のコライダーのオフセット座標
-#define TA_COL_OFFSET_POS CVector(0.0f, 4.0f, 2.5f)
+#define TA_COL_OFFSET_POS CVector(0.0f, 4.0f, 2.75f)
 
 // プレイヤーのインスタンス
 CPlayer* CPlayer::spInstance = nullptr;
@@ -1061,16 +1061,23 @@ void CPlayer::Update()
 	// 武器の行列を更新
 	mpSword->UpdateMtx();
 
-	CVector pos = Position();
-	CDebugPrint::Print("PlayerHP:%f / %f\n", mHp, mMaxHp);
-	CDebugPrint::Print("PlayerST:%f / %f\n", mSt, mMaxSt);
-	CDebugPrint::Print("PlayerPos:%.2f, %.2f, %.2f\n", pos.X(), pos.Y(), pos.Z());
-	CDebugPrint::Print("PlayerGrounded:%s\n", mIsGrounded ? "true" : "false");
-	CDebugPrint::Print("PlayerState:%d\n", mState);
-
 	mIsGrounded = false;
 
+	if (Position().Y() < -100.0f)
+	{
+		Position(0.0f, 10.0f, 100.0f);
+	}
+
+#ifdef _DEBUG
+	CVector pos = Position();
+	CDebugPrint::Print("PlayerPos:%.2f, %.2f, %.2f\n", pos.X(), pos.Y(), pos.Z());
 	CDebugPrint::Print("FPS:%f\n", Times::FPS());
+	CDebugPrint::Print("PlayerGrounded:%s\n", mIsGrounded ? "true" : "false");
+	CDebugPrint::Print("PlayerState:%d\n", mState);
+#endif // _DEBUG
+
+	CDebugPrint::Print("PlayerHP:%f / %f\n", mHp, mMaxHp);
+	CDebugPrint::Print("PlayerST:%f / %f\n", mSt, mMaxSt);
 }
 
 void CPlayer::SetInBattle(int state)

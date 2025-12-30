@@ -55,7 +55,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 		false,
 		false
 	);
-	img->SetSize(650.0f, 400.0f);
+	img->SetSize(790.0f, 400.0f);
 	img->SetPos(20.0f, 20.0f);
 	mBgImages.push_back(img);
 
@@ -73,13 +73,13 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 				false,
 				false
 			);
-			img1->SetSize(150.0f, 250.0f);
+			img1->SetSize(185.0f, 300.0f);
 
-			float x = 30.0f + i * 160.0f;
-			float y = 160.0f + j * 100.0f;
+			float x = 30.0f + i * 195.0f;
+			float y = 110.0f + j * 100.0f;
 
 			img1->SetPos(x, y);
-			img1->SetColor(CColor::darkGray);
+			img1->SetColor(CColor::gray);
 
 			mBgImages.push_back(img1);
 
@@ -93,10 +93,10 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 				false,
 				false
 			);
-			img2->SetSize(130.0f, 40.0f);
+			img2->SetSize(165.0f, 40.0f);
 
-			x = 40.0f + i * 160.0f;
-			y = 170.0f + j * 100.0f;
+			x = 40.0f + i * 195.0f;
+			y = 120.0f + j * 100.0f;
 
 			img2->SetPos(x, y);
 
@@ -110,14 +110,14 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	{
 		for (int j = 0; j < mRows; j++)    // 行
 		{
-			float x = 105.0f + i * 160.0f;
+			float x = 122.5f + i * 195.0f;
 			float y = 380.0f + j * 100.0f;
 
 			// ボタンを生成
 			CExpandButton* Btn = new CExpandButton
 			(
 				CVector2(x, y),
-				CVector2(130.0f, 40.0f),
+				CVector2(165.0f, 40.0f),
 				ETaskPriority::eUI, 0, ETaskPauseType::eGame,
 				false, false
 			);
@@ -369,8 +369,8 @@ void CHomeSceneUI::InformationUpdate()
 	mpMoneyText = new CText
 	(
 		mpMoneyFont, 35,
-		CVector2(WINDOW_WIDTH - 420.0f, 20.0f),
-		CVector2(400.0f, 70.0f),
+		CVector2(WINDOW_WIDTH - 410.0f, 30.0f),
+		CVector2(380.0f, 50.0f),
 		CColor(0.11f, 0.1f, 0.1f),
 		ETaskPriority::eUI,
 		0,
@@ -379,7 +379,7 @@ void CHomeSceneUI::InformationUpdate()
 		false
 	);
 	mpMoneyText->SetTextAlignV(ETextAlignV::eMiddle);
-
+	mpMoneyText->SetShowDebug(true);
 	int money = static_cast<int>(mpSaveManager->data.money);
 	mpMoneyText->SetText(("所持金：$" + std::to_string(money) + "\n").c_str());
 	// リストに追加
@@ -389,8 +389,8 @@ void CHomeSceneUI::InformationUpdate()
 	mpStatusText = new CText
 	(
 		mpStatusFont, 30,
-		CVector2(WINDOW_WIDTH - 620.0f, 140.0f),
-		CVector2(580.0f, 770.0f),
+		CVector2(WINDOW_WIDTH - 410.0f, 120.0f),
+		CVector2(380.0f, 570.0f),
 		CColor(0.11f, 0.1f, 0.1f),
 		ETaskPriority::eUI,
 		0,
@@ -401,12 +401,12 @@ void CHomeSceneUI::InformationUpdate()
 	mpStatusText->SetTextAlignV(ETextAlignV::eTop);
 	mpStatusText->SetTextAlignH(ETextAlignH::eLeft);
 	mpStatusText->SetText((
-		"体力\n" + std::to_string(mpSaveManager->data.hp) + "/"
-		+ std::to_string(mpSaveManager->data.maxHp) + "\n"
+		"体力\n" + std::to_string((int)mpSaveManager->data.hp) + "/"
+		+ std::to_string((int)mpSaveManager->data.maxHp) + "\n"
 		"スタミナ\n" + std::to_string(100 + (mpSaveManager->data.stLv * 5)) + "\n"
 		"スタミナ回復量(秒間)\n" + std::to_string(10.0f * (1.0f + (mpSaveManager->data.stRegeneLv * 0.05f))) + "\n"
 		).c_str());
-	//mpStatusText->SetShowDebug(true);
+	mpStatusText->SetShowDebug(true);
 
 	// リストに追加
 	mURTexts.push_back(mpStatusText);
@@ -416,15 +416,15 @@ void CHomeSceneUI::InformationUpdate()
 	{
 		for (int j = 0; j < mRows; j++)    // 行
 		{
-			int x = 40.0f + i * 160.0f;
-			int y = 220.0f + j * 100.0f;
+			int x = 40.0f + i * 195.0f;
+			int y = 170.0f + j * 100.0f;
 
 			// テキストを生成
 			CText* newText = new CText
 			(
 				mpPerkFont, 25,
 				CVector2(x, y),
-				CVector2(130.0f, 130.0f),	// <---ココのサイズを変えても右端が変わらないっぽい(解決済み)
+				CVector2(165.0f, 180.0f),	// <---ココのサイズを変えても右端が変わらないっぽい(解決済み)
 				CColor(0.11f, 0.1f, 0.1f),
 				ETaskPriority::eUI,
 				0,
@@ -445,18 +445,32 @@ void CHomeSceneUI::InformationUpdate()
 			switch (infoNum)
 			{
 			case 0:
-				/*
-				newText->SetText
-				(("燃料タンクの容量　Lv." + std::to_string(mpSaveManager->data.fuelTankLv) + "\n" + "レベルごとに5UP\n"
-					"アップグレード費用：" + std::to_string(500 * (mpSaveManager->data.fuelTankLv + 1)) + "\n").c_str());
-				*/
+				newText->SetText((
+					"治療院へ行く\n体力を40％回復します\n1日経過します\n$100必要"
+					));
 				break;
+
 			case 1:
+				newText->SetText((
+					"格下との戦い\n敵のレベル" + std::to_string((((int)mpSaveManager->data.day / 3) - 1) + 2)
+					+ "\n報酬\n$?"
+					).c_str());
 				break;
+
 			case 2:
+				newText->SetText((
+					"同格との戦い\n敵のレベル" + std::to_string(((int)mpSaveManager->data.day / 3) + 2)
+					+ "\n報酬\n$??"
+					).c_str());
 				break;
+
 			case 3:
+				newText->SetText((
+					"格上との戦い\n敵のレベル" + std::to_string((((int)mpSaveManager->data.day / 3) + 1) + 2)
+					 + "\n報酬\n$???"
+					).c_str());
 				break;
+
 			case 4:
 				break;
 			case 5:
@@ -527,9 +541,26 @@ void CHomeSceneUI::OnClickQuit()
 
 void CHomeSceneUI::OnClickHealer()
 {
-	mpSaveManager->data.selectDiff = 0;
-	mpSaveManager->Save();
-	OnClickStartGame();
+	if (mpSaveManager->data.money >= 100)
+	{
+		mpSaveManager->data.money -= 100;
+		mpSaveManager->data.selectDiff = 0;
+		// HPを最大HPの40%分、回復させる
+		float hpCapa = mpSaveManager->data.maxHp - mpSaveManager->data.hp;
+		float recovery = mpSaveManager->data.maxHp * 0.4f;
+		if (hpCapa >= recovery)
+		{
+			mpSaveManager->data.hp += recovery;
+		}
+		else
+		{
+			mpSaveManager->data.hp = mpSaveManager->data.maxHp;
+		}
+		mpSaveManager->data.day++;
+		mpSaveManager->Save();
+	}
+	InformationUpdate();
+	//OnClickStartGame();
 }
 
 void CHomeSceneUI::OnClickEasy()

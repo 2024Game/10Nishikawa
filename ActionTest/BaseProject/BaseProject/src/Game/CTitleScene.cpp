@@ -55,7 +55,7 @@ void CTitleScene::Update()
 		// ゲーム開始ならば、ゲームシーンを読み込む
 		if (mpTitleUI->IsStartGame())
 		{
-			CSceneManager::Instance()->LoadScene(EScene::eGame);
+			CSceneManager::Instance()->LoadScene(EScene::eHome);
 		}
 		// ゲーム終了ならば、アプリを閉じる
 		else if (mpTitleUI->IsExitGame())

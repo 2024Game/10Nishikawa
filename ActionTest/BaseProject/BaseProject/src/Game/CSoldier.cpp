@@ -20,7 +20,7 @@
 #define BATTLE_IDLE_TIME_MIN 0.5f
 #define BATTLE_IDLE_TIME_MAX 2.0f
 #define ATTACK2_DIST 50.0f			// 駆け寄ってくる距離
-#define ATTACK_RANGE 30.0f			// 攻撃を行う距離
+#define ATTACK_RANGE 32.25f			// 攻撃を行う距離
 #define ATTACK2_PROB 75				// 2段目攻撃を行う確率（パーセント）
 #define ATTACKX_PROB 50				// X段目攻撃を行う確率（パーセント）
 
@@ -51,7 +51,7 @@
 // 先行入力のコライダーの半径
 #define TA_COL_RADIUS 27.5f
 // 先行入力のコライダーのオフセット座標
-#define TA_COL_OFFSET_POS CVector(0.0f, 4.0f, 5.0f)
+#define TA_COL_OFFSET_POS CVector(0.0f, 4.0f, 2.75f)
 
 // 敵のアニメーションデータのテーブル
 const std::vector<CEnemy::AnimData> ANIM_DATA =
@@ -87,6 +87,7 @@ CSoldier::CSoldier(CPlayer* player, int level)
 	, mpBattleTarget(nullptr)
 	, mA1StCost(0.0f)
 	, mAvoidStCost(0.0f)
+	, mStepMag(0.0f)
 {
 	mpBattleTarget = player;
 
@@ -192,6 +193,7 @@ void CSoldier::InitStatus()
 		mGainSt = 10.0f;
 		mA1StCost = 30.0f;
 		mAvoidStCost = 25.0f;
+		mStepMag = 1.0f;
 		break;
 	case 2:
 		mMaxHp = 100.0f;
@@ -199,6 +201,7 @@ void CSoldier::InitStatus()
 		mGainSt = 12.5f;
 		mA1StCost = 25.0f;
 		mAvoidStCost = 20.0f;
+		mStepMag = 1.2f;
 		break;
 	case 3:
 		mMaxHp = 150.0f;
@@ -206,6 +209,23 @@ void CSoldier::InitStatus()
 		mGainSt = 15.0f;
 		mA1StCost = 22.5f;
 		mAvoidStCost = 18.0f;
+		mStepMag = 1.4f;
+		break;
+	case 4:
+		mMaxHp = 180.0f;
+		mMaxSt = 125.0f;
+		mGainSt = 17.5f;
+		mA1StCost = 22.5f;
+		mAvoidStCost = 15.0f;
+		mStepMag = 1.6f;
+		break;
+	case 5:
+		mMaxHp = 225.0f;
+		mMaxSt = 140.0f;
+		mGainSt = 17.5f;
+		mA1StCost = 22.5f;
+		mAvoidStCost = 12.5f;
+		mStepMag = 1.6f;
 		break;
 	}
 
@@ -497,7 +517,7 @@ void CSoldier::UpdateChase()
 	CVector vec = targetPos - pos;
 	// 攻撃範囲内であれば
 	float dist = vec.Length();
-	if (dist <= ATTACK_RANGE)
+	if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 	{
 		if (mSt >= mA1StCost)
 		{
@@ -608,7 +628,7 @@ void CSoldier::UpdateAttack1()
 			mAttackTimer += Times::DeltaTime();
 
 			// 1秒あたりの移動速度
-			CVector move = mAttackVec * 5.0f * Times::DeltaTime();
+			CVector move = mAttackVec * (5.5f * mStepMag) * Times::DeltaTime();
 			Position(Position() + move);
 		}
 		break;
@@ -693,7 +713,7 @@ void CSoldier::UpdateAttack2()
 			mAttackTimer += Times::DeltaTime();
 
 			// 1秒あたりの移動速度
-			CVector move = mAttackVec * 10.0f * Times::DeltaTime();
+			CVector move = mAttackVec * (10.0f * mStepMag) * Times::DeltaTime();
 			Position(Position() + move);
 		}
 		break;
@@ -786,7 +806,7 @@ void CSoldier::UpdateAttackX()
 			mAttackTimer += Times::DeltaTime();
 
 			// 1秒あたりの移動速度
-			CVector move = mAttackVec * 30.0f * Times::DeltaTime();
+			CVector move = mAttackVec * (30.0f * mStepMag) * Times::DeltaTime();
 			Position(Position() + move);
 		}
 
@@ -1066,6 +1086,12 @@ void CSoldier::Update()
 	// 武器の行列を更新
 	mpSword->UpdateMtx();
 
+	if (Position().Y() < -100.0f)
+	{
+		Position(0.0f, 10.0f, -100.0f);
+	}
+
+#ifdef _DEBUG
 	// 戦闘相手までの距離をデバッグ表示
 	if (mpBattleTarget != nullptr)
 	{
@@ -1074,9 +1100,11 @@ void CSoldier::Update()
 		targetPos.Y(pos.Y());
 		float dist = CVector::Distance(targetPos, pos);
 		CDebugPrint::Print("Dist:%.2f\n", dist);
+		CDebugPrint::Print("EnemyHP:%.2f\n", mHp);
 	}
 	CDebugPrint::Print("EnemyState:%d\n", mState);
 	CDebugPrint::Print("EnemyAnimType:%d\n", mAnimType);
+#endif // _DEBUG
 }
 
 void CSoldier::SetInBattle(int state)

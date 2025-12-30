@@ -146,6 +146,7 @@ private:
 	CVector mAttackVec;
 	float mAttackTimer = 0.0f;
 	bool mInAttack = false;
+	float mStepMag;
 
 	CVector mAvoidVec;
 	float mAvoidTimer = 0.0f;

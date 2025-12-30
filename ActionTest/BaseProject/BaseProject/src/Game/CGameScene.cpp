@@ -21,6 +21,7 @@ CGameScene::CGameScene()
 	, mElapsedTime(0.0f)
 	, mStateStep(0)
 	, mPlayerWin(false)
+	, mEnemyLv(0)
 {
 
 }
@@ -84,10 +85,20 @@ void CGameScene::Load()
 	//cactus->Scale(1.5f, 1.5f, 1.5f);
 	//cactus->Position(0.0f, 20.0f, -100.0f);
 
-	int enemyLv = 1 + (mpSaveManager->data.day / 3);
+	mEnemyLv = 2 + (mpSaveManager->data.day / 3);
+
+	if (mpSaveManager->data.selectDiff == 1)
+	{
+		mEnemyLv--;
+	}
+	else if (mpSaveManager->data.selectDiff == 3)
+	{
+		if (mEnemyLv == 5) return;
+		mEnemyLv++;
+	}
 
 	// 兵士の敵を1体生成
-	mpEnemy = new CSoldier(mpPlayer, enemyLv);
+	mpEnemy = new CSoldier(mpPlayer, mEnemyLv);
 	mpEnemy->Position(0.0f, 5.0f, -100.0f);
 
 	// CGameCameraのテスト
@@ -145,7 +156,11 @@ void CGameScene::Update()
 			mpGameMenu->Open();
 		}
 	}
+#ifdef _DEBUG
 	CDebugPrint::Print("ElapsedTime:%f\n", mElapsedTime);
+	CDebugPrint::Print("EnemyLv:%d\n", mEnemyLv);
+	CDebugPrint::Print("selectDiff:%d\n", mpSaveManager->data.selectDiff);
+#endif // _DEBUG
 }
 
 void CGameScene::UpdateBattleReserve()
@@ -247,16 +262,53 @@ void CGameScene::UpdateBattleResult()
 		{
 			if (mPlayerWin)
 			{
+				mpSaveManager->data.hp = mpPlayer->GetHp();
+
 				// HPを最大HPのhpRegeneLv(%)分、回復させる
-				mpSaveManager->data.hp += mpSaveManager->data.maxHp * (1.0f + (mpSaveManager->data.hpRegeneLv * 0.01f));
+				float hpCapa = mpSaveManager->data.maxHp - mpSaveManager->data.hp;
+				float recovery = mpSaveManager->data.maxHp * (mpSaveManager->data.hpRegeneLv * 0.01f);
+				if (hpCapa >= recovery)
+				{
+					mpSaveManager->data.hp += recovery;
+				}
+				else
+				{
+					mpSaveManager->data.hp = mpSaveManager->data.maxHp;
+				}
+				mpSaveManager->data.day++;
+				switch (mEnemyLv)
+				{
+				case 1:
+					mpSaveManager->data.money += 50;
+					break;
+				case 2:
+					mpSaveManager->data.money += 100;
+					break;
+				case 3:
+					mpSaveManager->data.money += 150;
+					break;
+				case 4:
+					mpSaveManager->data.money += 250;
+					break;
+				case 5:
+					mpSaveManager->data.money += 400;
+					break;
+				default:
+					break;
+				}
 				mpSaveManager->Save();
+				CSceneManager::Instance()->LoadScene(EScene::eHome);
 			}
 			else
 			{
 				mpSaveManager->Reset();
+				CSceneManager::Instance()->LoadScene(EScene::eTitle);
 			}
-			CSceneManager::Instance()->LoadScene(EScene::eTitle);
+			mStateStep++;
 		}
+		break;
+	case 4:
+		
 		break;
 	}
 }
