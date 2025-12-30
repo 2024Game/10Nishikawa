@@ -9,8 +9,8 @@ CExpandButton::CExpandButton(const CVector2& pos, const CVector2& size,
 	ETaskPriority prio, int sortOrder,
 	ETaskPauseType pause, bool dontDelete, bool addTaskList)
 	: CButton(pos, size, prio, sortOrder, pause, dontDelete, addTaskList)
-	, mEnterScale(1.5f)
-	, mPressScale(1.25f)
+	, mEnterScale(1.25f)
+	, mPressScale(1.15f)
 	, mStartScale(1.0f)
 	, mEndScale(1.0f)
 	, mElapsedTime(0.0f)

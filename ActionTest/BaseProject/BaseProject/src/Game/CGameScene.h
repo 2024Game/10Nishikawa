@@ -1,5 +1,7 @@
 #pragma once
 #include "CSceneBase.h"
+#include <memory>
+#include "CSaveManager.h"
 #include "CPlayer.h"
 #include "CEnemy.h"
 class CGameMenu;
@@ -38,8 +40,10 @@ private:
 	EState mState;				// ゲームの状態
 	int mStateStep;				// 状態内のステップ管理用
 	float mElapsedTime;			// 経過時間計測用
+	CSaveManager* mpSaveManager;
 	CGameMenu* mpGameMenu;
 	CPlayer* mpPlayer;
 	CEnemy* mpEnemy;
+	bool mPlayerWin;
 	int mTimeCount;
 };

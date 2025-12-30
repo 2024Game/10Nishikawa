@@ -3,6 +3,7 @@
 #include "CXCharacter.h"
 #include "CRideableObject.h"
 #include "CSound.h"
+#include "CSaveManager.h"
 
 class CCollider;
 class CFlamethrower;
@@ -19,7 +20,7 @@ public:
 	static CPlayer* Instance();
 
 	// コンストラクタ
-	CPlayer();
+	CPlayer(CSaveManager* SaveManager);
 	// デストラクタ
 	~CPlayer();
 
@@ -170,6 +171,7 @@ private:
 	CCollider* mpTACol;				// 先行入力(Type Ahead)用コライダー
 	CTransform* mpRideObject;
 
+	CSaveManager* mpSaveManager;
 	CSound* mpSlashSE;
 	bool mIsPlayedSlashSE;
 	bool mIsSpawnedSlashEffect;
@@ -186,7 +188,9 @@ private:
 	float mA1StCost;
 	float mAvoidStCost;
 
-	bool mNextAttack; //連続攻撃が予約されているかどうか
+	float mStRegeneMag; // スタミナ回復倍率
+	float mAttackMag;	// 攻撃の倍率
+	bool mNextAttack;	// 連続攻撃が予約されているかどうか
 	CVector mAttackVec;
 	float mAttackTimer = 0.0f;
 	bool mInAttack = false;

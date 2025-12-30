@@ -6,6 +6,7 @@ enum class EBGMType
 	eNone = -1,
 
 	eTitle,	// タイトル画面のBGM
+	eHome,	// ホーム画面のBGM
 	eGame,	// ゲーム画面のBGM
 	eMenu,	// メニューを開いている時のBGM
 

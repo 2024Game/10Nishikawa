@@ -1,0 +1,554 @@
+#include "CHomeSceneUI.h"
+#include "CFont.h"
+#include "CText.h"
+#include "CImage.h"
+#include "Maths.h"
+#include "CInput.h"
+#include "CFade.h"
+#include "CExpandButton.h"
+#include "Easing.h"
+
+
+CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
+	: CTask(ETaskPriority::eUI, 0, ETaskPauseType::eDefault)
+	, mState(EState::eIdle)
+	, mStateStep(0)
+	, mElapsedTime(0.0f)
+	, mIsEnd(false)
+	, mpMoneyFont(nullptr)
+	, mpStatusFont(nullptr)
+	, mpPerkFont(nullptr)
+	, mpMoneyText(nullptr)
+	, mpStatusText(nullptr)
+	, mpStartText(nullptr)
+	, mpSaveManager(saveManager)
+{
+	// 所持金のフォントデータを生成
+	mpMoneyFont = new CFont("res\\Font\\JF-Dot-K12.ttf");
+	mpMoneyFont->SetFontSize(30);
+	mpMoneyFont->SetAlignment(FTGL::TextAlignment::ALIGN_LEFT);
+	mpMoneyFont->SetLineLength(WINDOW_WIDTH);
+
+	// ステータスのフォントデータを生成
+	mpStatusFont = new CFont("res\\Font\\JF-Dot-K12.ttf");
+	mpStatusFont->SetFontSize(30);
+	mpStatusFont->SetAlignment(FTGL::TextAlignment::ALIGN_LEFT);
+	mpStatusFont->SetLineLength(WINDOW_WIDTH);
+
+	// 次の日のフォントデータを生成
+	mpPerkFont = new CFont("res\\Font\\JF-Dot-K12.ttf");
+	mpPerkFont->SetFontSize(30);
+	mpPerkFont->SetAlignment(FTGL::TextAlignment::ALIGN_LEFT);
+	mpPerkFont->SetLineLength(WINDOW_WIDTH);
+
+	// 背景イメージ達を生成
+	mRows = 1;    // 1列あたりの項目数
+	mCols = 4;    // 列数 <- UIのサイズ的に１列で良かった(つまり頑張り損)
+
+	// 次の日の背景イメージ
+	CImage* img = new CImage
+	(
+		"UI/white.png",
+		ETaskPriority::eUI,
+		0,
+		ETaskPauseType::eDefault,
+		false,
+		false
+	);
+	img->SetSize(650.0f, 400.0f);
+	img->SetPos(20.0f, 20.0f);
+	mBgImages.push_back(img);
+
+	for (int i = 0; i < mCols; i++)        // 列
+	{
+		for (int j = 0; j < mRows; j++)    // 行
+		{
+			// 項目の背景イメージ
+			CImage* img1 = new CImage
+			(
+				"UI/white.png",
+				ETaskPriority::eUI,
+				0,
+				ETaskPauseType::eDefault,
+				false,
+				false
+			);
+			img1->SetSize(150.0f, 250.0f);
+
+			float x = 30.0f + i * 160.0f;
+			float y = 160.0f + j * 100.0f;
+
+			img1->SetPos(x, y);
+			img1->SetColor(CColor::darkGray);
+
+			mBgImages.push_back(img1);
+
+			// 項目のアイコンイメージ
+			CImage* img2 = new CImage
+			(
+				"UI/btn03_04_light.png",
+				ETaskPriority::eUI,
+				0,
+				ETaskPauseType::eDefault,
+				false,
+				false
+			);
+			img2->SetSize(130.0f, 40.0f);
+
+			x = 40.0f + i * 160.0f;
+			y = 170.0f + j * 100.0f;
+
+			img2->SetPos(x, y);
+
+			mBgImages.push_back(img2);
+		}
+	}
+	
+	// ボタン群を生成
+	int btnNum = 0;
+	for (int i = 0; i < mCols; i++)        // 列
+	{
+		for (int j = 0; j < mRows; j++)    // 行
+		{
+			float x = 105.0f + i * 160.0f;
+			float y = 380.0f + j * 100.0f;
+
+			// ボタンを生成
+			CExpandButton* Btn = new CExpandButton
+			(
+				CVector2(x, y),
+				CVector2(130.0f, 40.0f),
+				ETaskPriority::eUI, 0, ETaskPauseType::eGame,
+				false, false
+			);
+
+			switch (btnNum)
+			{
+			case 0:
+				// [治療院へ行く]ボタンを設定
+				// ボタンの画像を読み込み
+				Btn->LoadButtonImage("UI/btn_upgrade.png", "UI/btn_upgrade.png");
+				// ボタンクリック時に呼び出されるコールバック関数を設定
+				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickHealer, this));
+				break;
+			case 1:
+				// [格下との戦い]ボタンを設定
+				// ボタンの画像を読み込み
+				Btn->LoadButtonImage("UI/btn_upgrade.png", "UI/btn_upgrade.png");
+				// ボタンクリック時に呼び出されるコールバック関数を設定
+				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickEasy, this));
+				break;
+			case 2:
+				// [同格との戦い]ボタンを設定
+				// ボタンの画像を読み込み
+				Btn->LoadButtonImage("UI/btn_upgrade.png", "UI/btn_upgrade.png");
+				// ボタンクリック時に呼び出されるコールバック関数を設定
+				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickNormal, this));
+				break;
+			case 3:
+				// [格上との戦い]ボタンを設定
+				// ボタンの画像を読み込み
+				Btn->LoadButtonImage("UI/btn_upgrade.png", "UI/btn_upgrade.png");
+				// ボタンクリック時に呼び出されるコールバック関数を設定
+				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickHard, this));
+				break;
+			default:
+				Btn->LoadButtonImage("UI/btn_upgrade.png", "UI/btn_upgrade.png");
+				break;
+			}
+			// ボタンリストに追加
+			mButtons.push_back(Btn);
+			btnNum++;
+		}
+	}
+
+	InformationUpdate();
+
+	// 所持金表示枠
+	CImage* gImg = new CImage
+	(
+		"UI/white.png",
+		ETaskPriority::eUI,
+		0,
+		ETaskPauseType::eDefault,
+		false,
+		false
+	);
+	gImg->SetSize(400.0f, 70.0f);
+	gImg->SetPos(WINDOW_WIDTH - 420.0f, 20.0f);
+	// リストに追加
+	mBgImages.push_back(gImg);
+
+	// ステータス表示枠
+	CImage* stImg = new CImage
+	(
+		"UI/white.png",
+		ETaskPriority::eUI,
+		0,
+		ETaskPauseType::eDefault,
+		false,
+		false
+	);
+	stImg->SetSize(400.0f, 590.0f);
+	stImg->SetPos(WINDOW_WIDTH - 420.0f, 110.0f);
+	// リストに追加
+	mBgImages.push_back(stImg);
+
+	// [ゲーム開始]ボタンを生成
+	CExpandButton* startBtn = new CExpandButton
+	(
+		CVector2(WINDOW_WIDTH - (250.0f + 50.0f), WINDOW_HEIGHT - (30.0f + 15.0f)),
+		CVector2((500.0f * 0.9f), (60.0f * 0.9f)),
+		ETaskPriority::eUI, 0, ETaskPauseType::eGame,
+		false, false
+	);
+	// ボタンの画像を読み込み
+	startBtn->LoadButtonImage("UI/gogame.png", "UI/gogame.png");
+	// ボタンクリック時に呼び出されるコールバック関数を設定
+	startBtn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickStartGame, this));
+	// ボタンリストに追加
+	mButtons.push_back(startBtn);
+
+	// [タイトル]ボタンを生成
+	CExpandButton* titleBtn = new CExpandButton
+	(
+		CVector2(WINDOW_WIDTH - (250.0f + 50.0f), WINDOW_HEIGHT - (30.0f + 80.0f)),
+		CVector2((500.0f * 0.9f), (60.0f * 0.9f)),
+		ETaskPriority::eUI, 0, ETaskPauseType::eGame,
+		false, false
+	);
+	// ボタンの画像を読み込み
+	titleBtn->LoadButtonImage("UI/gotitle.png", "UI/gotitle.png");
+	// ボタンクリック時に呼び出されるコールバック関数を設定
+	titleBtn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickGoTitle, this));
+	// ボタンリストに追加
+	mButtons.push_back(titleBtn);
+
+
+}
+
+CHomeSceneUI::~CHomeSceneUI()
+{
+	SAFE_DELETE(mpMoneyFont);
+	SAFE_DELETE(mpStatusFont);
+	SAFE_DELETE(mpPerkFont);
+	//SAFE_DELETE(mpMoneyText);
+	//SAFE_DELETE(mpStatusText);
+	//SAFE_DELETE(mpStartText); 
+
+	int size = mButtons.size();
+	for (int i = 0; i < size; i++)
+	{
+		CButton* btn = mButtons[i];
+		mButtons[i] = nullptr;
+		SAFE_DELETE(btn);
+	}
+	mButtons.clear();
+
+	size = mBgImages.size();
+	for (int i = 0; i < size; i++)
+	{
+		CImage* img = mBgImages[i];
+		mBgImages[i] = nullptr;
+		SAFE_DELETE(img);
+	}
+	mBgImages.clear();
+
+	size = mTexts.size();
+	for (int i = 0; i < size; i++)
+	{
+		CText* txt = mTexts[i];
+		mTexts[i] = nullptr;
+		SAFE_DELETE(txt);
+	}
+	mTexts.clear();
+
+	size = mURTexts.size();
+	for (int i = 0; i < size; i++)
+	{
+		CText* urtxt = mURTexts[i];
+		mURTexts[i] = nullptr;
+		SAFE_DELETE(urtxt);
+	}
+	mURTexts.clear();
+}
+
+bool CHomeSceneUI::IsEnd() const
+{
+	return mIsEnd;
+}
+
+bool CHomeSceneUI::IsStartGame() const
+{
+	// 選択項目が1つ目ならば、ゲーム開始
+	return mSelectIndex == 0;
+}
+
+bool CHomeSceneUI::IsGoTitle() const
+{
+	// 選択項目が2つ目ならば、タイトルへ移行
+	return mSelectIndex == 1;
+}
+
+bool CHomeSceneUI::IsGoBarracks() const
+{
+	// 選択項目が3つ目ならば、タイトルへ移行
+	return mSelectIndex == 2;
+}
+
+void CHomeSceneUI::Update()
+{
+	switch (mState)
+	{
+		// 待機状態
+	case EState::eIdle:
+		UpdateIdle();
+		break;
+		// メニューを開く
+	case EState::eOpen:
+		UpdateOpen();
+		break;
+		// メニュー選択
+	case EState::eSelect:
+		UpdateSelect();
+		break;
+		// フェードアウト
+	case EState::eFadeOut:
+		UpdateFadeOut();
+		break;
+	}
+
+	for (CButton* btn : mButtons)
+	{
+		btn->Update();
+	}
+
+	for (CText* txt : mTexts)
+	{
+		//txt->Update();
+	}
+}
+
+void CHomeSceneUI::Render()
+{
+	for (CImage* img : mBgImages)
+	{
+		img->Render();
+	}
+
+	for (CButton* btn : mButtons)
+	{
+		btn->Render();
+	}
+
+	for (CText* txt : mTexts)
+	{
+		txt->Render();
+	}
+
+	for (CText* urtxt : mURTexts)
+	{
+		urtxt->Render();
+	}
+}
+
+void CHomeSceneUI::InformationUpdate()
+{
+	int size = mURTexts.size();
+	for (int i = 0; i < size; i++)
+	{
+		CText* urtxt = mURTexts[i];
+		mURTexts[i] = nullptr;
+		SAFE_DELETE(urtxt);
+	}
+	mURTexts.clear();
+
+	int infoNum = 0;
+
+	// 所持金のテキストを生成
+	mpMoneyText = new CText
+	(
+		mpMoneyFont, 35,
+		CVector2(WINDOW_WIDTH - 420.0f, 20.0f),
+		CVector2(400.0f, 70.0f),
+		CColor(0.11f, 0.1f, 0.1f),
+		ETaskPriority::eUI,
+		0,
+		ETaskPauseType::eDefault,
+		false,
+		false
+	);
+	mpMoneyText->SetTextAlignV(ETextAlignV::eMiddle);
+
+	int money = static_cast<int>(mpSaveManager->data.money);
+	mpMoneyText->SetText(("所持金：$" + std::to_string(money) + "\n").c_str());
+	// リストに追加
+	mURTexts.push_back(mpMoneyText);
+
+	// ステータスのテキストを生成
+	mpStatusText = new CText
+	(
+		mpStatusFont, 30,
+		CVector2(WINDOW_WIDTH - 620.0f, 140.0f),
+		CVector2(580.0f, 770.0f),
+		CColor(0.11f, 0.1f, 0.1f),
+		ETaskPriority::eUI,
+		0,
+		ETaskPauseType::eDefault,
+		false,
+		false
+	);
+	mpStatusText->SetTextAlignV(ETextAlignV::eTop);
+	mpStatusText->SetTextAlignH(ETextAlignH::eLeft);
+	mpStatusText->SetText((
+		"体力\n" + std::to_string(mpSaveManager->data.hp) + "/"
+		+ std::to_string(mpSaveManager->data.maxHp) + "\n"
+		"スタミナ\n" + std::to_string(100 + (mpSaveManager->data.stLv * 5)) + "\n"
+		"スタミナ回復量(秒間)\n" + std::to_string(10.0f * (1.0f + (mpSaveManager->data.stRegeneLv * 0.05f))) + "\n"
+		).c_str());
+	//mpStatusText->SetShowDebug(true);
+
+	// リストに追加
+	mURTexts.push_back(mpStatusText);
+
+	// テキスト群を生成
+	for (int i = 0; i < mCols; i++)        // 列
+	{
+		for (int j = 0; j < mRows; j++)    // 行
+		{
+			int x = 40.0f + i * 160.0f;
+			int y = 220.0f + j * 100.0f;
+
+			// テキストを生成
+			CText* newText = new CText
+			(
+				mpPerkFont, 25,
+				CVector2(x, y),
+				CVector2(130.0f, 130.0f),	// <---ココのサイズを変えても右端が変わらないっぽい(解決済み)
+				CColor(0.11f, 0.1f, 0.1f),
+				ETaskPriority::eUI,
+				0,
+				ETaskPauseType::eDefault,
+				false,
+				false
+			);
+			newText->SetTextAlignV(ETextAlignV::eMiddle);
+			//newText->SetTextAlignH(ETextAlignH::eLeft);
+			//newText->SetTextAlignH(ETextAlignH::eRight);
+			newText->SetTextAlignH(ETextAlignH::eCenter);
+
+#ifdef _DEBUG
+			newText->SetShowDebug(true);
+#endif // _DEBUG
+
+
+			switch (infoNum)
+			{
+			case 0:
+				/*
+				newText->SetText
+				(("燃料タンクの容量　Lv." + std::to_string(mpSaveManager->data.fuelTankLv) + "\n" + "レベルごとに5UP\n"
+					"アップグレード費用：" + std::to_string(500 * (mpSaveManager->data.fuelTankLv + 1)) + "\n").c_str());
+				*/
+				break;
+			case 1:
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+			case 4:
+				break;
+			case 5:
+				break;
+			default:
+
+				break;
+			}
+
+			// リストに追加
+			mURTexts.push_back(newText);
+			infoNum++;
+		}
+	}
+}
+
+void CHomeSceneUI::UpdateIdle()
+{
+}
+
+void CHomeSceneUI::UpdateOpen()
+{
+}
+
+void CHomeSceneUI::UpdateSelect()
+{
+}
+
+void CHomeSceneUI::UpdateFadeOut()
+{
+}
+
+void CHomeSceneUI::ChangeState(EState state)
+{
+	if (state == mState) return;
+	mState = state;
+	mStateStep = 0;
+	mElapsedTime = 0.0f;
+}
+
+void CHomeSceneUI::OnClickStartGame()
+{
+	if (mIsEnd) return;
+
+	mSelectIndex = 0;
+	mIsEnd = true;
+}
+
+void CHomeSceneUI::OnClickGoTitle()
+{
+	if (mIsEnd) return;
+
+	mSelectIndex = 1;
+	mIsEnd = true;
+}
+
+void CHomeSceneUI::OnClickGoBarracks()
+{
+}
+
+void CHomeSceneUI::OnClickGoReincarnation()
+{
+}
+
+void CHomeSceneUI::OnClickQuit()
+{
+}
+
+void CHomeSceneUI::OnClickHealer()
+{
+	mpSaveManager->data.selectDiff = 0;
+	mpSaveManager->Save();
+	OnClickStartGame();
+}
+
+void CHomeSceneUI::OnClickEasy()
+{
+	mpSaveManager->data.selectDiff = 1;
+	mpSaveManager->Save();
+	OnClickStartGame();
+}
+
+void CHomeSceneUI::OnClickNormal()
+{
+	mpSaveManager->data.selectDiff = 2;
+	mpSaveManager->Save();
+	OnClickStartGame();
+}
+
+void CHomeSceneUI::OnClickHard()
+{
+	mpSaveManager->data.selectDiff = 3;
+	mpSaveManager->Save();
+	OnClickStartGame();
+}

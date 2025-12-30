@@ -223,5 +223,4 @@ void CGameScene::Update()
 		mpSaveManager->Save();
 		CSceneManager::Instance()->LoadScene(EScene::eHome);
 	}
-
 }

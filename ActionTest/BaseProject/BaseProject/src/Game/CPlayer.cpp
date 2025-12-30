@@ -83,7 +83,7 @@ const CPlayer::AnimData CPlayer::ANIM_DATA[] =
 // I‚í‚è‚ÌƒtƒŒ[ƒ€‚ð’Z‚­‚µ‚½‚Ù‚¤‚ª‚¢‚¢‚©‚à
 
 // ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-CPlayer::CPlayer()
+CPlayer::CPlayer(CSaveManager* SaveManager)
 	: CXCharacter(ETag::ePlayer, ETaskPriority::ePlayer)
 	, mState(EState::eReserve)
 	, mStateStep(0)
@@ -97,13 +97,17 @@ CPlayer::CPlayer()
 	, mMotionBlurRemainTime(0.0f)
 	, mpSword(nullptr)
 	, mNextAttack(false)
+	, mAttackMag(0.0f)
 	, mA1StCost(25.0f)
 	, mAvoidStCost(20.0f)
+	, mpSaveManager(SaveManager)
 {
-	mMaxHp = 100.0f;
-	mHp = mMaxHp;
-	mMaxSt = 100.0f;
+	mMaxHp = mpSaveManager->data.maxHp;
+	mHp = mpSaveManager->data.hp;
+	mMaxSt = 100.0f + (mpSaveManager->data.stLv * 5);
 	mSt = mMaxSt;
+	mAttackMag = 1.0f + (mpSaveManager->data.attackLv * 0.05f);
+	mStRegeneMag = 1.0f + (mpSaveManager->data.stRegeneLv * 0.05f);
 
 	//ƒCƒ“ƒXƒ^ƒ“ƒX‚ÌÝ’è
 	spInstance = this;
@@ -983,7 +987,7 @@ void CPlayer::Update()
 
 	if (mHp > 0.0f)
 	{
-		CCharaBase::GainStamina(10 * Times::DeltaTime());
+		CCharaBase::GainStamina(10 * Times::DeltaTime() * mStRegeneMag);
 	}
 
 	if (mIsGravity)
@@ -1228,11 +1232,14 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			switch (mState)
 			{
 				// Ža‚èUŒ‚1
-			case EState::eAttack1:		hitChara->TakeDamage(4, this);	break;
+			case EState::eAttack1:
+				hitChara->TakeDamage(4.0f * mAttackMag, this);	break;
 				// Ža‚èUŒ‚2
-			case EState::eAttack2:		hitChara->TakeDamage(6, this);	break;
+			case EState::eAttack2:
+				hitChara->TakeDamage(6.0f * mAttackMag, this);	break;
 				// Ža‚èUŒ‚X
-			case EState::eAttackX:		hitChara->TakeDamage(5, this);	break;
+			case EState::eAttackX:
+				hitChara->TakeDamage(5.0f * mAttackMag, this);	break;
 			}
 		}
 	}

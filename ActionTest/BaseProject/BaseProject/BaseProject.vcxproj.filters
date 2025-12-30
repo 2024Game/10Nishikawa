@@ -98,6 +98,9 @@
     <Filter Include="ソース ファイル\BaseSystem\Shader">
       <UniqueIdentifier>{c19b8829-5f60-4c9d-9e2f-960d58050af5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\UI\Home">
+      <UniqueIdentifier>{df236ed8-c107-4e29-a847-8a5ad49ea785}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -392,7 +395,16 @@
       <Filter>ソース ファイル\BaseSystem\Shader</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CSoldier.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Game\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CHomeScene.cpp">
+      <Filter>ソース ファイル\Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CHomeSceneUI.cpp">
+      <Filter>ソース ファイル\Game\UI\Home</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CSaveManager.cpp">
+      <Filter>ソース ファイル\Game\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -713,6 +725,15 @@
     </ClInclude>
     <ClInclude Include="src\Game\CSoldier.h">
       <Filter>ソース ファイル\Game\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CHomeScene.h">
+      <Filter>ソース ファイル\Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CHomeSceneUI.h">
+      <Filter>ソース ファイル\Game\UI\Home</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSaveManager.h">
+      <Filter>ソース ファイル\Game\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

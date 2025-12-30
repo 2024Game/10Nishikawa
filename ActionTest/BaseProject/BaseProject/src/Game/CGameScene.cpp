@@ -20,7 +20,9 @@ CGameScene::CGameScene()
 	, mTimeCount(0)
 	, mElapsedTime(0.0f)
 	, mStateStep(0)
+	, mPlayerWin(false)
 {
+
 }
 
 //デストラクタ
@@ -54,16 +56,25 @@ void CGameScene::Load()
 	CResourceManager::Load<CModel>(		"Slash",			"Effect\\slash.obj");
 	CResourceManager::Load<CSound>(		"SlashSound",		"Sound\\SE\\slash.wav");
 	CResourceManager::Load<CModel>(		"Sword",			"Weapon\\Sword\\sword.obj");
-	CResourceManager::Load<CModel>(		"Shield",			"Weapon\\Shield\\shield.obj");
 
 	// ゲームBGMを読み込み
 	CBGMManager::Instance()->Play(EBGMType::eGame);
+
+	// ランダム初期化（Load() の最初で一度だけ呼ぶ）
+	srand(static_cast<unsigned int>(time(nullptr)));
+
+	mpSaveManager = &CSaveManager::Instance();
+	// セーブファイルがあればロード、なければ初期値のまま
+	if (!mpSaveManager->Load())
+	{
+		mpSaveManager->Reset();
+	}
 
 	CField* arena = new CField();
 	arena->Scale(1.1f, 1.0f, 1.1f);
 
 	// Playerを作成
-	mpPlayer = new CPlayer();
+	mpPlayer = new CPlayer(mpSaveManager);
 	mpPlayer->Rotation(CVector(0.0f, 180.0f, 0.0f));
 	mpPlayer->Scale(1.0f, 1.0f, 1.0f);
 	mpPlayer->Position(0.0f, 5.0f, 100.0f);
@@ -73,8 +84,10 @@ void CGameScene::Load()
 	//cactus->Scale(1.5f, 1.5f, 1.5f);
 	//cactus->Position(0.0f, 20.0f, -100.0f);
 
+	int enemyLv = 1 + (mpSaveManager->data.day / 3);
+
 	// 兵士の敵を1体生成
-	mpEnemy = new CSoldier(mpPlayer,1);
+	mpEnemy = new CSoldier(mpPlayer, enemyLv);
 	mpEnemy->Position(0.0f, 5.0f, -100.0f);
 
 	// CGameCameraのテスト
@@ -211,11 +224,13 @@ void CGameScene::UpdateBattleResult()
 	case 2:
 		if (mpPlayer->GetHp() <= 0.0f)
 		{
+			mPlayerWin = false;
 			mpEnemy->SetInBattle(2);
 			mStateStep++;
 		}
 		else if (mpEnemy->GetHp() <= 0.0f)
 		{
+			mPlayerWin = true;
 			mpPlayer->SetInBattle(2);
 			mStateStep++;
 		}
@@ -230,6 +245,16 @@ void CGameScene::UpdateBattleResult()
 		// 待機時間が経過した
 		else
 		{
+			if (mPlayerWin)
+			{
+				// HPを最大HPのhpRegeneLv(%)分、回復させる
+				mpSaveManager->data.hp += mpSaveManager->data.maxHp * (1.0f + (mpSaveManager->data.hpRegeneLv * 0.01f));
+				mpSaveManager->Save();
+			}
+			else
+			{
+				mpSaveManager->Reset();
+			}
 			CSceneManager::Instance()->LoadScene(EScene::eTitle);
 		}
 		break;
