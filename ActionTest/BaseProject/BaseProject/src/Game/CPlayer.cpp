@@ -108,7 +108,7 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	mSt = mMaxSt;
 	mAttackMag = 1.0f + (mpSaveManager->data.attackLv * 0.05f);
 	mStRegeneMag = 1.0f + (mpSaveManager->data.stRegeneLv * 0.05f);
-
+	//mAttackMag = 15.0f;
 	//インスタンスの設定
 	spInstance = this;
 
@@ -341,7 +341,6 @@ void CPlayer::UpdateAttack1()
 				AttackStart();
 
 				mInAttack = true;
-				mAttackTimer = 0.0f;
 
 				mStateStep++;
 			}
@@ -372,8 +371,6 @@ void CPlayer::UpdateAttack1()
 
 			if (mInAttack)
 			{
-				mAttackTimer += Times::DeltaTime();
-
 				// 1秒あたりの移動速度
 				mMoveSpeed = mAttackVec * 5.0f * Times::DeltaTime();
 			}
@@ -436,7 +433,6 @@ void CPlayer::UpdateAttack2()
 			AttackStart();
 
 			mInAttack = true;
-			mAttackTimer = 0.0f;
 
 			// 左クリックで連続攻撃を予約
 			if (CInput::PushKey(VK_LBUTTON))
@@ -473,8 +469,6 @@ void CPlayer::UpdateAttack2()
 
 		if (mInAttack)
 		{
-			mAttackTimer += Times::DeltaTime();
-
 			// 1秒あたりの移動速度
 			mMoveSpeed = mAttackVec * 10.0f * Times::DeltaTime();
 		}
@@ -553,7 +547,6 @@ void CPlayer::UpdateAttackX()
 		{
 			CObjectBase::AttackStart();
 			mInAttack = true;
-			mAttackTimer = 0.0f;
 			mStateStep++;
 		}
 		break;
@@ -570,8 +563,6 @@ void CPlayer::UpdateAttackX()
 
 		if (mInAttack)
 		{
-			mAttackTimer += Times::DeltaTime();
-
 			// 1秒あたりの移動速度
 			mMoveSpeed = mAttackVec * 30.0f * Times::DeltaTime();
 		}
@@ -786,6 +777,7 @@ void CPlayer::UpdateVictory()
 	switch (mStateStep)
 	{
 	case 0:
+		mMoveSpeed = CVector::zero;
 		// 勝利アニメーションを再生
 		ChangeAnimation(EAnimType::eVictory);
 		mStateStep++;
@@ -987,7 +979,7 @@ void CPlayer::Update()
 
 	if (mHp > 0.0f)
 	{
-		CCharaBase::GainStamina(10 * Times::DeltaTime() * mStRegeneMag);
+		CCharaBase::GainStamina(7.5 * Times::DeltaTime() * mStRegeneMag);
 	}
 
 	if (mIsGravity)
@@ -1069,15 +1061,14 @@ void CPlayer::Update()
 	}
 
 #ifdef _DEBUG
+	CDebugPrint::Print("PlayerHP:%f / %f\n", mHp, mMaxHp);
+	CDebugPrint::Print("PlayerST:%f / %f\n", mSt, mMaxSt);
 	CVector pos = Position();
 	CDebugPrint::Print("PlayerPos:%.2f, %.2f, %.2f\n", pos.X(), pos.Y(), pos.Z());
 	CDebugPrint::Print("FPS:%f\n", Times::FPS());
 	CDebugPrint::Print("PlayerGrounded:%s\n", mIsGrounded ? "true" : "false");
 	CDebugPrint::Print("PlayerState:%d\n", mState);
 #endif // _DEBUG
-
-	CDebugPrint::Print("PlayerHP:%f / %f\n", mHp, mMaxHp);
-	CDebugPrint::Print("PlayerST:%f / %f\n", mSt, mMaxSt);
 }
 
 void CPlayer::SetInBattle(int state)

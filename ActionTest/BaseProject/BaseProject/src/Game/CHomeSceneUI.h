@@ -86,6 +86,7 @@ private:
 	CFont* mpMoneyFont;			// 所持金のフォント
 	CFont* mpStatusFont;		// ステータスのフォント
 	CFont* mpPerkFont;			// 強化パークのフォント
+	CText* mpDayText;			// 日数のテキスト
 	CText* mpMoneyText;			// 所持金のテキスト
 	CText* mpStatusText;		// ステータスのテキスト
 	CText* mpStartText;			// 「CLICK TO START」のテキスト

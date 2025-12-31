@@ -18,6 +18,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	, mpMoneyFont(nullptr)
 	, mpStatusFont(nullptr)
 	, mpPerkFont(nullptr)
+	, mpDayText(nullptr)
 	, mpMoneyText(nullptr)
 	, mpStatusText(nullptr)
 	, mpStartText(nullptr)
@@ -164,6 +165,21 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 
 	InformationUpdate();
 
+	// Day表示枠
+	CImage* dayImg = new CImage
+	(
+		"UI/white.png",
+		ETaskPriority::eUI,
+		0,
+		ETaskPauseType::eDefault,
+		false,
+		false
+	);
+	dayImg->SetSize(400.0f, 50.0f);
+	dayImg->SetPos(WINDOW_WIDTH - 420.0f, 20.0f);
+	// リストに追加
+	mBgImages.push_back(dayImg);
+
 	// 所持金表示枠
 	CImage* gImg = new CImage
 	(
@@ -174,8 +190,8 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 		false,
 		false
 	);
-	gImg->SetSize(400.0f, 70.0f);
-	gImg->SetPos(WINDOW_WIDTH - 420.0f, 20.0f);
+	gImg->SetSize(400.0f, 50.0f);
+	gImg->SetPos(WINDOW_WIDTH - 420.0f, 80.0f);
 	// リストに追加
 	mBgImages.push_back(gImg);
 
@@ -189,16 +205,16 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 		false,
 		false
 	);
-	stImg->SetSize(400.0f, 590.0f);
-	stImg->SetPos(WINDOW_WIDTH - 420.0f, 110.0f);
+	stImg->SetSize(400.0f, 570.0f);
+	stImg->SetPos(WINDOW_WIDTH - 420.0f, 140.0f);
 	// リストに追加
 	mBgImages.push_back(stImg);
 
 	// [ゲーム開始]ボタンを生成
 	CExpandButton* startBtn = new CExpandButton
 	(
-		CVector2(WINDOW_WIDTH - (250.0f + 50.0f), WINDOW_HEIGHT - (30.0f + 15.0f)),
-		CVector2((500.0f * 0.9f), (60.0f * 0.9f)),
+		CVector2(145.0f, WINDOW_HEIGHT - (40.0f + 10.0f)),
+		CVector2(250.0f, 80.0f),
 		ETaskPriority::eUI, 0, ETaskPauseType::eGame,
 		false, false
 	);
@@ -212,8 +228,8 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	// [タイトル]ボタンを生成
 	CExpandButton* titleBtn = new CExpandButton
 	(
-		CVector2(WINDOW_WIDTH - (250.0f + 50.0f), WINDOW_HEIGHT - (30.0f + 80.0f)),
-		CVector2((500.0f * 0.9f), (60.0f * 0.9f)),
+		CVector2(WINDOW_WIDTH - (650.0f + 50.0f), WINDOW_HEIGHT - (30.0f + 80.0f)),
+		CVector2(250.0f, 80.0f),
 		ETaskPriority::eUI, 0, ETaskPauseType::eGame,
 		false, false
 	);
@@ -365,12 +381,32 @@ void CHomeSceneUI::InformationUpdate()
 
 	int infoNum = 0;
 
+	// Dayのテキストを生成
+	mpDayText = new CText
+	(
+		mpMoneyFont, 30,
+		CVector2(WINDOW_WIDTH - 410.0f, 25.0f),
+		CVector2(380.0f, 40.0f),
+		CColor(0.11f, 0.1f, 0.1f),
+		ETaskPriority::eUI,
+		0,
+		ETaskPauseType::eDefault,
+		false,
+		false
+	);
+	mpDayText->SetTextAlignV(ETextAlignV::eMiddle);
+	//mpDayText->SetShowDebug(true);
+	int day = static_cast<int>(mpSaveManager->data.day);
+	mpDayText->SetText(("Day：" + std::to_string(day) + "\n").c_str());
+	// リストに追加
+	mURTexts.push_back(mpDayText);
+
 	// 所持金のテキストを生成
 	mpMoneyText = new CText
 	(
-		mpMoneyFont, 35,
-		CVector2(WINDOW_WIDTH - 410.0f, 30.0f),
-		CVector2(380.0f, 50.0f),
+		mpMoneyFont, 30,
+		CVector2(WINDOW_WIDTH - 410.0f, 85.0f),
+		CVector2(380.0f, 40.0f),
 		CColor(0.11f, 0.1f, 0.1f),
 		ETaskPriority::eUI,
 		0,
@@ -379,7 +415,7 @@ void CHomeSceneUI::InformationUpdate()
 		false
 	);
 	mpMoneyText->SetTextAlignV(ETextAlignV::eMiddle);
-	mpMoneyText->SetShowDebug(true);
+	//mpMoneyText->SetShowDebug(true);
 	int money = static_cast<int>(mpSaveManager->data.money);
 	mpMoneyText->SetText(("所持金：$" + std::to_string(money) + "\n").c_str());
 	// リストに追加
@@ -389,8 +425,8 @@ void CHomeSceneUI::InformationUpdate()
 	mpStatusText = new CText
 	(
 		mpStatusFont, 30,
-		CVector2(WINDOW_WIDTH - 410.0f, 120.0f),
-		CVector2(380.0f, 570.0f),
+		CVector2(WINDOW_WIDTH - 410.0f, 150.0f),
+		CVector2(380.0f, 550.0f),
 		CColor(0.11f, 0.1f, 0.1f),
 		ETaskPriority::eUI,
 		0,
@@ -406,7 +442,7 @@ void CHomeSceneUI::InformationUpdate()
 		"スタミナ\n" + std::to_string(100 + (mpSaveManager->data.stLv * 5)) + "\n"
 		"スタミナ回復量(秒間)\n" + std::to_string(10.0f * (1.0f + (mpSaveManager->data.stRegeneLv * 0.05f))) + "\n"
 		).c_str());
-	mpStatusText->SetShowDebug(true);
+	//mpStatusText->SetShowDebug(true);
 
 	// リストに追加
 	mURTexts.push_back(mpStatusText);

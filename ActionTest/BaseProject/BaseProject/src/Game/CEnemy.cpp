@@ -22,6 +22,12 @@ CEnemy::CEnemy()
 	, mIsGravity(true)
 	, mLevel(0)
 	, mGainSt(0.0f)
+	, mA1StCost(0.0f)
+	, mAvoidStCost(0.0f)
+	, mStepMag(0.0f)
+	, mAttackMag(0.0f)
+	, mAtSpeedMag(0.0f)
+	, mNegTime(0.0f)
 {
 	// HPゲージを作成
 	mpHpGauge = new CGaugeUI3D(this);
@@ -168,18 +174,7 @@ void CEnemy::SetInBattle(int state)
 // アニメーション切り替え
 void CEnemy::ChangeAnimation(int type, bool restart)
 {
-	if (mpAnimData == nullptr) return;
-	if (!(0 <= type && type < mpAnimData->size())) return;
-	AnimData data = (*mpAnimData)[type];
-	CXCharacter::ChangeAnimation
-	(
-		type,
-		data.loop,
-		data.frameLength,
-		restart
-	);
-	CXCharacter::SetAnimationSpeed(data.speed);
-	mAnimType = type;
+	
 }
 
 // 状態切り替え

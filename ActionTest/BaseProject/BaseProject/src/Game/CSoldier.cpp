@@ -19,7 +19,7 @@
 #define LOOKAT_SPEED 90.0f
 #define BATTLE_IDLE_TIME_MIN 0.5f
 #define BATTLE_IDLE_TIME_MAX 2.0f
-#define ATTACK2_DIST 50.0f			// 駆け寄ってくる距離
+#define ATTACK2_DIST 75.0f			// 駆け寄ってくる距離
 #define ATTACK_RANGE 32.25f			// 攻撃を行う距離
 #define ATTACK2_PROB 75				// 2段目攻撃を行う確率（パーセント）
 #define ATTACKX_PROB 50				// X段目攻撃を行う確率（パーセント）
@@ -85,9 +85,6 @@ CSoldier::CSoldier(CPlayer* player, int level)
 	, mIsBattle(true)
 	, mBattleIdletime(0.0f)
 	, mpBattleTarget(nullptr)
-	, mA1StCost(0.0f)
-	, mAvoidStCost(0.0f)
-	, mStepMag(0.0f)
 {
 	mpBattleTarget = player;
 
@@ -190,34 +187,46 @@ void CSoldier::InitStatus()
 	case 1:
 		mMaxHp = 80.0f;
 		mMaxSt = 100.0f;
-		mGainSt = 10.0f;
+		mGainSt = 8.5f;
 		mA1StCost = 30.0f;
 		mAvoidStCost = 25.0f;
 		mStepMag = 1.0f;
+		mAttackMag = 0.7f;
+		mAtSpeedMag = 0.85f;
+		mNegTime = 1.0f;
 		break;
 	case 2:
 		mMaxHp = 100.0f;
 		mMaxSt = 100.0f;
-		mGainSt = 12.5f;
+		mGainSt = 10.0f;
 		mA1StCost = 25.0f;
 		mAvoidStCost = 20.0f;
 		mStepMag = 1.2f;
+		mAttackMag = 1.0f;
+		mAtSpeedMag = 1.0f;
+		mNegTime = 0.8f;
 		break;
 	case 3:
 		mMaxHp = 150.0f;
 		mMaxSt = 100.0f;
-		mGainSt = 15.0f;
+		mGainSt = 12.0f;
 		mA1StCost = 22.5f;
 		mAvoidStCost = 18.0f;
 		mStepMag = 1.4f;
+		mAttackMag = 1.05f;
+		mAtSpeedMag = 1.05f;
+		mNegTime = 0.8f;
 		break;
 	case 4:
 		mMaxHp = 180.0f;
 		mMaxSt = 125.0f;
-		mGainSt = 17.5f;
+		mGainSt = 15.5f;
 		mA1StCost = 22.5f;
 		mAvoidStCost = 15.0f;
 		mStepMag = 1.6f;
+		mAttackMag = 1.1f;
+		mAtSpeedMag = 1.1f;
+		mNegTime = 0.5f;
 		break;
 	case 5:
 		mMaxHp = 225.0f;
@@ -226,6 +235,9 @@ void CSoldier::InitStatus()
 		mA1StCost = 22.5f;
 		mAvoidStCost = 12.5f;
 		mStepMag = 1.6f;
+		mAttackMag = 1.2f;
+		mAtSpeedMag = 1.15f;
+		mNegTime = 0.4f;
 		break;
 	}
 
@@ -344,11 +356,11 @@ void CSoldier::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			switch (mState)
 			{
 				// 斬り攻撃1
-			case (int)EState::eAttack1:		hitChara->TakeDamage(4, this);	break;
+			case (int)EState::eAttack1:		hitChara->TakeDamage(4 * mAttackMag, this);	break;
 				// 斬り攻撃2
-			case (int)EState::eAttack2:		hitChara->TakeDamage(6, this);	break;
+			case (int)EState::eAttack2:		hitChara->TakeDamage(6 * mAttackMag, this);	break;
 				// 斬り攻撃X
-			case (int)EState::eAttackX:		hitChara->TakeDamage(5, this);	break;
+			case (int)EState::eAttackX:		hitChara->TakeDamage(5 * mAttackMag, this);	break;
 			}
 		}
 	}
@@ -362,6 +374,33 @@ void CSoldier::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			hitChara->TakeDamage(1, this);
 		}
 	}
+}
+
+void CSoldier::ChangeAnimation(int type, bool restart)
+{
+	if (mpAnimData == nullptr) return;
+	if (!(0 <= type && type < mpAnimData->size())) return;
+	AnimData data = (*mpAnimData)[type];
+	CXCharacter::ChangeAnimation
+	(
+		type,
+		data.loop,
+		data.frameLength,
+		restart
+	);
+	switch (type)
+	{
+	case 5:
+	case 6:
+	case 7:
+		CXCharacter::SetAnimationSpeed(data.speed * mAtSpeedMag);
+		break;
+	default:
+		CXCharacter::SetAnimationSpeed(data.speed);
+		break;
+	}
+
+	mAnimType = type;
 }
 
 // 戦闘相手の方へ向く
@@ -603,7 +642,6 @@ void CSoldier::UpdateAttack1()
 			AttackStart();
 
 			mInAttack = true;
-			mAttackTimer = 0.0f;
 
 			mStateStep++;
 		}
@@ -625,10 +663,8 @@ void CSoldier::UpdateAttack1()
 
 		if (mInAttack)
 		{
-			mAttackTimer += Times::DeltaTime();
-
 			// 1秒あたりの移動速度
-			CVector move = mAttackVec * (5.5f * mStepMag) * Times::DeltaTime();
+			CVector move = mAttackVec * (5.5f * mStepMag * mAtSpeedMag) * Times::DeltaTime();
 			Position(Position() + move);
 		}
 		break;
@@ -639,27 +675,38 @@ void CSoldier::UpdateAttack1()
 		{
 			if (!mNextAttack)
 			{
-				// 待機状態へ移行
-				ChangeState((int)EState::eIdle);
-				ChangeAnimation((int)EAnimType::eIdle);
+				mStateStep++;
 			}
 			else
 			{
 				mNextAttack = false;
 				CObjectBase::AttackStart();
 
-				if (mSt >= mA1StCost)
+				if (mSt >= mA1StCost * 0.8f)
 				{
-					CCharaBase::UseStamina(mA1StCost);
+					CCharaBase::UseStamina(mA1StCost * 0.9f);
 					// 攻撃2段目へ移行
 					ChangeState((int)EState::eAttack2);
 				}
 				else
 				{
-					// 待機状態へ移行
-					ChangeState((int)EState::eIdle);
+					mStateStep++;
 				}
 			}
+		}
+		break;
+	case 4:
+		// 連続攻撃の終了なら、n秒間隙ができる
+		if (mElapsedTime < mNegTime)
+		{
+			mElapsedTime += Times::DeltaTime();
+		}
+		// 待ち時間が終了したら、削除
+		else
+		{
+			// 待機状態へ移行
+			ChangeState((int)EState::eIdle);
+			ChangeAnimation((int)EAnimType::eIdle);
 		}
 		break;
 	}
@@ -671,13 +718,14 @@ void CSoldier::UpdateAttack2()
 	// ステップごとに処理を分ける
 	switch (mStateStep)
 	{
-		// ステップ0：攻撃アニメーション再生
+	// ステップ0：攻撃アニメーション再生
 	case 0:
 		ChangeAnimation((int)EAnimType::eAttack2, true);
 		mAttackVec = VectorZ();
 		mStateStep++;
 		break;
-		// ステップ1：攻撃開始
+
+	// ステップ1：攻撃開始
 	case 1:
 		// 攻撃を開始するまで、徐々に戦闘相手の方向へ向く
 		LookAtBattleTarget();
@@ -692,7 +740,8 @@ void CSoldier::UpdateAttack2()
 			mStateStep++;
 		}
 		break;
-		// ステップ2：攻撃終了
+
+	// ステップ2：攻撃終了
 	case 2:
 		// 攻撃終了フレームまで経過したか
 		if (GetAnimationFrame() >= ATTACK2_END_FRAME)
@@ -710,41 +759,52 @@ void CSoldier::UpdateAttack2()
 
 		if (mInAttack)
 		{
-			mAttackTimer += Times::DeltaTime();
-
 			// 1秒あたりの移動速度
-			CVector move = mAttackVec * (10.0f * mStepMag) * Times::DeltaTime();
+			CVector move = mAttackVec * (10.0f * mStepMag * mAtSpeedMag) * Times::DeltaTime();
 			Position(Position() + move);
 		}
 		break;
-		// ステップ3：攻撃アニメーション終了待ち
+
+	// ステップ3：攻撃アニメーション終了待ち
 	case 3:
 		// アニメーション終了したら、待機状態へ戻す
 		if (IsAnimationFinished())
 		{
 			if (!mNextAttack)
 			{
-				// 待機状態へ移行
-				ChangeState((int)EState::eIdle);
-				ChangeAnimation((int)EAnimType::eIdle);
+				mStateStep++;
 			}
 			else
 			{
 				mNextAttack = false;
 				CObjectBase::AttackStart();
 
-				if (mSt >= mA1StCost)
+				if (mSt >= mA1StCost * 0.5f)
 				{
-					CCharaBase::UseStamina(mA1StCost);
+					CCharaBase::UseStamina(mA1StCost * 0.8f);
 					// 攻撃X段目へ移行
 					ChangeState((int)EState::eAttackX);
 				}
 				else
 				{
-					// 待機状態へ移行
-					ChangeState((int)EState::eIdle);
+					mStateStep++;
 				}
 			}
+		}
+		break;
+
+	case 4:
+		// 連続攻撃の終了なら、n秒間隙ができる
+		if (mElapsedTime < mNegTime)
+		{
+			mElapsedTime += Times::DeltaTime();
+		}
+		// 待ち時間が終了したら、削除
+		else
+		{
+			// 待機状態へ移行
+			ChangeState((int)EState::eIdle);
+			ChangeAnimation((int)EAnimType::eIdle);
 		}
 		break;
 	}
@@ -770,7 +830,11 @@ void CSoldier::UpdateAttackX()
 
 		mStateStep++;
 		break;
+
 	case 1:
+		// 攻撃を開始するまで、徐々に戦闘相手の方向へ向く
+		LookAtBattleTarget();
+
 		if (GetAnimationFrame() >= ATTACKX_START_FRAME)
 		{
 			// 斬撃SEを再生
@@ -781,15 +845,16 @@ void CSoldier::UpdateAttackX()
 			mStateStep++;
 		}
 		break;
+
 	case 2:
 		if (GetAnimationFrame() >= ATTACKX_START_FRAME + 85.0f)
 		{
 			CObjectBase::AttackStart();
 			mInAttack = true;
-			mAttackTimer = 0.0f;
 			mStateStep++;
 		}
 		break;
+
 	case 3:
 		if (GetAnimationFrame() >= ATTACKX_END_FRAME)
 		{
@@ -803,10 +868,8 @@ void CSoldier::UpdateAttackX()
 
 		if (mInAttack)
 		{
-			mAttackTimer += Times::DeltaTime();
-
 			// 1秒あたりの移動速度
-			CVector move = mAttackVec * (30.0f * mStepMag) * Times::DeltaTime();
+			CVector move = mAttackVec * (30.0f * mStepMag * mAtSpeedMag) * Times::DeltaTime();
 			Position(Position() + move);
 		}
 
@@ -816,6 +879,19 @@ void CSoldier::UpdateAttackX()
 		if (IsAnimationFinished())
 		{
 			mpSword->Rotation(SWORD_OFFSET_ROT);
+			mStateStep++;
+		}
+		break;
+
+	case 5:
+		// 連続攻撃の終了なら、n秒間隙ができる
+		if (mElapsedTime < mNegTime)
+		{
+			mElapsedTime += Times::DeltaTime();
+		}
+		// 待ち時間が終了したら、削除
+		else
+		{
 			// 待機状態へ移行
 			ChangeState((int)EState::eIdle);
 			ChangeAnimation((int)EAnimType::eIdle);
@@ -1038,6 +1114,7 @@ void CSoldier::UpdateVictory()
 	switch (mStateStep)
 	{
 	case 0:
+		mMoveSpeed = CVector::zero;
 		// 勝利アニメーションを再生
 		ChangeAnimation((int)EAnimType::eVictory);
 		mStateStep++;

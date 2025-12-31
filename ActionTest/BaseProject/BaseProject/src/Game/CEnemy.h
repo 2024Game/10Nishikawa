@@ -54,7 +54,7 @@ protected:
 	virtual void ChangeState(int state);
 
 	// アニメーション切り替え
-	void ChangeAnimation(int type, bool restart = false);
+	virtual void ChangeAnimation(int type, bool restart = false);
 
 
 	int mState;				// 状態
@@ -76,8 +76,16 @@ protected:
 
 	CCollider* mpBodyCol;	// 本体のコライダー
 
+	// ステータス関連
 	int mLevel;				// 敵のレベル
 	float mGainSt;			// スタミナ回復量
+	float mA1StCost;		// 攻撃の基本ST消費量
+	float mAvoidStCost;		// 回避の基本ST消費量
+	float mStepMag;			// 踏み込みの移動距離倍率
+	float mAttackMag;		// 攻撃力の倍率
+	float mAtSpeedMag;		// 攻撃モーションの速度倍率
+	float mNegTime;			// 隙ができる時間
+
 	CGaugeUI3D* mpHpGauge;		// HPゲージ
 	CVector mHpGaugeOffsetPos;	// HPゲージのオフセット座標
 	CGaugeUI3D* mpStGauge;		// スタミナゲージ

@@ -101,6 +101,9 @@
     <Filter Include="ソース ファイル\Game\UI\Home">
       <UniqueIdentifier>{df236ed8-c107-4e29-a847-8a5ad49ea785}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\UI\GameScene">
+      <UniqueIdentifier>{640dc9ce-bf17-4624-aeb9-6591df9ff4ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -405,6 +408,9 @@
     </ClCompile>
     <ClCompile Include="src\Game\CSaveManager.cpp">
       <Filter>ソース ファイル\Game\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGameSceneUI.cpp">
+      <Filter>ソース ファイル\Game\UI\GameScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -734,6 +740,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\CSaveManager.h">
       <Filter>ソース ファイル\Game\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGameSceneUI.h">
+      <Filter>ソース ファイル\Game\UI\GameScene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

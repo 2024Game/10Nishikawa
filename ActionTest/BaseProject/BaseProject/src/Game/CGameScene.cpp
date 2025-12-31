@@ -1,5 +1,6 @@
 ﻿#include "CGameScene.h"
 #include "CSceneManager.h"
+#include "CGameSceneUI.h"
 #include "CField.h"
 #include "CPlayer.h"
 #include "CGameCamera.h"
@@ -84,8 +85,9 @@ void CGameScene::Load()
 	//CCactus* cactus = new CCactus();
 	//cactus->Scale(1.5f, 1.5f, 1.5f);
 	//cactus->Position(0.0f, 20.0f, -100.0f);
-
-	mEnemyLv = 2 + (mpSaveManager->data.day / 3);
+	
+	//mEnemyLv = 2 + (mpSaveManager->data.day / 3);
+	mEnemyLv = ((int)mpSaveManager->data.day / 3)+ 2;
 
 	if (mpSaveManager->data.selectDiff == 1)
 	{
@@ -121,6 +123,10 @@ void CGameScene::Load()
 
 	// ゲームメニューを作成
 	mpGameMenu = new CGameMenu();
+
+	// UI作成
+	//new CGameSceneUI();
+	AddTask(new CGameSceneUI(mpPlayer));
 }
 
 //シーンの更新処理

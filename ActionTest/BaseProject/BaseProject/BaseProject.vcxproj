@@ -86,6 +86,7 @@
     <ClCompile Include="src\Game\CGameCamera2.cpp" />
     <ClCompile Include="src\Game\CGameMenu.cpp" />
     <ClCompile Include="src\Game\CGameScene.cpp" />
+    <ClCompile Include="src\Game\CGameSceneUI.cpp" />
     <ClCompile Include="src\Game\CGaugeUI3D.cpp" />
     <ClCompile Include="src\Game\CHomeScene.cpp" />
     <ClCompile Include="src\Game\CHomeSceneUI.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="src\Game\CGameCamera2.h" />
     <ClInclude Include="src\Game\CGameMenu.h" />
     <ClInclude Include="src\Game\CGameScene.h" />
+    <ClInclude Include="src\Game\CGameSceneUI.h" />
     <ClInclude Include="src\Game\CGaugeUI3D.h" />
     <ClInclude Include="src\Game\CHomeScene.h" />
     <ClInclude Include="src\Game\CHomeSceneUI.h" />
