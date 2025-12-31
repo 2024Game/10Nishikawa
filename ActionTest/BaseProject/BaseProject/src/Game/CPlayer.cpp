@@ -158,7 +158,7 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 		{ ELayer::eEnemy }	// 敵のレイヤーが設定されたコライダーと衝突
 	);
 
-	mpSword->Scale(2.0f, 1.25f, 1.25f);
+	mpSword->Scale(1.9f, 1.25f, 1.25f);
 
 	// 右手のフレームを取得し、
 	// 剣にプレイヤーの右手の行列をアタッチ
