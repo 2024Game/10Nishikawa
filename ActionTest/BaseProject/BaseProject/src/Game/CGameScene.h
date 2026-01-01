@@ -40,6 +40,7 @@ private:
 	EState mState;				// ゲームの状態
 	int mStateStep;				// 状態内のステップ管理用
 	float mElapsedTime;			// 経過時間計測用
+	CSound* mpKanseiSE;
 	CSaveManager* mpSaveManager;
 	CGameMenu* mpGameMenu;
 	CPlayer* mpPlayer;

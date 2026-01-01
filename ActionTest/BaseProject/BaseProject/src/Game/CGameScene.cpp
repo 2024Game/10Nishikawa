@@ -57,6 +57,7 @@ void CGameScene::Load()
 	CResourceManager::Load<CTexture>(	"LightningBolt",	"Effect\\lightning_bolt.png");
 	CResourceManager::Load<CModel>(		"Slash",			"Effect\\slash.obj");
 	CResourceManager::Load<CSound>(		"SlashSound",		"Sound\\SE\\slash.wav");
+	CResourceManager::Load<CSound>(		"KanseiSound",		"Sound\\SE\\kanseiSE.wav");
 	CResourceManager::Load<CModel>(		"Sword",			"Weapon\\Sword\\sword.obj");
 
 	// ゲームBGMを読み込み
@@ -71,6 +72,8 @@ void CGameScene::Load()
 	{
 		mpSaveManager->Reset();
 	}
+
+	mpKanseiSE = CResourceManager::Get<CSound>("KanseiSound");
 
 	CField* arena = new CField();
 	arena->Scale(1.1f, 1.0f, 1.1f);
@@ -95,7 +98,7 @@ void CGameScene::Load()
 	}
 	else if (mpSaveManager->data.selectDiff == 3)
 	{
-		if (mEnemyLv == 5) return;
+		if (mEnemyLv == 10) return;
 		mEnemyLv++;
 	}
 
@@ -174,6 +177,8 @@ void CGameScene::UpdateBattleReserve()
 	switch (mStateStep)
 	{
 	case 0:
+		// 歓声SEを再生
+		mpKanseiSE->Play(0.25f);
 		mStateStep++;
 		break;
 
@@ -193,9 +198,10 @@ void CGameScene::UpdateBattleReserve()
 	case 2:
 		mpPlayer->SetInBattle(0);
 		mpEnemy->SetInBattle(0);
+		// ゲームBGMを読み込み
+		//CBGMManager::Instance()->Play(EBGMType::eGame);
 		// 戦闘状態へ移行
 		ChangeState(EState::ebattle);
-		mStateStep++;
 		break;
 	}
 }
@@ -270,9 +276,9 @@ void CGameScene::UpdateBattleResult()
 			{
 				mpSaveManager->data.hp = mpPlayer->GetHp();
 
-				// HPを最大HPのhpRegeneLv(%)分、回復させる
+				// HPを5+最大HPのhpRegeneLv(%)分、回復させる
 				float hpCapa = mpSaveManager->data.maxHp - mpSaveManager->data.hp;
-				float recovery = mpSaveManager->data.maxHp * (mpSaveManager->data.hpRegeneLv * 0.01f);
+				float recovery = (mpSaveManager->data.maxHp * (mpSaveManager->data.hpRegeneLv * 0.01f) + 5);
 				if (hpCapa >= recovery)
 				{
 					mpSaveManager->data.hp += recovery;
@@ -282,22 +288,17 @@ void CGameScene::UpdateBattleResult()
 					mpSaveManager->data.hp = mpSaveManager->data.maxHp;
 				}
 				mpSaveManager->data.day++;
-				switch (mEnemyLv)
+
+				switch (mpSaveManager->data.selectDiff)
 				{
 				case 1:
-					mpSaveManager->data.money += 50;
-					break;
-				case 2:
 					mpSaveManager->data.money += 100;
 					break;
+				case 2:
+					mpSaveManager->data.money += 125;
+					break;
 				case 3:
-					mpSaveManager->data.money += 150;
-					break;
-				case 4:
-					mpSaveManager->data.money += 250;
-					break;
-				case 5:
-					mpSaveManager->data.money += 400;
+					mpSaveManager->data.money += 175;
 					break;
 				default:
 					break;

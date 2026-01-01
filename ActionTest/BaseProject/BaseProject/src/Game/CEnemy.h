@@ -85,6 +85,7 @@ protected:
 	float mAttackMag;		// 攻撃力の倍率
 	float mAtSpeedMag;		// 攻撃モーションの速度倍率
 	float mNegTime;			// 隙ができる時間
+	float mNegProb;			// 隙ができる確率
 
 	CGaugeUI3D* mpHpGauge;		// HPゲージ
 	CVector mHpGaugeOffsetPos;	// HPゲージのオフセット座標

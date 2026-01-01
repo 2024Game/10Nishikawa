@@ -28,6 +28,7 @@ CEnemy::CEnemy()
 	, mAttackMag(0.0f)
 	, mAtSpeedMag(0.0f)
 	, mNegTime(0.0f)
+	, mNegProb(0.0f)
 {
 	// HPƒQ[ƒW‚ğì¬
 	mpHpGauge = new CGaugeUI3D(this);

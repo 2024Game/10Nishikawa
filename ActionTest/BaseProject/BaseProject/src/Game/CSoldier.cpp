@@ -85,6 +85,7 @@ CSoldier::CSoldier(CPlayer* player, int level)
 	, mIsBattle(true)
 	, mBattleIdletime(0.0f)
 	, mpBattleTarget(nullptr)
+	, mAvoidDuration(0.25f)
 {
 	mpBattleTarget = player;
 
@@ -106,7 +107,6 @@ CSoldier::CSoldier(CPlayer* player, int level)
 		CVector(0.0f, BODY_HEIGHT - BODY_RADIUS, 0.0f),
 		BODY_RADIUS
 	);
-	//mpBodyCol->SetEnable(true);
 	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::eRideableObject, ETag::ePlayer, ETag::eEnemy });
 	mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::ePlayer, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
 
@@ -182,9 +182,9 @@ CSoldier::~CSoldier()
 void CSoldier::InitStatus()
 {
 	// レベルに合わせて、ステータスを切り替える
-	switch (mLevel)
+	int level = mLevel - 2;
+	if (mLevel == 1)
 	{
-	case 1:
 		mMaxHp = 80.0f;
 		mMaxSt = 100.0f;
 		mGainSt = 8.5f;
@@ -194,8 +194,10 @@ void CSoldier::InitStatus()
 		mAttackMag = 0.7f;
 		mAtSpeedMag = 0.85f;
 		mNegTime = 1.0f;
-		break;
-	case 2:
+		mNegProb = 80.0f;
+	}
+	else if(mLevel == 2)
+	{
 		mMaxHp = 100.0f;
 		mMaxSt = 100.0f;
 		mGainSt = 10.0f;
@@ -205,40 +207,46 @@ void CSoldier::InitStatus()
 		mAttackMag = 1.0f;
 		mAtSpeedMag = 1.0f;
 		mNegTime = 0.8f;
-		break;
-	case 3:
-		mMaxHp = 150.0f;
-		mMaxSt = 100.0f;
-		mGainSt = 12.0f;
-		mA1StCost = 22.5f;
-		mAvoidStCost = 18.0f;
-		mStepMag = 1.4f;
-		mAttackMag = 1.05f;
-		mAtSpeedMag = 1.05f;
-		mNegTime = 0.8f;
-		break;
-	case 4:
-		mMaxHp = 180.0f;
-		mMaxSt = 125.0f;
-		mGainSt = 15.5f;
-		mA1StCost = 22.5f;
-		mAvoidStCost = 15.0f;
-		mStepMag = 1.6f;
-		mAttackMag = 1.1f;
-		mAtSpeedMag = 1.1f;
-		mNegTime = 0.5f;
-		break;
-	case 5:
-		mMaxHp = 225.0f;
-		mMaxSt = 140.0f;
-		mGainSt = 17.5f;
-		mA1StCost = 22.5f;
-		mAvoidStCost = 12.5f;
-		mStepMag = 1.6f;
-		mAttackMag = 1.2f;
-		mAtSpeedMag = 1.15f;
-		mNegTime = 0.4f;
-		break;
+		mNegProb = 66.6f;
+	}
+	else if (mLevel < 5)
+	{
+		mMaxHp = 100.0f + (20.0f * level);
+		mMaxSt = 100.0f + (15.0f * level);
+		mGainSt = 10.0f * (1 + (level * 0.05f));
+		mA1StCost = 25.0f - (level * (25.0f * 0.025f));
+		mAvoidStCost = 20.0f - (level * (20.0f * 0.025f));
+		mStepMag = 1.2f + (level * 0.05f);
+		mAttackMag = 1.0f + (level * 0.05f);
+		mAtSpeedMag = 1.0f * (1 + (level * 0.025f));
+		mNegTime = 0.8f - (level * 0.03f);
+		mNegProb = 66.6f - (level * 2.5f);
+	}
+	else if (mLevel < 10)
+	{
+		mMaxHp = 100.0f + (35.0f * level);
+		mMaxSt = 100.0f + (17.5f * level);
+		mGainSt = 10.0f * (1 + (level * 0.075f));
+		mA1StCost = 25.0f - (level * (25.0f * 0.03f));
+		mAvoidStCost = 20.0f - (level * (20.0f * 0.03f));
+		mStepMag = 1.2f + (level * 0.05f);
+		mAttackMag = 1.0f + (level * 0.085f);
+		mAtSpeedMag = 1.0f * (1 + (level * 0.04f));
+		mNegTime = 0.8f - (level * 0.04f);
+		mNegProb = 66.6f - (level * 4.5f);
+	}
+	else if (mLevel == 10)
+	{
+		mMaxHp = 380.0f + 120.0f;
+		mMaxSt = 240.0f + 60.0f;
+		mGainSt = 16.0f;
+		mA1StCost = 19.0f;
+		mAvoidStCost = 15.2f;
+		mStepMag = 1.6f + 0.2f;
+		mAttackMag = 1.68f + 0.07f;
+		mAtSpeedMag = 1.32f + 0.03f;
+		mNegTime = 0.48f - 0.08f;
+		mNegProb = 30.6f - 5.6f;
 	}
 
 	mHp = mMaxHp;
@@ -690,7 +698,18 @@ void CSoldier::UpdateAttack1()
 				}
 				else
 				{
-					mStateStep++;
+					// 確率で、隙ができる
+					float rand = Math::Rand(0.0f, 99.9f);
+					if (rand < mNegProb)
+					{
+						mStateStep++;
+					}
+					else
+					{
+						// 待機状態へ移行
+						ChangeState((int)EState::eIdle);
+						ChangeAnimation((int)EAnimType::eIdle);
+					}
 				}
 			}
 		}
@@ -787,7 +806,18 @@ void CSoldier::UpdateAttack2()
 				}
 				else
 				{
-					mStateStep++;
+					// 確率で、隙ができる
+					float rand = Math::Rand(0.0f, 99.9f);
+					if (rand < mNegProb)
+					{
+						mStateStep++;
+					}
+					else
+					{
+						// 待機状態へ移行
+						ChangeState((int)EState::eIdle);
+						ChangeAnimation((int)EAnimType::eIdle);
+					}
 				}
 			}
 		}
@@ -879,7 +909,19 @@ void CSoldier::UpdateAttackX()
 		if (IsAnimationFinished())
 		{
 			mpSword->Rotation(SWORD_OFFSET_ROT);
-			mStateStep++;
+
+			// 確率で、隙ができる
+			float rand = Math::Rand(0.0f, 99.9f);
+			if (rand < mNegProb)
+			{
+				mStateStep++;
+			}
+			else
+			{
+				// 待機状態へ移行
+				ChangeState((int)EState::eIdle);
+				ChangeAnimation((int)EAnimType::eIdle);
+			}
 		}
 		break;
 

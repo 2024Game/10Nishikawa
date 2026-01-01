@@ -8,3 +8,12 @@ https://maou.audio/bgm_fantasy08/
 
 ■title.wav
 https://maou.audio/bgm_healing17/
+
+■arenaBGM1.wav
+https://amachamusic.chagasi.com/mp3/kiheisen.mp3
+
+■barracsBGM1.wav
+https://maou.audio/bgm_ethnic12/
+
+■barracsBGM2.wav
+https://maou.audio/bgm_ethnic17/
