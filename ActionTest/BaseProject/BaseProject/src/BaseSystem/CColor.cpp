@@ -21,6 +21,13 @@ const CColor CColor::darkRed(0.5f, 0.0f, 0.0f, 1.0f);
 const CColor CColor::darkGreen(0.0f, 0.5f, 0.0f, 1.0f);
 const CColor CColor::darkBlue(0.0f, 0.0f, 0.5f, 1.0f);
 
+const CColor CColor::darkBrown(0.25f, 0.15f, 0.08f, 1.0f);
+const CColor CColor::deepBrown(0.20f, 0.10f, 0.05f, 1.0f);
+const CColor CColor::chocolate(0.36f, 0.18f, 0.09f, 1.0f);
+const CColor CColor::coffee(0.30f, 0.20f, 0.15f, 1.0f);
+const CColor CColor::almostBlackBrown(0.12f, 0.07f, 0.04f, 1.0f);
+const CColor CColor::darkSoil(0.18f, 0.12f, 0.08f, 1.0f);
+
 const CColor CColor::lightRed(1.0f, 0.5f, 0.5f, 1.0f);
 const CColor CColor::lightGreen(0.5f, 1.0f, 0.5f, 1.0f);
 const CColor CColor::lightBlue(0.5f, 0.5f, 1.0f, 1.0f);

@@ -205,6 +205,7 @@ void CText::Render()
 
 	if (mIsShowDebug)
 	{
+#ifdef _DEBUG
 		glColor3f(1.0f, 0.0f, 0.0f);
 		glBegin(GL_QUADS);
 		glVertex2f(pos.X(), pos.Y());
@@ -212,6 +213,8 @@ void CText::Render()
 		glVertex2f(pos.X() + mSize.X(), pos.Y() + mSize.Y());
 		glVertex2f(pos.X() + mSize.X(), pos.Y());
 		glEnd();
+#endif // _DEBUG
+		
 	}
 
 	if (mTextAlignV == ETextAlignV::eTop)

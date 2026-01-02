@@ -20,6 +20,8 @@ public:
 	bool IsStartGame() const;
 	// タイトルへ移行するか
 	bool IsGoTitle() const;
+	// ゲームを終了するか
+	bool IsExitGame() const;
 	// 訓練所へ移行するか
 	bool IsGoBarracks() const;
 
@@ -83,6 +85,7 @@ private:
 	int mCols;    // 列数 <- UIのサイズ的に１列で良かった(つまり頑張り損)
 
 	CSaveManager* mpSaveManager;
+	CImage* mpHomeBg;			// 背景イメージ
 	CFont* mpMoneyFont;			// 所持金のフォント
 	CFont* mpStatusFont;		// ステータスのフォント
 	CFont* mpPerkFont;			// 強化パークのフォント

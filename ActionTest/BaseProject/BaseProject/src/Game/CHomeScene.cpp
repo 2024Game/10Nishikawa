@@ -82,5 +82,10 @@ void CHomeScene::Update()
 		{
 			CSceneManager::Instance()->LoadScene(EScene::eTitle);
 		}
+		// ゲーム終了ならば、アプリを閉じる
+		else if (mpCHomeSceneUI->IsExitGame())
+		{
+			System::ExitGame();
+		}
 	}
 }

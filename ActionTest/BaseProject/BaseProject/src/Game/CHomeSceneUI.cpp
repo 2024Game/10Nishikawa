@@ -25,22 +25,33 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	, mpSaveManager(saveManager)
 {
 	// 所持金のフォントデータを生成
-	mpMoneyFont = new CFont("res\\Font\\JF-Dot-K12.ttf");
+	mpMoneyFont = new CFont("res\\Font\\YDWaosagi.otf");
 	mpMoneyFont->SetFontSize(30);
 	mpMoneyFont->SetAlignment(FTGL::TextAlignment::ALIGN_LEFT);
 	mpMoneyFont->SetLineLength(WINDOW_WIDTH);
 
 	// ステータスのフォントデータを生成
-	mpStatusFont = new CFont("res\\Font\\JF-Dot-K12.ttf");
+	mpStatusFont = new CFont("res\\Font\\YDWaosagi.otf");
 	mpStatusFont->SetFontSize(30);
 	mpStatusFont->SetAlignment(FTGL::TextAlignment::ALIGN_LEFT);
 	mpStatusFont->SetLineLength(WINDOW_WIDTH);
 
 	// 次の日のフォントデータを生成
-	mpPerkFont = new CFont("res\\Font\\JF-Dot-K12.ttf");
+	mpPerkFont = new CFont("res\\Font\\YDWaosagi.otf");
 	mpPerkFont->SetFontSize(30);
 	mpPerkFont->SetAlignment(FTGL::TextAlignment::ALIGN_LEFT);
 	mpPerkFont->SetLineLength(WINDOW_WIDTH);
+
+	// タイトル画面の背景イメージを生成
+	mpHomeBg = new CImage
+	(
+		"UI/barracks.png",
+		ETaskPriority::eUI,
+		0,
+		ETaskPauseType::eDefault,
+		false,
+		false
+	);
 
 	// 背景イメージ達を生成
 	mRows = 1;    // 1列あたりの項目数
@@ -49,15 +60,17 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	// 次の日の背景イメージ
 	CImage* img = new CImage
 	(
-		"UI/white.png",
+		"UI/turikanban.png",
 		ETaskPriority::eUI,
 		0,
 		ETaskPauseType::eDefault,
 		false,
 		false
 	);
-	img->SetSize(790.0f, 400.0f);
-	img->SetPos(20.0f, 20.0f);
+	img->SetSize(855.0f, 570.0f);
+	img->SetPos(-20.0f, -20.0f);
+	img->SetColor(CColor::white);
+	img->SetAlpha(1.0f);
 	mBgImages.push_back(img);
 
 	for (int i = 0; i < mCols; i++)        // 列
@@ -67,7 +80,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 			// 項目の背景イメージ
 			CImage* img1 = new CImage
 			(
-				"UI/white.png",
+				"UI/op10.png",
 				ETaskPriority::eUI,
 				0,
 				ETaskPauseType::eDefault,
@@ -77,10 +90,10 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 			img1->SetSize(185.0f, 300.0f);
 
 			float x = 30.0f + i * 195.0f;
-			float y = 110.0f + j * 100.0f;
+			float y = 240.0f + j * 100.0f;
 
 			img1->SetPos(x, y);
-			img1->SetColor(CColor::gray);
+			img1->SetColor(CColor::white);
 
 			mBgImages.push_back(img1);
 
@@ -97,7 +110,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 			img2->SetSize(165.0f, 40.0f);
 
 			x = 40.0f + i * 195.0f;
-			y = 120.0f + j * 100.0f;
+			y = 250.0f + j * 100.0f;
 
 			img2->SetPos(x, y);
 
@@ -112,7 +125,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 		for (int j = 0; j < mRows; j++)    // 行
 		{
 			float x = 122.5f + i * 195.0f;
-			float y = 380.0f + j * 100.0f;
+			float y = 510.0f + j * 100.0f;
 
 			// ボタンを生成
 			CExpandButton* Btn = new CExpandButton
@@ -168,7 +181,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	// Day表示枠
 	CImage* dayImg = new CImage
 	(
-		"UI/white.png",
+		"UI/btn03_03_light.png",
 		ETaskPriority::eUI,
 		0,
 		ETaskPauseType::eDefault,
@@ -183,7 +196,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	// 所持金表示枠
 	CImage* gImg = new CImage
 	(
-		"UI/white.png",
+		"UI/btn03_03_light.png",
 		ETaskPriority::eUI,
 		0,
 		ETaskPauseType::eDefault,
@@ -198,7 +211,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	// ステータス表示枠
 	CImage* stImg = new CImage
 	(
-		"UI/white.png",
+		"UI/op10.png",
 		ETaskPriority::eUI,
 		0,
 		ETaskPauseType::eDefault,
@@ -207,29 +220,30 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	);
 	stImg->SetSize(400.0f, 570.0f);
 	stImg->SetPos(WINDOW_WIDTH - 420.0f, 140.0f);
+	stImg->SetAlpha(0.90f);
 	// リストに追加
 	mBgImages.push_back(stImg);
 
-	// [ゲーム開始]ボタンを生成
+	// [ゲーム終了]ボタンを生成
 	CExpandButton* startBtn = new CExpandButton
 	(
-		CVector2(145.0f, WINDOW_HEIGHT - (40.0f + 10.0f)),
-		CVector2(250.0f, 80.0f),
+		CVector2(115.0f, WINDOW_HEIGHT - (40.0f + 10.0f)),
+		CVector2(200.0f, 50.0f),
 		ETaskPriority::eUI, 0, ETaskPauseType::eGame,
 		false, false
 	);
 	// ボタンの画像を読み込み
 	startBtn->LoadButtonImage("UI/gogame.png", "UI/gogame.png");
 	// ボタンクリック時に呼び出されるコールバック関数を設定
-	startBtn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickStartGame, this));
+	startBtn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickQuit, this));
 	// ボタンリストに追加
 	mButtons.push_back(startBtn);
 
 	// [タイトル]ボタンを生成
 	CExpandButton* titleBtn = new CExpandButton
 	(
-		CVector2(WINDOW_WIDTH - (650.0f + 50.0f), WINDOW_HEIGHT - (30.0f + 80.0f)),
-		CVector2(250.0f, 80.0f),
+		CVector2(340.0f, WINDOW_HEIGHT - (40.0f + 10.0f)),
+		CVector2(200.0f, 50.0f),
 		ETaskPriority::eUI, 0, ETaskPauseType::eGame,
 		false, false
 	);
@@ -245,6 +259,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 
 CHomeSceneUI::~CHomeSceneUI()
 {
+	SAFE_DELETE(mpHomeBg);
 	SAFE_DELETE(mpMoneyFont);
 	SAFE_DELETE(mpStatusFont);
 	SAFE_DELETE(mpPerkFont);
@@ -306,14 +321,21 @@ bool CHomeSceneUI::IsGoTitle() const
 	return mSelectIndex == 1;
 }
 
+bool CHomeSceneUI::IsExitGame() const
+{
+	// 選択項目が3つ目ならば、ゲームを終了
+	return mSelectIndex == 2;
+}
+
 bool CHomeSceneUI::IsGoBarracks() const
 {
-	// 選択項目が3つ目ならば、タイトルへ移行
-	return mSelectIndex == 2;
+	// 選択項目が4つ目ならば、兵舎へ移行
+	return mSelectIndex == 3;
 }
 
 void CHomeSceneUI::Update()
 {
+	mpHomeBg->Update();
 	switch (mState)
 	{
 		// 待機状態
@@ -347,6 +369,8 @@ void CHomeSceneUI::Update()
 
 void CHomeSceneUI::Render()
 {
+	mpHomeBg->Render();
+
 	for (CImage* img : mBgImages)
 	{
 		img->Render();
@@ -385,9 +409,9 @@ void CHomeSceneUI::InformationUpdate()
 	mpDayText = new CText
 	(
 		mpMoneyFont, 30,
-		CVector2(WINDOW_WIDTH - 410.0f, 25.0f),
+		CVector2(WINDOW_WIDTH - 410.0f, 35.0f),
 		CVector2(380.0f, 40.0f),
-		CColor(0.11f, 0.1f, 0.1f),
+		CColor(CColor::darkBrown),
 		ETaskPriority::eUI,
 		0,
 		ETaskPauseType::eDefault,
@@ -395,7 +419,7 @@ void CHomeSceneUI::InformationUpdate()
 		false
 	);
 	mpDayText->SetTextAlignV(ETextAlignV::eMiddle);
-	//mpDayText->SetShowDebug(true);
+	mpDayText->SetShowDebug(true);
 	int day = static_cast<int>(mpSaveManager->data.day);
 	mpDayText->SetText(("Day：" + std::to_string(day) + "\n").c_str());
 	// リストに追加
@@ -405,9 +429,9 @@ void CHomeSceneUI::InformationUpdate()
 	mpMoneyText = new CText
 	(
 		mpMoneyFont, 30,
-		CVector2(WINDOW_WIDTH - 410.0f, 85.0f),
+		CVector2(WINDOW_WIDTH - 410.0f, 95.0f),
 		CVector2(380.0f, 40.0f),
-		CColor(0.11f, 0.1f, 0.1f),
+		CColor(CColor::darkBrown),
 		ETaskPriority::eUI,
 		0,
 		ETaskPauseType::eDefault,
@@ -415,7 +439,7 @@ void CHomeSceneUI::InformationUpdate()
 		false
 	);
 	mpMoneyText->SetTextAlignV(ETextAlignV::eMiddle);
-	//mpMoneyText->SetShowDebug(true);
+	mpMoneyText->SetShowDebug(true);
 	int money = static_cast<int>(mpSaveManager->data.money);
 	mpMoneyText->SetText(("所持金：$" + std::to_string(money) + "\n").c_str());
 	// リストに追加
@@ -425,9 +449,9 @@ void CHomeSceneUI::InformationUpdate()
 	mpStatusText = new CText
 	(
 		mpStatusFont, 30,
-		CVector2(WINDOW_WIDTH - 410.0f, 150.0f),
-		CVector2(380.0f, 550.0f),
-		CColor(0.11f, 0.1f, 0.1f),
+		CVector2(WINDOW_WIDTH - 400.0f, 160.0f),
+		CVector2(360.0f, 530.0f),
+		CColor(CColor::darkBrown),
 		ETaskPriority::eUI,
 		0,
 		ETaskPauseType::eDefault,
@@ -442,7 +466,7 @@ void CHomeSceneUI::InformationUpdate()
 		"スタミナ\n" + std::to_string(100 + (mpSaveManager->data.stLv * 5)) + "\n"
 		"スタミナ回復量(秒間)\n" + std::to_string(10.0f * (1.0f + (mpSaveManager->data.stRegeneLv * 0.05f))) + "\n"
 		).c_str());
-	//mpStatusText->SetShowDebug(true);
+	mpStatusText->SetShowDebug(true);
 
 	// リストに追加
 	mURTexts.push_back(mpStatusText);
@@ -453,15 +477,15 @@ void CHomeSceneUI::InformationUpdate()
 		for (int j = 0; j < mRows; j++)    // 行
 		{
 			int x = 40.0f + i * 195.0f;
-			int y = 170.0f + j * 100.0f;
+			int y = 260.0f + j * 100.0f;
 
 			// テキストを生成
 			CText* newText = new CText
 			(
 				mpPerkFont, 25,
 				CVector2(x, y),
-				CVector2(165.0f, 180.0f),	// <---ココのサイズを変えても右端が変わらないっぽい(解決済み)
-				CColor(0.11f, 0.1f, 0.1f),
+				CVector2(165.0f, 40.0f),	// <---ココのサイズを変えても右端が変わらないっぽい(解決済み)
+				CColor(CColor::darkBrown),
 				ETaskPriority::eUI,
 				0,
 				ETaskPauseType::eDefault,
@@ -472,37 +496,91 @@ void CHomeSceneUI::InformationUpdate()
 			//newText->SetTextAlignH(ETextAlignH::eLeft);
 			//newText->SetTextAlignH(ETextAlignH::eRight);
 			newText->SetTextAlignH(ETextAlignH::eCenter);
-
-#ifdef _DEBUG
 			newText->SetShowDebug(true);
-#endif // _DEBUG
 
 
 			switch (infoNum)
 			{
 			case 0:
-				newText->SetText((
-					"治療院へ行く\n体力を40％回復します\n1日経過します\n$100必要"
+				newText->SetText("治療院へ行く\n");
+				break;
+
+			case 1:
+				newText->SetText("格下との戦い\n");
+				break;
+
+			case 2:
+				newText->SetText("同格との戦い\n");
+				break;
+
+			case 3:
+				newText->SetText("格上との戦い\n");
+				break;
+
+			default:
+
+				break;
+			}
+
+			// リストに追加
+			mURTexts.push_back(newText);
+			infoNum++;
+		}
+	}
+
+	infoNum = 0;
+	// テキスト群を生成
+	for (int i = 0; i < mCols; i++)        // 列
+	{
+		for (int j = 0; j < mRows; j++)    // 行
+		{
+			int x = 40.0f + i * 195.0f;
+			int y = 300.0f + j * 100.0f;
+
+			// テキストを生成
+			CText* newText = new CText
+			(
+				mpPerkFont, 25,
+				CVector2(x, y),
+				CVector2(165.0f, 180.0f),	// <---ココのサイズを変えても右端が変わらないっぽい(解決済み)
+				CColor(CColor::darkBrown),
+				ETaskPriority::eUI,
+				0,
+				ETaskPauseType::eDefault,
+				false,
+				false
+			);
+			newText->SetTextAlignV(ETextAlignV::eMiddle);
+			//newText->SetTextAlignH(ETextAlignH::eLeft);
+			//newText->SetTextAlignH(ETextAlignH::eRight);
+			newText->SetTextAlignH(ETextAlignH::eCenter);
+			newText->SetShowDebug(true);
+
+
+			switch (infoNum)
+			{
+			case 0:
+				newText->SetText(("体力を40％回復します\n1日経過します\n$100必要"
 					));
 				break;
 
 			case 1:
 				newText->SetText((
-					"格下との戦い\n敵のレベル" + std::to_string((((int)mpSaveManager->data.day / 3) - 1) + 2)
+					"敵のレベル" + std::to_string((((int)mpSaveManager->data.day / 3) - 1) + 2)
 					+ "\n報酬\n$?"
 					).c_str());
 				break;
 
 			case 2:
 				newText->SetText((
-					"同格との戦い\n敵のレベル" + std::to_string(((int)mpSaveManager->data.day / 3) + 2)
+					"敵のレベル" + std::to_string(((int)mpSaveManager->data.day / 3) + 2)
 					+ "\n報酬\n$??"
 					).c_str());
 				break;
 
 			case 3:
 				newText->SetText((
-					"格上との戦い\n敵のレベル" + std::to_string((((int)mpSaveManager->data.day / 3) + 1) + 2)
+					"敵のレベル" + std::to_string((((int)mpSaveManager->data.day / 3) + 1) + 2)
 					 + "\n報酬\n$???"
 					).c_str());
 				break;
@@ -563,15 +641,19 @@ void CHomeSceneUI::OnClickGoTitle()
 	mIsEnd = true;
 }
 
+void CHomeSceneUI::OnClickQuit()
+{
+	if (mIsEnd) return;
+
+	mSelectIndex = 2;
+	mIsEnd = true;
+}
+
 void CHomeSceneUI::OnClickGoBarracks()
 {
 }
 
 void CHomeSceneUI::OnClickGoReincarnation()
-{
-}
-
-void CHomeSceneUI::OnClickQuit()
 {
 }
 

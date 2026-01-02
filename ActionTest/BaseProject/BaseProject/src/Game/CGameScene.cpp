@@ -18,10 +18,12 @@ CGameScene::CGameScene()
 	, mState(EState::ebattlereserve)
 	, mpGameMenu(nullptr)
 	, mpPlayer(nullptr)
+	, mpEnemy(nullptr)
 	, mTimeCount(0)
 	, mElapsedTime(0.0f)
 	, mStateStep(0)
 	, mPlayerWin(false)
+	, mpKanseiSE(nullptr)
 	, mEnemyLv(0)
 {
 
@@ -165,6 +167,7 @@ void CGameScene::Update()
 			mpGameMenu->Open();
 		}
 	}
+
 #ifdef _DEBUG
 	CDebugPrint::Print("ElapsedTime:%f\n", mElapsedTime);
 	CDebugPrint::Print("EnemyLv:%d\n", mEnemyLv);
@@ -236,8 +239,8 @@ void CGameScene::UpdateBattleResult()
 		break;
 
 	case 1:
-		// 戦闘準備時の待機時間待ち
-		if (mElapsedTime < 3.0f)
+		// 戦闘結果時の待機時間待ち
+		if (mElapsedTime < 0.2f)
 		{
 			mElapsedTime += Times::DeltaTime();
 		}
@@ -253,19 +256,24 @@ void CGameScene::UpdateBattleResult()
 		{
 			mPlayerWin = false;
 			mpEnemy->SetInBattle(2);
+			// 歓声SEを再生
+			mpKanseiSE->Play(0.25f);
 			mStateStep++;
 		}
 		else if (mpEnemy->GetHp() <= 0.0f)
 		{
 			mPlayerWin = true;
 			mpPlayer->SetInBattle(2);
+			// 歓声SEを再生
+			mpKanseiSE->Play(0.25f);
 			mStateStep++;
 		}
 		break;
 
 	case 3:
+		
 		// 待機時間待ち
-		if (mElapsedTime < 10.0f)
+		if (mElapsedTime < 6.0f)
 		{
 			mElapsedTime += Times::DeltaTime();
 		}

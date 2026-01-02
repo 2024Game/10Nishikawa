@@ -42,7 +42,7 @@
 // ダッシュ時の剣のオフセット向き
 #define DASH_SWORD_OFFSET_ROT CVector(20.0f, 0.0f, -70.0f)
 
-#define KICK_START_FRAME 26.0f	// 蹴り攻撃の開始フレーム
+#define KICK_START_FRAME 26.0f		// 蹴り攻撃の開始フレーム
 #define KICK_END_FRAME 40.0f		// 蹴り攻撃の終了フレーム
 #define KICK_COL_RADIUS 7.5f		// 蹴り攻撃のコライダーの半径
 // 蹴り攻撃のコライダーのオフセット座標
@@ -1092,7 +1092,32 @@ void CSoldier::UpdateHit()
 		// 待機状態へ戻す
 		if (IsAnimationFinished())
 		{
+			// 確率で、隙ができる
+			float rand = Math::Rand(0.0f, 99.9f);
+			if (rand < mNegProb / 3)
+			{
+				mStateStep++;
+			}
+			else
+			{
+				// 待機状態へ移行
+				ChangeState((int)EState::eIdle);
+				ChangeAnimation((int)EAnimType::eIdle);
+			}
+		}
+		break;
+	case 2:
+		// 連続攻撃の終了なら、n秒間隙ができる
+		if (mElapsedTime < mNegTime)
+		{
+			mElapsedTime += Times::DeltaTime();
+		}
+		// 待ち時間が終了したら、削除
+		else
+		{
+			// 待機状態へ移行
 			ChangeState((int)EState::eIdle);
+			ChangeAnimation((int)EAnimType::eIdle);
 		}
 		break;
 	}

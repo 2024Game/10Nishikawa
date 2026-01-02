@@ -51,7 +51,7 @@ CTitleUI::CTitleUI()
 	// タイトル画面の背景イメージを生成
 	mpTitleBg = new CImage
 	(
-		"UI/title_bg.png",
+		"UI/kentoushi.png",
 		ETaskPriority::eUI,
 		0,
 		ETaskPauseType::eDefault,

@@ -207,6 +207,11 @@ void CEnemy::Update()
 	CXCharacter::Update();
 
 	mIsGrounded = false;
+
+	if (mHp > 0.0f)
+	{
+		CCharaBase::GainStamina(mGainSt * Times::DeltaTime());
+	}
 	
 	// HPƒQ[ƒW‚ðXV
 	mpHpGauge->Position(Position() + mHpGaugeOffsetPos);
@@ -217,11 +222,6 @@ void CEnemy::Update()
 	mpStGauge->Position(Position() + mStGaugeOffsetPos);
 	mpStGauge->SetMaxPoint(mMaxSt);
 	mpStGauge->SetCurrPoint(mSt);
-
-	if (mHp > 0.0f)
-	{
-		CCharaBase::GainStamina(mGainSt * Times::DeltaTime());
-	}
 }
 
 // •`‰æ
