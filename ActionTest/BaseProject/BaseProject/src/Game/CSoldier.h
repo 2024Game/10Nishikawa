@@ -53,17 +53,18 @@ private:
 		eWalk,		// 歩行				3
 		eRun,		// ダッシュ			4
 		eAttack1,	// 斬り攻撃1		5
-		eAttack2,	// 斬り攻撃2		6
-		eAttackX,	// 斬りかかり攻撃	7
-		eKick,		// 蹴り攻撃			8
-		eJumpStart,	// ジャンプ開始		9
-		eJump,		// ジャンプ中		10
-		eJumpEnd,	// ジャンプ終了		11
-		eAvoidR,	// 回避:右			12
-		eAvoidL,	// 回避:左			13
-		eHit,		// 仰け反り			14
-		eDeath,		// 死亡				15
-		eVictory,	// 勝利				16
+		eAttack1B,	// 斬り攻撃1B		6
+		eAttack2,	// 斬り攻撃2		7
+		eAttackX,	// 斬りかかり攻撃	8
+		eKick,		// 蹴り攻撃			9
+		eJumpStart,	// ジャンプ開始		10
+		eJump,		// ジャンプ中		11
+		eJumpEnd,	// ジャンプ終了		12
+		eAvoidR,	// 回避:右			13
+		eAvoidL,	// 回避:左			14
+		eHit,		// 仰け反り			15
+		eDeath,		// 死亡				16
+		eVictory,	// 勝利				17
 		
 		Num
 	};
@@ -75,6 +76,7 @@ private:
 		eIdle,		// 待機
 		eChase,		// 追いかける
 		eAttack1,	// 斬り攻撃1
+		eAttack1B,	// 斬り攻撃1B(右薙ぎ払い)
 		eAttack2,	// 斬り攻撃2
 		eAttackX,	// 斬りかかり攻撃
 		eKick,		// 蹴り攻撃
@@ -108,6 +110,8 @@ private:
 	void UpdateChase();
 	// 斬り攻撃1の更新処理
 	void UpdateAttack1();
+	// 斬り攻撃1Bの更新処理
+	void UpdateAttack1B();
 	// 斬り攻撃2の更新処理
 	void UpdateAttack2();
 	// 斬り攻撃Xの更新処理
@@ -141,7 +145,9 @@ private:
 	// 剣のクラス
 	CSword* mpSword;
 
-	bool mNextAttack; //連続攻撃が予約されているかどうか
+	bool mCan1B;
+	float m1BProb;
+	bool mNextAttack;		//連続攻撃が予約されているかどうか
 	CVector mAttackVec;
 	bool mInAttack = false;
 

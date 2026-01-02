@@ -23,9 +23,12 @@
 #define ATTACK_RANGE 32.25f			// 攻撃を行う距離
 #define ATTACK2_PROB 75				// 2段目攻撃を行う確率（パーセント）
 #define ATTACKX_PROB 50				// X段目攻撃を行う確率（パーセント）
+#define ATTACK1B_PROB 40			// 1段目B攻撃を行う確率（パーセント）
 
 #define ATTACK1_START_FRAME 25.0f	// 斬り攻撃1の開始フレーム
 #define ATTACK1_END_FRAME 55.0f		// 斬り攻撃1の終了フレーム
+#define ATTACK1B_START_FRAME 25.0f	// 斬り攻撃1Bの開始フレーム
+#define ATTACK1B_END_FRAME 70.0f	// 斬り攻撃1Bの終了フレーム
 #define ATTACK2_START_FRAME 35.0f	// 斬り攻撃2の開始フレーム
 #define ATTACK2_END_FRAME 100.0f	// 斬り攻撃2の終了フレーム
 #define ATTACKX_START_FRAME 35.0f	// 斬り攻撃Xの開始フレーム
@@ -62,6 +65,7 @@ const std::vector<CEnemy::AnimData> ANIM_DATA =
 	{ ANIM_PATH"walk.x",		true,	82.0f,	1.5f	},	// 歩行
 	{ ANIM_PATH"run.x",			true,	39.0f,	1.5f	},	// ダッシュ
 	{ ANIM_PATH"GSSlash1.x",	false,	77.0f,	1.25f	},	// 斬り攻撃
+	{ ANIM_PATH"GSSlashR.x",	false,	90.0f,	1.25f	},	// 斬り攻撃B
 	{ ANIM_PATH"GSSlash2.x",	false,	110.0f,	1.50f	},	// 斬り攻撃
 	{ ANIM_PATH"GSSlash.x",		false,	212.0f,	1.75f	},	// 斬りかかり攻撃
 	{ ANIM_PATH"kick.x",		false,	74.0f,	1.75f	},	// 蹴り攻撃
@@ -86,6 +90,7 @@ CSoldier::CSoldier(CPlayer* player, int level)
 	, mBattleIdletime(0.0f)
 	, mpBattleTarget(nullptr)
 	, mAvoidDuration(0.25f)
+	, mCan1B(false)
 {
 	mpBattleTarget = player;
 
@@ -224,6 +229,7 @@ void CSoldier::InitStatus()
 	}
 	else if (mLevel < 10)
 	{
+		mCan1B = true;
 		mMaxHp = 100.0f + (35.0f * level);
 		mMaxSt = 100.0f + (17.5f * level);
 		mGainSt = 10.0f * (1 + (level * 0.075f));
@@ -237,6 +243,7 @@ void CSoldier::InitStatus()
 	}
 	else if (mLevel == 10)
 	{
+		mCan1B = true;
 		mMaxHp = 380.0f + 120.0f;
 		mMaxSt = 240.0f + 60.0f;
 		mGainSt = 16.0f;
@@ -279,7 +286,10 @@ void CSoldier::AttackStart()
 	CEnemy::AttackStart();
 
 	// 斬り攻撃中であれば、剣のコライダーをオンにする
-	if (mState == (int)EState::eAttack1 || mState == (int)EState::eAttack2 || mState == (int)EState::eAttackX)
+	if (mState == (int)EState::eAttack1 
+		|| mState == (int)EState::eAttack1B 
+		|| mState == (int)EState::eAttack2 
+		|| mState == (int)EState::eAttackX)
 	{
 		mpSword->SetEnableCol(true);
 	}
@@ -365,6 +375,8 @@ void CSoldier::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			{
 				// 斬り攻撃1
 			case (int)EState::eAttack1:		hitChara->TakeDamage(4 * mAttackMag, this);	break;
+				// 斬り攻撃1B
+			case (int)EState::eAttack1B:	hitChara->TakeDamage(4 * mAttackMag, this);	break;
 				// 斬り攻撃2
 			case (int)EState::eAttack2:		hitChara->TakeDamage(6 * mAttackMag, this);	break;
 				// 斬り攻撃X
@@ -569,8 +581,26 @@ void CSoldier::UpdateChase()
 		if (mSt >= mA1StCost)
 		{
 			CCharaBase::UseStamina(mA1StCost);
-			// 攻撃状態へ移行
-			ChangeState((int)EState::eAttack1);
+			if (mCan1B)
+			{
+				// 一定確率で、連続攻撃を予約
+				int rand = Math::Rand(0, 99);
+				if (rand < ATTACK1B_PROB)
+				{
+					// 攻撃状態へ移行
+					ChangeState((int)EState::eAttack1B);
+				}
+				else
+				{
+					// 攻撃状態へ移行
+					ChangeState((int)EState::eAttack1);
+				}
+			}
+			else
+			{
+				// 攻撃状態へ移行
+				ChangeState((int)EState::eAttack1);
+			}
 		}
 		else
 		{
@@ -581,7 +611,8 @@ void CSoldier::UpdateChase()
 	// 攻撃範囲外
 	else if (dist >= ATTACK2_DIST)
 	{
-		// 歩行アニメーションを再生
+		mpSword->Rotation(DASH_SWORD_OFFSET_ROT);
+		// 走行アニメーションを再生
 		ChangeAnimation((int)EAnimType::eRun);
 
 		// 残り距離が移動距離より大きい場合は、移動距離分移動
@@ -595,12 +626,14 @@ void CSoldier::UpdateChase()
 		// 残り距離分移動して、待機状態へ移行
 		else
 		{
+			mpSword->Rotation(SWORD_OFFSET_ROT);
 			mMoveSpeed = dir * dist;
 			ChangeState((int)EState::eIdle);
 		}
 	}
 	else
 	{
+		mpSword->Rotation(SWORD_OFFSET_ROT);
 		// 歩行アニメーションを再生
 		ChangeAnimation((int)EAnimType::eWalk);
 
@@ -672,7 +705,7 @@ void CSoldier::UpdateAttack1()
 		if (mInAttack)
 		{
 			// 1秒あたりの移動速度
-			CVector move = mAttackVec * (5.5f * mStepMag * mAtSpeedMag) * Times::DeltaTime();
+			CVector move = mAttackVec * (15.0f * mStepMag * mAtSpeedMag) * Times::DeltaTime();
 			Position(Position() + move);
 		}
 		break;
@@ -681,6 +714,117 @@ void CSoldier::UpdateAttack1()
 		// アニメーション終了したら、待機状態へ戻す
 		if (IsAnimationFinished())
 		{
+			if (!mNextAttack)
+			{
+				mStateStep++;
+			}
+			else
+			{
+				mNextAttack = false;
+				CObjectBase::AttackStart();
+
+				if (mSt >= mA1StCost * 0.8f)
+				{
+					CCharaBase::UseStamina(mA1StCost * 0.9f);
+					// 攻撃2段目へ移行
+					ChangeState((int)EState::eAttack2);
+				}
+				else
+				{
+					// 確率で、隙ができる
+					float rand = Math::Rand(0.0f, 99.9f);
+					if (rand < mNegProb)
+					{
+						mStateStep++;
+					}
+					else
+					{
+						// 待機状態へ移行
+						ChangeState((int)EState::eIdle);
+						ChangeAnimation((int)EAnimType::eIdle);
+					}
+				}
+			}
+		}
+		break;
+	case 4:
+		// 連続攻撃の終了なら、n秒間隙ができる
+		if (mElapsedTime < mNegTime)
+		{
+			mElapsedTime += Times::DeltaTime();
+		}
+		// 待ち時間が終了したら、削除
+		else
+		{
+			// 待機状態へ移行
+			ChangeState((int)EState::eIdle);
+			ChangeAnimation((int)EAnimType::eIdle);
+		}
+		break;
+	}
+}
+
+// 斬り攻撃1Bの更新処理
+// 斬り攻撃1Bは通常の斬り攻撃1でがら空きになる右サイドを
+// 刈り取る右薙ぎ払い攻撃
+void CSoldier::UpdateAttack1B()
+{
+	// ステップごとに処理を分ける
+	switch (mStateStep)
+	{
+		// ステップ0：攻撃アニメーション再生
+	case 0:
+		mpSword->Rotation(DASH_SWORD_OFFSET_ROT);
+		ChangeAnimation((int)EAnimType::eAttack1B, true);
+		mAttackVec = VectorZ();
+		mStateStep++;
+		break;
+		// ステップ1：攻撃開始
+	case 1:
+		// 攻撃を開始するまで、徐々に戦闘相手の方向へ向く
+		LookAtBattleTarget();
+
+		// 攻撃開始フレームまで経過したか
+		if (GetAnimationFrame() >= ATTACK1B_START_FRAME)
+		{
+			// 斬撃SEを再生
+			mpSlashSE->Play();
+			// 攻撃開始処理を呼び出す
+			AttackStart();
+
+			mInAttack = true;
+
+			mStateStep++;
+		}
+		break;
+		// ステップ2：攻撃終了
+	case 2:
+		// 攻撃終了フレームまで経過したか
+		if (GetAnimationFrame() >= ATTACK1B_END_FRAME)
+		{
+			// 攻撃終了処理を呼び出す
+			AttackEnd();
+
+			// 一定確率で、連続攻撃を予約
+			int rand = Math::Rand(0, 99);
+			if (rand < ATTACK2_PROB) mNextAttack = true;
+			mInAttack = false;
+			mStateStep++;
+		}
+
+		if (mInAttack)
+		{
+			// 1秒あたりの移動速度
+			CVector move = mAttackVec * (27.5f * mStepMag * mAtSpeedMag) * Times::DeltaTime();
+			Position(Position() + move);
+		}
+		break;
+		// ステップ3：攻撃アニメーション終了待ち
+	case 3:
+		// アニメーション終了したら、待機状態へ戻す
+		if (IsAnimationFinished())
+		{
+			mpSword->Rotation(SWORD_OFFSET_ROT);
 			if (!mNextAttack)
 			{
 				mStateStep++;
@@ -1208,6 +1352,8 @@ void CSoldier::Update()
 	case EState::eChase:	UpdateChase();		break;
 		// 斬り攻撃1
 	case EState::eAttack1:	UpdateAttack1();	break;
+		// 斬り攻撃1B
+	case EState::eAttack1B:	UpdateAttack1B();	break;
 		// 斬り攻撃2
 	case EState::eAttack2:	UpdateAttack2();	break;
 		// 斬り攻撃X
