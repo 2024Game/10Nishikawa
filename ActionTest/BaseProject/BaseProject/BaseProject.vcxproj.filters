@@ -104,6 +104,9 @@
     <Filter Include="ソース ファイル\Game\UI\GameScene">
       <UniqueIdentifier>{640dc9ce-bf17-4624-aeb9-6591df9ff4ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\UI\Barracs">
+      <UniqueIdentifier>{37574233-8d5c-495e-b97b-2c8d76a14608}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -411,6 +414,12 @@
     </ClCompile>
     <ClCompile Include="src\Game\CGameSceneUI.cpp">
       <Filter>ソース ファイル\Game\UI\GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CBarracksScene.cpp">
+      <Filter>ソース ファイル\Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CBarracksSceneUI.cpp">
+      <Filter>ソース ファイル\Game\UI\Barracs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -743,6 +752,12 @@
     </ClInclude>
     <ClInclude Include="src\Game\CGameSceneUI.h">
       <Filter>ソース ファイル\Game\UI\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CBarracksScene.h">
+      <Filter>ソース ファイル\Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CBarracksSceneUI.h">
+      <Filter>ソース ファイル\Game\UI\Barracs</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

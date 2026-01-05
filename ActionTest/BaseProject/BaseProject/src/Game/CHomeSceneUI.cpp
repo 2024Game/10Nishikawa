@@ -100,7 +100,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 			// 項目のアイコンイメージ
 			CImage* img2 = new CImage
 			(
-				"UI/btn03_04_light.png",
+				"UI/btn03_03_light.png",
 				ETaskPriority::eUI,
 				0,
 				ETaskPauseType::eDefault,
@@ -141,33 +141,33 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 			case 0:
 				// [治療院へ行く]ボタンを設定
 				// ボタンの画像を読み込み
-				Btn->LoadButtonImage("UI/btn_upgrade.png", "UI/btn_upgrade.png");
+				Btn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
 				// ボタンクリック時に呼び出されるコールバック関数を設定
 				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickHealer, this));
 				break;
 			case 1:
 				// [格下との戦い]ボタンを設定
 				// ボタンの画像を読み込み
-				Btn->LoadButtonImage("UI/btn_upgrade.png", "UI/btn_upgrade.png");
+				Btn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
 				// ボタンクリック時に呼び出されるコールバック関数を設定
 				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickEasy, this));
 				break;
 			case 2:
 				// [同格との戦い]ボタンを設定
 				// ボタンの画像を読み込み
-				Btn->LoadButtonImage("UI/btn_upgrade.png", "UI/btn_upgrade.png");
+				Btn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
 				// ボタンクリック時に呼び出されるコールバック関数を設定
 				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickNormal, this));
 				break;
 			case 3:
 				// [格上との戦い]ボタンを設定
 				// ボタンの画像を読み込み
-				Btn->LoadButtonImage("UI/btn_upgrade.png", "UI/btn_upgrade.png");
+				Btn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
 				// ボタンクリック時に呼び出されるコールバック関数を設定
 				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickHard, this));
 				break;
 			default:
-				Btn->LoadButtonImage("UI/btn_upgrade.png", "UI/btn_upgrade.png");
+				Btn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
 				break;
 			}
 			// ボタンリストに追加
@@ -239,7 +239,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	// ボタンリストに追加
 	mButtons.push_back(startBtn);
 
-	// [タイトル]ボタンを生成
+	// [タイトル画面へ]ボタンを生成
 	CExpandButton* titleBtn = new CExpandButton
 	(
 		CVector2(340.0f, WINDOW_HEIGHT - (40.0f + 10.0f)),
@@ -254,7 +254,20 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	// ボタンリストに追加
 	mButtons.push_back(titleBtn);
 
-
+	// [強化画面へ]ボタンを生成
+	CExpandButton* barracksBtn = new CExpandButton
+	(
+		CVector2(565.0f, WINDOW_HEIGHT - (40.0f + 10.0f)),
+		CVector2(200.0f, 50.0f),
+		ETaskPriority::eUI, 0, ETaskPauseType::eGame,
+		false, false
+	);
+	// ボタンの画像を読み込み
+	barracksBtn->LoadButtonImage("UI/gotitle.png", "UI/gotitle.png");
+	// ボタンクリック時に呼び出されるコールバック関数を設定
+	barracksBtn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickGoBarracks, this));
+	// ボタンリストに追加
+	mButtons.push_back(barracksBtn);
 }
 
 CHomeSceneUI::~CHomeSceneUI()
@@ -465,6 +478,8 @@ void CHomeSceneUI::InformationUpdate()
 		+ std::to_string((int)mpSaveManager->data.maxHp) + "\n"
 		"スタミナ\n" + std::to_string(100 + (mpSaveManager->data.stLv * 5)) + "\n"
 		"スタミナ回復量(秒間)\n" + std::to_string(10.0f * (1.0f + (mpSaveManager->data.stRegeneLv * 0.05f))) + "\n"
+		"攻撃倍率\n" + std::to_string(1 + (mpSaveManager->data.attackLv * 0.05f)) + "\n"
+		"試合後体力回復量\n" + std::to_string(mpSaveManager->data.maxHp * (mpSaveManager->data.hpRegeneLv * 0.01f) + 5) + "\n"
 		).c_str());
 	mpStatusText->SetShowDebug(true);
 
@@ -651,6 +666,10 @@ void CHomeSceneUI::OnClickQuit()
 
 void CHomeSceneUI::OnClickGoBarracks()
 {
+	if (mIsEnd) return;
+
+	mSelectIndex = 3;
+	mIsEnd = true;
 }
 
 void CHomeSceneUI::OnClickGoReincarnation()

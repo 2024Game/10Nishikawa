@@ -36,7 +36,7 @@ void CSaveManager::Reset()
     // SaveData ‚ÌŠe’l‚ğ‰Šú’l‚Éİ’è
     data.day = 1;
     data.selectDiff = 0;
-    data.money = 0;
+    data.money = 5000;
     data.maxHp = 100;
     data.hp = 100;
     data.hpLv = 0;

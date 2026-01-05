@@ -5,9 +5,10 @@ enum class EScene
 {
 	eNone,	//どのシーンにも所属していない
 
-	eTitle,	//タイトルシーン
-	eHome,	//ホームシーン
-	eGame,	//ゲームシーン
+	eTitle,		//タイトルシーン
+	eHome,		//ホームシーン
+	eBarracks,	//兵舎シーン
+	eGame,		//ゲームシーン
 
 	eBootMenu,	//起動時メニュー
 	eColTest,	//衝突判定テスト

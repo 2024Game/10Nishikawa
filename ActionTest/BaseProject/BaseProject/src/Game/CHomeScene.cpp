@@ -77,6 +77,11 @@ void CHomeScene::Update()
 		{
 			CSceneManager::Instance()->LoadScene(EScene::eGame);
 		}
+		// 兵舎へ移行する
+		else if (mpCHomeSceneUI->IsGoBarracks())
+		{
+			CSceneManager::Instance()->LoadScene(EScene::eBarracks);
+		}
 		// タイトルへ移行する
 		else if (mpCHomeSceneUI->IsGoTitle())
 		{

@@ -2,6 +2,7 @@
 #include "CFade.h"
 #include "CTitleScene.h"
 #include "CHomeScene.h"
+#include "CBarracksScene.h"
 #include "CGameScene.h"
 
 #include "Test/CBootMenuScene.h"
@@ -106,16 +107,18 @@ void CSceneManager::ChangeNextScene()
 	switch (mNextScene)
 	{
 		//タイトルシーン
-		case EScene::eTitle:	mpScene = new CTitleScene();	break;
+		case EScene::eTitle:		mpScene = new CTitleScene();			break;
 		//ホームシーン
-		case EScene::eHome:		mpScene = new CHomeScene();		break;
+		case EScene::eHome:			mpScene = new CHomeScene();				break;
+		//兵舎シーン
+		case EScene::eBarracks:		mpScene = new CBarracksScene();			break;
 		//ゲームシーン
-		case EScene::eGame:		mpScene = new CGameScene();		break;
+		case EScene::eGame:			mpScene = new CGameScene();				break;
 
 		//起動時メニュー
-		case EScene::eBootMenu:	mpScene = new CBootMenuScene();	break;
+		case EScene::eBootMenu:		mpScene = new CBootMenuScene();			break;
 		//衝突判定テスト
-		case EScene::eColTest:	mpScene = new CCollisionTestScene(); break;
+		case EScene::eColTest:		mpScene = new CCollisionTestScene();	break;
 	}
 
 	//シーンを新しく生成できたら、
