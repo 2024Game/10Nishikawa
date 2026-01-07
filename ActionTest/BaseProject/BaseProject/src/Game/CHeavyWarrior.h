@@ -8,7 +8,7 @@
 #include "CPlayer.h"
 
 class CCollider;
-class CSword;
+class CBusterSword;
 
 // 兵士の敵クラス
 class CHeavyWarrior : public CEnemy
@@ -143,7 +143,7 @@ private:
 	CObjectBase* mpBattleTarget;	// 戦闘相手
 
 	// 剣のクラス
-	CSword* mpSword;
+	CBusterSword* mpSword;
 
 	bool mCan1B;
 	float m1BProb;

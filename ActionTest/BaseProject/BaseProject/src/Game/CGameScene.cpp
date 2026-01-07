@@ -11,6 +11,7 @@
 #include "CLineEffect.h"
 #include "CCactus.h"
 #include "CSoldier.h"
+#include "CHeavyWarrior.h"
 
 //コンストラクタ
 CGameScene::CGameScene()
@@ -62,6 +63,7 @@ void CGameScene::Load()
 	CResourceManager::Load<CSound>(		"KanseiSound",		"Sound\\SE\\kanseiSE.wav");
 	CResourceManager::Load<CModel>(		"Sword",			"Weapon\\Sword\\sword.obj");
 	CResourceManager::Load<CModel>(		"GreatSword",		"Weapon\\GreatSword\\GreatSword.obj");
+	CResourceManager::Load<CModel>(		"BusterSword",		"Weapon\\BusterSword\\DRAGON_SLAYER.obj");
 
 	// ゲームBGMを読み込み
 	CBGMManager::Instance()->Play(EBGMType::eGame);
@@ -107,6 +109,7 @@ void CGameScene::Load()
 
 	// 兵士の敵を1体生成
 	mpEnemy = new CSoldier(mpPlayer, mEnemyLv);
+	//mpEnemy = new CHeavyWarrior(mpPlayer, mEnemyLv);
 	mpEnemy->Position(0.0f, 5.0f, -100.0f);
 
 	// CGameCameraのテスト

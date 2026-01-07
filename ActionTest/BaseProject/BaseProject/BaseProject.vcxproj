@@ -78,6 +78,7 @@
     <ClCompile Include="src\Game\CBarracksScene.cpp" />
     <ClCompile Include="src\Game\CBarracksSceneUI.cpp" />
     <ClCompile Include="src\Game\CBullet.cpp" />
+    <ClCompile Include="src\Game\CBusterSword.cpp" />
     <ClCompile Include="src\Game\CCactus.cpp" />
     <ClCompile Include="src\Game\CCactusNeedle.cpp" />
     <ClCompile Include="src\Game\CEnemy.cpp" />
@@ -91,6 +92,7 @@
     <ClCompile Include="src\Game\CGameSceneUI.cpp" />
     <ClCompile Include="src\Game\CGaugeUI3D.cpp" />
     <ClCompile Include="src\Game\CGreatSword.cpp" />
+    <ClCompile Include="src\Game\CHeavyWarrior.cpp" />
     <ClCompile Include="src\Game\CHomeScene.cpp" />
     <ClCompile Include="src\Game\CHomeSceneUI.cpp" />
     <ClCompile Include="src\Game\CImage.cpp" />
@@ -194,6 +196,7 @@
     <ClInclude Include="src\Game\CBarracksScene.h" />
     <ClInclude Include="src\Game\CBarracksSceneUI.h" />
     <ClInclude Include="src\Game\CBullet.h" />
+    <ClInclude Include="src\Game\CBusterSword.h" />
     <ClInclude Include="src\Game\CCactus.h" />
     <ClInclude Include="src\Game\CCactusNeedle.h" />
     <ClInclude Include="src\Game\CEnemy.h" />
