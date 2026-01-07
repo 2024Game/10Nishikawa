@@ -650,7 +650,7 @@ void CBarracksSceneUI::InformationUpdate()
 				break;
 
 			case 1:
-				cost = (mpSaveManager->data.hpRegeneLv + 1) * 150;
+				cost = (mpSaveManager->data.hpRegeneLv + 1) * 75;
 				newText->SetText((
 					"試合後の\n回復強化\n最大体力の\nLv/1％\n強化費用\n$"
 					+ std::to_string(cost)
@@ -658,7 +658,7 @@ void CBarracksSceneUI::InformationUpdate()
 				break;
 
 			case 2:
-				cost = (mpSaveManager->data.stLv + 1) * 150;
+				cost = (mpSaveManager->data.stLv + 1) * 100;
 				newText->SetText((
 					"スタミナを5増加\n強化費用\n$"
 					+ std::to_string(cost)
@@ -674,16 +674,16 @@ void CBarracksSceneUI::InformationUpdate()
 				break;
 
 			case 4:
-				cost = (mpSaveManager->data.attackLv + 1) * 150;
+				cost = (mpSaveManager->data.attackLv + 1) * 125;
 				newText->SetText((
 					"攻撃力を増加\n基礎攻撃力を\nLv/5％強化\n強化費用\n$"
 					+ std::to_string(cost)
 					).c_str());
 				break;
 			case 5:
-				cost = (mpSaveManager->data.hpLv + 1) * 150;
+				cost = (mpSaveManager->data.healerLv + 1) * 75;
 				newText->SetText((
-					"体力を25増加します\n強化費用\n$"
+					"回復量を5増加\n強化費用\n$"
 					+ std::to_string(cost)
 					).c_str());
 				break;
@@ -794,7 +794,7 @@ void CBarracksSceneUI::OnClickHpUp()
 
 void CBarracksSceneUI::OnClickHpRegeneUp()
 {
-	int cost = (mpSaveManager->data.hpRegeneLv + 1) * 150;
+	int cost = (mpSaveManager->data.hpRegeneLv + 1) * 75;
 	if (mpSaveManager->data.money >= cost)
 	{
 		mpSaveManager->data.money -= cost;
@@ -810,7 +810,7 @@ void CBarracksSceneUI::OnClickHpRegeneUp()
 
 void CBarracksSceneUI::OnClickStUp()
 {
-	int cost = (mpSaveManager->data.stLv + 1) * 150;
+	int cost = (mpSaveManager->data.stLv + 1) * 100;
 	if (mpSaveManager->data.money >= cost)
 	{
 		mpSaveManager->data.money -= cost;
@@ -842,7 +842,7 @@ void CBarracksSceneUI::OnClickStRegeneUp()
 
 void CBarracksSceneUI::OnClickAttackUp()
 {
-	int cost = (mpSaveManager->data.attackLv + 1) * 150;
+	int cost = (mpSaveManager->data.attackLv + 1) * 125;
 	if (mpSaveManager->data.money >= cost)
 	{
 		mpSaveManager->data.money -= cost;
@@ -858,6 +858,18 @@ void CBarracksSceneUI::OnClickAttackUp()
 
 void CBarracksSceneUI::OnClickHealerUp()
 {
+	int cost = (mpSaveManager->data.healerLv + 1) * 75;
+	if (mpSaveManager->data.money >= cost)
+	{
+		mpSaveManager->data.money -= cost;
+		mpSaveManager->data.healerLv++;
+		mpSaveManager->Save();
+		InformationUpdate();
+	}
+	else
+	{
+
+	}
 }
 
 void CBarracksSceneUI::OnClickReincarnationUp()

@@ -12,6 +12,7 @@
 #include "CCactus.h"
 #include "CSoldier.h"
 #include "CHeavyWarrior.h"
+#include <Maths.h>
 
 //コンストラクタ
 CGameScene::CGameScene()
@@ -108,8 +109,17 @@ void CGameScene::Load()
 	}
 
 	// 兵士の敵を1体生成
-	mpEnemy = new CSoldier(mpPlayer, mEnemyLv);
-	//mpEnemy = new CHeavyWarrior(mpPlayer, mEnemyLv);
+	// ランダムで敵の種類を選ぶ
+	int rand = Math::Rand(0, 99);
+	if (rand < 49)
+	{
+		mpEnemy = new CSoldier(mpPlayer, mEnemyLv);
+	}
+	else
+	{
+		mpEnemy = new CHeavyWarrior(mpPlayer, mEnemyLv);
+	}
+	
 	mpEnemy->Position(0.0f, 5.0f, -100.0f);
 
 	// CGameCameraのテスト
@@ -304,13 +314,13 @@ void CGameScene::UpdateBattleResult()
 				switch (mpSaveManager->data.selectDiff)
 				{
 				case 1:
-					mpSaveManager->data.money += 100;
+					mpSaveManager->data.money += 100 + 25;
 					break;
 				case 2:
-					mpSaveManager->data.money += 125;
+					mpSaveManager->data.money += 125 + 25;
 					break;
 				case 3:
-					mpSaveManager->data.money += 175;
+					mpSaveManager->data.money += 175 + 50;
 					break;
 				default:
 					break;

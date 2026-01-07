@@ -1,14 +1,14 @@
 #include "CSoldier.h"
 #include "CColliderCapsule.h"
 #include "CColliderSphere.h"
-#include "CSword.h"
+#include "CGreatSword.h"
 #include "Maths.h"
 
 // アニメーションのパス
 #define ANIM_PATH "Character\\TestPlayer\\Anims\\"
 #define BODY_HEIGHT 16.0f	// 本体のコライダーの高さ
 #define BODY_RADIUS 3.0f	// 本体のコライダーの幅
-#define MOVE_SPEED 20.0f		// 移動速度
+#define MOVE_SPEED 20.0f	// 移動速度
 #define RUN_SPEED 50.0f		// 移動速度
 #define JUMP_SPEED 1.5f		// ジャンプ速度
 #define GRAVITY 0.0625f		// 重力加速度
@@ -20,7 +20,7 @@
 #define BATTLE_IDLE_TIME_MIN 0.5f
 #define BATTLE_IDLE_TIME_MAX 2.0f
 #define ATTACK2_DIST 75.0f			// 駆け寄ってくる距離
-#define ATTACK_RANGE 32.25f			// 攻撃を行う距離
+#define ATTACK_RANGE 23.5f			// 攻撃を行う距離
 #define ATTACK2_PROB 75				// 2段目攻撃を行う確率（パーセント）
 #define ATTACKX_PROB 50				// X段目攻撃を行う確率（パーセント）
 #define ATTACK1B_PROB 40			// 1段目B攻撃を行う確率（パーセント）
@@ -117,7 +117,7 @@ CSoldier::CSoldier(CPlayer* player, int level)
 	mpSlashSE = CResourceManager::Get<CSound>("SlashSound");
 
 	// 敵の剣を作成
-	mpSword = new CSword
+	mpSword = new CGreatSword
 	(
 		this,
 		ETag::eEnemy,
@@ -125,7 +125,7 @@ CSoldier::CSoldier(CPlayer* player, int level)
 		{ ELayer::ePlayer }	// プレイヤーのレイヤーが設定されたコライダーと衝突
 	);
 
-	mpSword->Scale(1.0f, 1.0f, 1.0f);
+	mpSword->Scale(1.3f, 1.1f, 1.1f);
 
 	// 右手のフレームを取得し、
 	// 剣にプレイヤーの右手の行列をアタッチ

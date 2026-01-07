@@ -8,7 +8,7 @@
 #define ANIM_PATH "Character\\TestPlayer\\Anims\\"
 #define BODY_HEIGHT 16.0f	// 本体のコライダーの高さ
 #define BODY_RADIUS 3.0f	// 本体のコライダーの幅
-#define MOVE_SPEED 13.5f		// 移動速度
+#define MOVE_SPEED 13.5f	// 移動速度
 #define RUN_SPEED 27.0f		// 移動速度
 #define JUMP_SPEED 1.5f		// ジャンプ速度
 #define GRAVITY 0.0625f		// 重力加速度
@@ -189,10 +189,10 @@ void CHeavyWarrior::InitStatus()
 	int level = mLevel - 2;
 	if (mLevel == 1)
 	{
-		mMaxHp = 80.0f;
+		mMaxHp = 100.0f;
 		mMaxSt = 100.0f;
 		mGainSt = 8.5f;
-		mA1StCost = 35.0f;
+		mA1StCost = 30.0f;
 		mAvoidStCost = 25.0f;
 		mStepMag = 1.0f;
 		mAttackMag = 0.7f;
@@ -202,10 +202,10 @@ void CHeavyWarrior::InitStatus()
 	}
 	else if (mLevel == 2)
 	{
-		mMaxHp = 100.0f;
+		mMaxHp = 120.0f;
 		mMaxSt = 100.0f;
 		mGainSt = 10.0f;
-		mA1StCost = 35.0f;
+		mA1StCost = 30.0f;
 		mAvoidStCost = 20.0f;
 		mStepMag = 1.2f;
 		mAttackMag = 1.0f;
@@ -215,42 +215,42 @@ void CHeavyWarrior::InitStatus()
 	}
 	else if (mLevel < 5)
 	{
-		mMaxHp = 100.0f + (20.0f * level);
+		mMaxHp = 120.0f + (20.0f * level);
 		mMaxSt = 100.0f + (15.0f * level);
 		mGainSt = 10.0f * (1 + (level * 0.025f));
-		mA1StCost = 35.0f - (level * (25.0f * 0.025f));
+		mA1StCost = 30.0f - (level * (30.0f * 0.025f));
 		mAvoidStCost = 20.0f - (level * (20.0f * 0.025f));
 		mStepMag = 1.2f + (level * 0.05f);
 		mAttackMag = 1.0f + (level * 0.05f);
-		mAtSpeedMag = 1.0f * (1 + (level * 0.025f));
+		mAtSpeedMag = 1.0f * (1 + (level * 0.02f));
 		mNegTime = 0.8f - (level * 0.03f);
 		mNegProb = 66.6f - (level * 2.5f);
 	}
 	else if (mLevel < 10)
 	{
 		mCan1B = true;
-		mMaxHp = 100.0f + (35.0f * level);
+		mMaxHp = 120.0f + (40.0f * level);
 		mMaxSt = 100.0f + (17.5f * level);
 		mGainSt = 10.0f * (1 + (level * 0.03f));
-		mA1StCost = 35.0f - (level * (25.0f * 0.03f));
+		mA1StCost = 27.5f - (level * (27.5f * 0.03f));
 		mAvoidStCost = 20.0f - (level * (20.0f * 0.03f));
 		mStepMag = 1.2f + (level * 0.05f);
 		mAttackMag = 1.0f + (level * 0.085f);
-		mAtSpeedMag = 1.0f * (1 + (level * 0.04f));
+		mAtSpeedMag = 1.0f * (1 + (level * 0.035f));
 		mNegTime = 0.8f - (level * 0.04f);
 		mNegProb = 66.6f - (level * 4.5f);
 	}
 	else if (mLevel == 10)
 	{
 		mCan1B = true;
-		mMaxHp = 380.0f + 120.0f;
+		mMaxHp = 440.0f + 160.0f;
 		mMaxSt = 240.0f + 60.0f;
 		mGainSt = 12.4f + 0.6f;
-		mA1StCost = 29.0f;
+		mA1StCost = 20.9f - 0.9f;
 		mAvoidStCost = 15.2f;
 		mStepMag = 1.6f + 0.2f;
 		mAttackMag = 1.68f + 0.07f;
-		mAtSpeedMag = 1.32f + 0.03f;
+		mAtSpeedMag = 1.28f + 0.05f;
 		mNegTime = 0.48f - 0.08f;
 		mNegProb = 30.6f - 5.6f;
 	}
