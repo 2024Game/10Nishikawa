@@ -72,8 +72,8 @@ const std::vector<CEnemy::AnimData> ANIM_DATA =
 	{ ANIM_PATH"jump_start.x",	false,	25.0f,	1.0f	},	// ジャンプ開始
 	{ ANIM_PATH"jump.x",		true,	1.0f,	1.0f	},	// ジャンプ中
 	{ ANIM_PATH"jump_end.x",	false,	26.0f,	1.0f	},	// ジャンプ終了
-	{ ANIM_PATH"avoidR.x",		true,	189.0f,	2.5f	},	// 回避:右
-	{ ANIM_PATH"avoidL.x",		true,	189.0f,	2.5f	},	// 回避:左
+	{ ANIM_PATH"avoidR.x",		true,	58.0f,	1.5f	},	// 回避:右
+	{ ANIM_PATH"avoidL.x",		true,	58.0f,	1.5f	},	// 回避:左
 	{ ANIM_PATH"hit.x",			false,	44.0f,	1.0f	},	// 仰け反り
 	{ ANIM_PATH"death.x",		false,	182.0f,	1.0f	},	// 死亡
 	{ ANIM_PATH"victory.x",		true,	271.0f,	1.0f	},	// 勝利
@@ -89,7 +89,6 @@ CSoldier::CSoldier(CPlayer* player, int level)
 	, mIsBattle(true)
 	, mBattleIdletime(0.0f)
 	, mpBattleTarget(nullptr)
-	, mAvoidDuration(0.25f)
 	, mCan1B(false)
 {
 	mpBattleTarget = player;
@@ -126,7 +125,7 @@ CSoldier::CSoldier(CPlayer* player, int level)
 		{ ELayer::ePlayer }	// プレイヤーのレイヤーが設定されたコライダーと衝突
 	);
 
-	mpSword->Scale(2.1f, 1.25f, 1.25f);
+	mpSword->Scale(1.0f, 1.0f, 1.0f);
 
 	// 右手のフレームを取得し、
 	// 剣にプレイヤーの右手の行列をアタッチ
@@ -218,7 +217,7 @@ void CSoldier::InitStatus()
 	{
 		mMaxHp = 100.0f + (20.0f * level);
 		mMaxSt = 100.0f + (15.0f * level);
-		mGainSt = 10.0f * (1 + (level * 0.05f));
+		mGainSt = 10.0f * (1 + (level * 0.025f));
 		mA1StCost = 25.0f - (level * (25.0f * 0.025f));
 		mAvoidStCost = 20.0f - (level * (20.0f * 0.025f));
 		mStepMag = 1.2f + (level * 0.05f);
@@ -232,7 +231,7 @@ void CSoldier::InitStatus()
 		mCan1B = true;
 		mMaxHp = 100.0f + (35.0f * level);
 		mMaxSt = 100.0f + (17.5f * level);
-		mGainSt = 10.0f * (1 + (level * 0.075f));
+		mGainSt = 10.0f * (1 + (level * 0.03f));
 		mA1StCost = 25.0f - (level * (25.0f * 0.03f));
 		mAvoidStCost = 20.0f - (level * (20.0f * 0.03f));
 		mStepMag = 1.2f + (level * 0.05f);
@@ -246,7 +245,7 @@ void CSoldier::InitStatus()
 		mCan1B = true;
 		mMaxHp = 380.0f + 120.0f;
 		mMaxSt = 240.0f + 60.0f;
-		mGainSt = 16.0f;
+		mGainSt = 12.4f + 0.6f;
 		mA1StCost = 19.0f;
 		mAvoidStCost = 15.2f;
 		mStepMag = 1.6f + 0.2f;
@@ -1105,23 +1104,21 @@ void CSoldier::SelectAvoid()
 	// Yが - → 敵は左側
 	float crossY = CVector::Cross(myForward, toTarget).Y();
 
-	if (crossY >= 0.0f)
+	if (crossY > 0.0f)
 	{
 		// 敵が右 → 左に回避
 		mAvoidVec = -CVector::Cross(myForward, CVector::up);
 		mAvoidVec.Normalize();
-		ChangeState((int)EState::eAvoidR);
+		ChangeState((int)EState::eAvoidL);
 		mIsGravity = false;
-		mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
 	}
-	else if (crossY < 0.0f)
+	else if (crossY <= 0.0f)
 	{
 		// 敵が左 → 右に回避
 		mAvoidVec = CVector::Cross(myForward, CVector::up);
 		mAvoidVec.Normalize();
 		ChangeState((int)EState::eAvoidR);
 		mIsGravity = false;
-		mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
 	}
 }
 
@@ -1132,32 +1129,31 @@ void CSoldier::UpdateAvoidR()
 	case 0:
 		// 回避アニメーションを開始
 		ChangeAnimation((int)EAnimType::eAvoidR, true);
-
 		mStateStep++;
 		break;
 	case 1:
-		if (GetAnimationFrame() >= 60.0f && !mAvoidMoving)
+		if (GetAnimationFrame() >= 20.0f && !mAvoidMoving)
 		{
 			mAvoidMoving = true;
-			mAvoidTimer = 0.0f;
+			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
+			mStateStep++;
 		}
-
+		break;
+	case 2:
 		if (mAvoidMoving)
 		{
-			mAvoidTimer += Times::DeltaTime();
-
 			// 1秒あたりの移動速度
-			CVector move = mAvoidVec * 300.0f * Times::DeltaTime();
+			CVector move = mAvoidVec * 150.0f * Times::DeltaTime();
 			Position(Position() + move);
 
-			if (mAvoidTimer >= mAvoidDuration)
+			if (GetAnimationFrame() >= 50.0f)
 			{
 				mAvoidMoving = false;
 				mStateStep++;
 			}
 		}
 		break;
-	case 2:
+	case 3:
 		// 回避アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
@@ -1178,32 +1174,31 @@ void CSoldier::UpdateAvoidL()
 	case 0:
 		// 回避アニメーションを開始
 		ChangeAnimation((int)EAnimType::eAvoidL, true);
-
 		mStateStep++;
 		break;
 	case 1:
-		if (GetAnimationFrame() >= 60.0f && !mAvoidMoving)
+		if (GetAnimationFrame() >= 20.0f && !mAvoidMoving)
 		{
 			mAvoidMoving = true;
-			mAvoidTimer = 0.0f;
+			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
+			mStateStep++;
 		}
-
+		break;
+	case 2:
 		if (mAvoidMoving)
 		{
-			mAvoidTimer += Times::DeltaTime();
-
 			// 1秒あたりの移動速度
-			CVector move = mAvoidVec * 300.0f * Times::DeltaTime();
+			CVector move = mAvoidVec * 150.0f * Times::DeltaTime();
 			Position(Position() + move);
 
-			if (mAvoidTimer >= mAvoidDuration)
+			if (GetAnimationFrame() >= 50.0f)
 			{
 				mAvoidMoving = false;
 				mStateStep++;
 			}
 		}
 		break;
-	case 2:
+	case 3:
 		// 回避アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
@@ -1220,6 +1215,7 @@ void CSoldier::UpdateAvoidL()
 // 仰け反り状態の更新処理
 void CSoldier::UpdateHit()
 {
+	if (!mIsGravity) mIsGravity = true;
 	// ステップごとに処理を分ける
 	switch (mStateStep)
 	{

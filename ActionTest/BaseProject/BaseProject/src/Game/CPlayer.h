@@ -7,7 +7,7 @@
 
 class CCollider;
 class CFlamethrower;
-class CSword;
+class CGreatSword;
 
 /*
 プレイヤークラス
@@ -183,7 +183,7 @@ private:
 	float mMotionBlurRemainTime;
 
 	// 剣のクラス
-	CSword* mpSword;
+	CGreatSword* mpGreatSword;
 
 	float mA1StCost;
 	float mAvoidStCost;
@@ -195,8 +195,6 @@ private:
 	bool mInAttack = false;
 
 	CVector mAvoidVec;
-	float mAvoidTimer = 0.0f;
-	float mAvoidDuration = 0.25f;   // 0.5秒
 	bool  mAvoidMoving = false;
 
 	CVector mDeathVec;

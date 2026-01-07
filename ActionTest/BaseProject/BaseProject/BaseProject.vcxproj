@@ -90,6 +90,7 @@
     <ClCompile Include="src\Game\CGameScene.cpp" />
     <ClCompile Include="src\Game\CGameSceneUI.cpp" />
     <ClCompile Include="src\Game\CGaugeUI3D.cpp" />
+    <ClCompile Include="src\Game\CGreatSword.cpp" />
     <ClCompile Include="src\Game\CHomeScene.cpp" />
     <ClCompile Include="src\Game\CHomeSceneUI.cpp" />
     <ClCompile Include="src\Game\CImage.cpp" />
@@ -205,6 +206,8 @@
     <ClInclude Include="src\Game\CGameScene.h" />
     <ClInclude Include="src\Game\CGameSceneUI.h" />
     <ClInclude Include="src\Game\CGaugeUI3D.h" />
+    <ClInclude Include="src\Game\CGreatSword.h" />
+    <ClInclude Include="src\Game\CHeavyWarrior.h" />
     <ClInclude Include="src\Game\CHomeScene.h" />
     <ClInclude Include="src\Game\CHomeSceneUI.h" />
     <ClInclude Include="src\Game\CImage.h" />

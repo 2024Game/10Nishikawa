@@ -50,9 +50,9 @@ void CGameScene::Load()
 	CResourceManager::Load<CModel>(		"FieldCube",		"Field\\Object\\cube.obj");
 	CResourceManager::Load<CModel>(		"FieldCylinder",	"Field\\Object\\cylinder.obj");
 
-	CResourceManager::Load<CModelX>(	"Player",			"Character\\TestPlayer\\Player.x");
+	CResourceManager::Load<CModelX>(	"Player",			"Character\\TestPlayer\\player.x");
 	CResourceManager::Load<CModelX>(	"Cactus",			"Character\\Enemy\\Cactus\\cactus.x");
-	CResourceManager::Load<CModelX>(	"Soldier",			"Character\\TestPlayer\\Player.x");
+	CResourceManager::Load<CModelX>(	"Soldier",			"Character\\TestPlayer\\player.x");
 
 	CResourceManager::Load<CModel>(		"CactusNeedle",		"Character\\Enemy\\Cactus\\needle.obj");
 	CResourceManager::Load<CTexture>(	"Laser",			"Effect\\laser.png");
@@ -61,6 +61,7 @@ void CGameScene::Load()
 	CResourceManager::Load<CSound>(		"SlashSound",		"Sound\\SE\\slash.wav");
 	CResourceManager::Load<CSound>(		"KanseiSound",		"Sound\\SE\\kanseiSE.wav");
 	CResourceManager::Load<CModel>(		"Sword",			"Weapon\\Sword\\sword.obj");
+	CResourceManager::Load<CModel>(		"GreatSword",		"Weapon\\GreatSword\\GreatSword.obj");
 
 	// ゲームBGMを読み込み
 	CBGMManager::Instance()->Play(EBGMType::eGame);

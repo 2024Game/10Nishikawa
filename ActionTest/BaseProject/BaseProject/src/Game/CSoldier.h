@@ -152,7 +152,5 @@ private:
 	bool mInAttack = false;
 
 	CVector mAvoidVec;
-	float mAvoidTimer = 0.0f;
-	float mAvoidDuration = 0.25f;
 	bool  mAvoidMoving = false;
 };

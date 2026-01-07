@@ -6,7 +6,7 @@
 #include "CFlamethrower.h"
 #include "CSlash.h"
 #include "Maths.h"
-#include "CSword.h"
+#include "CGreatSword.h"
 #include "CColliderCapsule.h"
 #include "CColliderSphere.h"
 
@@ -73,8 +73,8 @@ const CPlayer::AnimData CPlayer::ANIM_DATA[] =
 	{ ANIM_PATH"jump_start.x",	false,	25.0f,	1.0f	},	// ジャンプ開始
 	{ ANIM_PATH"jump.x",		true,	1.0f,	1.0f	},	// ジャンプ中
 	{ ANIM_PATH"jump_end.x",	false,	26.0f,	1.0f	},	// ジャンプ終了
-	{ ANIM_PATH"avoidR.x",		false,	189.0f,	2.5f	},	// 回避:右
-	{ ANIM_PATH"avoidL.x",		false,	189.0f,	2.5f	},	// 回避:左
+	{ ANIM_PATH"avoidR.x",		false,	58.0f,	1.5f	},	// 回避:右
+	{ ANIM_PATH"avoidL.x",		false,	58.0f,	1.5f	},	// 回避:左
 	{ ANIM_PATH"hit.x",			false,	44.0f,	1.0f	},	// 仰け反り
 	{ ANIM_PATH"death.x",		false,	182.0f,	1.0f	},	// 死亡
 	{ ANIM_PATH"victory.x",		true,	271.0f,	1.0f	},	// 勝利
@@ -95,7 +95,7 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	, mIsPlayedSlashSE(false)
 	, mIsSpawnedSlashEffect(false)
 	, mMotionBlurRemainTime(0.0f)
-	, mpSword(nullptr)
+	, mpGreatSword(nullptr)
 	, mNextAttack(false)
 	, mAttackMag(0.0f)
 	, mA1StCost(25.0f)
@@ -107,8 +107,7 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	mMaxSt = 100.0f + (mpSaveManager->data.stLv * 5);
 	mSt = mMaxSt;
 	mAttackMag = 1.0f + (mpSaveManager->data.attackLv * 0.05f);
-	mStRegeneMag = 1.0f + (mpSaveManager->data.stRegeneLv * 0.05f);
-	//mAttackMag = 15.0f;
+	mStRegeneMag = 1.0f + (mpSaveManager->data.stRegeneLv * 0.01f);
 	//インスタンスの設定
 	spInstance = this;
 
@@ -150,7 +149,7 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	);
 
 	// プレイヤーの剣を作成
-	mpSword = new CSword
+	mpGreatSword = new CGreatSword
 	(
 		this,
 		ETag::ePlayer,
@@ -158,14 +157,14 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 		{ ELayer::eEnemy }	// 敵のレイヤーが設定されたコライダーと衝突
 	);
 
-	mpSword->Scale(1.9f, 1.25f, 1.25f);
+	mpGreatSword->Scale(1.2f, 1.1f, 1.1f);
 
 	// 右手のフレームを取得し、
 	// 剣にプレイヤーの右手の行列をアタッチ
 	CModelXFrame* frame = mpModel->FinedFrame("Armature_mixamorig_RightHand");
-	mpSword->SetAttachMtx(&frame->CombinedMatrix());
-	mpSword->Position(SWORD_OFFSET_POS);
-	mpSword->Rotation(SWORD_OFFSET_ROT);
+	mpGreatSword->SetAttachMtx(&frame->CombinedMatrix());
+	mpGreatSword->Position(SWORD_OFFSET_POS);
+	mpGreatSword->Rotation(SWORD_OFFSET_ROT);
 
 	// 蹴り攻撃用のコライダーを作成
 	mpKickCol = new CColliderSphere
@@ -205,11 +204,11 @@ CPlayer::~CPlayer()
 	SAFE_DELETE(mpTACol);
 
 	// 剣が存在したら、
-	if (mpSword != nullptr)
+	if (mpGreatSword != nullptr)
 	{
 		// 持ち主を解除してから、削除
-		mpSword->SetOwner(nullptr);
-		mpSword->Kill();
+		mpGreatSword->SetOwner(nullptr);
+		mpGreatSword->Kill();
 	}
 }
 
@@ -299,7 +298,6 @@ void CPlayer::UpdateIdle()
 			mAvoidVec = CalcMoveVec();
 			ChangeState(EState::eAvoidR);
 			mIsGravity = false;
-			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
 		}
 		else if (CInput::PushKey(VK_RBUTTON) && CInput::Key('A') && mSt >= mAvoidStCost)
 		{
@@ -309,8 +307,6 @@ void CPlayer::UpdateIdle()
 			mAvoidVec = CalcMoveVec();
 			ChangeState(EState::eAvoidL);
 			mIsGravity = false;
-			// 
-			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
 		}
 	}
 }
@@ -513,7 +509,7 @@ void CPlayer::UpdateAttackX()
 		// 先行入力コライダーをオンにする
 		mpTACol->SetEnable(true);
 
-		mpSword->Rotation(ATTACKX_SWORD_OFFSET_ROT);
+		mpGreatSword->Rotation(ATTACKX_SWORD_OFFSET_ROT);
 		// 攻撃アニメーションを開始
 		ChangeAnimation(EAnimType::eAttackX, true);
 		// 斬撃SEの再生済みフラグを初期化
@@ -573,7 +569,7 @@ void CPlayer::UpdateAttackX()
 		{
 			if (!mNextAttack)
 			{
-				mpSword->Rotation(SWORD_OFFSET_ROT);
+				mpGreatSword->Rotation(SWORD_OFFSET_ROT);
 				// 待機状態へ移行
 				ChangeState(EState::eIdle);
 				ChangeAnimation(EAnimType::eIdle);
@@ -663,24 +659,23 @@ void CPlayer::UpdateAvoidR()
 	case 0:
 		// 回避アニメーションを開始
 		ChangeAnimation(EAnimType::eAvoidR, true);
-
 		mStateStep++;
 		break;
 	case 1:
-		if (GetAnimationFrame() >= 60.0f && !mAvoidMoving)
+		if (GetAnimationFrame() >= 20.0f && !mAvoidMoving)
 		{
+			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
 			mAvoidMoving = true;
-			mAvoidTimer = 0.0f;
+			mStateStep++;
 		}
-
+		break;
+	case 2:
 		if (mAvoidMoving)
 		{
-			mAvoidTimer += Times::DeltaTime();
-
 			// 1秒あたりの移動速度
-			mMoveSpeed = mAvoidVec * 300.0f * Times::DeltaTime();
+			mMoveSpeed = mAvoidVec * 150.0f * Times::DeltaTime();
 
-			if (mAvoidTimer >= mAvoidDuration)
+			if (GetAnimationFrame() >= 50.0f)
 			{
 				mAvoidMoving = false;
 				mMoveSpeed = CVector::zero;
@@ -688,7 +683,7 @@ void CPlayer::UpdateAvoidR()
 			}
 		}
 		break;
-	case 2:
+	case 3:
 		// 回避アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
@@ -704,11 +699,53 @@ void CPlayer::UpdateAvoidR()
 
 void CPlayer::UpdateAvoidL()
 {
+	switch (mStateStep)
+	{
+	case 0:
+		// 回避アニメーションを開始
+		ChangeAnimation(EAnimType::eAvoidL, true);
+		mStateStep++;
+		break;
+	case 1:
+		if (GetAnimationFrame() >= 20.0f && !mAvoidMoving)
+		{
+			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
+			mAvoidMoving = true;
+			mStateStep++;
+		}
+		break;
+	case 2:
+		if (mAvoidMoving)
+		{
+			// 1秒あたりの移動速度
+			mMoveSpeed = mAvoidVec * 150.0f * Times::DeltaTime();
+
+			if (GetAnimationFrame() >= 50.0f)
+			{
+				mAvoidMoving = false;
+				mMoveSpeed = CVector::zero;
+				mStateStep++;
+			}
+		}
+		break;
+	case 3:
+		// 回避アニメーションが終了したら
+		if (IsAnimationFinished())
+		{
+			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy, ELayer::eAttackCol });
+			mIsGravity = true;
+			// 待機状態へ移行
+			ChangeState(EState::eIdle);
+			ChangeAnimation(EAnimType::eIdle);
+		}
+		break;
+	}
 }
 
 // 仰け反り
 void CPlayer::UpdateHit()
 {
+	if (!mIsGravity) mIsGravity = true;
 	switch (mStateStep)
 	{
 		case 0:
@@ -794,9 +831,9 @@ void CPlayer::UpdateVictory()
 void CPlayer::DeleteObject(CObjectBase* obj)
 {
 	// 剣が先に削除されたら、剣のポインタを初期化
-	if (mpSword == obj)
+	if (mpGreatSword == obj)
 	{
-		mpSword = nullptr;
+		mpGreatSword = nullptr;
 	}
 }
 
@@ -848,7 +885,7 @@ void CPlayer::UpdateMove()
 	// 求めた移動ベクトルの長さで入力されているか判定
 	if (move.LengthSqr() > 0.0f && CInput::Key(VK_LSHIFT))
 	{
-		mpSword->Rotation(DASH_SWORD_OFFSET_ROT);
+		mpGreatSword->Rotation(DASH_SWORD_OFFSET_ROT);
 		mMoveSpeed += move * RUN_SPEED;
 
 		// 待機状態であれば、歩行アニメーションに切り替え
@@ -873,7 +910,7 @@ void CPlayer::UpdateMove()
 		// 待機状態であれば、待機アニメーションに切り替え
 		if (mState == EState::eIdle)
 		{
-			mpSword->Rotation(SWORD_OFFSET_ROT);
+			mpGreatSword->Rotation(SWORD_OFFSET_ROT);
 			ChangeAnimation(EAnimType::eIdle);
 		}
 	}
@@ -959,7 +996,7 @@ void CPlayer::Update()
 		// 回避:右
 		case EState::eAvoidR:		UpdateAvoidR();		break;
 		// 回避:左
-		case EState::eAvoidL:		UpdateAvoidR();		break;
+		case EState::eAvoidL:		UpdateAvoidL();		break;
 		// 仰け反り
 		case EState::eHit:			UpdateHit();		break;
 		// 死亡
@@ -1051,7 +1088,7 @@ void CPlayer::Update()
 	CXCharacter::Update();
 
 	// 武器の行列を更新
-	mpSword->UpdateMtx();
+	mpGreatSword->UpdateMtx();
 
 	mIsGrounded = false;
 
@@ -1109,7 +1146,7 @@ void CPlayer::AttackStart()
 	// 斬り攻撃中であれば、剣のコライダーをオンにする
 	if (mState == EState::eAttack1 || mState == EState::eAttack2 || mState == EState::eAttackX)
 	{
-		mpSword->SetEnableCol(true);
+		mpGreatSword->SetEnableCol(true);
 	}
 	// 蹴り攻撃中であれば、蹴り攻撃用のコライダーをオンにする
 	else if (mState == EState::eKick)
@@ -1125,7 +1162,7 @@ void CPlayer::AttackEnd()
 	CXCharacter::AttackEnd();
 
 	// 攻撃コライダーをオフ
-	mpSword->SetEnableCol(false);
+	mpGreatSword->SetEnableCol(false);
 	mpKickCol->SetEnable(false);
 }
 
@@ -1220,7 +1257,7 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		}
 	}
 	// 剣のコライダーが衝突した
-	else if (self == mpSword->Collider())
+	else if (self == mpGreatSword->Collider())
 	{
 		CCharaBase* hitChara = dynamic_cast<CCharaBase*>(other->Owner());
 		if (hitChara != nullptr && !IsAttackHitObj(hitChara))
