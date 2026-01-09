@@ -82,6 +82,7 @@
     <ClCompile Include="src\Game\CCactus.cpp" />
     <ClCompile Include="src\Game\CCactusNeedle.cpp" />
     <ClCompile Include="src\Game\CEnemy.cpp" />
+    <ClCompile Include="src\Game\CEnemyManager.cpp" />
     <ClCompile Include="src\Game\CField.cpp" />
     <ClCompile Include="src\Game\CFlame.cpp" />
     <ClCompile Include="src\Game\CFlamethrower.cpp" />
@@ -104,6 +105,7 @@
     <ClCompile Include="src\Game\CSlash.cpp" />
     <ClCompile Include="src\Game\CSoldier.cpp" />
     <ClCompile Include="src\Game\CSword.cpp" />
+    <ClCompile Include="src\Game\CTargetUI.cpp" />
     <ClCompile Include="src\Game\CTitleScene.cpp" />
     <ClCompile Include="src\Game\CTitleUI.cpp" />
     <ClCompile Include="src\Game\CWeapon.cpp" />
@@ -200,6 +202,7 @@
     <ClInclude Include="src\Game\CCactus.h" />
     <ClInclude Include="src\Game\CCactusNeedle.h" />
     <ClInclude Include="src\Game\CEnemy.h" />
+    <ClInclude Include="src\Game\CEnemyManager.h" />
     <ClInclude Include="src\Game\CField.h" />
     <ClInclude Include="src\Game\CFlame.h" />
     <ClInclude Include="src\Game\CFlamethrower.h" />
@@ -222,6 +225,7 @@
     <ClInclude Include="src\Game\CSlash.h" />
     <ClInclude Include="src\Game\CSoldier.h" />
     <ClInclude Include="src\Game\CSword.h" />
+    <ClInclude Include="src\Game\CTargetUI.h" />
     <ClInclude Include="src\Game\CTitleUI.h" />
     <ClInclude Include="src\Game\CTitleScene.h" />
     <ClInclude Include="src\Game\CWeapon.h" />

@@ -3,9 +3,14 @@
 #include "Maths.h"
 
 // カメラの回転速度
-#define ROTATE_SPEED 0.1f
+#define ROTATE_SPEED 0.05f
 // カメラの上下回転の範囲
 #define ROTATE_RANGE_X 45.0f
+
+// ロックオン時のカメラのX軸の角度
+#define LOCKON_ROT_X 20.0f
+// ロックオン時のカメラの回転速度
+#define LOCKON_SPEED 3.0f
 
 // コンストラクタ
 CGameCamera2::CGameCamera2(const CVector& eye, const CVector& center, bool isMainCamera)
@@ -46,8 +51,8 @@ void CGameCamera2::LookAt(const CVector& eye, const CVector& at, const CVector& 
 // 後更新
 void CGameCamera2::LateUpdate()
 {
-	// 追従するターゲットが設定されていれば、
-	if (mFollowTargetTf != nullptr)
+	// ロックオンしていない
+	if (mpLockOnTarget == nullptr)
 	{
 		// マウスの移動量に合わせて、カメラの回転角度を変更
 		CVector2 delta = CInput::GetDeltaMousePos();
@@ -55,7 +60,29 @@ void CGameCamera2::LateUpdate()
 		float y = Math::Repeat(mRotateAngle.Y() + delta.X() * ROTATE_SPEED, 360.0f);
 		mRotateAngle.X(x);
 		mRotateAngle.Y(y);
+	}
+	// ロックオンしている
+	else
+	{
+		CVector targetRotAng = mRotateAngle;
 
+		targetRotAng.X(LOCKON_ROT_X);
+
+		// Y軸の回転角度は、自身の座標から対象の座標までのベクトルから求める
+		CVector selfPos = mFollowTargetTf != nullptr ? mFollowTargetTf->Position() : Position();
+		CVector targetPos = mpLockOnTarget->Position() + mpLockOnTarget->GetLockOnOffsetPos();
+		targetRotAng.Y(CVector::AngleY(targetPos - selfPos));
+
+		mRotateAngle = CVector::LerpAngle
+		(
+			mRotateAngle, targetRotAng,
+			LOCKON_SPEED * Times::DeltaTime()
+		);
+	}
+
+	// 追従するターゲットが設定されていれば、
+	if (mFollowTargetTf != nullptr)
+	{
 		// 回転値を求めて、注視点から視点までのベクトルを回転させることで、
 		// 視点の位置を更新する
 		CQuaternion rot = CQuaternion(mRotateAngle);

@@ -12,6 +12,7 @@ CObjectBase::CObjectBase(ETag tag,
 	, mIsEnableCol(true)
 	, mDepth(0.0f)
 	, mColor(CColor::white)
+	, mLockOnOffset(0.0f, 0.0f, 0.0f)
 {
 }
 
@@ -130,4 +131,9 @@ bool CObjectBase::IsAttackHitObj(CObjectBase* obj) const
 		obj
 	);
 	return find != mAttackHitObjects.end();
+}
+
+CVector CObjectBase::GetLockOnOffsetPos() const
+{
+	return mLockOnOffset;
 }

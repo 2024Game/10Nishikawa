@@ -78,6 +78,8 @@ public:
 	/// </summary>
 	virtual void AttackEnd();
 
+	CVector GetLockOnOffsetPos() const;
+
 private:
 	ETag mTag;			// オブジェクト識別用のタグ
 	bool mIsEnableCol;	// 衝突判定を行うかどうか
@@ -100,4 +102,6 @@ protected:
 
 	// 攻撃がヒットしたオブジェクトのリスト
 	std::list<CObjectBase*> mAttackHitObjects;
+
+	CVector	mLockOnOffset;	// ロックオン時のオフセット座標
 };

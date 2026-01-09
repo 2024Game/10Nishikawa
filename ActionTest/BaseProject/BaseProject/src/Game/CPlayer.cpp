@@ -9,6 +9,9 @@
 #include "CGreatSword.h"
 #include "CColliderCapsule.h"
 #include "CColliderSphere.h"
+#include "CTargetUI.h"
+#include "CEnemy.h"
+#include "CEnemyManager.h"
 
 // アニメーションのパス
 #define ANIM_PATH "Character\\TestPlayer\\Anims\\"
@@ -22,6 +25,8 @@
 #define MOTION_BLUR_TIME 3.0f	// モーションブラーを掛ける時間
 #define MOTION_BLUR_WIDTH 1.0f	// モーションブラーの幅
 #define MOTION_BLUR_COUNT 5		// モーションブラーの反復回数
+
+#define LOCKON_DISTANCE 300.0f
 
 //#define ATTACK_START_FRAME 26.0f	// 斬り攻撃の開始フレーム
 //#define ATTACK_END_FRAME 50.0f		// 斬り攻撃の終了フレーム
@@ -101,6 +106,9 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	, mA1StCost(25.0f)
 	, mAvoidStCost(20.0f)
 	, mpSaveManager(SaveManager)
+	, mIsLockOn(false)
+	, mpLockOnTarget(nullptr)
+	, mpTargetUI(nullptr)
 {
 	mMaxHp = mpSaveManager->data.maxHp;
 	mHp = mpSaveManager->data.hp;
@@ -194,6 +202,9 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	mpTACol->Position(TA_COL_OFFSET_POS);
 	// 先行入力コライダーは最初はオフにしておく
 	mpTACol->SetEnable(false);
+
+	// ロックオンUIを作成
+	mpTargetUI = new CTargetUI();
 }
 
 CPlayer::~CPlayer()
@@ -210,6 +221,8 @@ CPlayer::~CPlayer()
 		mpGreatSword->SetOwner(nullptr);
 		mpGreatSword->Kill();
 	}
+
+	mpTargetUI->Kill();
 }
 
 CPlayer* CPlayer::Instance()
@@ -949,6 +962,63 @@ void CPlayer::UpdateMotionBlur()
 	}
 }
 
+// ロックオン関連
+void CPlayer::LockOnTarget()
+{
+	CEnemy* target = CEnemyManager::Instance()->GetLockOnTarget(LOCKON_DISTANCE);
+	if (target == nullptr) return;
+
+	mpLockOnTarget = target;
+	CCamera::CurrentCamera()->SetLockOnTarget(mpLockOnTarget);
+	mpTargetUI->SetShow(true);
+	mIsLockOn = true;
+}
+
+void CPlayer::UnLockTarget()
+{
+	mpLockOnTarget = nullptr;
+	CCamera::CurrentCamera()->SetLockOnTarget(nullptr);
+	mpTargetUI->SetShow(false);
+	mIsLockOn = false;
+}
+
+void CPlayer::UpdateLockOn()
+{
+	if (CInput::PullKey('T'))
+	{
+		if (!mIsLockOn) LockOnTarget();
+		else UnLockTarget();
+	}
+
+	if (mIsLockOn)
+	{
+		// ロックオン対象が存在しなくなれば解除する
+		if (!CEnemyManager::Instance()->Exist(mpLockOnTarget))
+		{
+			UnLockTarget();
+			return;
+		}
+		CCamera* camera = CCamera::CurrentCamera();
+		CVector cameraPos = camera->Position();
+		CVector targetPos = mpLockOnTarget->Position() + mpLockOnTarget->GetLockOnOffsetPos();
+
+		// ロックオン範囲外に出たらロックオン解除
+		float dist = CVector::Distance(cameraPos, targetPos);
+		if (dist > LOCKON_DISTANCE)
+		{
+			UnLockTarget();
+			return;
+		}
+
+		// ロックオンUIに対象の座標を設定
+		mpTargetUI->SetTargetPos(targetPos);
+	}
+	else
+	{
+		UnLockTarget();
+	}
+}
+
 // 更新
 void CPlayer::Update()
 {
@@ -1083,6 +1153,8 @@ void CPlayer::Update()
 
 	// モーションブラーの更新処理
 	UpdateMotionBlur();
+
+	UpdateLockOn();
 
 	// キャラクターの更新
 	CXCharacter::Update();

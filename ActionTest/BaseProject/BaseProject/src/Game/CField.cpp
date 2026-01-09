@@ -4,10 +4,14 @@
 #include "CRotateFloor.h"
 #include "CLineEffect.h"
 
+CField* CField::mpInstance = nullptr;
+
 CField::CField()
 	: CObjectBase(ETag::eField, ETaskPriority::eBackground)
 	, mEffectAnimData(1, 11, true, 11, 0.03f)
 {
+	mpInstance = this;
+
 	mpModel = CResourceManager::Get<CModel>("Arena");
 
 	mpColliderMesh = new CColliderMesh(this, ELayer::eField, mpModel, true);
@@ -17,6 +21,10 @@ CField::CField()
 
 CField::~CField()
 {
+	if (mpInstance == this)
+	{
+		mpInstance = nullptr;
+	}
 	if (mpColliderMesh != nullptr)
 	{
 		delete mpColliderMesh;
@@ -110,6 +118,18 @@ void CField::CreateFieldObjects()
 		CVector pos = CVector::Lerp(startPos, endPos, alpha);
 		le->AddPoint(pos, width, width);
 	}
+}
+
+bool CField::CollisionRay(const CVector& start, const CVector& end)
+{
+	if (mpInstance == nullptr) return false;
+	if (mpInstance->mpColliderMesh != nullptr)
+	{
+		CHitInfo hit;
+		if (CCollider::CollisionRay(mpInstance->mpColliderMesh, start, end, &hit)) return true;
+	}
+	
+	return false;
 }
 
 void CField::Update()

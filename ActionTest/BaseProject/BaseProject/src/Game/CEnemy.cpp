@@ -3,6 +3,7 @@
 #include "CCollisionManager.h"
 #include "CColliderCapsule.h"
 #include "CGaugeUI3D.h"
+#include "CEnemyManager.h"
 
 #define GRAVITY 0.0625f
 
@@ -41,6 +42,11 @@ CEnemy::CEnemy()
 	mpStGauge->SetMaxPoint(mMaxSt);
 	mpStGauge->SetCurrPoint(mSt);
 	mpStGauge->SetGaugeTypeNum(2);
+
+	// エネミー管理クラスのリストに自身を追加する
+	CEnemyManager::Instance()->Add(this);
+
+	mLockOnOffset = CVector(0.0f, 10.0f, 0.0f);
 }
 
 // デストラクタ
@@ -61,6 +67,9 @@ CEnemy::~CEnemy()
 		mpStGauge->SetOwner(nullptr);
 		mpStGauge->Kill();
 	}
+
+	// エネミー管理クラスのリストから自身を除外する
+	CEnemyManager::Instance()->Remove(this);
 }
 
 // オブジェクト削除を伝える関数

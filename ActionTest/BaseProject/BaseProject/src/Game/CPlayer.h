@@ -8,6 +8,8 @@
 class CCollider;
 class CFlamethrower;
 class CGreatSword;
+class CTargetUI;
+class CEnemy;
 
 /*
 プレイヤークラス
@@ -92,6 +94,10 @@ private:
 
 	// モーションブラーの更新処理
 	void UpdateMotionBlur();
+
+	void LockOnTarget();
+	void UnLockTarget();
+	void UpdateLockOn();
 
 	// アニメーションの種類
 	enum class EAnimType
@@ -200,4 +206,8 @@ private:
 	CVector mDeathVec;
 	float mDeathTimer = 0.0f;
 	bool mToDeath = false;
+
+	bool mIsLockOn;
+	CEnemy* mpLockOnTarget;
+	CTargetUI* mpTargetUI;
 };

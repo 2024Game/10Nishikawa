@@ -125,6 +125,12 @@ public:
 	/// <param name="v1">2つ目のベクトル</param>
 	/// <returns>2つのベクトルの角度（ディグリー）</returns>
 	static float Angle(const CVector& v0, const CVector& v1);
+	/// <summary>
+	/// ベクトルのY軸角度を求める
+	/// </summary>
+	/// <param name="v">角度を求めるベクトル</param>
+	/// <returns>角度（ディグリー）</returns>
+	static float AngleY(const CVector& v);
 
 	/// <summary>
 	/// 2点間を線形補間する
@@ -142,6 +148,14 @@ public:
 	/// <param name="t">補間割合</param>
 	/// <returns>線形補間の結果</returns>
 	static CVector LerpUnclamped(const CVector& a, const CVector& b, float t);
+	/// <summary>
+	/// 角度を線形補間する
+	/// </summary>
+	/// <param name="a">開始角度</param>
+	/// <param name="b">終了角度</param>
+	/// <param name="t">補間割合（0.0f～1.0f）</param>
+	/// <returns>線形補間の結果</returns>
+	static CVector LerpAngle(const CVector& a, const CVector& b, float t);
 	/// <summary>
 	/// 2つのベクトル間を球面線形補間する
 	/// </summary>

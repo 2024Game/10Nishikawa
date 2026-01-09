@@ -39,6 +39,12 @@ public:
 	void SetFollowTargetOffset(const CVector& offset);
 
 	/// <summary>
+	/// ロックオン対象を設定
+	/// </summary>
+	/// <param name="target"></param>
+	void SetLockOnTarget(CObjectBase* target);
+
+	/// <summary>
 	/// 注視する位置を設定（注視点のみ）
 	/// </summary>
 	/// <param name="pos">注視する位置</param>
@@ -160,6 +166,7 @@ protected:
 
 	CTransform* mFollowTargetTf;	// 追従するターゲットのCTransfrom
 	CVector mFollowOffsetPos;		// 追従ターゲットの位置から視点までのオフセット値
+	CObjectBase* mpLockOnTarget;	// ロックオン対象
 
 private:
 	// カメラを削除

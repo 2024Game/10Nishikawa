@@ -8,6 +8,7 @@
 #include "CSceneManager.h"
 #include "CGamePause.h"
 #include "CFade.h"
+#include "CEnemyManager.h"
 
 CApplication::~CApplication()
 {
@@ -46,6 +47,7 @@ void CApplication::End()
 	CResourceManager::ClearInstance();
 	CBGMManager::ClearInstance();
 	CSoundManager::ClearInstance();
+	CEnemyManager::ClearInstance();
 }
 
 void CApplication::Update()

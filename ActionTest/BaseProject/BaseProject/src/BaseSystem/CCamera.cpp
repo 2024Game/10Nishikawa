@@ -13,6 +13,7 @@ CCamera::CCamera(const CVector& eye, const CVector& center, bool isMainCamera)
 	, mIsMainCamera(isMainCamera)
 	, mFollowTargetTf(nullptr)
 	, mFollowOffsetPos(CVector::zero)
+	, mpLockOnTarget(nullptr)
 	, mFovy(CAMERA_FOVY)
 	, mZNear(CAMERA_ZNEAR)
 	, mZFar(CAMERA_ZFAR)
@@ -145,6 +146,12 @@ void CCamera::SetFollowTargetOffset(const CVector& offset)
 	{
 		mFollowOffsetPos = offset;
 	}
+}
+
+// ロックオン対象を設定
+void CCamera::SetLockOnTarget(CObjectBase* target)
+{
+	mpLockOnTarget = target;
 }
 
 // 注視する位置を設定（注視点のみ）
