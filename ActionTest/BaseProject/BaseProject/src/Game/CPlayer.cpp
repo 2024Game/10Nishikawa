@@ -330,6 +330,21 @@ void CPlayer::UpdateAttack1()
 	switch (mStateStep)
 	{
 		case 0:
+		{
+			// カメラの向きを取得（Y軸のみ）
+			CCamera* camera = CCamera::MainCamera();
+			if (camera)
+			{
+				CVector camForward = -camera->VectorZ();
+				camForward.Y(0.0f);          // Y成分を無視（水平回転のみ）
+
+				if (camForward.LengthSqr() > 0.0001f)
+				{
+					camForward.Normalize();
+					Rotation(CQuaternion::LookRotation(camForward));
+				}
+			}
+
 			// 攻撃アニメーションを開始
 			ChangeAnimation(EAnimType::eAttack1, true);
 			// 斬撃SEの再生済みフラグを初期化
@@ -341,6 +356,8 @@ void CPlayer::UpdateAttack1()
 
 			mStateStep++;
 			break;
+		}
+			
 		case 1:
 			if (GetAnimationFrame() >= ATTACK1_START_FRAME)
 			{
@@ -420,6 +437,21 @@ void CPlayer::UpdateAttack2()
 	switch (mStateStep)
 	{
 	case 0:
+	{
+		// カメラの向きを取得（Y軸のみ）
+		CCamera* camera = CCamera::MainCamera();
+		if (camera)
+		{
+			CVector camForward = -camera->VectorZ();
+			camForward.Y(0.0f);          // Y成分を無視（水平回転のみ）
+
+			if (camForward.LengthSqr() > 0.0001f)
+			{
+				camForward.Normalize();
+				Rotation(CQuaternion::LookRotation(camForward));
+			}
+		}
+
 		// 先行入力コライダーをオンにする
 		mpTACol->SetEnable(true);
 		// 攻撃アニメーションを開始
@@ -433,6 +465,8 @@ void CPlayer::UpdateAttack2()
 
 		mStateStep++;
 		break;
+	}
+		
 	case 1:
 		if (GetAnimationFrame() >= ATTACK2_START_FRAME)
 		{
@@ -519,6 +553,21 @@ void CPlayer::UpdateAttackX()
 	switch (mStateStep)
 	{
 	case 0:
+	{
+		// カメラの向きを取得（Y軸のみ）
+		CCamera* camera = CCamera::MainCamera();
+		if (camera)
+		{
+			CVector camForward = -camera->VectorZ();
+			camForward.Y(0.0f);          // Y成分を無視（水平回転のみ）
+
+			if (camForward.LengthSqr() > 0.0001f)
+			{
+				camForward.Normalize();
+				Rotation(CQuaternion::LookRotation(camForward));
+			}
+		}
+
 		// 先行入力コライダーをオンにする
 		mpTACol->SetEnable(true);
 
@@ -534,6 +583,8 @@ void CPlayer::UpdateAttackX()
 
 		mStateStep++;
 		break;
+	}
+		
 	case 1:
 		if (GetAnimationFrame() >= ATTACKX_START_FRAME)
 		{

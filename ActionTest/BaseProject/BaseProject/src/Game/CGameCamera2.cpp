@@ -10,7 +10,7 @@
 // ロックオン時のカメラのX軸の角度
 #define LOCKON_ROT_X 20.0f
 // ロックオン時のカメラの回転速度
-#define LOCKON_SPEED 3.0f
+#define LOCKON_SPEED 6.0f
 
 // コンストラクタ
 CGameCamera2::CGameCamera2(const CVector& eye, const CVector& center, bool isMainCamera)
@@ -46,6 +46,11 @@ void CGameCamera2::LookAt(const CVector& eye, const CVector& at, const CVector& 
 		}
 		mFollowOffsetPos = mAt - mFollowTargetTf->Position();
 	}
+}
+
+CVector CGameCamera2::GetRotateAngle()
+{
+	return mRotateAngle;
 }
 
 // 後更新

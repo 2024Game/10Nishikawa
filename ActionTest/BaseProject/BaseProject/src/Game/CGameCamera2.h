@@ -19,6 +19,8 @@ public:
 	void LookAt(const CVector& eye, const CVector& at,
 		const CVector& up, bool updateTargetEye = true) override;
 
+	CVector GetRotateAngle();
+
 	// å„çXêV
 	void LateUpdate() override;
 

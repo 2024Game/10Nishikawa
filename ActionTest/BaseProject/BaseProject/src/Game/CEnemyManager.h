@@ -15,8 +15,16 @@ public:
 	// 指定したエネミーをリストから除外
 	void Remove(CEnemy* enemy);
 
+	// エネミーの状態を管理
+	// 0 = 戦闘前待機：2 = エネミー勝利状態
+	void SetInBattle(int num);
+
 	// 指定したエネミーが存在するかどうか(死亡していないか)
 	bool Exist(CEnemy* enemy) const;
+
+	// 生成済みのエネミーのリスト内の全エネミーのHPが0より多いか
+	// つまり、生存しているエネミーがいるかどうか
+	bool Surviv() const;
 
 	// ロックオン対象
 	CEnemy* GetLockOnTarget(float lockOnDist);

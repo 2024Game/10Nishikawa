@@ -39,11 +39,38 @@ void CEnemyManager::Remove(CEnemy* enemy)
 	mEnemies.erase(result, mEnemies.end());
 }
 
-// 指定したエネミーが存在するかどうか(死亡していないか)
+void CEnemyManager::SetInBattle(int num)
+{
+	if (mEnemies.empty()) return;
+
+	for (CEnemy* enemy : mEnemies)
+	{
+		if (enemy != nullptr && enemy->GetHp() > 0.0f)
+		{
+			enemy->SetInBattle(num);
+		}
+	}
+}
+
+// 指定したエネミーが存在するかどうか
 bool CEnemyManager::Exist(CEnemy* enemy) const
 {
 	auto find = std::find(mEnemies.begin(), mEnemies.end(), enemy);
 	return find != mEnemies.end();
+}
+
+bool CEnemyManager::Surviv() const
+{
+	if (mEnemies.empty()) return false;
+
+	for (CEnemy* enemy : mEnemies)
+	{
+		if (enemy != nullptr && enemy->GetHp() > 0.0f)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 CEnemy* CEnemyManager::GetLockOnTarget(float lockOnDist)

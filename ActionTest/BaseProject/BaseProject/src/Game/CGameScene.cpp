@@ -9,6 +9,7 @@
 #include "CGameMenu.h"
 #include "CBGMManager.h"
 #include "CLineEffect.h"
+#include "CEnemyManager.h"
 #include "CCactus.h"
 #include "CSoldier.h"
 #include "CHeavyWarrior.h"
@@ -214,7 +215,7 @@ void CGameScene::UpdateBattleReserve()
 
 	case 2:
 		mpPlayer->SetInBattle(0);
-		mpEnemy->SetInBattle(0);
+		CEnemyManager::Instance()->SetInBattle(0);
 		// ゲームBGMを読み込み
 		//CBGMManager::Instance()->Play(EBGMType::eGame);
 		// 戦闘状態へ移行
@@ -238,7 +239,8 @@ void CGameScene::UpdateBattle()
 		mTimeCount = 0;
 	}
 	*/
-	if (mpPlayer->GetHp() <= 0.0f || mpEnemy->GetHp() <= 0.0f)
+	
+	if (mpPlayer->GetHp() <= 0.0f || !CEnemyManager::Instance()->Surviv())
 	{
 		ChangeState(EState::ebattleresult);
 	}
@@ -269,12 +271,12 @@ void CGameScene::UpdateBattleResult()
 		if (mpPlayer->GetHp() <= 0.0f)
 		{
 			mPlayerWin = false;
-			mpEnemy->SetInBattle(2);
+			CEnemyManager::Instance()->SetInBattle(2);
 			// 歓声SEを再生
 			mpKanseiSE->Play(0.25f);
 			mStateStep++;
 		}
-		else if (mpEnemy->GetHp() <= 0.0f)
+		else if (!CEnemyManager::Instance()->Surviv())
 		{
 			mPlayerWin = true;
 			mpPlayer->SetInBattle(2);
