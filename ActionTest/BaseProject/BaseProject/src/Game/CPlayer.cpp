@@ -274,6 +274,11 @@ void CPlayer::UpdateReserve()
 // 待機
 void CPlayer::UpdateIdle()
 {
+	if (mHp > 0.0f)
+	{
+		CCharaBase::GainStamina(7.5 * Times::DeltaTime() * mStRegeneMag);
+	}
+
 	// 接地していれば、
 	if (mIsGrounded)
 	{
@@ -359,6 +364,8 @@ void CPlayer::UpdateAttack1()
 		}
 			
 		case 1:
+			AvoidJudge();
+
 			if (GetAnimationFrame() >= ATTACK1_START_FRAME)
 			{
 				// 斬撃SEを再生
@@ -402,6 +409,7 @@ void CPlayer::UpdateAttack1()
 			}
 			break;
 		case 3:
+			AvoidJudge();
 			// 攻撃アニメーションが終了したら、
 			if (IsAnimationFinished())
 			{
@@ -468,6 +476,7 @@ void CPlayer::UpdateAttack2()
 	}
 		
 	case 1:
+		AvoidJudge();
 		if (GetAnimationFrame() >= ATTACK2_START_FRAME)
 		{
 			// 斬撃SEを再生
@@ -517,6 +526,7 @@ void CPlayer::UpdateAttack2()
 		}
 		break;
 	case 3:
+		AvoidJudge();
 		// 攻撃アニメーションが終了したら、
 		if (IsAnimationFinished())
 		{
@@ -586,6 +596,7 @@ void CPlayer::UpdateAttackX()
 	}
 		
 	case 1:
+		AvoidJudge();
 		if (GetAnimationFrame() >= ATTACKX_START_FRAME)
 		{
 			// 斬撃SEを再生
@@ -628,6 +639,7 @@ void CPlayer::UpdateAttackX()
 		}
 		break;
 	case 4:
+		AvoidJudge();
 		// 攻撃アニメーションが終了したら、
 		if (IsAnimationFinished())
 		{
@@ -891,6 +903,31 @@ void CPlayer::UpdateVictory()
 	}
 }
 
+void CPlayer::AvoidJudge()
+{
+	// 右クリックで回避へ移行
+	if (CInput::PushKey(VK_RBUTTON) && CInput::Key('D') && mSt >= mAvoidStCost)
+	{
+		mNextAttack = false;
+		CCharaBase::UseStamina(mAvoidStCost);
+		mMoveSpeed = CVector::zero;
+		// プレイヤーの移動ベクトルを求める
+		mAvoidVec = CalcMoveVec();
+		ChangeState(EState::eAvoidR);
+		mIsGravity = false;
+	}
+	else if (CInput::PushKey(VK_RBUTTON) && CInput::Key('A') && mSt >= mAvoidStCost)
+	{
+		mNextAttack = false;
+		CCharaBase::UseStamina(mAvoidStCost);
+		mMoveSpeed = CVector::zero;
+		// プレイヤーの移動ベクトルを求める
+		mAvoidVec = CalcMoveVec();
+		ChangeState(EState::eAvoidL);
+		mIsGravity = false;
+	}
+}
+
 // オブジェクト削除を伝える
 void CPlayer::DeleteObject(CObjectBase* obj)
 {
@@ -1133,11 +1170,6 @@ void CPlayer::Update()
 		|| mState == EState::eJumpEnd)
 	{
 		UpdateMove();
-	}
-
-	if (mHp > 0.0f)
-	{
-		CCharaBase::GainStamina(7.5 * Times::DeltaTime() * mStRegeneMag);
 	}
 
 	if (mIsGravity)

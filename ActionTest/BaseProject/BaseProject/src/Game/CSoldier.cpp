@@ -450,6 +450,14 @@ void CSoldier::LookAtBattleTarget(bool immediate)
 	}
 }
 
+void CSoldier::STRegene()
+{
+	if (mHp > 0.0f)
+	{
+		CCharaBase::GainStamina(mGainSt * Times::DeltaTime());
+	}
+}
+
 // 針を発射
 void CSoldier::ShotNeedle()
 {
@@ -494,6 +502,7 @@ void CSoldier::UpdateReserve()
 // 待機状態の更新処理
 void CSoldier::UpdateIdle()
 {
+	STRegene();
 	// 通常時の待機
 	if (!mIsBattle)
 	{
@@ -566,6 +575,7 @@ void CSoldier::UpdateIdle()
 void CSoldier::UpdateChase()
 {
 	mMoveSpeed = CVector::zero;
+	STRegene();
 
 	// 現在地と目的地を取得
 	CVector pos = Position();
@@ -747,6 +757,7 @@ void CSoldier::UpdateAttack1()
 		}
 		break;
 	case 4:
+		STRegene();
 		// 連続攻撃の終了なら、n秒間隙ができる
 		if (mElapsedTime < mNegTime)
 		{
@@ -858,6 +869,7 @@ void CSoldier::UpdateAttack1B()
 		}
 		break;
 	case 4:
+		STRegene();
 		// 連続攻撃の終了なら、n秒間隙ができる
 		if (mElapsedTime < mNegTime)
 		{
@@ -967,6 +979,7 @@ void CSoldier::UpdateAttack2()
 		break;
 
 	case 4:
+		STRegene();
 		// 連続攻撃の終了なら、n秒間隙ができる
 		if (mElapsedTime < mNegTime)
 		{
@@ -1069,6 +1082,7 @@ void CSoldier::UpdateAttackX()
 		break;
 
 	case 5:
+		STRegene();
 		// 連続攻撃の終了なら、n秒間隙ができる
 		if (mElapsedTime < mNegTime)
 		{
@@ -1247,6 +1261,7 @@ void CSoldier::UpdateHit()
 		}
 		break;
 	case 2:
+		STRegene();
 		// 連続攻撃の終了なら、n秒間隙ができる
 		if (mElapsedTime < mNegTime)
 		{

@@ -21,7 +21,6 @@ CGameScene::CGameScene()
 	, mState(EState::ebattlereserve)
 	, mpGameMenu(nullptr)
 	, mpPlayer(nullptr)
-	, mpEnemy(nullptr)
 	, mTimeCount(0)
 	, mElapsedTime(0.0f)
 	, mStateStep(0)
@@ -109,19 +108,50 @@ void CGameScene::Load()
 		mEnemyLv++;
 	}
 
-	// 兵士の敵を1体生成
-	// ランダムで敵の種類を選ぶ
-	int rand = Math::Rand(0, 99);
-	if (rand < 49)
+	CEnemy* enemy;
+	int enemyCount = 0;
+	int rand = Math::Rand(0, 5);
+
+	if (rand == 5)
 	{
-		mpEnemy = new CSoldier(mpPlayer, mEnemyLv);
+		enemyCount = 3;
+	}
+	else if (rand > 2)
+	{
+		enemyCount = 2;
 	}
 	else
 	{
-		mpEnemy = new CHeavyWarrior(mpPlayer, mEnemyLv);
+		enemyCount = 1;
 	}
-	
-	mpEnemy->Position(0.0f, 5.0f, -100.0f);
+
+	// 兵士の敵を1体生成
+	for (int i = 0; i < enemyCount; i++)
+	{
+		// ランダムで敵の種類を選ぶ
+		rand = Math::Rand(0, 99);
+		if (rand < 49)
+		{
+			enemy = new CSoldier(mpPlayer, mEnemyLv);
+		}
+		else
+		{
+			enemy = new CHeavyWarrior(mpPlayer, mEnemyLv);
+		}
+
+		switch (i)
+		{
+		case 0:
+			enemy->Position(0.0f, 5.0f, -100.0f);
+			break;
+		case 1:
+			enemy->Position(50.0f, 5.0f, -125.0f);
+			break;
+		case 2:
+			enemy->Position(-50.0f, 5.0f, -125.0f);
+			break;
+		}
+	}
 
 	// CGameCameraのテスト
 	//CGameCamera* mainCamera = new CGameCamera

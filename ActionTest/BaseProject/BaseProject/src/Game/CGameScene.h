@@ -44,7 +44,6 @@ private:
 	CSaveManager* mpSaveManager;
 	CGameMenu* mpGameMenu;
 	CPlayer* mpPlayer;
-	CEnemy* mpEnemy;
 	int mEnemyLv;
 	bool mPlayerWin;
 	int mTimeCount;

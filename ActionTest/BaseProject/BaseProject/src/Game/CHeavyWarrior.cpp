@@ -471,6 +471,14 @@ void CHeavyWarrior::ShotNeedle()
 	*/
 }
 
+void CHeavyWarrior::STRegene()
+{
+	if (mHp > 0.0f)
+	{
+		CCharaBase::GainStamina(mGainSt * Times::DeltaTime());
+	}
+}
+
 // 状態切り替え
 void CHeavyWarrior::ChangeState(int state)
 {
@@ -494,6 +502,7 @@ void CHeavyWarrior::UpdateReserve()
 // 待機状態の更新処理
 void CHeavyWarrior::UpdateIdle()
 {
+	STRegene();
 	// 通常時の待機
 	if (!mIsBattle)
 	{
@@ -566,6 +575,8 @@ void CHeavyWarrior::UpdateIdle()
 void CHeavyWarrior::UpdateChase()
 {
 	mMoveSpeed = CVector::zero;
+
+	STRegene();
 
 	// 現在地と目的地を取得
 	CVector pos = Position();
@@ -747,6 +758,7 @@ void CHeavyWarrior::UpdateAttack1()
 		}
 		break;
 	case 4:
+		STRegene();
 		// 連続攻撃の終了なら、n秒間隙ができる
 		if (mElapsedTime < mNegTime)
 		{
@@ -858,6 +870,7 @@ void CHeavyWarrior::UpdateAttack1B()
 		}
 		break;
 	case 4:
+		STRegene();
 		// 連続攻撃の終了なら、n秒間隙ができる
 		if (mElapsedTime < mNegTime)
 		{
@@ -967,6 +980,7 @@ void CHeavyWarrior::UpdateAttack2()
 		break;
 
 	case 4:
+		STRegene();
 		// 連続攻撃の終了なら、n秒間隙ができる
 		if (mElapsedTime < mNegTime)
 		{
@@ -1069,6 +1083,7 @@ void CHeavyWarrior::UpdateAttackX()
 		break;
 
 	case 5:
+		STRegene();
 		// 連続攻撃の終了なら、n秒間隙ができる
 		if (mElapsedTime < mNegTime)
 		{
@@ -1247,6 +1262,7 @@ void CHeavyWarrior::UpdateHit()
 		}
 		break;
 	case 2:
+		STRegene();
 		// 連続攻撃の終了なら、n秒間隙ができる
 		if (mElapsedTime < mNegTime)
 		{
@@ -1364,6 +1380,14 @@ void CHeavyWarrior::Update()
 	case EState::eDeath:	UpdateDeath();		break;
 		// 勝利
 	case EState::eVictory:	UpdateVictory();	break;
+	}
+
+	if ((int)mState == (int)EState::eIdle || (int)mState == (int)EState::eChase)
+	{
+		if (mHp > 0.0f)
+		{
+			CCharaBase::GainStamina(mGainSt * Times::DeltaTime());
+		}
 	}
 
 	// 敵のベースクラスの更新

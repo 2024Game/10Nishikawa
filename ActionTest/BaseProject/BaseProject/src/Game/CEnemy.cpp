@@ -216,11 +216,6 @@ void CEnemy::Update()
 	CXCharacter::Update();
 
 	mIsGrounded = false;
-
-	if (mHp > 0.0f)
-	{
-		CCharaBase::GainStamina(mGainSt * Times::DeltaTime());
-	}
 	
 	// HPゲージを更新
 	mpHpGauge->Position(Position() + mHpGaugeOffsetPos);

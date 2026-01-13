@@ -89,6 +89,9 @@ private:
 	// 勝利
 	void UpdateVictory();
 
+	// ボタンが押されていたら回避へ移行する
+	void AvoidJudge();
+
 	// 移動の更新処理
 	void UpdateMove();
 

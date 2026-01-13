@@ -99,6 +99,8 @@ private:
 	// j‚ğ”­Ë
 	void ShotNeedle();
 
+	void STRegene();
+
 	// ó‘ÔØ‚è‘Ö‚¦
 	void ChangeState(int state) override;
 

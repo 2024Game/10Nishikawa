@@ -96,6 +96,8 @@ private:
 	// í“¬‘Šè‚Ì•û‚ÖŒü‚­
 	void LookAtBattleTarget(bool immediate = false);
 
+	void STRegene();
+
 	// j‚ğ”­Ë
 	void ShotNeedle();
 
