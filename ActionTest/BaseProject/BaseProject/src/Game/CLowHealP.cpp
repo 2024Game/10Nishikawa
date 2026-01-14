@@ -17,7 +17,7 @@ CLowHealP::CLowHealP()
 		this, ELayer::eItem,
 		CVector(0.0f, 0.0f, 0.0f),
 		CVector(0.0f, ITEM_LENGTH - ITEM_RADIUS, 0.0f),
-		ITEM_RADIUS, 0.2f
+		ITEM_RADIUS
 	);
 	// タグとレイヤーの衝突設定
 	mpCollider->SetCollisionTags(
