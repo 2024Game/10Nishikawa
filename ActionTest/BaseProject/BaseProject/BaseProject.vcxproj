@@ -97,6 +97,8 @@
     <ClCompile Include="src\Game\CHomeScene.cpp" />
     <ClCompile Include="src\Game\CHomeSceneUI.cpp" />
     <ClCompile Include="src\Game\CImage.cpp" />
+    <ClCompile Include="src\Game\CItem.cpp" />
+    <ClCompile Include="src\Game\CLowHealP.cpp" />
     <ClCompile Include="src\Game\CMoveFloor.cpp" />
     <ClCompile Include="src\Game\CPlayer.cpp" />
     <ClCompile Include="src\Game\CRideableObject.cpp" />
@@ -217,6 +219,8 @@
     <ClInclude Include="src\Game\CHomeScene.h" />
     <ClInclude Include="src\Game\CHomeSceneUI.h" />
     <ClInclude Include="src\Game\CImage.h" />
+    <ClInclude Include="src\Game\CItem.h" />
+    <ClInclude Include="src\Game\CLowHealP.h" />
     <ClInclude Include="src\Game\CMoveFloor.h" />
     <ClInclude Include="src\Game\CPlayer.h" />
     <ClInclude Include="src\Game\CRideableObject.h" />

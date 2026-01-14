@@ -13,6 +13,7 @@
 #include "CCactus.h"
 #include "CSoldier.h"
 #include "CHeavyWarrior.h"
+#include "CLowHealP.h"
 #include <Maths.h>
 
 //コンストラクタ
@@ -62,9 +63,12 @@ void CGameScene::Load()
 	CResourceManager::Load<CModel>(		"Slash",			"Effect\\slash.obj");
 	CResourceManager::Load<CSound>(		"SlashSound",		"Sound\\SE\\slash.wav");
 	CResourceManager::Load<CSound>(		"KanseiSound",		"Sound\\SE\\kanseiSE.wav");
+
 	CResourceManager::Load<CModel>(		"Sword",			"Weapon\\Sword\\sword.obj");
 	CResourceManager::Load<CModel>(		"GreatSword",		"Weapon\\GreatSword\\GreatSword.obj");
 	CResourceManager::Load<CModel>(		"BusterSword",		"Weapon\\BusterSword\\DRAGON_SLAYER.obj");
+
+	CResourceManager::Load<CModel>(		"LowHealP",			"Items\\LowHealPotion\\lowhealpotion.obj");
 
 	// ゲームBGMを読み込み
 	CBGMManager::Instance()->Play(EBGMType::eGame);
@@ -89,6 +93,10 @@ void CGameScene::Load()
 	mpPlayer->Rotation(CVector(0.0f, 180.0f, 0.0f));
 	mpPlayer->Scale(1.0f, 1.0f, 1.0f);
 	mpPlayer->Position(0.0f, 5.0f, 100.0f);
+
+	CLowHealP* lowHpPotion = new CLowHealP();
+	lowHpPotion->Position(0.0f, 150.0f, 0.0f);
+	//lowHpPotion->Scale(10.0f, 10.0f, 10.0f);
 
 	// サボテンの敵を作成
 	//CCactus* cactus = new CCactus();
@@ -245,7 +253,8 @@ void CGameScene::UpdateBattleReserve()
 
 	case 2:
 		mpPlayer->SetInBattle(0);
-		CEnemyManager::Instance()->SetInBattle(0);
+		//CEnemyManager::Instance()->SetInBattle(0);
+		
 		// ゲームBGMを読み込み
 		//CBGMManager::Instance()->Play(EBGMType::eGame);
 		// 戦闘状態へ移行

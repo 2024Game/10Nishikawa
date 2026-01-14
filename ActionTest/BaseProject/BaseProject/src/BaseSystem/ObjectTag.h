@@ -6,9 +6,9 @@ enum class ETag
 {
 	eNone = -1,
 
-	eField,	// フィールドを構成するオブジェクト
+	eField,				// フィールドを構成するオブジェクト
 	eRideableObject,	// 乗ることができるオブジェクト
-	eItem,	// アイテムのオブジェクト
+	eItem,				// アイテムのオブジェクト
 
 	ePlayer,// プレイヤー
 	eEnemy,	// エネミー

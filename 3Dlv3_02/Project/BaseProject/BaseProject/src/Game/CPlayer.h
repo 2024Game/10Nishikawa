@@ -92,6 +92,7 @@ private:
 	CCollider* mpBodyCol;		// 本体のコライダー
 
 	CModel* mpModel2;			// 大砲のモデル
+	float mCannonRot;			// 大砲の回転値
 
 	CGameCamera2* mpCamera;		// カメラのポインター
 	CSaveManager* mpSaveManager;

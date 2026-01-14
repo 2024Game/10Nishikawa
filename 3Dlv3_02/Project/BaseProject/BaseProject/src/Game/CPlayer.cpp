@@ -11,7 +11,7 @@
 #define BODY_RADIUS 2.5f	// 本体のコライダーの幅
 
 #define BARREL_OFFSET_POS CVector(0.0f, 1.5f, -8.5f)
-#define P_POS CVector(0.0f, 2.5f, 0.0f)
+#define P_POS CVector(0.0f, 2.5f, 2.0f)
 
 // プレイヤーのインスタンス
 CPlayer* CPlayer::spInstance = nullptr;
@@ -30,6 +30,7 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	, mGetScore(0.0f)
 	, mpSaveManager(SaveManager)
 	, mInAttack(false)
+	, mCannonRot(0.0f)
 {
 	mMaxHp = 30.0f + (mpSaveManager->GetData().fuelTankLv * 5);
 	mPlayerSpeed = 0.5f * (1 + (mpSaveManager->GetData().playerSpeedLv * 0.05f));
@@ -254,6 +255,7 @@ void CPlayer::Update()
 
 	CVector pos = Position();
 
+
 #ifdef _DEBUG
 	// CDebugPrint::Print("PlayerHP:%f / %f\n", mHp, mMaxHp);
 	// CDebugPrint::Print("PlayerPos:%.2f, %.2f, %.2f\n", pos.X(), pos.Y(), pos.Z());
@@ -371,20 +373,24 @@ void CPlayer::AddScore(float amount)
 	mGetScore += amount;
 }
 
+
 // 描画
 void CPlayer::Render()
 {
 	mpModel->Render(Matrix());
 
-	mpModel2->SetColor(mColor);
-
-	// P_POS を Barrel のワールド座標で適用したい場合
 	CMatrix trans;
 	trans.Translate(P_POS);
-	CMatrix mtx = Matrix() * trans;
+
+	CMatrix rot;
+	rot.RotateY(mCannonRot);
+
+	// ローカル回転 → ローカル移動 → 親行列
+	CMatrix mtx = rot * trans * Matrix();
 
 	mpModel2->Render(mtx);
 }
+
 
 void CPlayer::SetCamera(CGameCamera2* camera)
 {

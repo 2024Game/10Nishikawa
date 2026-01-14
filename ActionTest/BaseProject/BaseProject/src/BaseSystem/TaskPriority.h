@@ -12,6 +12,7 @@ enum class ETaskPriority
 	ePlayer,	// プレイヤー
 	eEnemy,		// 敵
 	eWeapon,	// 武器
+	eItem,		// アイテム
 
 	eEffect,	// エフェクト
 	eBillboard,	// ビルボードイメージ

@@ -10,6 +10,7 @@ enum class ELayer
 	eGround,
 	ePlayer,
 	eEnemy,
+	eItem,
 
 	eAttackCol,
 

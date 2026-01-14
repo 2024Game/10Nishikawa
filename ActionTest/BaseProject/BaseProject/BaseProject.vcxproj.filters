@@ -107,6 +107,9 @@
     <Filter Include="ソース ファイル\Game\UI\Barracs">
       <UniqueIdentifier>{37574233-8d5c-495e-b97b-2c8d76a14608}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Items">
+      <UniqueIdentifier>{bb7497f4-c96b-4534-b8df-9bdf49773a44}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -435,6 +438,12 @@
     </ClCompile>
     <ClCompile Include="src\Game\CTargetUI.cpp">
       <Filter>ソース ファイル\Game\UI\GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CItem.cpp">
+      <Filter>ソース ファイル\Game\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CLowHealP.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -788,6 +797,12 @@
     </ClInclude>
     <ClInclude Include="src\Game\CTargetUI.h">
       <Filter>ソース ファイル\Game\UI\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CItem.h">
+      <Filter>ソース ファイル\Game\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CLowHealP.h">
+      <Filter>ソース ファイル\Game\Items</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
