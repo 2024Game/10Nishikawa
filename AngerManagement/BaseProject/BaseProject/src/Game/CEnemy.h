@@ -1,0 +1,96 @@
+#ifndef CENEMY_H
+#define CENEMY_H
+#include "CXCharacter.h"
+#include "CCollider.h"
+#include "CModel.h"
+
+class CGaugeUI3D;
+
+/*
+エネミークラス
+キャラクタクラスを継承
+*/
+class CEnemy : public CXCharacter
+{
+public:
+	// アニメーションデータ
+	struct AnimData
+	{
+		std::string path;	// アニメーションデータのパス
+		bool loop;			// ループするかどうか
+		float frameLength;	// アニメーションのフレーム数
+		float speed;		// アニメーションの再生速度（1.0で等倍）
+	};
+
+	// コンストラクタ
+	CEnemy();
+	// デストラクタ
+	virtual ~CEnemy();
+
+	// オブジェクト削除を伝える関数
+	void DeleteObject(CObjectBase* obj) override;
+
+	/// <summary>
+	/// 衝突処理
+	/// </summary>
+	/// <param name="self">衝突した自身のコライダー</param>
+	/// <param name="other">衝突した相手のコライダー</param>
+	/// <param name="hit">衝突した時の情報</param>
+	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
+
+	// CGameSceneから状態の移行指示を受け取る
+	virtual void SetInBattle(int state);
+
+	// 更新
+	void Update() override;
+	// 描画
+	void Render() override;
+
+protected:
+	// 敵の初期化
+	void InitEnemy(std::string path, const std::vector<AnimData>* pAnimData);
+
+	// 状態切り替え
+	virtual void ChangeState(int state);
+
+	// アニメーション切り替え
+	virtual void ChangeAnimation(int type, bool restart = false);
+
+
+	int mState;				// 状態
+	int mAnimType;
+	int mStateStep;			// 状態内のステップ管理用
+	float mElapsedTime;		// 経過時間計測用
+	bool mIsGravity;
+	CVector mDeathVec;
+	bool mToDeath = false;
+
+	// アニメーションデータのテーブル
+	const std::vector<AnimData>* mpAnimData;
+
+	CVector mMoveSpeed;		// 前後左右の移動速度
+	float mMoveSpeedY;		// 重力やジャンプによる上下の移動速度
+
+	bool mIsGrounded;		// 接地しているかどうか
+	CVector mGroundNormal;	// 接地している地面の法線
+
+	CCollider* mpBodyCol;	// 本体のコライダー
+
+	// ステータス関連
+	int mLevel;				// 敵のレベル
+	float mGainSt;			// スタミナ回復量
+	float mA1StCost;		// 攻撃の基本ST消費量
+	float mAvoidStCost;		// 回避の基本ST消費量
+	float mStepMag;			// 踏み込みの移動距離倍率
+	float mAttackMag;		// 攻撃力の倍率
+	float mAtSpeedMag;		// 攻撃モーションの速度倍率
+	float mNegTime;			// 隙ができる時間
+	float mNegProb;			// 隙ができる確率
+
+	CGaugeUI3D* mpHpGauge;		// HPゲージ
+	CVector mHpGaugeOffsetPos;	// HPゲージのオフセット座標
+	CGaugeUI3D* mpStGauge;		// スタミナゲージ
+	CVector mStGaugeOffsetPos;	// スタミナゲージのオフセット座標
+};
+
+#endif
