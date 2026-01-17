@@ -1,0 +1,5 @@
+/BaseProject/.vs
+*.user
+/BaseProject/BaseProject/Debug
+/BaseProject/BaseProject/Release
+*.pdb
