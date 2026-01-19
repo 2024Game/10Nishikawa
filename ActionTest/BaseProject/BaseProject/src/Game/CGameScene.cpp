@@ -253,7 +253,7 @@ void CGameScene::UpdateBattleReserve()
 
 	case 2:
 		mpPlayer->SetInBattle(0);
-		//CEnemyManager::Instance()->SetInBattle(0);
+		CEnemyManager::Instance()->SetInBattle(0);
 		
 		// ゲームBGMを読み込み
 		//CBGMManager::Instance()->Play(EBGMType::eGame);

@@ -63,6 +63,8 @@ public:
 	void Update();
 	// 後更新
 	void LateUpdate();
+	// 一番最後の更新
+	void LastUpdate();
 	// 描画
 	void Render();
 

@@ -68,6 +68,9 @@ void CApplication::Update()
 
 	// タスクの描画処理
 	CTaskManager::Instance()->Render();
+
+	// タスクの後更新処理
+	CTaskManager::Instance()->LastUpdate();
 #if _DEBUG
 	// コライダの描画
 	CCollisionManager::Instance()->Render();

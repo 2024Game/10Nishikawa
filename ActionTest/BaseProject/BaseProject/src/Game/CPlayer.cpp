@@ -10,6 +10,7 @@
 #include "CColliderCapsule.h"
 #include "CColliderSphere.h"
 #include "CTargetUI.h"
+#include "CPlayerUI3D.h"
 #include "CEnemy.h"
 #include "CEnemyManager.h"
 
@@ -27,6 +28,7 @@
 #define MOTION_BLUR_COUNT 5		// モーションブラーの反復回数
 
 #define LOCKON_DISTANCE 300.0f
+#define INDICATOR_OFFSET_Y 15.0f
 
 //#define ATTACK_START_FRAME 26.0f	// 斬り攻撃の開始フレーム
 //#define ATTACK_END_FRAME 50.0f		// 斬り攻撃の終了フレーム
@@ -109,6 +111,7 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	, mIsLockOn(false)
 	, mpLockOnTarget(nullptr)
 	, mpTargetUI(nullptr)
+	, mpIndicator(nullptr)
 {
 	mMaxHp = mpSaveManager->data.maxHp;
 	mHp = mpSaveManager->data.hp;
@@ -145,7 +148,7 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 		BODY_RADIUS
 	);
 	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::eRideableObject, ETag::eEnemy });
-	mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy, ELayer::eAttackCol });
+	mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
 
 	mpSlashSE = CResourceManager::Get<CSound>("SlashSound");
 
@@ -205,6 +208,11 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 
 	// ロックオンUIを作成
 	mpTargetUI = new CTargetUI();
+
+	// インジケーターを作成
+	mpIndicator = new CPlayerUI3D(this);
+	// インジケーターのオフセット位置を設定
+	mIndicatorOffsetPos = CVector(0.0f, INDICATOR_OFFSET_Y, 0.0f);
 }
 
 CPlayer::~CPlayer()
@@ -223,6 +231,13 @@ CPlayer::~CPlayer()
 	}
 
 	mpTargetUI->Kill();
+
+	// インジケーターが存在したら、一緒に削除する
+	if (mpIndicator != nullptr)
+	{
+		mpIndicator->SetOwner(nullptr);
+		mpIndicator->Kill();
+	}
 }
 
 CPlayer* CPlayer::Instance()
@@ -763,7 +778,7 @@ void CPlayer::UpdateAvoidR()
 		// 回避アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy, ELayer::eAttackCol });
+			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
 			mIsGravity = true;
 			// 待機状態へ移行
 			ChangeState(EState::eIdle);
@@ -808,7 +823,7 @@ void CPlayer::UpdateAvoidL()
 		// 回避アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy, ELayer::eAttackCol });
+			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
 			mIsGravity = true;
 			// 待機状態へ移行
 			ChangeState(EState::eIdle);
@@ -1222,6 +1237,9 @@ void CPlayer::Update()
 		System::ExitGame();
 	}
 
+	// 「I」キーを押したら、
+	// mpIndicator->SetShow(CInput::Key('I') ? true : false);
+
 	// 「B」キーを押したら、モーションブラー開始
 	if (CInput::PushKey('B'))
 	{
@@ -1252,6 +1270,9 @@ void CPlayer::Update()
 		Position(0.0f, 10.0f, 100.0f);
 	}
 
+	// HPゲージを更新
+	mpIndicator->Position(Position() + mIndicatorOffsetPos);
+
 #ifdef _DEBUG
 	CDebugPrint::Print("PlayerHP:%f / %f\n", mHp, mMaxHp);
 	CDebugPrint::Print("PlayerST:%f / %f\n", mSt, mMaxSt);
@@ -1260,7 +1281,14 @@ void CPlayer::Update()
 	CDebugPrint::Print("FPS:%f\n", Times::FPS());
 	CDebugPrint::Print("PlayerGrounded:%s\n", mIsGrounded ? "true" : "false");
 	CDebugPrint::Print("PlayerState:%d\n", mState);
+	CDebugPrint::Print("PlayerInTACol:%s\n", mInTypeAhead ? "true" : "false");
 #endif // _DEBUG
+}
+
+void CPlayer::LastUpdate()
+{
+	mpIndicator->SetShow(false);
+	mInTypeAhead = false;
 }
 
 void CPlayer::SetInBattle(int state)
@@ -1409,6 +1437,13 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			CVector adjust = hit.adjust;
 			adjust.Y(0.0f);
 			Position(Position() + adjust * hit.weight);
+		}
+
+		// 先行入力用コライダーがヒットした
+		if (other->Layer() == ELayer::eTypeAheadCol)
+		{
+			mpIndicator->SetShow(true);
+			mInTypeAhead = true;
 		}
 	}
 	// 剣のコライダーが衝突した

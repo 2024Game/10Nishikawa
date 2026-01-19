@@ -26,6 +26,8 @@ public:
 	virtual void Update();
 	//後更新
 	virtual void LateUpdate();
+	// 一番最後の更新
+	virtual void LastUpdate();
 	//描画
 	virtual void Render();
 

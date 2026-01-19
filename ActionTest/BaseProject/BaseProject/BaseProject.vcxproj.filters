@@ -373,9 +373,6 @@
     <ClCompile Include="src\Game\CWeapon.cpp">
       <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CGaugeUI3D.cpp">
-      <Filter>ソース ファイル\Game\UI</Filter>
-    </ClCompile>
     <ClCompile Include="src\BaseSystem\CImage3D.cpp">
       <Filter>ソース ファイル\BaseSystem\Effect</Filter>
     </ClCompile>
@@ -444,6 +441,12 @@
     </ClCompile>
     <ClCompile Include="src\Game\CLowHealP.cpp">
       <Filter>ソース ファイル\Game\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGaugeUI3D.cpp">
+      <Filter>ソース ファイル\Game\UI\GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CPlayerUI3D.cpp">
+      <Filter>ソース ファイル\Game\UI\GameScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -732,9 +735,6 @@
     <ClInclude Include="src\Game\CWeapon.h">
       <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CGaugeUI3D.h">
-      <Filter>ソース ファイル\Game\UI</Filter>
-    </ClInclude>
     <ClInclude Include="src\BaseSystem\CImage3D.h">
       <Filter>ソース ファイル\BaseSystem\Effect</Filter>
     </ClInclude>
@@ -803,6 +803,12 @@
     </ClInclude>
     <ClInclude Include="src\Game\CLowHealP.h">
       <Filter>ソース ファイル\Game\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGaugeUI3D.h">
+      <Filter>ソース ファイル\Game\UI\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CPlayerUI3D.h">
+      <Filter>ソース ファイル\Game\UI\GameScene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -675,6 +675,8 @@ void CHeavyWarrior::UpdateAttack1()
 	{
 		// ステップ0：攻撃アニメーション再生
 	case 0:
+		// 先行入力コライダーをオンにする
+		mpTACol->SetEnable(true);
 		ChangeAnimation((int)EAnimType::eAttack1, true);
 		mAttackVec = VectorZ();
 		mStateStep++;
@@ -785,6 +787,8 @@ void CHeavyWarrior::UpdateAttack1B()
 	{
 		// ステップ0：攻撃アニメーション再生
 	case 0:
+		// 先行入力コライダーをオンにする
+		mpTACol->SetEnable(true);
 		mpSword->Rotation(DASH_SWORD_OFFSET_ROT);
 		ChangeAnimation((int)EAnimType::eAttack1B, true);
 		mAttackVec = VectorZ();
@@ -895,6 +899,8 @@ void CHeavyWarrior::UpdateAttack2()
 	{
 		// ステップ0：攻撃アニメーション再生
 	case 0:
+		// 先行入力コライダーをオンにする
+		mpTACol->SetEnable(true);
 		ChangeAnimation((int)EAnimType::eAttack2, true);
 		mAttackVec = VectorZ();
 		mStateStep++;

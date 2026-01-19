@@ -101,6 +101,7 @@
     <ClCompile Include="src\Game\CLowHealP.cpp" />
     <ClCompile Include="src\Game\CMoveFloor.cpp" />
     <ClCompile Include="src\Game\CPlayer.cpp" />
+    <ClCompile Include="src\Game\CPlayerUI3D.cpp" />
     <ClCompile Include="src\Game\CRideableObject.cpp" />
     <ClCompile Include="src\Game\CRotateFloor.cpp" />
     <ClCompile Include="src\Game\CSaveManager.cpp" />
@@ -223,6 +224,7 @@
     <ClInclude Include="src\Game\CLowHealP.h" />
     <ClInclude Include="src\Game\CMoveFloor.h" />
     <ClInclude Include="src\Game\CPlayer.h" />
+    <ClInclude Include="src\Game\CPlayerUI3D.h" />
     <ClInclude Include="src\Game\CRideableObject.h" />
     <ClInclude Include="src\Game\CRotateFloor.h" />
     <ClInclude Include="src\Game\CSaveManager.h" />

@@ -25,6 +25,7 @@
 #define ATTACKX_PROB 50				// X段目攻撃を行う確率（パーセント）
 #define ATTACK1B_PROB 40			// 1段目B攻撃を行う確率（パーセント）
 
+#define AT_GRACE_FRAME 5.0f			// 先行入力フレーム
 #define ATTACK1_START_FRAME 25.0f	// 斬り攻撃1の開始フレーム
 #define ATTACK1_END_FRAME 55.0f		// 斬り攻撃1の終了フレーム
 #define ATTACK1B_START_FRAME 25.0f	// 斬り攻撃1Bの開始フレーム
@@ -674,6 +675,8 @@ void CSoldier::UpdateAttack1()
 	{
 		// ステップ0：攻撃アニメーション再生
 	case 0:
+		// 先行入力コライダーをオンにする
+		mpTACol->SetEnable(true);
 		ChangeAnimation((int)EAnimType::eAttack1, true);
 		mAttackVec = VectorZ();
 		mStateStep++;
@@ -784,6 +787,8 @@ void CSoldier::UpdateAttack1B()
 	{
 		// ステップ0：攻撃アニメーション再生
 	case 0:
+		// 先行入力コライダーをオンにする
+		mpTACol->SetEnable(true);
 		mpSword->Rotation(DASH_SWORD_OFFSET_ROT);
 		ChangeAnimation((int)EAnimType::eAttack1B, true);
 		mAttackVec = VectorZ();
@@ -894,6 +899,8 @@ void CSoldier::UpdateAttack2()
 	{
 	// ステップ0：攻撃アニメーション再生
 	case 0:
+		// 先行入力コライダーをオンにする
+		mpTACol->SetEnable(true);
 		ChangeAnimation((int)EAnimType::eAttack2, true);
 		mAttackVec = VectorZ();
 		mStateStep++;

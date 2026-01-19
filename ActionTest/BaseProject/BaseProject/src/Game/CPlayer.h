@@ -9,6 +9,7 @@ class CCollider;
 class CFlamethrower;
 class CGreatSword;
 class CTargetUI;
+class CPlayerUI3D;
 class CEnemy;
 
 /*
@@ -28,6 +29,8 @@ public:
 
 	// 更新
 	void Update();
+	//最後更新
+	void LastUpdate() override;
 
 	// CGameSceneから状態の移行指示を受け取る
 	void SetInBattle(int state);
@@ -213,4 +216,7 @@ private:
 	bool mIsLockOn;
 	CEnemy* mpLockOnTarget;
 	CTargetUI* mpTargetUI;
+	CPlayerUI3D* mpIndicator;		// インジケーター
+	CVector mIndicatorOffsetPos;	// インジケーターのオフセット座標
+	bool mInTypeAhead;				// 先行入力コライダー内に入っているか
 };

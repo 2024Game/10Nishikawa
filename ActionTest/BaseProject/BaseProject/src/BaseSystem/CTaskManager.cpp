@@ -313,6 +313,28 @@ void CTaskManager::LateUpdate()
 	}
 }
 
+void CTaskManager::LastUpdate()
+{
+	// 3Dタスクリスト内のタスクを順番に更新
+	for (CTask* task : m3dTasks)
+	{
+		// 更新するタスクであれば、タスクの後更新を実行
+		if (IsUpdate(task))
+		{
+			task->LastUpdate();
+		}
+	}
+	// 2Dタスクリスト内のタスクを順番に更新
+	for (CTask* task : m2dTasks)
+	{
+		// 更新するタスクであれば、タスクの後更新を実行
+		if (IsUpdate(task))
+		{
+			task->LastUpdate();
+		}
+	}
+}
+
 // 3Dオブジェクトの描画処理
 void CTaskManager::Render3d()
 {
