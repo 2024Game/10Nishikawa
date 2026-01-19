@@ -53,7 +53,7 @@ void CGameScene::Load()
 	CResourceManager::Load<CModel>(		"FieldCube",		"Field\\Object\\cube.obj");
 	CResourceManager::Load<CModel>(		"FieldCylinder",	"Field\\Object\\cylinder.obj");
 
-	CResourceManager::Load<CModelX>(	"Player",			"Character\\TestPlayer\\player.x");
+	CResourceManager::Load<CModelX>(	"Player",			"Character\\Player\\player.x");
 	CResourceManager::Load<CModelX>(	"Cactus",			"Character\\Enemy\\Cactus\\cactus.x");
 	CResourceManager::Load<CModelX>(	"Soldier",			"Character\\TestPlayer\\player.x");
 

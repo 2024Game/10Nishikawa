@@ -216,6 +216,7 @@ private:
 	bool mIsLockOn;
 	CEnemy* mpLockOnTarget;
 	CTargetUI* mpTargetUI;
+	CModelXFrame* mpHeadFrame;
 	CPlayerUI3D* mpIndicator;		// インジケーター
 	CVector mIndicatorOffsetPos;	// インジケーターのオフセット座標
 	bool mInTypeAhead;				// 先行入力コライダー内に入っているか

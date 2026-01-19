@@ -281,6 +281,7 @@ void CGameScene::UpdateBattle()
 	
 	if (mpPlayer->GetHp() <= 0.0f || !CEnemyManager::Instance()->Surviv())
 	{
+		Times::SetTimeScale(0.25f);
 		ChangeState(EState::ebattleresult);
 	}
 }
@@ -295,18 +296,20 @@ void CGameScene::UpdateBattleResult()
 
 	case 1:
 		// 戦闘結果時の待機時間待ち
-		if (mElapsedTime < 0.2f)
+		if (mElapsedTime < 0.75f)
 		{
 			mElapsedTime += Times::DeltaTime();
 		}
 		// 待機時間が経過した
 		else
 		{
+			mElapsedTime = 0.0f;
 			mStateStep++;
 		}
 		break;
 
 	case 2:
+		Times::SetTimeScale(1.0f);
 		if (mpPlayer->GetHp() <= 0.0f)
 		{
 			mPlayerWin = false;

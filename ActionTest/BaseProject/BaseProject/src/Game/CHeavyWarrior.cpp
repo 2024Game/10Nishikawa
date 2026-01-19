@@ -25,6 +25,7 @@
 #define ATTACKX_PROB 50				// X段目攻撃を行う確率（パーセント）
 #define ATTACK1B_PROB 40			// 1段目B攻撃を行う確率（パーセント）
 
+#define AT_GRACE_FRAME 5.0f			// 先行入力フレーム
 #define ATTACK1_START_FRAME 25.0f	// 斬り攻撃1の開始フレーム
 #define ATTACK1_END_FRAME 55.0f		// 斬り攻撃1の終了フレーム
 #define ATTACK1B_START_FRAME 25.0f	// 斬り攻撃1Bの開始フレーム
@@ -673,16 +674,23 @@ void CHeavyWarrior::UpdateAttack1()
 	// ステップごとに処理を分ける
 	switch (mStateStep)
 	{
-		// ステップ0：攻撃アニメーション再生
+	// ステップ0：攻撃アニメーション再生
 	case 0:
-		// 先行入力コライダーをオンにする
-		mpTACol->SetEnable(true);
 		ChangeAnimation((int)EAnimType::eAttack1, true);
 		mAttackVec = VectorZ();
 		mStateStep++;
 		break;
-		// ステップ1：攻撃開始
 	case 1:
+		// 先行入力フレーム開始フレームまで経過したか
+		if (GetAnimationFrame() >= ATTACK1_START_FRAME - AT_GRACE_FRAME)
+		{
+			// 先行入力コライダーをオンにする
+			mpTACol->SetEnable(true);
+			mStateStep++;
+		}
+		break;
+	// ステップ2：攻撃開始
+	case 2:
 		// 攻撃を開始するまで、徐々に戦闘相手の方向へ向く
 		LookAtBattleTarget();
 
@@ -699,8 +707,8 @@ void CHeavyWarrior::UpdateAttack1()
 			mStateStep++;
 		}
 		break;
-		// ステップ2：攻撃終了
-	case 2:
+	// ステップ3：攻撃終了
+	case 3:
 		// 攻撃終了フレームまで経過したか
 		if (GetAnimationFrame() >= ATTACK1_END_FRAME)
 		{
@@ -721,8 +729,8 @@ void CHeavyWarrior::UpdateAttack1()
 			Position(Position() + move);
 		}
 		break;
-		// ステップ3：攻撃アニメーション終了待ち
-	case 3:
+	// ステップ4：攻撃アニメーション終了待ち
+	case 4:
 		// アニメーション終了したら、待機状態へ戻す
 		if (IsAnimationFinished())
 		{
@@ -759,7 +767,7 @@ void CHeavyWarrior::UpdateAttack1()
 			}
 		}
 		break;
-	case 4:
+	case 5:
 		STRegene();
 		// 連続攻撃の終了なら、n秒間隙ができる
 		if (mElapsedTime < mNegTime)
@@ -785,17 +793,24 @@ void CHeavyWarrior::UpdateAttack1B()
 	// ステップごとに処理を分ける
 	switch (mStateStep)
 	{
-		// ステップ0：攻撃アニメーション再生
+	// ステップ0：攻撃アニメーション再生
 	case 0:
-		// 先行入力コライダーをオンにする
-		mpTACol->SetEnable(true);
 		mpSword->Rotation(DASH_SWORD_OFFSET_ROT);
 		ChangeAnimation((int)EAnimType::eAttack1B, true);
 		mAttackVec = VectorZ();
 		mStateStep++;
 		break;
-		// ステップ1：攻撃開始
 	case 1:
+		// 先行入力フレーム開始フレームまで経過したか
+		if (GetAnimationFrame() >= ATTACK1_START_FRAME - AT_GRACE_FRAME)
+		{
+			// 先行入力コライダーをオンにする
+			mpTACol->SetEnable(true);
+			mStateStep++;
+		}
+		break;
+	// ステップ2：攻撃開始
+	case 2:
 		// 攻撃を開始するまで、徐々に戦闘相手の方向へ向く
 		LookAtBattleTarget();
 
@@ -812,8 +827,8 @@ void CHeavyWarrior::UpdateAttack1B()
 			mStateStep++;
 		}
 		break;
-		// ステップ2：攻撃終了
-	case 2:
+	// ステップ3：攻撃終了
+	case 3:
 		// 攻撃終了フレームまで経過したか
 		if (GetAnimationFrame() >= ATTACK1B_END_FRAME)
 		{
@@ -834,8 +849,8 @@ void CHeavyWarrior::UpdateAttack1B()
 			Position(Position() + move);
 		}
 		break;
-		// ステップ3：攻撃アニメーション終了待ち
-	case 3:
+	// ステップ4：攻撃アニメーション終了待ち
+	case 4:
 		// アニメーション終了したら、待機状態へ戻す
 		if (IsAnimationFinished())
 		{
@@ -873,7 +888,7 @@ void CHeavyWarrior::UpdateAttack1B()
 			}
 		}
 		break;
-	case 4:
+	case 5:
 		STRegene();
 		// 連続攻撃の終了なら、n秒間隙ができる
 		if (mElapsedTime < mNegTime)
@@ -899,15 +914,21 @@ void CHeavyWarrior::UpdateAttack2()
 	{
 		// ステップ0：攻撃アニメーション再生
 	case 0:
-		// 先行入力コライダーをオンにする
-		mpTACol->SetEnable(true);
 		ChangeAnimation((int)EAnimType::eAttack2, true);
 		mAttackVec = VectorZ();
 		mStateStep++;
 		break;
-
-		// ステップ1：攻撃開始
 	case 1:
+		// 先行入力フレーム開始フレームまで経過したか
+		if (GetAnimationFrame() >= ATTACK1_START_FRAME - AT_GRACE_FRAME)
+		{
+			// 先行入力コライダーをオンにする
+			mpTACol->SetEnable(true);
+			mStateStep++;
+		}
+		break;
+	// ステップ2：攻撃開始
+	case 2:
 		// 攻撃を開始するまで、徐々に戦闘相手の方向へ向く
 		LookAtBattleTarget();
 
@@ -922,8 +943,8 @@ void CHeavyWarrior::UpdateAttack2()
 		}
 		break;
 
-		// ステップ2：攻撃終了
-	case 2:
+	// ステップ3：攻撃終了
+	case 3:
 		// 攻撃終了フレームまで経過したか
 		if (GetAnimationFrame() >= ATTACK2_END_FRAME)
 		{
@@ -946,8 +967,8 @@ void CHeavyWarrior::UpdateAttack2()
 		}
 		break;
 
-		// ステップ3：攻撃アニメーション終了待ち
-	case 3:
+	// ステップ4：攻撃アニメーション終了待ち
+	case 4:
 		// アニメーション終了したら、待機状態へ戻す
 		if (IsAnimationFinished())
 		{
@@ -985,7 +1006,7 @@ void CHeavyWarrior::UpdateAttack2()
 		}
 		break;
 
-	case 4:
+	case 5:
 		STRegene();
 		// 連続攻撃の終了なら、n秒間隙ができる
 		if (mElapsedTime < mNegTime)
@@ -1008,9 +1029,6 @@ void CHeavyWarrior::UpdateAttackX()
 	switch (mStateStep)
 	{
 	case 0:
-		// 先行入力コライダーをオンにする
-		mpTACol->SetEnable(true);
-
 		mpSword->Rotation(ATTACKX_SWORD_OFFSET_ROT);
 		// 攻撃アニメーションを開始
 		ChangeAnimation((int)EAnimType::eAttackX, true);
@@ -1023,8 +1041,16 @@ void CHeavyWarrior::UpdateAttackX()
 
 		mStateStep++;
 		break;
-
 	case 1:
+		// 先行入力フレーム開始フレームまで経過したか
+		if (GetAnimationFrame() >= ATTACK1_START_FRAME - AT_GRACE_FRAME)
+		{
+			// 先行入力コライダーをオンにする
+			mpTACol->SetEnable(true);
+			mStateStep++;
+		}
+		break;
+	case 2:
 		// 攻撃を開始するまで、徐々に戦闘相手の方向へ向く
 		LookAtBattleTarget();
 
@@ -1039,7 +1065,7 @@ void CHeavyWarrior::UpdateAttackX()
 		}
 		break;
 
-	case 2:
+	case 3:
 		if (GetAnimationFrame() >= ATTACKX_START_FRAME + 85.0f)
 		{
 			CObjectBase::AttackStart();
@@ -1048,7 +1074,7 @@ void CHeavyWarrior::UpdateAttackX()
 		}
 		break;
 
-	case 3:
+	case 4:
 		if (GetAnimationFrame() >= ATTACKX_END_FRAME)
 		{
 			// 攻撃終了
@@ -1067,7 +1093,7 @@ void CHeavyWarrior::UpdateAttackX()
 		}
 
 		break;
-	case 4:
+	case 5:
 		// 攻撃アニメーションが終了したら、
 		if (IsAnimationFinished())
 		{
@@ -1088,7 +1114,7 @@ void CHeavyWarrior::UpdateAttackX()
 		}
 		break;
 
-	case 5:
+	case 6:
 		STRegene();
 		// 連続攻撃の終了なら、n秒間隙ができる
 		if (mElapsedTime < mNegTime)

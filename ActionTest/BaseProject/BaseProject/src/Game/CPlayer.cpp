@@ -28,7 +28,7 @@
 #define MOTION_BLUR_COUNT 5		// モーションブラーの反復回数
 
 #define LOCKON_DISTANCE 300.0f
-#define INDICATOR_OFFSET_Y 15.0f
+#define INDICATOR_OFFSET_Y 5.0f
 
 //#define ATTACK_START_FRAME 26.0f	// 斬り攻撃の開始フレーム
 //#define ATTACK_END_FRAME 50.0f		// 斬り攻撃の終了フレーム
@@ -112,6 +112,7 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	, mpLockOnTarget(nullptr)
 	, mpTargetUI(nullptr)
 	, mpIndicator(nullptr)
+	, mpHeadFrame(nullptr)
 {
 	mMaxHp = mpSaveManager->data.maxHp;
 	mHp = mpSaveManager->data.hp;
@@ -209,6 +210,7 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	// ロックオンUIを作成
 	mpTargetUI = new CTargetUI();
 
+	mpHeadFrame = mpModel->FinedFrame("Armature_mixamorig_Head");
 	// インジケーターを作成
 	mpIndicator = new CPlayerUI3D(this);
 	// インジケーターのオフセット位置を設定
@@ -1196,14 +1198,17 @@ void CPlayer::Update()
 	// 移動
 	Position(Position() + moveSpeed);
 
-	// プレイヤーを移動方向へ向ける
-	CVector current = VectorZ();
-	CVector target = moveSpeed;
-	target.Y(0.0f);
-	target.Normalize();
-	CVector forward = CVector::Slerp(current, target, 0.125f);
-	Rotation(CQuaternion::LookRotation(forward));
-
+	if (mState != EState::eDeath)
+	{
+		// プレイヤーを移動方向へ向ける
+		CVector current = VectorZ();
+		CVector target = moveSpeed;
+		target.Y(0.0f);
+		target.Normalize();
+		CVector forward = CVector::Slerp(current, target, 0.125f);
+		Rotation(CQuaternion::LookRotation(forward));
+	}
+	
 	// ホイールクリックで弾丸発射
 	if (CInput::PushKey(VK_MBUTTON))
 	{
@@ -1270,8 +1275,9 @@ void CPlayer::Update()
 		Position(0.0f, 10.0f, 100.0f);
 	}
 
-	// HPゲージを更新
-	mpIndicator->Position(Position() + mIndicatorOffsetPos);
+	// インジケーターを更新
+	CMatrix mtx = mpHeadFrame->CombinedMatrix();
+	mpIndicator->Position(mtx.Position() + mIndicatorOffsetPos);
 
 #ifdef _DEBUG
 	CDebugPrint::Print("PlayerHP:%f / %f\n", mHp, mMaxHp);
@@ -1372,6 +1378,11 @@ void CPlayer::TakeDamage(float damage, CObjectBase* causer)
 	}
 	else
 	{
+		// 攻撃を加えた相手の方向へ向く
+		CVector targetPos = causer->Position();
+		CVector vec = targetPos - Position();
+		vec.Y(0.0f);
+		Rotation(CQuaternion::LookRotation(vec.Normalized()));
 		// 移動を停止
 		mMoveSpeed = CVector::zero;
 		// 死亡状態へ移行

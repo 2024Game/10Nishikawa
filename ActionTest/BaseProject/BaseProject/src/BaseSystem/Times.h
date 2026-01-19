@@ -10,6 +10,13 @@ namespace Times
 	float FPS();
 	// 前回のフレームの経過時間を取得
 	float DeltaTime();
+	// 前回のフレームの経過時間を取得(タイムスケールの影響を受けていない)
+	float UnscaledDeltaTime();
 	// ゲーム起動してからの時間を取得
 	float Time();
+
+	// タイムスケールを取得
+	float TimeScale();
+	// タイムスケールを設定
+	void SetTimeScale(float timeScale);
 }

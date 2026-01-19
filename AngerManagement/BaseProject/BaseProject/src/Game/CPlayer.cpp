@@ -14,7 +14,7 @@
 #include "CEnemyManager.h"
 
 // アニメーションのパス
-#define ANIM_PATH "Character\\TestPlayer\\Anims\\"
+#define ANIM_PATH "Character\\Player\\Anims\\"
 #define BODY_HEIGHT 16.0f	// 本体のコライダーの高さ
 #define BODY_RADIUS 3.0f	// 本体のコライダーの幅
 #define MOVE_SPEED 0.3f		// 移動速度
@@ -68,21 +68,21 @@ CPlayer* CPlayer::spInstance = nullptr;
 const CPlayer::AnimData CPlayer::ANIM_DATA[] =
 {
 	{ "",						true,	0.0f,	1.0f	},	// Tポーズ
-	{ ANIM_PATH"idle.x",		true,	121.0f,	1.0f	},	// 待機
+	{ ANIM_PATH"idle.x",		true,	115.0f,	1.0f	},	// 待機
 	{ ANIM_PATH"walk.x",		true,	82.0f,	1.5f	},	// 歩行
-	{ ANIM_PATH"run.x",			true,	39.0f,	1.5f	},	// ダッシュ
-	{ ANIM_PATH"GSSlash1.x",	false,	77.0f,	1.25f	},	// 斬り攻撃
-	{ ANIM_PATH"GSSlash2.x",	false,	110.0f,	1.50f	},	// 斬り攻撃
-	{ ANIM_PATH"GSSlash.x",		false,	212.0f,	1.75f	},	// 斬りかかり攻撃
-	{ ANIM_PATH"kick.x",		false,	74.0f,	1.75f	},	// 蹴り攻撃
-	{ ANIM_PATH"jump_start.x",	false,	25.0f,	1.0f	},	// ジャンプ開始
-	{ ANIM_PATH"jump.x",		true,	1.0f,	1.0f	},	// ジャンプ中
-	{ ANIM_PATH"jump_end.x",	false,	26.0f,	1.0f	},	// ジャンプ終了
-	{ ANIM_PATH"avoidR.x",		false,	58.0f,	1.5f	},	// 回避:右
-	{ ANIM_PATH"avoidL.x",		false,	58.0f,	1.5f	},	// 回避:左
-	{ ANIM_PATH"hit.x",			false,	44.0f,	1.0f	},	// 仰け反り
-	{ ANIM_PATH"death.x",		false,	182.0f,	1.0f	},	// 死亡
-	{ ANIM_PATH"victory.x",		true,	271.0f,	1.0f	},	// 勝利
+	{ ANIM_PATH"run.x",			true,	48.0f,	1.5f	},	// ダッシュ
+	{ "",						true,	0.0f,	1.0f	},	// 斬り攻撃
+	{ "",						true,	0.0f,	1.0f	},	// 斬り攻撃
+	{ "",						true,	0.0f,	1.0f	},	// 斬りかかり攻撃
+	{ "",						true,	0.0f,	1.0f	},	// 蹴り攻撃
+	{ "",						true,	0.0f,	1.0f	},	// ジャンプ開始
+	{ "",						true,	0.0f,	1.0f	},	// ジャンプ中
+	{ "",						true,	0.0f,	1.0f	},	// ジャンプ終了
+	{ "",						true,	0.0f,	1.0f	},	// 回避:右
+	{ "",						true,	0.0f,	1.0f	},	// 回避:左
+	{ "",						true,	0.0f,	1.0f	},	// 仰け反り
+	{ "",						true,	0.0f,	1.0f	},	// 死亡
+	{ "",						true,	0.0f,	1.0f	},	// 勝利
 };
 // ToDo 連続攻撃が予約されたときは前のアニメーションの
 // 終わりのフレームを短くしたほうがいいかも

@@ -15,7 +15,7 @@ CPlayerUI3D::CPlayerUI3D(CObjectBase* owner)
 	// ”’ƒCƒ[ƒW‚ð“Ç‚Ýž‚Ý
 	mpWhiteImg = new CImage3D
 	(
-		"UI\\white.png",
+		"UI\\Danger.png",
 		ETag::eUI,
 		ETaskPriority::eUI3D, 0,
 		ETaskPauseType::eGame,
@@ -23,7 +23,7 @@ CPlayerUI3D::CPlayerUI3D(CObjectBase* owner)
 	);
 	mpWhiteImg->SetWorldUnitPerPixel(WORLD_UNIT_PER_PIXEL);
 	mpWhiteImg->SetDepthMask(true);
-	mImageSize = mpWhiteImg->GetSize() * 0.25f;
+	mImageSize = mpWhiteImg->GetSize() * 0.1f;
 }
 
 CPlayerUI3D::~CPlayerUI3D()

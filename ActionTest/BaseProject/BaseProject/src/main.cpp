@@ -11,6 +11,9 @@
 int gFPS = 60;
 // 前回のフレームの経過時間
 float gDeltaTime = 0.0f;
+// タイムスケール
+float gTimeScale = 1.0f;
+
 // ゲーム開始時の時間
 LARGE_INTEGER start_time;
 
@@ -213,6 +216,12 @@ float Times::FPS()
 // 前回のフレームの経過時間を取得
 float Times::DeltaTime()
 {
+	return gDeltaTime * gTimeScale;
+}
+
+// 前回のフレームの経過時間を取得(タイムスケールの影響を受けていない)
+float Times::UnscaledDeltaTime()
+{
 	return gDeltaTime;
 }
 
@@ -223,4 +232,16 @@ float Times::Time()
 	QueryPerformanceFrequency(&freq);
 	QueryPerformanceCounter(&time);
 	return (float)(time.QuadPart - start_time.QuadPart) / freq.QuadPart;
+}
+
+// タイムスケールを取得
+float Times::TimeScale()
+{
+	return gTimeScale;
+}
+
+// タイムスケールを設定
+void Times::SetTimeScale(float timeScale)
+{
+	gTimeScale = max(timeScale, 0.0f);
 }
