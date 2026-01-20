@@ -95,7 +95,7 @@ void CGameScene::Load()
 	mpPlayer->Position(0.0f, 5.0f, 100.0f);
 
 	CLowHealP* lowHpPotion = new CLowHealP();
-	lowHpPotion->Position(0.0f, 150.0f, 0.0f);
+	lowHpPotion->Position(0.0f, 150.0f, 5.0f);
 	//lowHpPotion->Scale(10.0f, 10.0f, 10.0f);
 
 	// サボテンの敵を作成

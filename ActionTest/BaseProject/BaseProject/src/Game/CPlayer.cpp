@@ -53,7 +53,7 @@
 // ダッシュ時の剣のオフセット向き
 #define DASH_SWORD_OFFSET_ROT CVector(20.0f, 0.0f, -70.0f)
 
-#define KICK_START_FRAME 26.0f	// 蹴り攻撃の開始フレーム
+#define KICK_START_FRAME 26.0f		// 蹴り攻撃の開始フレーム
 #define KICK_END_FRAME 40.0f		// 蹴り攻撃の終了フレーム
 #define KICK_COL_RADIUS 7.5f		// 蹴り攻撃のコライダーの半径
 // 蹴り攻撃のコライダーのオフセット座標
