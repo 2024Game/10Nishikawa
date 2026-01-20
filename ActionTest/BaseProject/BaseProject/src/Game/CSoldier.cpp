@@ -50,10 +50,10 @@
 #define KICK_END_FRAME 40.0f		// 蹴り攻撃の終了フレーム
 #define KICK_COL_RADIUS 7.5f		// 蹴り攻撃のコライダーの半径
 // 蹴り攻撃のコライダーのオフセット座標
-#define KICK_COL_OFFSET_POS CVector(0.0f, 4.0f, 2.5f)
+#define KICK_COL_OFFSET_POS CVector(0.0f, 4.0f, 1.5f)
 
 // 先行入力のコライダーの半径
-#define TA_COL_RADIUS 27.5f
+#define TA_COL_RADIUS 23.0f
 // 先行入力のコライダーのオフセット座標
 #define TA_COL_OFFSET_POS CVector(0.0f, 4.0f, 2.75f)
 
@@ -413,6 +413,7 @@ void CSoldier::ChangeAnimation(int type, bool restart)
 	case 5:
 	case 6:
 	case 7:
+	case 8:
 		CXCharacter::SetAnimationSpeed(data.speed * mAtSpeedMag);
 		break;
 	default:

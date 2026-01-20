@@ -413,6 +413,7 @@ void CHeavyWarrior::ChangeAnimation(int type, bool restart)
 	case 5:
 	case 6:
 	case 7:
+	case 8:
 		CXCharacter::SetAnimationSpeed(data.speed * mAtSpeedMag);
 		break;
 	default:

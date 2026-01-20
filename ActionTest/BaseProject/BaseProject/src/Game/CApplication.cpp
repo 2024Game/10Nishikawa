@@ -53,6 +53,8 @@ void CApplication::End()
 void CApplication::Update()
 {
 	CTaskManager::Instance()->Delete();
+	// 衝突処理
+	CCollisionManager::Instance()->CollisionAll();
 	// タスクの更新処理
 	CTaskManager::Instance()->Update();
 	// 衝突処理

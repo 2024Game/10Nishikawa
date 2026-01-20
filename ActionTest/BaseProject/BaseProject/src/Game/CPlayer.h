@@ -45,6 +45,9 @@ public:
 	// ダメージを受ける
 	void TakeDamage(float damage, CObjectBase* causer) override;
 
+	// プレイヤーの当たり判定を変更して無敵にする
+	void SetInvincible(bool invincible);
+
 	/// <summary>
 	/// 衝突処理
 	/// </summary>
@@ -75,6 +78,8 @@ private:
 	void UpdateAttackX();
 	// 蹴り攻撃
 	void UpdateKick();
+	// スライド斬り攻撃
+	void UpdateSlideAttack();
 	// ジャンプ開始
 	void UpdateJumpStart();
 	// ジャンプ中
@@ -94,6 +99,7 @@ private:
 
 	// ボタンが押されていたら回避へ移行する
 	void AvoidJudge();
+
 
 	// 移動の更新処理
 	void UpdateMove();
@@ -118,6 +124,7 @@ private:
 		eAttack2,	// 斬り攻撃2
 		eAttackX,	// 斬りかかり攻撃
 		eKick,		// 蹴り攻撃
+		eSlideAtt,	// スライド斬り攻撃
 		eJumpStart,	// ジャンプ開始
 		eJump,		// ジャンプ中
 		eJumpEnd,	// ジャンプ終了
@@ -155,6 +162,7 @@ private:
 		eAttack2,	// 斬り攻撃2
 		eAttackX,	// 斬りかかり攻撃
 		eKick,		// 蹴り攻撃
+		eSlideAtt,	// スライド斬り攻撃
 		eJumpStart,	// ジャンプ開始
 		eJump,		// ジャンプ中
 		eJumpEnd,	// ジャンプ終了
@@ -220,4 +228,5 @@ private:
 	CPlayerUI3D* mpIndicator;		// インジケーター
 	CVector mIndicatorOffsetPos;	// インジケーターのオフセット座標
 	bool mInTypeAhead;				// 先行入力コライダー内に入っているか
+	bool mInJustAction;
 };

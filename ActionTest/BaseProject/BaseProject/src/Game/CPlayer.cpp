@@ -18,14 +18,14 @@
 #define ANIM_PATH "Character\\TestPlayer\\Anims\\"
 #define BODY_HEIGHT 16.0f	// 本体のコライダーの高さ
 #define BODY_RADIUS 3.0f	// 本体のコライダーの幅
-#define MOVE_SPEED 0.3f		// 移動速度
-#define RUN_SPEED 0.9f		// 移動速度
+#define MOVE_SPEED 18.0f	// 移動速度
+#define RUN_SPEED 54.0f		// 移動速度
 #define JUMP_SPEED 1.5f		// ジャンプ速度
 #define GRAVITY 0.0625f		// 重力加速度
 
-#define MOTION_BLUR_TIME 3.0f	// モーションブラーを掛ける時間
-#define MOTION_BLUR_WIDTH 1.0f	// モーションブラーの幅
-#define MOTION_BLUR_COUNT 5		// モーションブラーの反復回数
+#define MOTION_BLUR_TIME 3.5f	// モーションブラーを掛ける時間
+#define MOTION_BLUR_WIDTH 0.8f	// モーションブラーの幅
+#define MOTION_BLUR_COUNT 4		// モーションブラーの反復回数
 
 #define LOCKON_DISTANCE 300.0f
 #define INDICATOR_OFFSET_Y 5.0f
@@ -41,7 +41,8 @@
 #define ATTACKX_END_FRAME 210.0f	// 斬り攻撃Xの終了フレーム
 #define DEATH_END_FRAME 110.0f		// 死亡の終了フレーム
 
-
+#define SLIDEATT_START_FRAME 60.0f	// 斬り攻撃Xの開始フレーム
+#define SLIDEATT_END_FRAME 100.0f	// 斬り攻撃Xの終了フレーム
 
 // 剣のオフセット座標
 #define SWORD_OFFSET_POS CVector(0.0f, 7.2f, 3.5f)
@@ -77,6 +78,7 @@ const CPlayer::AnimData CPlayer::ANIM_DATA[] =
 	{ ANIM_PATH"GSSlash2.x",	false,	110.0f,	1.50f	},	// 斬り攻撃
 	{ ANIM_PATH"GSSlash.x",		false,	212.0f,	1.75f	},	// 斬りかかり攻撃
 	{ ANIM_PATH"kick.x",		false,	74.0f,	1.75f	},	// 蹴り攻撃
+	{ ANIM_PATH"SlideAttack.x",	false,	128.0f,	2.0f	},	// スライド斬り攻撃
 	{ ANIM_PATH"jump_start.x",	false,	25.0f,	1.0f	},	// ジャンプ開始
 	{ ANIM_PATH"jump.x",		true,	1.0f,	1.0f	},	// ジャンプ中
 	{ ANIM_PATH"jump_end.x",	false,	26.0f,	1.0f	},	// ジャンプ終了
@@ -113,6 +115,8 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	, mpTargetUI(nullptr)
 	, mpIndicator(nullptr)
 	, mpHeadFrame(nullptr)
+	, mInTypeAhead(false)
+	, mInJustAction(false)
 {
 	mMaxHp = mpSaveManager->data.maxHp;
 	mHp = mpSaveManager->data.hp;
@@ -149,7 +153,7 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 		BODY_RADIUS
 	);
 	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::eRideableObject, ETag::eEnemy });
-	mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
+	SetInvincible(false);
 
 	mpSlashSE = CResourceManager::Get<CSound>("SlashSound");
 
@@ -299,6 +303,7 @@ void CPlayer::UpdateIdle()
 	// 接地していれば、
 	if (mIsGrounded)
 	{
+		AvoidJudge();
 		// 左クリックで斬撃攻撃へ移行
 		if (CInput::PushKey(VK_LBUTTON) && mSt >= mA1StCost)
 		{
@@ -323,25 +328,6 @@ void CPlayer::UpdateIdle()
 		else if (CInput::PushKey(VK_SPACE))
 		{
 			ChangeState(EState::eJumpStart);
-		}
-		// 右クリックで回避へ移行
-		else if (CInput::PushKey(VK_RBUTTON) && CInput::Key('D') && mSt >= mAvoidStCost)
-		{
-			CCharaBase::UseStamina(mAvoidStCost);
-			mMoveSpeed = CVector::zero;
-			// プレイヤーの移動ベクトルを求める
-			mAvoidVec = CalcMoveVec();
-			ChangeState(EState::eAvoidR);
-			mIsGravity = false;
-		}
-		else if (CInput::PushKey(VK_RBUTTON) && CInput::Key('A') && mSt >= mAvoidStCost)
-		{
-			CCharaBase::UseStamina(mAvoidStCost);
-			mMoveSpeed = CVector::zero;
-			// プレイヤーの移動ベクトルを求める
-			mAvoidVec = CalcMoveVec();
-			ChangeState(EState::eAvoidL);
-			mIsGravity = false;
 		}
 	}
 }
@@ -714,6 +700,135 @@ void CPlayer::UpdateKick()
 	}
 }
 
+void CPlayer::UpdateSlideAttack()
+{
+	switch (mStateStep)
+	{
+	case 0:
+	{
+		LockOnTarget();
+		if (mpLockOnTarget)
+		{
+			// 左クリックで斬撃攻撃へ移行
+			if (CInput::PushKey(VK_LBUTTON))
+			{
+				// モーションブラーを掛けている最中であれば、
+				// 新しくモーションブラーを掛け直さない
+				if (mMotionBlurRemainTime <= 0.0f)
+				{
+					System::SetEnableMotionBlur(true);
+					mMotionBlurRemainTime = MOTION_BLUR_TIME;
+				}
+				mStateStep++;
+			}
+		}
+		break;
+	}
+	case 1:
+	{
+		// カメラの向きを取得（Y軸のみ）
+		CCamera* camera = CCamera::MainCamera();
+		if (camera)
+		{
+			CVector camForward = -camera->VectorZ();
+			camForward.Y(0.0f);          // Y成分を無視（水平回転のみ）
+
+			if (camForward.LengthSqr() > 0.0001f)
+			{
+				camForward.Normalize();
+				Rotation(CQuaternion::LookRotation(camForward));
+			}
+		}
+
+		mpGreatSword->Rotation(SWORD_OFFSET_ROT);
+		// 攻撃アニメーションを開始
+		ChangeAnimation(EAnimType::eSlideAtt, true);
+		// 斬撃SEの再生済みフラグを初期化
+		mIsPlayedSlashSE = false;
+		// 斬撃エフェクトの生成済みフラグを初期化
+		mIsSpawnedSlashEffect = false;
+
+		mAttackVec = VectorZ();
+
+		mStateStep++;
+		break;
+	}
+	case 2:
+	{
+		CCamera* camera = CCamera::MainCamera();
+		if (!camera || !mpLockOnTarget) break;
+
+		// ===== カメラの向き（平面）=====
+		CVector camForward = -camera->VectorZ();
+		camForward.Y(0.0f);
+
+		if (camForward.LengthSqr() < 0.0001f) break;
+
+		camForward.Normalize();
+
+		// 向きをカメラ方向へ
+		Rotation(CQuaternion::LookRotation(camForward));
+
+
+		// ===== 距離はロックオンターゲットまで =====
+		CVector myPos = Position();
+		CVector targetPos = mpLockOnTarget->Position();
+		targetPos.Y(myPos.Y());   // 平面距離のみ
+
+		float dist = CVector::Distance(myPos, targetPos);
+		if (dist > 0.001f)
+		{
+			// 1フレームあたりの移動距離
+			float movePerFrame = dist / (SLIDEATT_START_FRAME - 5.0f);
+
+			// 1秒あたりの移動量
+			mMoveSpeed = camForward * movePerFrame * Times::DeltaTime() * 60 * 2.75;
+		}
+
+		// ===== 攻撃開始 =====
+		if (GetAnimationFrame() >= SLIDEATT_START_FRAME)
+		{
+			mMoveSpeed = CVector::zero;
+			mpSlashSE->Play();
+			AttackStart();
+			mStateStep++;
+		}
+		break;
+	}
+	case 3:
+		if (GetAnimationFrame() >= SLIDEATT_END_FRAME)
+		{
+			// 攻撃終了
+			AttackEnd();
+
+			mInAttack = false;
+			mMoveSpeed = CVector::zero;
+			mStateStep++;
+		}
+
+		if (mInAttack)
+		{
+			// 1秒あたりの移動速度
+			mMoveSpeed = mAttackVec * 3.0f * Times::DeltaTime();
+		}
+		break;
+	case 4:
+		// 攻撃アニメーションが終了したら、
+		if (IsAnimationFinished())
+		{
+			Times::SetTimeScale(1.0f);
+			mInJustAction = false;
+			UnLockTarget();
+			SetInvincible(false);
+			mpGreatSword->Rotation(SWORD_OFFSET_ROT);
+			// 待機状態へ移行
+			ChangeState(EState::eIdle);
+			ChangeAnimation(EAnimType::eIdle);
+		}
+		break;
+	}
+}
+
 // ジャンプ開始
 void CPlayer::UpdateJumpStart()
 {
@@ -757,7 +872,7 @@ void CPlayer::UpdateAvoidR()
 	case 1:
 		if (GetAnimationFrame() >= 20.0f && !mAvoidMoving)
 		{
-			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
+			SetInvincible(true);
 			mAvoidMoving = true;
 			mStateStep++;
 		}
@@ -780,11 +895,21 @@ void CPlayer::UpdateAvoidR()
 		// 回避アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
-			mIsGravity = true;
-			// 待機状態へ移行
-			ChangeState(EState::eIdle);
-			ChangeAnimation(EAnimType::eIdle);
+			if (!mInJustAction)
+			{
+				SetInvincible(false);
+				mIsGravity = true;
+				Times::SetTimeScale(1.0f);
+				// 待機状態へ移行
+				ChangeState(EState::eIdle);
+				ChangeAnimation(EAnimType::eIdle);
+			}
+			else
+			{
+				mIsGravity = true;
+				// スライド斬り攻撃状態へ移行
+				ChangeState(EState::eSlideAtt);
+			}
 		}
 		break;
 	}
@@ -802,7 +927,7 @@ void CPlayer::UpdateAvoidL()
 	case 1:
 		if (GetAnimationFrame() >= 20.0f && !mAvoidMoving)
 		{
-			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
+			SetInvincible(true);
 			mAvoidMoving = true;
 			mStateStep++;
 		}
@@ -825,11 +950,20 @@ void CPlayer::UpdateAvoidL()
 		// 回避アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
-			mIsGravity = true;
-			// 待機状態へ移行
-			ChangeState(EState::eIdle);
-			ChangeAnimation(EAnimType::eIdle);
+			if (!mInJustAction)
+			{
+				SetInvincible(false);
+				mIsGravity = true;
+				Times::SetTimeScale(1.0f);
+				// 待機状態へ移行
+				ChangeState(EState::eIdle);
+				ChangeAnimation(EAnimType::eIdle);
+			}
+			else
+			{
+				mIsGravity = true;
+				ChangeState(EState::eSlideAtt);
+			}
 		}
 		break;
 	}
@@ -870,7 +1004,7 @@ void CPlayer::UpdateDeath()
 		mDeathVec = -VectorZ();
 		mToDeath = true;
 		mDeathTimer = 0.0f;
-		mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
+		SetInvincible(true);
 		mStateStep++;
 		break;
 	case 1:
@@ -925,6 +1059,12 @@ void CPlayer::AvoidJudge()
 	// 右クリックで回避へ移行
 	if (CInput::PushKey(VK_RBUTTON) && CInput::Key('D') && mSt >= mAvoidStCost)
 	{
+		if (mInTypeAhead)
+		{
+			Times::SetTimeScale(0.25f);
+			SetInvincible(true);
+			mInJustAction = true;
+		}
 		mNextAttack = false;
 		CCharaBase::UseStamina(mAvoidStCost);
 		mMoveSpeed = CVector::zero;
@@ -935,6 +1075,12 @@ void CPlayer::AvoidJudge()
 	}
 	else if (CInput::PushKey(VK_RBUTTON) && CInput::Key('A') && mSt >= mAvoidStCost)
 	{
+		if (mInTypeAhead)
+		{
+			Times::SetTimeScale(0.25f);
+			SetInvincible(true);
+			mInJustAction = true;
+		}
 		mNextAttack = false;
 		CCharaBase::UseStamina(mAvoidStCost);
 		mMoveSpeed = CVector::zero;
@@ -1004,7 +1150,7 @@ void CPlayer::UpdateMove()
 	if (move.LengthSqr() > 0.0f && CInput::Key(VK_LSHIFT))
 	{
 		mpGreatSword->Rotation(DASH_SWORD_OFFSET_ROT);
-		mMoveSpeed += move * RUN_SPEED;
+		mMoveSpeed += move * RUN_SPEED * Times::DeltaTime();
 
 		// 待機状態であれば、歩行アニメーションに切り替え
 		if (mState == EState::eIdle)
@@ -1014,7 +1160,7 @@ void CPlayer::UpdateMove()
 	}
 	else if (move.LengthSqr() > 0.0f)
 	{
-		mMoveSpeed += move * MOVE_SPEED;
+		mMoveSpeed += move * MOVE_SPEED * Times::DeltaTime();
 
 		// 待機状態であれば、歩行アニメーションに切り替え
 		if (mState == EState::eIdle)
@@ -1057,7 +1203,7 @@ void CPlayer::UpdateMotionBlur()
 	System::SetMotionBlur(camDir, width, MOTION_BLUR_COUNT);
 
 	// 残り時間を経過時間分減少させる
-	mMotionBlurRemainTime -= Times::DeltaTime();
+	mMotionBlurRemainTime -= Times::UnscaledDeltaTime();
 	// 残り時間がなくなれば、
 	if (mMotionBlurRemainTime <= 0.0f)
 	{
@@ -1130,6 +1276,7 @@ void CPlayer::Update()
 	SetParent(mpRideObject);
 	mpRideObject = nullptr;
 
+
 	/*
 	CModelXFrame* frame = mpModel->FinedFrame("Armature_mixamorig_RightHand");
 	//mpSword->SetAttachMtx(&frame->CombinedMatrix());
@@ -1151,33 +1298,35 @@ void CPlayer::Update()
 	switch (mState)
 	{
 		// 戦闘準備状態
-		case EState::eReserve:		UpdateReserve();	break;
+		case EState::eReserve:		UpdateReserve();		break;
 		// 待機状態
-		case EState::eIdle:			UpdateIdle();		break;
+		case EState::eIdle:			UpdateIdle();			break;
 		// 斬り攻撃1
-		case EState::eAttack1:		UpdateAttack1();	break;
+		case EState::eAttack1:		UpdateAttack1();		break;
 		// 斬り攻撃2
-		case EState::eAttack2:		UpdateAttack2();	break;
+		case EState::eAttack2:		UpdateAttack2();		break;
 		// 斬り攻撃X
-		case EState::eAttackX:		UpdateAttackX();	break;
+		case EState::eAttackX:		UpdateAttackX();		break;
 		// 蹴り攻撃
-		case EState::eKick:			UpdateKick();		break;
+		case EState::eKick:			UpdateKick();			break;
+		// スライド斬り攻撃
+		case EState::eSlideAtt:		UpdateSlideAttack();	break;
 		// ジャンプ開始
-		case EState::eJumpStart:	UpdateJumpStart();	break;
+		case EState::eJumpStart:	UpdateJumpStart();		break;
 		// ジャンプ中
-		case EState::eJump:			UpdateJump();		break;
+		case EState::eJump:			UpdateJump();			break;
 		// ジャンプ終了
-		case EState::eJumpEnd:		UpdateJumpEnd();	break;
+		case EState::eJumpEnd:		UpdateJumpEnd();		break;
 		// 回避:右
-		case EState::eAvoidR:		UpdateAvoidR();		break;
+		case EState::eAvoidR:		UpdateAvoidR();			break;
 		// 回避:左
-		case EState::eAvoidL:		UpdateAvoidL();		break;
+		case EState::eAvoidL:		UpdateAvoidL();			break;
 		// 仰け反り
-		case EState::eHit:			UpdateHit();		break;
+		case EState::eHit:			UpdateHit();			break;
 		// 死亡
-		case EState::eDeath:		UpdateDeath();		break;
+		case EState::eDeath:		UpdateDeath();			break;
 		// 勝利
-		case EState::eVictory:		UpdateVictory();	break;
+		case EState::eVictory:		UpdateVictory();		break;
 	}
 
 	// 待機中とジャンプ中は、移動処理を行う
@@ -1236,14 +1385,9 @@ void CPlayer::Update()
 		}
 	}
 
-	// 「P」キーを押したら、ゲームを終了
-	if (CInput::PushKey('P'))
-	{
-		System::ExitGame();
-	}
 
-	// 「I」キーを押したら、
-	// mpIndicator->SetShow(CInput::Key('I') ? true : false);
+	// 「F」キーを押したら、
+	//Times::SetTimeScale(CInput::Key('F') ? 0.1f : 1.0f);
 
 	// 「B」キーを押したら、モーションブラー開始
 	if (CInput::PushKey('B'))
@@ -1333,7 +1477,10 @@ void CPlayer::AttackStart()
 	CXCharacter::AttackStart();
 
 	// 斬り攻撃中であれば、剣のコライダーをオンにする
-	if (mState == EState::eAttack1 || mState == EState::eAttack2 || mState == EState::eAttackX)
+	if (mState == EState::eAttack1
+		|| mState == EState::eAttack2
+		|| mState == EState::eAttackX
+		|| mState == EState::eSlideAtt)
 	{
 		mpGreatSword->SetEnableCol(true);
 	}
@@ -1387,6 +1534,20 @@ void CPlayer::TakeDamage(float damage, CObjectBase* causer)
 		mMoveSpeed = CVector::zero;
 		// 死亡状態へ移行
 		ChangeState(EState::eDeath);
+	}
+}
+
+void CPlayer::SetInvincible(bool invincible)
+{
+	if (!invincible)
+	{
+		// 当たり判定を通常のレイヤー設定にする
+		mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
+	}
+	else
+	{
+		// 当たり判定を無敵のレイヤー設定にする
+		mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
 	}
 }
 
@@ -1475,6 +1636,9 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 				hitChara->TakeDamage(6.0f * mAttackMag, this);	break;
 				// 斬り攻撃X
 			case EState::eAttackX:
+				hitChara->TakeDamage(5.0f * mAttackMag, this);	break;
+				// スライド斬り攻撃
+			case EState::eSlideAtt:
 				hitChara->TakeDamage(5.0f * mAttackMag, this);	break;
 			}
 		}

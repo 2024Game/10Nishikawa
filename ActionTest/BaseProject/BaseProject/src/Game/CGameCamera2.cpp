@@ -81,7 +81,7 @@ void CGameCamera2::LateUpdate()
 		mRotateAngle = CVector::LerpAngle
 		(
 			mRotateAngle, targetRotAng,
-			LOCKON_SPEED * Times::DeltaTime()
+			LOCKON_SPEED * Times::UnscaledDeltaTime()
 		);
 	}
 
