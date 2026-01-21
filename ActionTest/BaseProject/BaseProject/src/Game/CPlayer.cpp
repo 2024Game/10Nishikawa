@@ -1015,6 +1015,7 @@ void CPlayer::AvoidJudge()
 	// 右クリックで回避へ移行
 	if (CInput::PushKey(VK_RBUTTON) && CInput::Key('D') && mSt >= mAvoidStCost)
 	{
+		mpTACol->SetEnable(false);
 		if (mInTypeAhead)
 		{
 			Times::SetTimeScale(0.25f);
@@ -1031,6 +1032,7 @@ void CPlayer::AvoidJudge()
 	}
 	else if (CInput::PushKey(VK_RBUTTON) && CInput::Key('A') && mSt >= mAvoidStCost)
 	{
+		mpTACol->SetEnable(false);
 		if (mInTypeAhead)
 		{
 			Times::SetTimeScale(0.25f);
@@ -1614,7 +1616,7 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 				hitChara->TakeDamage(5.0f * mAttackMag, this);	break;
 				// スライド斬り攻撃
 			case EState::eSlideAtt:
-				hitChara->TakeDamage(5.0f * mAttackMag, this);	break;
+				hitChara->TakeDamage(8.0f * mAttackMag, this);	break;
 			}
 		}
 	}

@@ -375,13 +375,13 @@ void CGameScene::UpdateBattleResult()
 				switch (mpSaveManager->data.selectDiff)
 				{
 				case 1:
-					mpSaveManager->data.money += 100 + 25;
+					mpSaveManager->data.money += 125 + 50;
 					break;
 				case 2:
-					mpSaveManager->data.money += 125 + 25;
+					mpSaveManager->data.money += 150 + 75;
 					break;
 				case 3:
-					mpSaveManager->data.money += 175 + 50;
+					mpSaveManager->data.money += 175 + 175;
 					break;
 				default:
 					break;

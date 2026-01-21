@@ -25,7 +25,7 @@
 #define ATTACKX_PROB 50				// X段目攻撃を行う確率（パーセント）
 #define ATTACK1B_PROB 40			// 1段目B攻撃を行う確率（パーセント）
 
-#define AT_GRACE_FRAME 5.0f			// 先行入力フレーム
+#define AT_GRACE_FRAME 6.0f			// 先行入力フレーム
 #define ATTACK1_START_FRAME 25.0f	// 斬り攻撃1の開始フレーム
 #define ATTACK1_END_FRAME 55.0f		// 斬り攻撃1の終了フレーム
 #define ATTACK1B_START_FRAME 25.0f	// 斬り攻撃1Bの開始フレーム
@@ -65,17 +65,17 @@ const std::vector<CEnemy::AnimData> ANIM_DATA =
 	{ ANIM_PATH"idle2.x",		true,	121.0f,	1.0f	},	// 待機(戦闘中)
 	{ ANIM_PATH"walk.x",		true,	82.0f,	1.5f	},	// 歩行
 	{ ANIM_PATH"run.x",			true,	39.0f,	1.5f	},	// ダッシュ
-	{ ANIM_PATH"GSSlash1.x",	false,	77.0f,	1.25f	},	// 斬り攻撃
-	{ ANIM_PATH"GSSlashR.x",	false,	90.0f,	1.25f	},	// 斬り攻撃B
-	{ ANIM_PATH"GSSlash2.x",	false,	110.0f,	1.50f	},	// 斬り攻撃
-	{ ANIM_PATH"GSSlash.x",		false,	212.0f,	1.75f	},	// 斬りかかり攻撃
+	{ ANIM_PATH"GSSlash1.x",	false,	77.0f,	1.20f	},	// 斬り攻撃
+	{ ANIM_PATH"GSSlashR.x",	false,	90.0f,	1.20f	},	// 斬り攻撃B
+	{ ANIM_PATH"GSSlash2.x",	false,	110.0f,	1.40f	},	// 斬り攻撃
+	{ ANIM_PATH"GSSlash.x",		false,	212.0f,	1.60f	},	// 斬りかかり攻撃
 	{ ANIM_PATH"kick.x",		false,	74.0f,	1.75f	},	// 蹴り攻撃
 	{ ANIM_PATH"jump_start.x",	false,	25.0f,	1.0f	},	// ジャンプ開始
 	{ ANIM_PATH"jump.x",		true,	1.0f,	1.0f	},	// ジャンプ中
 	{ ANIM_PATH"jump_end.x",	false,	26.0f,	1.0f	},	// ジャンプ終了
 	{ ANIM_PATH"avoidR.x",		true,	58.0f,	1.5f	},	// 回避:右
 	{ ANIM_PATH"avoidL.x",		true,	58.0f,	1.5f	},	// 回避:左
-	{ ANIM_PATH"hit.x",			false,	44.0f,	1.0f	},	// 仰け反り
+	{ ANIM_PATH"hit.x",			false,	44.0f,	0.8f	},	// 仰け反り
 	{ ANIM_PATH"death.x",		false,	182.0f,	1.0f	},	// 死亡
 	{ ANIM_PATH"victory.x",		true,	271.0f,	1.0f	},	// 勝利
 };
@@ -218,28 +218,28 @@ void CSoldier::InitStatus()
 	}
 	else if (mLevel < 5)
 	{
-		mMaxHp = 100.0f + (20.0f * level);
+		mMaxHp = 100.0f + (15.0f * level);
 		mMaxSt = 150.0f + (15.0f * level);
 		mGainSt = 10.0f * (1 + (level * 0.025f));
 		mA1StCost = 25.0f - (level * (25.0f * 0.025f));
 		mAvoidStCost = 20.0f - (level * (20.0f * 0.025f));
 		mStepMag = 1.2f + (level * 0.05f);
 		mAttackMag = 1.0f + (level * 0.05f);
-		mAtSpeedMag = 1.0f * (1 + (level * 0.025f));
+		mAtSpeedMag = 1.0f * (1 + (level * 0.02f));
 		mNegTime = 0.8f - (level * 0.03f);
 		mNegProb = 66.6f - (level * 2.5f);
 	}
 	else if (mLevel < 10)
 	{
 		mCan1B = true;
-		mMaxHp = 100.0f + (35.0f * level);
+		mMaxHp = 100.0f + (25.0f * level);
 		mMaxSt = 150.0f + (17.5f * level);
 		mGainSt = 10.0f * (1 + (level * 0.03f));
 		mA1StCost = 25.0f - (level * (25.0f * 0.03f));
 		mAvoidStCost = 20.0f - (level * (20.0f * 0.03f));
 		mStepMag = 1.2f + (level * 0.05f);
 		mAttackMag = 1.0f + (level * 0.085f);
-		mAtSpeedMag = 1.0f * (1 + (level * 0.04f));
+		mAtSpeedMag = 1.0f * (1 + (level * 0.03f));
 		mNegTime = 0.8f - (level * 0.04f);
 		mNegProb = 66.6f - (level * 4.5f);
 	}
@@ -253,7 +253,7 @@ void CSoldier::InitStatus()
 		mAvoidStCost = 15.2f;
 		mStepMag = 1.6f + 0.2f;
 		mAttackMag = 1.68f + 0.07f;
-		mAtSpeedMag = 1.32f + 0.03f;
+		mAtSpeedMag = 1.24f + 0.01f;
 		mNegTime = 0.48f - 0.08f;
 		mNegProb = 30.6f - 5.6f;
 	}
@@ -602,7 +602,7 @@ void CSoldier::UpdateChase()
 	float dist = vec.Length();
 	if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 	{
-		if (mSt >= mA1StCost)
+		if (mSt >= mA1StCost + mAvoidStCost)
 		{
 			CCharaBase::UseStamina(mA1StCost);
 			if (mCan1B)
@@ -780,7 +780,7 @@ void CSoldier::UpdateAttack1()
 				mNextAttack = false;
 				CObjectBase::AttackStart();
 
-				if (mSt >= mA1StCost * 0.8f)
+				if (mSt >= mA1StCost * 0.9f + mAvoidStCost)
 				{
 					CCharaBase::UseStamina(mA1StCost * 0.9f);
 					// 攻撃2段目へ移行
@@ -918,7 +918,7 @@ void CSoldier::UpdateAttack1B()
 				mNextAttack = false;
 				CObjectBase::AttackStart();
 
-				if (mSt >= mA1StCost * 0.8f)
+				if (mSt >= mA1StCost * 0.9f + mAvoidStCost)
 				{
 					CCharaBase::UseStamina(mA1StCost * 0.9f);
 					// 攻撃2段目へ移行
@@ -1053,7 +1053,7 @@ void CSoldier::UpdateAttack2()
 				mNextAttack = false;
 				CObjectBase::AttackStart();
 
-				if (mSt >= mA1StCost * 0.5f)
+				if (mSt >= mA1StCost * 0.8f)
 				{
 					CCharaBase::UseStamina(mA1StCost * 0.8f);
 					// 攻撃X段目へ移行

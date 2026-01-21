@@ -576,7 +576,7 @@ void CHomeSceneUI::InformationUpdate()
 			{
 			case 0:
 				newText->SetText((
-					"体力を" + std::to_string(40 + (mpSaveManager->data.healerLv * 5))
+					"体力を" + std::to_string(50 + (mpSaveManager->data.healerLv * 5))
 					+ "回復します\n1日経過します\n$100必要"
 					).c_str());
 				break;
@@ -684,9 +684,9 @@ void CHomeSceneUI::OnClickHealer()
 	{
 		mpSaveManager->data.money -= 100;
 		mpSaveManager->data.selectDiff = 0;
-		// HPを最大HPの40、回復させる
+		// HPを最大HPの50、回復させる
 		float hpCapa = mpSaveManager->data.maxHp - mpSaveManager->data.hp;
-		float recovery = 40 + (mpSaveManager->data.healerLv * 5);
+		float recovery = 50 + (mpSaveManager->data.healerLv * 5);
 		if (hpCapa >= recovery)
 		{
 			mpSaveManager->data.hp += recovery;

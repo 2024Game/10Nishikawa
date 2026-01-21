@@ -222,7 +222,7 @@ void CHeavyWarrior::InitStatus()
 		mA1StCost = 30.0f - (level * (30.0f * 0.025f));
 		mAvoidStCost = 20.0f - (level * (20.0f * 0.025f));
 		mStepMag = 1.2f + (level * 0.05f);
-		mAttackMag = 1.0f + (level * 0.05f);
+		mAttackMag = 1.0f + (level * 0.055f);
 		mAtSpeedMag = 1.0f * (1 + (level * 0.02f));
 		mNegTime = 0.8f - (level * 0.03f);
 		mNegProb = 66.6f - (level * 2.5f);
@@ -230,13 +230,13 @@ void CHeavyWarrior::InitStatus()
 	else if (mLevel < 10)
 	{
 		mCan1B = true;
-		mMaxHp = 120.0f + (40.0f * level);
+		mMaxHp = 120.0f + (30.0f * level);
 		mMaxSt = 150.0f + (17.5f * level);
 		mGainSt = 10.0f * (1 + (level * 0.03f));
 		mA1StCost = 27.5f - (level * (27.5f * 0.03f));
 		mAvoidStCost = 20.0f - (level * (20.0f * 0.03f));
 		mStepMag = 1.2f + (level * 0.05f);
-		mAttackMag = 1.0f + (level * 0.085f);
+		mAttackMag = 1.0f + (level * 0.090f);
 		mAtSpeedMag = 1.0f * (1 + (level * 0.035f));
 		mNegTime = 0.8f - (level * 0.04f);
 		mNegProb = 66.6f - (level * 4.5f);
@@ -601,7 +601,7 @@ void CHeavyWarrior::UpdateChase()
 	float dist = vec.Length();
 	if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 	{
-		if (mSt >= mA1StCost)
+		if (mSt >= mA1StCost + mAvoidStCost)
 		{
 			CCharaBase::UseStamina(mA1StCost);
 			if (mCan1B)
@@ -779,7 +779,7 @@ void CHeavyWarrior::UpdateAttack1()
 				mNextAttack = false;
 				CObjectBase::AttackStart();
 
-				if (mSt >= mA1StCost * 0.8f)
+				if (mSt >= mA1StCost * 0.9f + mAvoidStCost)
 				{
 					CCharaBase::UseStamina(mA1StCost * 0.9f);
 					// 攻撃2段目へ移行
@@ -917,7 +917,7 @@ void CHeavyWarrior::UpdateAttack1B()
 				mNextAttack = false;
 				CObjectBase::AttackStart();
 
-				if (mSt >= mA1StCost * 0.8f)
+				if (mSt >= mA1StCost * 0.9f + mAvoidStCost)
 				{
 					CCharaBase::UseStamina(mA1StCost * 0.9f);
 					// 攻撃2段目へ移行
@@ -1051,7 +1051,7 @@ void CHeavyWarrior::UpdateAttack2()
 				mNextAttack = false;
 				CObjectBase::AttackStart();
 
-				if (mSt >= mA1StCost * 0.5f)
+				if (mSt >= mA1StCost * 0.8f)
 				{
 					CCharaBase::UseStamina(mA1StCost * 0.8f);
 					// 攻撃X段目へ移行
