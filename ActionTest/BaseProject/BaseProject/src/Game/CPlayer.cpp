@@ -78,7 +78,7 @@ const CPlayer::AnimData CPlayer::ANIM_DATA[] =
 	{ ANIM_PATH"GSSlash2.x",	false,	110.0f,	1.50f	},	// Ža‚èUŒ‚
 	{ ANIM_PATH"GSSlash.x",		false,	212.0f,	1.75f	},	// Ža‚è‚©‚©‚èUŒ‚
 	{ ANIM_PATH"kick.x",		false,	74.0f,	1.75f	},	// R‚èUŒ‚
-	{ ANIM_PATH"SlideAttack.x",	false,	128.0f,	2.0f	},	// ƒXƒ‰ƒCƒhŽa‚èUŒ‚
+	{ ANIM_PATH"SlideAttack.x",	false,	128.0f,	4.0f	},	// ƒXƒ‰ƒCƒhŽa‚èUŒ‚
 	{ ANIM_PATH"jump_start.x",	false,	25.0f,	1.0f	},	// ƒWƒƒƒ“ƒvŠJŽn
 	{ ANIM_PATH"jump.x",		true,	1.0f,	1.0f	},	// ƒWƒƒƒ“ƒv’†
 	{ ANIM_PATH"jump_end.x",	false,	26.0f,	1.0f	},	// ƒWƒƒƒ“ƒvI—¹
@@ -669,6 +669,10 @@ void CPlayer::UpdateSlideAttack()
 	switch (mStateStep)
 	{
 	case 0:
+		Times::SetTimeScale(0.15f);
+		mStateStep++;
+		break;
+	case 1:
 	{
 		LockOnTarget();
 		if (mpLockOnTarget)
@@ -685,13 +689,12 @@ void CPlayer::UpdateSlideAttack()
 					System::SetEnableMotionBlur(true);
 					mMotionBlurRemainTime = MOTION_BLUR_TIME;
 				}
-				Times::SetTimeScale(0.2f);
 				mStateStep++;
 			}
 		}
 		break;
 	}
-	case 1:
+	case 2:
 	{
 		mpGreatSword->Rotation(SWORD_OFFSET_ROT);
 		// UŒ‚ƒAƒjƒ[ƒVƒ‡ƒ“‚ðŠJŽn
@@ -706,7 +709,7 @@ void CPlayer::UpdateSlideAttack()
 		mStateStep++;
 		break;
 	}
-	case 2:
+	case 3:
 	{
 		CCamera* camera = CCamera::MainCamera();
 		if (!camera || !mpLockOnTarget) break;
@@ -735,7 +738,7 @@ void CPlayer::UpdateSlideAttack()
 			float movePerFrame = dist / (SLIDEATT_START_FRAME - 5.0f);
 
 			// 1•b‚ ‚½‚è‚ÌˆÚ“®—Ê
-			mMoveSpeed = camForward * movePerFrame * Times::DeltaTime() * 60 * 2.75;
+			mMoveSpeed = camForward * movePerFrame * Times::DeltaTime() * 60 * 5.00;
 		}
 
 		// ===== UŒ‚ŠJŽn =====
@@ -748,7 +751,7 @@ void CPlayer::UpdateSlideAttack()
 		}
 		break;
 	}
-	case 3:
+	case 4:
 		if (GetAnimationFrame() >= SLIDEATT_END_FRAME)
 		{
 			// UŒ‚I—¹
@@ -765,7 +768,7 @@ void CPlayer::UpdateSlideAttack()
 			mMoveSpeed = mAttackVec * 3.0f * Times::DeltaTime();
 		}
 		break;
-	case 4:
+	case 5:
 		// UŒ‚ƒAƒjƒ[ƒVƒ‡ƒ“‚ªI—¹‚µ‚½‚çA
 		if (IsAnimationFinished())
 		{
@@ -1035,7 +1038,7 @@ void CPlayer::AvoidJudge()
 		mpTACol->SetEnable(false);
 		if (mInTypeAhead)
 		{
-			Times::SetTimeScale(0.25f);
+			Times::SetTimeScale(0.2f);
 			SetInvincible(true);
 			mInJustAction = true;
 		}
