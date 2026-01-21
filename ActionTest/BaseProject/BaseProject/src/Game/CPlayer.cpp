@@ -120,7 +120,7 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 {
 	mMaxHp = mpSaveManager->data.maxHp;
 	mHp = mpSaveManager->data.hp;
-	mMaxSt = 100.0f + (mpSaveManager->data.stLv * 5);
+	mMaxSt = 150.0f + (mpSaveManager->data.stLv * 5);
 	mSt = mMaxSt;
 	mAttackMag = 1.0f + (mpSaveManager->data.attackLv * 0.05f);
 	mStRegeneMag = 1.0f + (mpSaveManager->data.stRegeneLv * 0.01f);

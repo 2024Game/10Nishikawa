@@ -118,21 +118,38 @@ void CGameScene::Load()
 
 	CEnemy* enemy;
 	int enemyCount = 0;
-	int rand = Math::Rand(0, 5);
-
-	if (rand == 5)
+	int rand = 0;
+	
+	switch (mpSaveManager->data.selectDiff)
 	{
-		enemyCount = 3;
-	}
-	else if (rand > 2)
-	{
-		enemyCount = 2;
-	}
-	else
-	{
+	case 1:
+		mEnemyLv--;
 		enemyCount = 1;
+		break;
+	case 2:
+		enemyCount = 1;
+		break;
+	case 3:
+		rand = Math::Rand(0, 5);
+		if (rand == 5)
+		{
+			mEnemyLv--;
+			enemyCount = 3;
+		}
+		else if (rand > 2)
+		{
+			enemyCount = 2;
+		}
+		else
+		{
+			mEnemyLv++;
+			enemyCount = 1;
+		}
+		break;
+	default:
+		break;
 	}
-
+	
 	// 兵士の敵を1体生成
 	for (int i = 0; i < enemyCount; i++)
 	{

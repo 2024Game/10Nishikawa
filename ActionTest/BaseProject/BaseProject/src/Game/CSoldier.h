@@ -100,8 +100,14 @@ private:
 	// アニメーション切り替え
 	void ChangeAnimation(int type, bool restart = false) override;
 
+	// Stateとは別の「戦術レイヤー」切り替え
+	void UpdateBattleTempo();
+
 	// 戦闘相手の方へ向く
 	void LookAtBattleTarget(bool immediate = false);
+
+	// 現在地から目的地までの距離を求める
+	float GetDistToTarget();
 
 	void STRegene();
 

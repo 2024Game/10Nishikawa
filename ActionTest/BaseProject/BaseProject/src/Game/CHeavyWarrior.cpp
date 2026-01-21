@@ -191,7 +191,7 @@ void CHeavyWarrior::InitStatus()
 	if (mLevel == 1)
 	{
 		mMaxHp = 100.0f;
-		mMaxSt = 100.0f;
+		mMaxSt = 150.0f;
 		mGainSt = 8.5f;
 		mA1StCost = 30.0f;
 		mAvoidStCost = 25.0f;
@@ -204,7 +204,7 @@ void CHeavyWarrior::InitStatus()
 	else if (mLevel == 2)
 	{
 		mMaxHp = 120.0f;
-		mMaxSt = 100.0f;
+		mMaxSt = 150.0f;
 		mGainSt = 10.0f;
 		mA1StCost = 30.0f;
 		mAvoidStCost = 20.0f;
@@ -217,7 +217,7 @@ void CHeavyWarrior::InitStatus()
 	else if (mLevel < 5)
 	{
 		mMaxHp = 120.0f + (20.0f * level);
-		mMaxSt = 100.0f + (15.0f * level);
+		mMaxSt = 150.0f + (15.0f * level);
 		mGainSt = 10.0f * (1 + (level * 0.025f));
 		mA1StCost = 30.0f - (level * (30.0f * 0.025f));
 		mAvoidStCost = 20.0f - (level * (20.0f * 0.025f));
@@ -231,7 +231,7 @@ void CHeavyWarrior::InitStatus()
 	{
 		mCan1B = true;
 		mMaxHp = 120.0f + (40.0f * level);
-		mMaxSt = 100.0f + (17.5f * level);
+		mMaxSt = 150.0f + (17.5f * level);
 		mGainSt = 10.0f * (1 + (level * 0.03f));
 		mA1StCost = 27.5f - (level * (27.5f * 0.03f));
 		mAvoidStCost = 20.0f - (level * (20.0f * 0.03f));
@@ -245,7 +245,7 @@ void CHeavyWarrior::InitStatus()
 	{
 		mCan1B = true;
 		mMaxHp = 440.0f + 160.0f;
-		mMaxSt = 240.0f + 60.0f;
+		mMaxSt = 290.0f + 60.0f;
 		mGainSt = 12.4f + 0.6f;
 		mA1StCost = 20.9f - 0.9f;
 		mAvoidStCost = 15.2f;
@@ -353,7 +353,7 @@ void CHeavyWarrior::Collision(CCollider* self, CCollider* other, const CHitInfo&
 	// 先行入力用コライダーがヒットした
 	if (other->Layer() == ELayer::eTypeAheadCol)
 	{
-		if (mState == (int)EState::eIdle)
+		if (mState == (int)EState::eIdle || mState == (int)EState::eChase)
 		{
 			if (mSt >= mAvoidStCost)
 			{
@@ -424,6 +424,27 @@ void CHeavyWarrior::ChangeAnimation(int type, bool restart)
 	mAnimType = type;
 }
 
+void CHeavyWarrior::UpdateBattleTempo()
+{
+	if (mpBattleTarget == nullptr) return;
+
+	float stRate = mSt / mMaxSt;
+	float dist = (mpBattleTarget->Position() - Position()).Length();
+
+	if (stRate < 0.25f)
+	{
+		mBattleTempo = (int)EBattleTempo::Defensive;
+	}
+	else if (stRate > 0.7f)
+	{
+		mBattleTempo = (int)EBattleTempo::Aggressive;
+	}
+	else
+	{
+		mBattleTempo = (int)EBattleTempo::Neutral;
+	}
+}
+
 // 戦闘相手の方へ向く
 void CHeavyWarrior::LookAtBattleTarget(bool immediate)
 {
@@ -450,6 +471,19 @@ void CHeavyWarrior::LookAtBattleTarget(bool immediate)
 		);
 		Rotation(CQuaternion::LookRotation(forward));
 	}
+}
+
+float CHeavyWarrior::GetDistToTarget()
+{
+	// 現在地と目的地を取得
+	CVector pos = Position();
+	CVector targetPos = mpBattleTarget->Position();
+	targetPos.Y(pos.Y());
+	// 現在地から目的地までのベクトルを求める
+	CVector vec = targetPos - pos;
+	// 距離に換算
+	float dist = vec.Length();
+	return dist;
 }
 
 // 針を発射
@@ -539,30 +573,7 @@ void CHeavyWarrior::UpdateIdle()
 			// 戦闘相手までの距離が離れていたら、
 			if (dist >= ATTACK2_DIST)
 			{
-				/*
-				// 一定確率で、針攻撃に変更
-				int rand = Math::Rand(0, 99);
-				if (rand < ATTACK2_PROB)
-				{
-					// 歩行アニメーションを再生
-					ChangeAnimation((int)EAnimType::eRun);
-
-					// 残り距離が移動距離より大きい場合は、移動距離分移動
-					CVector dir = vec.Normalized();
-					float moveDist = RUN_SPEED * Times::DeltaTime();
-					if (dist > moveDist)
-					{
-						mMoveSpeed = dir * moveDist;
-					}
-					// 残り距離の方が小さい場合は、
-					// 残り距離分移動して、待機状態へ移行
-					else
-					{
-						mMoveSpeed = dir * dist;
-						ChangeState((int)EState::eIdle);
-					}
-				}
-				*/
+				
 			}
 
 			// 次の状態へ移行
@@ -621,7 +632,8 @@ void CHeavyWarrior::UpdateChase()
 		}
 	}
 	// 攻撃範囲外
-	else if (dist >= ATTACK2_DIST)
+	else if (dist >= ATTACK2_DIST &&
+		mBattleTempo == (int)EBattleTempo::Aggressive)
 	{
 		mpSword->Rotation(DASH_SWORD_OFFSET_ROT);
 		// 走行アニメーションを再生
@@ -643,7 +655,7 @@ void CHeavyWarrior::UpdateChase()
 			ChangeState((int)EState::eIdle);
 		}
 	}
-	else
+	else if (mBattleTempo != (int)EBattleTempo::Defensive)
 	{
 		mpSword->Rotation(SWORD_OFFSET_ROT);
 		// 歩行アニメーションを再生
@@ -663,6 +675,11 @@ void CHeavyWarrior::UpdateChase()
 			mMoveSpeed = dir * dist;
 			ChangeState((int)EState::eIdle);
 		}
+	}
+	else
+	{
+		// 待機アニメーションを再生
+		ChangeAnimation((int)EAnimType::eIdle);
 	}
 
 	// 徐々に戦闘相手の方向へ向く
@@ -716,9 +733,27 @@ void CHeavyWarrior::UpdateAttack1()
 			// 攻撃終了処理を呼び出す
 			AttackEnd();
 
-			// 一定確率で、連続攻撃を予約
-			int rand = Math::Rand(0, 99);
-			if (rand < ATTACK2_PROB) mNextAttack = true;
+			float dist = GetDistToTarget();
+			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
+			{
+				// 一定確率で、連続攻撃を予約
+				int rand = Math::Rand(0, 99);
+
+				switch (mBattleTempo)
+				{
+				case (int)EBattleTempo::Aggressive:
+					if (rand < ATTACK2_PROB * 1.5f) mNextAttack = true;
+					break;
+				case (int)EBattleTempo::Neutral:
+					if (rand < ATTACK2_PROB) mNextAttack = true;
+					break;
+				case (int)EBattleTempo::Defensive:
+					if (rand < ATTACK2_PROB * 0.5f) mNextAttack = true;
+					break;
+				}
+
+			}
+
 			mInAttack = false;
 			mStateStep++;
 		}
@@ -836,9 +871,26 @@ void CHeavyWarrior::UpdateAttack1B()
 			// 攻撃終了処理を呼び出す
 			AttackEnd();
 
-			// 一定確率で、連続攻撃を予約
-			int rand = Math::Rand(0, 99);
-			if (rand < ATTACK2_PROB) mNextAttack = true;
+			float dist = GetDistToTarget();
+			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
+			{
+				// 一定確率で、連続攻撃を予約
+				int rand = Math::Rand(0, 99);
+
+				switch (mBattleTempo)
+				{
+				case (int)EBattleTempo::Aggressive:
+					if (rand < ATTACK2_PROB * 1.5f) mNextAttack = true;
+					break;
+				case (int)EBattleTempo::Neutral:
+					if (rand < ATTACK2_PROB) mNextAttack = true;
+					break;
+				case (int)EBattleTempo::Defensive:
+					if (rand < ATTACK2_PROB * 0.5f) mNextAttack = true;
+					break;
+				}
+
+			}
 			mInAttack = false;
 			mStateStep++;
 		}
@@ -954,9 +1006,26 @@ void CHeavyWarrior::UpdateAttack2()
 
 			mInAttack = false;
 
-			// 一定確率で、連続攻撃を予約
-			int rand = Math::Rand(0, 99);
-			if (rand < ATTACKX_PROB) mNextAttack = true;
+			float dist = GetDistToTarget();
+			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
+			{
+				// 一定確率で、連続攻撃を予約
+				int rand = Math::Rand(0, 99);
+
+				switch (mBattleTempo)
+				{
+				case (int)EBattleTempo::Aggressive:
+					if (rand < ATTACKX_PROB * 1.5f) mNextAttack = true;
+					break;
+				case (int)EBattleTempo::Neutral:
+					if (rand < ATTACKX_PROB) mNextAttack = true;
+					break;
+				case (int)EBattleTempo::Defensive:
+					if (rand < ATTACKX_PROB * 0.5f) mNextAttack = true;
+					break;
+				}
+
+			}
 			mStateStep++;
 		}
 
@@ -1415,12 +1484,10 @@ void CHeavyWarrior::Update()
 	case EState::eVictory:	UpdateVictory();	break;
 	}
 
-	if ((int)mState == (int)EState::eIdle || (int)mState == (int)EState::eChase)
+	if (mState == (int)EState::eIdle ||
+		mState == (int)EState::eChase)
 	{
-		if (mHp > 0.0f)
-		{
-			CCharaBase::GainStamina(mGainSt * Times::DeltaTime());
-		}
+		UpdateBattleTempo();
 	}
 
 	// 敵のベースクラスの更新

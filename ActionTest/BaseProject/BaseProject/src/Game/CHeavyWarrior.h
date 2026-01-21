@@ -90,11 +90,24 @@ private:
 		eVictory,	// 勝利
 	};
 
+	enum class EBattleTempo
+	{
+		Aggressive,   // 攻める
+		Neutral,      // 様子見
+		Defensive     // 引いて立て直す
+	};
+
 	// アニメーション切り替え
 	void ChangeAnimation(int type, bool restart = false) override;
 
+	// Stateとは別の「戦術レイヤー」切り替え
+	void UpdateBattleTempo();
+
 	// 戦闘相手の方へ向く
 	void LookAtBattleTarget(bool immediate = false);
+
+	// 現在地から目的地までの距離を求める
+	float GetDistToTarget();
 
 	// 針を発射
 	void ShotNeedle();
