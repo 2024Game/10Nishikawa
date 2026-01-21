@@ -107,6 +107,9 @@ private:
 	// モーションブラーの更新処理
 	void UpdateMotionBlur();
 
+	// カメラの向いている向きにプレイヤーを向かせる
+	void LookCameraForward();
+
 	void LockOnTarget();
 	void UnLockTarget();
 	void UpdateLockOn();

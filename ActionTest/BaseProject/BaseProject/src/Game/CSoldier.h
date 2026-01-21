@@ -90,6 +90,13 @@ private:
 		eVictory,	// 勝利
 	};
 
+	enum class EBattleTempo
+	{
+		Aggressive,   // 攻める
+		Neutral,      // 様子見
+		Defensive     // 引いて立て直す
+	};
+
 	// アニメーション切り替え
 	void ChangeAnimation(int type, bool restart = false) override;
 

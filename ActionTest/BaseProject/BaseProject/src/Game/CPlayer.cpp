@@ -339,19 +339,7 @@ void CPlayer::UpdateAttack1()
 	{
 		case 0:
 		{
-			// カメラの向きを取得（Y軸のみ）
-			CCamera* camera = CCamera::MainCamera();
-			if (camera)
-			{
-				CVector camForward = -camera->VectorZ();
-				camForward.Y(0.0f);          // Y成分を無視（水平回転のみ）
-
-				if (camForward.LengthSqr() > 0.0001f)
-				{
-					camForward.Normalize();
-					Rotation(CQuaternion::LookRotation(camForward));
-				}
-			}
+			LookCameraForward();
 
 			// 攻撃アニメーションを開始
 			ChangeAnimation(EAnimType::eAttack1, true);
@@ -449,19 +437,7 @@ void CPlayer::UpdateAttack2()
 	{
 	case 0:
 	{
-		// カメラの向きを取得（Y軸のみ）
-		CCamera* camera = CCamera::MainCamera();
-		if (camera)
-		{
-			CVector camForward = -camera->VectorZ();
-			camForward.Y(0.0f);          // Y成分を無視（水平回転のみ）
-
-			if (camForward.LengthSqr() > 0.0001f)
-			{
-				camForward.Normalize();
-				Rotation(CQuaternion::LookRotation(camForward));
-			}
-		}
+		LookCameraForward();
 
 		// 先行入力コライダーをオンにする
 		mpTACol->SetEnable(true);
@@ -567,19 +543,7 @@ void CPlayer::UpdateAttackX()
 	{
 	case 0:
 	{
-		// カメラの向きを取得（Y軸のみ）
-		CCamera* camera = CCamera::MainCamera();
-		if (camera)
-		{
-			CVector camForward = -camera->VectorZ();
-			camForward.Y(0.0f);          // Y成分を無視（水平回転のみ）
-
-			if (camForward.LengthSqr() > 0.0001f)
-			{
-				camForward.Normalize();
-				Rotation(CQuaternion::LookRotation(camForward));
-			}
-		}
+		LookCameraForward();
 
 		// 先行入力コライダーをオンにする
 		mpTACol->SetEnable(true);
@@ -709,6 +673,8 @@ void CPlayer::UpdateSlideAttack()
 		LockOnTarget();
 		if (mpLockOnTarget)
 		{
+			LookCameraForward();
+
 			// 左クリックで斬撃攻撃へ移行
 			if (CInput::PushKey(VK_LBUTTON))
 			{
@@ -719,6 +685,7 @@ void CPlayer::UpdateSlideAttack()
 					System::SetEnableMotionBlur(true);
 					mMotionBlurRemainTime = MOTION_BLUR_TIME;
 				}
+				Times::SetTimeScale(0.2f);
 				mStateStep++;
 			}
 		}
@@ -726,20 +693,6 @@ void CPlayer::UpdateSlideAttack()
 	}
 	case 1:
 	{
-		// カメラの向きを取得（Y軸のみ）
-		CCamera* camera = CCamera::MainCamera();
-		if (camera)
-		{
-			CVector camForward = -camera->VectorZ();
-			camForward.Y(0.0f);          // Y成分を無視（水平回転のみ）
-
-			if (camForward.LengthSqr() > 0.0001f)
-			{
-				camForward.Normalize();
-				Rotation(CQuaternion::LookRotation(camForward));
-			}
-		}
-
 		mpGreatSword->Rotation(SWORD_OFFSET_ROT);
 		// 攻撃アニメーションを開始
 		ChangeAnimation(EAnimType::eSlideAtt, true);
@@ -907,6 +860,7 @@ void CPlayer::UpdateAvoidR()
 			else
 			{
 				mIsGravity = true;
+				Times::SetTimeScale(0.1f);
 				// スライド斬り攻撃状態へ移行
 				ChangeState(EState::eSlideAtt);
 			}
@@ -962,6 +916,8 @@ void CPlayer::UpdateAvoidL()
 			else
 			{
 				mIsGravity = true;
+				Times::SetTimeScale(0.1f);
+				// スライド斬り攻撃状態へ移行
 				ChangeState(EState::eSlideAtt);
 			}
 		}
@@ -1213,6 +1169,23 @@ void CPlayer::UpdateMotionBlur()
 	}
 }
 
+void CPlayer::LookCameraForward()
+{
+	// カメラの向きを取得（Y軸のみ）
+	CCamera* camera = CCamera::MainCamera();
+	if (camera)
+	{
+		CVector camForward = -camera->VectorZ();
+		camForward.Y(0.0f);          // Y成分を無視（水平回転のみ）
+
+		if (camForward.LengthSqr() > 0.0001f)
+		{
+			camForward.Normalize();
+			Rotation(CQuaternion::LookRotation(camForward));
+		}
+	}
+}
+
 // ロックオン関連
 void CPlayer::LockOnTarget()
 {
@@ -1347,7 +1320,9 @@ void CPlayer::Update()
 	// 移動
 	Position(Position() + moveSpeed);
 
-	if (mState != EState::eDeath)
+	if (mState != EState::eDeath &&
+		mState != EState::eAvoidR &&
+		mState != EState::eAvoidL)
 	{
 		// プレイヤーを移動方向へ向ける
 		CVector current = VectorZ();

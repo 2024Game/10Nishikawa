@@ -112,8 +112,10 @@ CSoldier::CSoldier(CPlayer* player, int level)
 		CVector(0.0f, BODY_HEIGHT - BODY_RADIUS, 0.0f),
 		BODY_RADIUS
 	);
-	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::eRideableObject, ETag::ePlayer, ETag::eEnemy });
-	mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::ePlayer, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
+	mpBodyCol->SetCollisionTags
+	({ ETag::eField, ETag::eRideableObject, ETag::ePlayer, ETag::eEnemy });
+	mpBodyCol->SetCollisionLayers
+	({ ELayer::eField, ELayer::ePlayer, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
 
 	mpSlashSE = CResourceManager::Get<CSound>("SlashSound");
 
