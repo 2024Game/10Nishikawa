@@ -123,7 +123,7 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	mMaxSt = 150.0f + (mpSaveManager->data.stLv * 5);
 	mSt = mMaxSt;
 	mAttackMag = 1.0f + (mpSaveManager->data.attackLv * 0.05f);
-	mStRegeneMag = 1.0f + (mpSaveManager->data.stRegeneLv * 0.01f);
+	mStRegeneMag = 1.0f + (mpSaveManager->data.stRegeneLv * 0.025f);
 	//インスタンスの設定
 	spInstance = this;
 
