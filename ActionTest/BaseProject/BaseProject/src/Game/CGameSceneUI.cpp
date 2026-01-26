@@ -285,16 +285,17 @@ void CGameSceneUI::Render()
 	// バーの色を設定
 	if (mS1Percent < 1.0f)
 	{
-		barColor = CColor::darkGray;
+		barColor = CColor::gray;
+		mpS1WhiteImg->SetColor(barColor); // SetColorはRGBAを管理し、Aも書き換えるので注意
 		mpS1WhiteImg->SetAlpha(0.5f);
 	}
 	else if(mS1Percent >= 1.0f)
 	{
 		barColor = CColor::white;
+		mpS1WhiteImg->SetColor(barColor);
 		mpS1WhiteImg->SetAlpha(0.0f);
 	}
 	// バーを描画
-	mpS1WhiteImg->SetColor(barColor);
 	mpS1WhiteImg->Render();
 }
 
