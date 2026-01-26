@@ -31,6 +31,9 @@ CEnemy::CEnemy()
 	, mAtSpeedMag(0.0f)
 	, mNegTime(0.0f)
 	, mNegProb(0.0f)
+	, mInGuardBreak(false)
+	, mGuardBreakTime(0.0f)
+	, mGBRemainTime(0.0f)
 {
 	// HPゲージを作成
 	mpHpGauge = new CGaugeUI3D(this);
@@ -227,10 +230,27 @@ void CEnemy::Update()
 	mpStGauge->Position(Position() + mStGaugeOffsetPos);
 	mpStGauge->SetMaxPoint(mMaxSt);
 	mpStGauge->SetCurrPoint(mSt);
+
+	// バフ・デバフ
+	if (mGBRemainTime > 0)
+	{
+		mGBRemainTime -= 1 * Times::DeltaTime();
+		if (mGBRemainTime <= 0)
+		{
+			mInGuardBreak = false;
+			mGBRemainTime = 0;
+		}
+	}
 }
 
 // 描画
 void CEnemy::Render()
 {
 	CXCharacter::Render();
+}
+
+void CEnemy::SetGuardBreak(bool isbreak)
+{
+	mInGuardBreak = isbreak;
+	if (mInGuardBreak) mGBRemainTime = mGuardBreakTime;
 }

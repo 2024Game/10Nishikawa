@@ -46,6 +46,8 @@ public:
 	// 描画
 	void Render() override;
 
+	void SetGuardBreak(bool isbreak);
+
 protected:
 	// 敵の初期化
 	void InitEnemy(std::string path, const std::vector<AnimData>* pAnimData);
@@ -87,6 +89,11 @@ protected:
 	float mAtSpeedMag;		// 攻撃モーションの速度倍率
 	float mNegTime;			// 隙ができる時間
 	float mNegProb;			// 隙ができる確率
+
+	// バフ・デバフ
+	bool mInGuardBreak;		// 防御ダウンデバフ
+	float mGuardBreakTime;	// 防御ダウンデバフ効果時間
+	float mGBRemainTime;	// 防御ダウンデバフ効果残り時間
 
 	CGaugeUI3D* mpHpGauge;		// HPゲージ
 	CVector mHpGaugeOffsetPos;	// HPゲージのオフセット座標

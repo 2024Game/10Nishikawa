@@ -5,10 +5,10 @@
 #include <Maths.h>
 
 CGameSceneUI::CGameSceneUI(CPlayer* player)
-	: mpGaugeImg1(nullptr)
-	, mpWhiteImg1(nullptr)
-	, mpGaugeImg2(nullptr)
-	, mpWhiteImg2(nullptr)
+	: mpHpGaugeImg(nullptr)
+	, mpHpWhiteImg(nullptr)
+	, mpStGaugeImg(nullptr)
+	, mpStWhiteImg(nullptr)
 	, mHpMaxPoint(player->GetMaxHp())
 	, mHpCurrPoint(mHpMaxPoint)
 	, mStMaxPoint(player->GetMaxSt())
@@ -19,6 +19,13 @@ CGameSceneUI::CGameSceneUI(CPlayer* player)
 	, mHpGaugePos(CVector2(25.0f, 25.0f))
 	, mStGaugePos(CVector2(25.0f, 50.0f))
 	, mpPlayer(player)
+	, mSkillGaugeSize(CVector2(80.0f, 80.0f))
+	, mpS1IconImg(nullptr)
+	, mpS1WhiteImg(nullptr)
+	, mS1MaxPoint(player->GetMaxS1())
+	, mS1CurrPoint(mS1MaxPoint)
+	, mS1Percent(1.0f)
+	, mS1GaugePos(CVector2((WINDOW_WIDTH / 2) - 110.0f, WINDOW_HEIGHT - 105.0f))
 {
 	mpText = new CText
 	(
@@ -32,18 +39,18 @@ CGameSceneUI::CGameSceneUI(CPlayer* player)
 
 	// HPゲージ
 	// ゲージのイメージを読み込み
-	mpGaugeImg1 = new CImage
+	mpHpGaugeImg = new CImage
 	(
 		"UI\\gauge.png",
 		ETaskPriority::eUI, 0,
 		ETaskPauseType::eGame,
 		false, false
 	);
-	mpGaugeImg1->SetSize(mGaugeSize);
-	mpGaugeImg1->SetPos(mHpGaugePos);
+	mpHpGaugeImg->SetSize(mGaugeSize);
+	mpHpGaugeImg->SetPos(mHpGaugePos);
 
 	// 白イメージを読み込み
-	mpWhiteImg1 = new CImage
+	mpHpWhiteImg = new CImage
 	(
 		"UI\\white.png",
 		ETaskPriority::eUI, 0,
@@ -53,18 +60,40 @@ CGameSceneUI::CGameSceneUI(CPlayer* player)
 
 	// STゲージ
 	// ゲージのイメージを読み込み
-	mpGaugeImg2 = new CImage
+	mpStGaugeImg = new CImage
 	(
 		"UI\\gauge.png",
 		ETaskPriority::eUI, 0,
 		ETaskPauseType::eGame,
 		false, false
 	);
-	mpGaugeImg2->SetSize(mGaugeSize);
-	mpGaugeImg2->SetPos(mStGaugePos);
+	mpStGaugeImg->SetSize(mGaugeSize);
+	mpStGaugeImg->SetPos(mStGaugePos);
 
 	// 白イメージを読み込み
-	mpWhiteImg2 = new CImage
+	mpStWhiteImg = new CImage
+	(
+		"UI\\white.png",
+		ETaskPriority::eUI, 0,
+		ETaskPauseType::eGame,
+		false, false
+	);
+
+
+	// S1ゲージ
+	// ゲージのイメージを読み込み
+	mpS1IconImg = new CImage
+	(
+		"UI\\KickIcon.png",
+		ETaskPriority::eUI, 0,
+		ETaskPauseType::eGame,
+		false, false
+	);
+	mpS1IconImg->SetSize(mSkillGaugeSize);
+	mpS1IconImg->SetPos(mS1GaugePos);
+
+	// 白イメージを読み込み
+	mpS1WhiteImg = new CImage
 	(
 		"UI\\white.png",
 		ETaskPriority::eUI, 0,
@@ -76,10 +105,14 @@ CGameSceneUI::CGameSceneUI(CPlayer* player)
 CGameSceneUI::~CGameSceneUI()
 {
 	// 読み込んだイメージを削除
-	SAFE_DELETE(mpGaugeImg1);
-	SAFE_DELETE(mpWhiteImg1);
-	SAFE_DELETE(mpGaugeImg2);
-	SAFE_DELETE(mpWhiteImg2);
+	SAFE_DELETE(mpHpGaugeImg);
+	SAFE_DELETE(mpHpWhiteImg);
+
+	SAFE_DELETE(mpStGaugeImg);
+	SAFE_DELETE(mpStWhiteImg);
+
+	SAFE_DELETE(mpS1IconImg);
+	SAFE_DELETE(mpS1WhiteImg);
 }
 
 // HP最大値を設定
@@ -96,6 +129,14 @@ void CGameSceneUI::SetHpCurrPoint(float point)
 	ApplyPoint(0);
 }
 
+// ポイント残量の割合を設定（0.0～1.0）
+void CGameSceneUI::SetHpPercent(float per)
+{
+	mHpPercent = Math::Clamp01(per);
+}
+
+
+
 // ST最大値を設定
 void CGameSceneUI::SetStMaxPoint(float point)
 {
@@ -111,50 +152,65 @@ void CGameSceneUI::SetStCurrPoint(float point)
 }
 
 // ポイント残量の割合を設定（0.0～1.0）
-void CGameSceneUI::SetHpPercent(float per)
-{
-	mHpPercent = Math::Clamp01(per);
-}
-// ポイント残量の割合を設定（0.0～1.0）
 void CGameSceneUI::SetStPercent(float per)
 {
 	mStPercent = Math::Clamp01(per);
 }
 
+
+
+// S1最大値を設定
+void CGameSceneUI::SetS1MaxPoint(float point)
+{
+	mS1MaxPoint = point;
+	ApplyPoint(2);
+}
+
+// S1現在値を設定
+void CGameSceneUI::SetS1CurrPoint(float point)
+{
+	mS1CurrPoint = point;
+	ApplyPoint(2);
+}
+
+// ポイント残量の割合を設定（0.0～1.0）
+void CGameSceneUI::SetS1Percent(float per)
+{
+	mS1Percent = Math::Clamp01(per);
+}
+
+
 void CGameSceneUI::Update()
 {
 	SetHpCurrPoint(mpPlayer->GetHp());
-	mpGaugeImg1->Update();
-	mpWhiteImg1->Update();
+	mpHpGaugeImg->Update();
+	mpHpWhiteImg->Update();
 
 	SetStCurrPoint(mpPlayer->GetSt());
-	mpGaugeImg2->Update();
-	mpWhiteImg2->Update();
+	mpStGaugeImg->Update();
+	mpStWhiteImg->Update();
+
+	SetS1CurrPoint(mpPlayer->GetS1());
+	mpS1IconImg->Update();
+	mpS1WhiteImg->Update();
 	
-	/*
-	// 表示する情報をテキストに設定
-	float depth = mpPlayer->GetDepth();
-	int depthInt = static_cast<int>(depth);   // 小数切り捨て
-	std::string str = "Depth\n \n" + std::to_string(depthInt) + "m";
-	mpText->SetText(str.c_str());
-	*/
 	Render();
 }
 
 void CGameSceneUI::Render()
 {
 	// ゲージ背景を描画
-	mpWhiteImg1->SetPos(mHpGaugePos);
-	mpWhiteImg1->SetSize(mGaugeSize);
-	mpWhiteImg1->SetColor(CColor::black);
-	mpWhiteImg1->SetAlpha(0.5f);
-	mpWhiteImg1->Render();
+	mpHpWhiteImg->SetPos(mHpGaugePos);
+	mpHpWhiteImg->SetSize(mGaugeSize);
+	mpHpWhiteImg->SetColor(CColor::black);
+	mpHpWhiteImg->SetAlpha(0.5f);
+	mpHpWhiteImg->Render();
 
-	mpWhiteImg2->SetPos(mStGaugePos);
-	mpWhiteImg2->SetSize(mGaugeSize);
-	mpWhiteImg2->SetColor(CColor::black);
-	mpWhiteImg2->SetAlpha(0.5f);
-	mpWhiteImg2->Render();
+	mpStWhiteImg->SetPos(mStGaugePos);
+	mpStWhiteImg->SetSize(mGaugeSize);
+	mpStWhiteImg->SetColor(CColor::black);
+	mpStWhiteImg->SetAlpha(0.5f);
+	mpStWhiteImg->Render();
 
 	// HPゲージ
 	// バーのサイズ、座標、色を
@@ -162,36 +218,84 @@ void CGameSceneUI::Render()
 	// バーのサイズを調整
 	CVector2 barSize = mGaugeSize;
 	barSize.X(barSize.X() * mHpPercent);
-	mpWhiteImg1->SetSize(barSize);
+	mpHpWhiteImg->SetSize(barSize);
 	// バーの座標を調整
 	CVector2 barPos = mGaugeSize - barSize;
-	mpWhiteImg1->SetPos(-barPos + mHpGaugePos);
-	mpWhiteImg1->SetPos(mHpGaugePos);
+	//mpHpWhiteImg->SetPos(-barPos + mHpGaugePos);<-ゲージが逆なら？
+	mpHpWhiteImg->SetPos(mHpGaugePos);
 	// バーの色を設定
 	CColor barColor = CColor::green;
 	if (mHpPercent <= 0.25f) barColor = CColor::red;
 	else if (mHpPercent <= 0.5f)barColor = CColor::yellow;
-	mpWhiteImg1->SetColor(barColor);
+	mpHpWhiteImg->SetColor(barColor);
 
 	// STゲージ
 	// バーのサイズを調整
 	barSize = mGaugeSize;
 	barSize.X(barSize.X() * mStPercent);
-	mpWhiteImg2->SetSize(barSize);
+	mpStWhiteImg->SetSize(barSize);
 	// バーの座標を調整
 	barPos = mGaugeSize - barSize;
-	mpWhiteImg2->SetPos(-barPos + mStGaugePos);
-	mpWhiteImg2->SetPos(mStGaugePos);
+	//mpStWhiteImg->SetPos(-barPos + mStGaugePos);<-ゲージが逆なら？
+	mpStWhiteImg->SetPos(mStGaugePos);
 	// バーの色を設定
 	barColor = CColor::skyBlue;
-	mpWhiteImg2->SetColor(barColor);
+	mpStWhiteImg->SetColor(barColor);
 
 	// バーを描画
-	mpWhiteImg1->Render();
-	mpWhiteImg2->Render();
+	mpHpWhiteImg->Render();
+	mpStWhiteImg->Render();
 	// ゲージ本体を描画
-	mpGaugeImg1->Render();
-	mpGaugeImg2->Render();
+	mpHpGaugeImg->Render();
+	mpStGaugeImg->Render();
+
+	// ------スキル関連------
+	
+	// スキル1ゲージ
+	
+	// ゲージ背景を描画
+	mpS1IconImg->Render();
+
+	// フィルターの色を設定
+	mpS1WhiteImg->SetPos(mS1GaugePos);
+	mpS1WhiteImg->SetSize(mSkillGaugeSize);
+	mpS1WhiteImg->SetColor(CColor::black);
+	if (mS1Percent < 1.0f)
+	{
+		// フィルターを描画
+		mpS1WhiteImg->SetAlpha(0.5f);
+		mpS1WhiteImg->Render();
+	}
+	else if (mS1Percent >= 1.0f)
+	{
+		// フィルターを描画
+		mpS1WhiteImg->SetAlpha(0.0f);
+		mpS1WhiteImg->Render();
+	}
+
+	// バーのサイズ、座標、色を
+	// ポイント残量の割合に合わせて調整して、バーを描画
+	// バーのサイズを調整
+	barSize = mSkillGaugeSize;
+	barSize.Y(barSize.Y() * mS1Percent);
+	mpS1WhiteImg->SetSize(barSize);
+	// バーの座標を調整
+	barPos = mSkillGaugeSize - barSize;
+	mpS1WhiteImg->SetPos(barPos + mS1GaugePos);
+	// バーの色を設定
+	if (mS1Percent < 1.0f)
+	{
+		barColor = CColor::darkGray;
+		mpS1WhiteImg->SetAlpha(0.5f);
+	}
+	else if(mS1Percent >= 1.0f)
+	{
+		barColor = CColor::white;
+		mpS1WhiteImg->SetAlpha(0.0f);
+	}
+	// バーを描画
+	mpS1WhiteImg->SetColor(barColor);
+	mpS1WhiteImg->Render();
 }
 
 // ポイント残量を反映
@@ -223,6 +327,19 @@ void CGameSceneUI::ApplyPoint(int num)
 		else
 		{
 			mStPercent = 1.0f;
+		}
+		break;
+	case 2:
+		// S1最大値が不正値でなければ
+		if (mS1MaxPoint > 0)
+		{
+			// 現在値が最大値の何パーセントか求める
+			mS1Percent = Math::Clamp01((float)mS1CurrPoint / mS1MaxPoint);
+		}
+		// 不正値ならば、100%固定
+		else
+		{
+			mS1Percent = 1.0f;
 		}
 		break;
 	default:

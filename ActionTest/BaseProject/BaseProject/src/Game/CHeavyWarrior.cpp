@@ -165,6 +165,7 @@ CHeavyWarrior::CHeavyWarrior(CPlayer* player, int level)
 
 	mLevel = level;
 	InitStatus();
+	mGuardBreakTime = 10.0f;
 }
 
 // デストラクタ
@@ -314,8 +315,10 @@ void CHeavyWarrior::AttackEnd()
 // ダメージを受ける
 void CHeavyWarrior::TakeDamage(float damage, CObjectBase* causer)
 {
+	float amount = (!mInGuardBreak) ? damage : damage * 2;
+
 	// ベースクラスのダメージ処理を呼び出す
-	CEnemy::TakeDamage(damage, causer);
+	CEnemy::TakeDamage(amount, causer);
 
 	// 死亡していなければ、
 	if (!IsDeath())

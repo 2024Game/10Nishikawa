@@ -117,6 +117,8 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	, mpHeadFrame(nullptr)
 	, mInTypeAhead(false)
 	, mInJustAction(false)
+	, mS1RecastTime(15.0f)
+	, mS1CastTime(mS1RecastTime)
 {
 	mMaxHp = mpSaveManager->data.maxHp;
 	mHp = mpSaveManager->data.hp;
@@ -318,6 +320,9 @@ void CPlayer::UpdateIdle()
 		// Cでキック攻撃へ移行
 		else if (CInput::PushKey('C'))
 		{
+			if (mS1CastTime < mS1RecastTime) return;
+			mS1CastTime = 0.0f;
+
 			// 先行入力コライダーをオンにする
 			mpTACol->SetEnable(true);
 
@@ -636,6 +641,12 @@ void CPlayer::UpdateKick()
 		case 0:
 			// 攻撃アニメーションを開始
 			ChangeAnimation(EAnimType::eKick, true);
+			if (mInTypeAhead)
+			{
+				Times::SetTimeScale(0.25f);
+				SetInvincible(true);
+				mInJustAction = true;
+			}
 			mStateStep++;
 			break;
 		case 1:
@@ -656,6 +667,13 @@ void CPlayer::UpdateKick()
 			// 攻撃アニメーションが終了したら、
 			if (IsAnimationFinished())
 			{
+				if (mInJustAction)
+				{
+					Times::SetTimeScale(1.0f);
+					SetInvincible(false);
+					mInJustAction = false;
+				}
+
 				// 待機状態へ移行
 				ChangeState(EState::eIdle);
 				ChangeAnimation(EAnimType::eIdle);
@@ -747,6 +765,7 @@ void CPlayer::UpdateSlideAttack()
 			mMoveSpeed = CVector::zero;
 			mpSlashSE->Play();
 			AttackStart();
+			mInAttack = true;
 			mStateStep++;
 		}
 		break;
@@ -765,7 +784,7 @@ void CPlayer::UpdateSlideAttack()
 		if (mInAttack)
 		{
 			// 1秒あたりの移動速度
-			mMoveSpeed = mAttackVec * 3.0f * Times::DeltaTime();
+			mMoveSpeed = mAttackVec * 5.0f * Times::UnscaledDeltaTime();
 		}
 		break;
 	case 5:
@@ -773,7 +792,6 @@ void CPlayer::UpdateSlideAttack()
 		if (IsAnimationFinished())
 		{
 			Times::SetTimeScale(1.0f);
-			mInJustAction = false;
 			UnLockTarget();
 			SetInvincible(false);
 			mpGreatSword->Rotation(SWORD_OFFSET_ROT);
@@ -867,6 +885,7 @@ void CPlayer::UpdateAvoidR()
 				// スライド斬り攻撃状態へ移行
 				ChangeState(EState::eSlideAtt);
 			}
+			mInJustAction = false;
 		}
 		break;
 	}
@@ -923,6 +942,7 @@ void CPlayer::UpdateAvoidL()
 				// スライド斬り攻撃状態へ移行
 				ChangeState(EState::eSlideAtt);
 			}
+			mInJustAction = false;
 		}
 		break;
 	}
@@ -1254,6 +1274,21 @@ void CPlayer::Update()
 	SetParent(mpRideObject);
 	mpRideObject = nullptr;
 
+	// スキル
+	if (mS1CastTime < mS1RecastTime)
+	{
+		float capa = mS1RecastTime - mS1CastTime;
+		float amount = 1 * Times::DeltaTime();
+		if (capa >= amount)
+		{
+			mS1CastTime += amount;
+		}
+		else
+		{
+			mS1CastTime = mS1RecastTime;
+		}
+	}
+	
 
 	/*
 	CModelXFrame* frame = mpModel->FinedFrame("Armature_mixamorig_RightHand");
@@ -1629,8 +1664,16 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		CCharaBase* hitChara = dynamic_cast<CCharaBase*>(other->Owner());
 		if (hitChara != nullptr && !IsAttackHitObj(hitChara))
 		{
+			// Enemyかどうかを判定
+			CEnemy* hitEnemy = dynamic_cast<CEnemy*>(hitChara);
+
+			if (mInJustAction && hitEnemy != nullptr)
+			{
+				hitEnemy->SetGuardBreak(true);
+			}
+
 			AddAttackHitObj(hitChara);
-			hitChara->TakeDamage(1, this);
+			hitChara->TakeDamage(0, this);
 		}
 	}
 }
@@ -1639,4 +1682,14 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 void CPlayer::Render()
 {
 	CXCharacter::Render();
+}
+
+float CPlayer::GetMaxS1()
+{
+	return mS1RecastTime;
+}
+
+float CPlayer::GetS1()
+{
+	return mS1CastTime;
 }

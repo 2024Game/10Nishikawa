@@ -59,6 +59,9 @@ public:
 	// 描画
 	void Render();
 
+	float GetMaxS1();
+	float GetS1();
+
 private:
 	// オブジェクト削除を伝える
 	void DeleteObject(CObjectBase* obj) override;
@@ -198,6 +201,10 @@ private:
 	CSound* mpSlashSE;
 	bool mIsPlayedSlashSE;
 	bool mIsSpawnedSlashEffect;
+
+	// スキル関連
+	float mS1RecastTime;		// スキル１のクールタイム
+	float mS1CastTime;			// スキル１の経過クールタイム
 
 	// 火炎放射エフェクト
 	CFlamethrower* mpFlamethrower;
