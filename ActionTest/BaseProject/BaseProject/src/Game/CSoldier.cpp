@@ -76,7 +76,7 @@ const std::vector<CEnemy::AnimData> ANIM_DATA =
 	{ ANIM_PATH"jump_end.x",	false,	26.0f,	1.0f	},	// ジャンプ終了
 	{ ANIM_PATH"avoidR.x",		true,	58.0f,	1.5f	},	// 回避:右
 	{ ANIM_PATH"avoidL.x",		true,	58.0f,	1.5f	},	// 回避:左
-	{ ANIM_PATH"hit.x",			false,	44.0f,	0.8f	},	// 仰け反り
+	{ ANIM_PATH"hit.x",			false,	44.0f,	0.85f	},	// 仰け反り
 	{ ANIM_PATH"death.x",		false,	182.0f,	1.0f	},	// 死亡
 	{ ANIM_PATH"victory.x",		true,	271.0f,	1.0f	},	// 勝利
 };
@@ -243,21 +243,21 @@ void CSoldier::InitStatus()
 		mAvoidStCost = 20.0f - (level * (20.0f * 0.03f));
 		mStepMag = 1.2f + (level * 0.05f);
 		mAttackMag = 1.0f + (level * 0.085f);
-		mAtSpeedMag = 1.0f * (1 + (level * 0.03f));
+		mAtSpeedMag = 1.0f * (1 + (level * 0.025f));
 		mNegTime = 0.8f - (level * 0.04f);
 		mNegProb = 66.6f - (level * 4.5f);
 	}
 	else if (mLevel == 10)
 	{
 		mCan1B = true;
-		mMaxHp = 380.0f + 120.0f;
+		mMaxHp = 300.0f + 100.0f;
 		mMaxSt = 290.0f + 60.0f;
 		mGainSt = 12.4f + 0.6f;
 		mA1StCost = 19.0f;
 		mAvoidStCost = 15.2f;
 		mStepMag = 1.6f + 0.2f;
 		mAttackMag = 1.68f + 0.07f;
-		mAtSpeedMag = 1.24f + 0.01f;
+		mAtSpeedMag = 1.20f + 0.05f;
 		mNegTime = 0.48f - 0.08f;
 		mNegProb = 30.6f - 5.6f;
 	}
@@ -416,13 +416,15 @@ void CSoldier::ChangeAnimation(int type, bool restart)
 		data.frameLength,
 		restart
 	);
+	// 攻撃スピードを少しランダムにする
+	float rand = Math::Rand(0.85f, 1.15f);
 	switch (type)
 	{
 	case 5:
 	case 6:
 	case 7:
 	case 8:
-		CXCharacter::SetAnimationSpeed(data.speed * mAtSpeedMag);
+		CXCharacter::SetAnimationSpeed((data.speed * rand) * mAtSpeedMag);
 		break;
 	default:
 		CXCharacter::SetAnimationSpeed(data.speed);

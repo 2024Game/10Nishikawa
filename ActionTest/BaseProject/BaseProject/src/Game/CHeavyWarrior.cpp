@@ -76,7 +76,7 @@ const std::vector<CEnemy::AnimData> ANIM_DATA =
 	{ ANIM_PATH"jump_end.x",	false,	26.0f,	1.0f	},	// ジャンプ終了
 	{ ANIM_PATH"avoidR.x",		true,	58.0f,	1.5f	},	// 回避:右
 	{ ANIM_PATH"avoidL.x",		true,	58.0f,	1.5f	},	// 回避:左
-	{ ANIM_PATH"hit.x",			false,	44.0f,	1.0f	},	// 仰け反り
+	{ ANIM_PATH"hit.x",			false,	44.0f,	0.90f	},	// 仰け反り
 	{ ANIM_PATH"death.x",		false,	182.0f,	1.0f	},	// 死亡
 	{ ANIM_PATH"victory.x",		true,	271.0f,	1.0f	},	// 勝利
 };
@@ -220,7 +220,7 @@ void CHeavyWarrior::InitStatus()
 	}
 	else if (mLevel < 5)
 	{
-		mMaxHp = 120.0f + (20.0f * level);
+		mMaxHp = 120.0f + (25.0f * level);
 		mMaxSt = 150.0f + (15.0f * level);
 		mGainSt = 10.0f * (1 + (level * 0.025f));
 		mA1StCost = 30.0f - (level * (30.0f * 0.025f));
@@ -234,21 +234,21 @@ void CHeavyWarrior::InitStatus()
 	else if (mLevel < 10)
 	{
 		mCan1B = true;
-		mMaxHp = 120.0f + (30.0f * level);
+		mMaxHp = 120.0f + (35.0f * level);
 		mMaxSt = 150.0f + (17.5f * level);
 		mGainSt = 10.0f * (1 + (level * 0.03f));
 		mA1StCost = 27.5f - (level * (27.5f * 0.03f));
 		mAvoidStCost = 20.0f - (level * (20.0f * 0.03f));
 		mStepMag = 1.2f + (level * 0.05f);
 		mAttackMag = 1.0f + (level * 0.090f);
-		mAtSpeedMag = 1.0f * (1 + (level * 0.035f));
+		mAtSpeedMag = 1.0f * (1 + (level * 0.03f));
 		mNegTime = 0.8f - (level * 0.04f);
 		mNegProb = 66.6f - (level * 4.5f);
 	}
 	else if (mLevel == 10)
 	{
 		mCan1B = true;
-		mMaxHp = 440.0f + 160.0f;
+		mMaxHp = 400.0f + 150.0f;
 		mMaxSt = 290.0f + 60.0f;
 		mGainSt = 12.4f + 0.6f;
 		mA1StCost = 20.9f - 0.9f;
@@ -414,13 +414,15 @@ void CHeavyWarrior::ChangeAnimation(int type, bool restart)
 		data.frameLength,
 		restart
 	);
+	// 攻撃スピードを少しランダムにする
+	float rand = Math::Rand(0.85f, 1.15f);
 	switch (type)
 	{
 	case 5:
 	case 6:
 	case 7:
 	case 8:
-		CXCharacter::SetAnimationSpeed(data.speed * mAtSpeedMag);
+		CXCharacter::SetAnimationSpeed((data.speed * rand) * mAtSpeedMag);
 		break;
 	default:
 		CXCharacter::SetAnimationSpeed(data.speed);
