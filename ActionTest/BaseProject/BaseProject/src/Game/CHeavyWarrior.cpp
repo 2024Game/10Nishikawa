@@ -168,7 +168,7 @@ CHeavyWarrior::CHeavyWarrior(CPlayer* player, int level)
 
 	mLevel = level;
 	InitStatus();
-	mGuardBreakTime = 10.0f;
+	mGuardBreakTime = 12.5f;
 }
 
 // デストラクタ

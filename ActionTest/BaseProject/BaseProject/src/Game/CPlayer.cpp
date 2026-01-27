@@ -117,7 +117,7 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	, mpHeadFrame(nullptr)
 	, mInTypeAhead(false)
 	, mInJustAction(false)
-	, mS1RecastTime(5.0f)
+	, mS1RecastTime(10.0f)
 	, mS1CastTime(mS1RecastTime)
 {
 	mMaxHp = mpSaveManager->data.maxHp;
