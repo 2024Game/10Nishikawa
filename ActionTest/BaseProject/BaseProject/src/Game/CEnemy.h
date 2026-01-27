@@ -5,6 +5,7 @@
 #include "CModel.h"
 
 class CGaugeUI3D;
+class CEnemyBuffUI3D;
 
 /*
 エネミークラス
@@ -90,15 +91,17 @@ protected:
 	float mNegTime;			// 隙ができる時間
 	float mNegProb;			// 隙ができる確率
 
-	// バフ・デバフ
-	bool mInGuardBreak;		// 防御ダウンデバフ
-	float mGuardBreakTime;	// 防御ダウンデバフ効果時間
-	float mGBRemainTime;	// 防御ダウンデバフ効果残り時間
-
 	CGaugeUI3D* mpHpGauge;		// HPゲージ
 	CVector mHpGaugeOffsetPos;	// HPゲージのオフセット座標
 	CGaugeUI3D* mpStGauge;		// スタミナゲージ
 	CVector mStGaugeOffsetPos;	// スタミナゲージのオフセット座標
+
+	// バフ・デバフ
+	CEnemyBuffUI3D* mpGBBuffGauge;		// 防御ダウンデバフゲージ
+	CVector mGBBuffOffsetPos;			// 防御ダウンデバフゲージのオフセット座標
+	bool mInGuardBreak;					// 防御ダウンデバフ
+	float mGuardBreakTime;				// 防御ダウンデバフ効果時間
+	float mGBRemainTime;				// 防御ダウンデバフ効果残り時間
 };
 
 #endif

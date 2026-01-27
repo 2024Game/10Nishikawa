@@ -13,7 +13,8 @@
 #define JUMP_SPEED 1.5f		// ジャンプ速度
 #define GRAVITY 0.0625f		// 重力加速度
 
-#define GAUGE_OFFSET_Y 20.0f
+#define GAUGE_OFFSET_Y 20.0f		// HP・STゲージオフセット位置(高さ)
+#define BUFF_GAUGE_OFFSET_Y 23.0f	// バフゲージオフセット位置(高さ)
 #define DEATH_WAIT_TIME 3.0f
 
 #define LOOKAT_SPEED 90.0f
@@ -97,6 +98,8 @@ CHeavyWarrior::CHeavyWarrior(CPlayer* player, int level)
 	// ゲージのオフセット位置を設定
 	mHpGaugeOffsetPos = CVector(0.0f, GAUGE_OFFSET_Y, 0.0f);
 	mStGaugeOffsetPos = CVector(0.0f, GAUGE_OFFSET_Y - 1.0f, 0.0f);
+	// バフ・デバフゲージのオフセット位置を設定
+	mGBBuffOffsetPos = CVector(0.0f, BUFF_GAUGE_OFFSET_Y, 0.0f);
 
 	// 敵を初期化
 	InitEnemy("Soldier", &ANIM_DATA);

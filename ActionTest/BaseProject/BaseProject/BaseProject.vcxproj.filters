@@ -448,6 +448,9 @@
     <ClCompile Include="src\Game\CPlayerUI3D.cpp">
       <Filter>ソース ファイル\Game\UI\GameScene</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CEnemyBuffUI3D.cpp">
+      <Filter>ソース ファイル\Game\UI\GameScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -808,6 +811,9 @@
       <Filter>ソース ファイル\Game\UI\GameScene</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CPlayerUI3D.h">
+      <Filter>ソース ファイル\Game\UI\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CEnemyBuffUI3D.h">
       <Filter>ソース ファイル\Game\UI\GameScene</Filter>
     </ClInclude>
   </ItemGroup>

@@ -286,7 +286,8 @@ void CGameSceneUI::Render()
 	if (mS1Percent < 1.0f)
 	{
 		barColor = CColor::gray;
-		mpS1WhiteImg->SetColor(barColor); // SetColor‚ÍRGBA‚ðŠÇ—‚µAA‚à‘‚«Š·‚¦‚é‚Ì‚Å’ˆÓ
+		// SetColor‚ÍRGBA‚ðŠÇ—‚µAA‚à‘‚«Š·‚¦‚é‚Ì‚Å’ˆÓ
+		mpS1WhiteImg->SetColor(barColor);
 		mpS1WhiteImg->SetAlpha(0.5f);
 	}
 	else if(mS1Percent >= 1.0f)

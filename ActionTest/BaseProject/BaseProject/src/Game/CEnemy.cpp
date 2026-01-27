@@ -3,6 +3,7 @@
 #include "CCollisionManager.h"
 #include "CColliderCapsule.h"
 #include "CGaugeUI3D.h"
+#include "CEnemyBuffUI3D.h"
 #include "CEnemyManager.h"
 
 #define GRAVITY 0.0625f
@@ -21,6 +22,7 @@ CEnemy::CEnemy()
 	, mpBodyCol(nullptr)
 	, mpHpGauge(nullptr)
 	, mpStGauge(nullptr)
+	, mpGBBuffGauge(nullptr)
 	, mIsGravity(true)
 	, mLevel(0)
 	, mGainSt(0.0f)
@@ -47,6 +49,11 @@ CEnemy::CEnemy()
 	mpStGauge->SetCurrPoint(mSt);
 	mpStGauge->SetGaugeTypeNum(2);
 
+	// 防御ダウンデバフゲージを作成
+	mpGBBuffGauge = new CEnemyBuffUI3D(this);
+	mpGBBuffGauge->SetMaxPoint(mGuardBreakTime);
+	mpGBBuffGauge->SetCurrPoint(mGBRemainTime);
+
 	// エネミー管理クラスのリストに自身を追加する
 	CEnemyManager::Instance()->Add(this);
 
@@ -71,6 +78,12 @@ CEnemy::~CEnemy()
 		mpStGauge->SetOwner(nullptr);
 		mpStGauge->Kill();
 	}
+	// 防御ダウンデバフゲージが存在したら、一緒に削除する
+	if (mpGBBuffGauge != nullptr)
+	{
+		mpGBBuffGauge->SetOwner(nullptr);
+		mpGBBuffGauge->Kill();
+	}
 
 	// エネミー管理クラスのリストから自身を除外する
 	CEnemyManager::Instance()->Remove(this);
@@ -90,6 +103,12 @@ void CEnemy::DeleteObject(CObjectBase* obj)
 	if (obj == mpStGauge)
 	{
 		mpStGauge = nullptr;
+	}
+	// 削除されたのが防御ダウンデバフゲージであれば、
+	// 防御ダウンデバフゲージのポインタを空にする
+	if (obj == mpGBBuffGauge)
+	{
+		mpGBBuffGauge = nullptr;
 	}
 }
 
@@ -241,6 +260,11 @@ void CEnemy::Update()
 			mGBRemainTime = 0;
 		}
 	}
+	
+	// バフ・デバフインジケーターを更新
+	mpGBBuffGauge->Position(Position() + mGBBuffOffsetPos);
+	mpGBBuffGauge->SetMaxPoint(mGuardBreakTime);
+	mpGBBuffGauge->SetCurrPoint(mGBRemainTime);
 }
 
 // 描画
