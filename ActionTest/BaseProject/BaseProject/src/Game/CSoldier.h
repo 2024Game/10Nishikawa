@@ -160,8 +160,8 @@ private:
 	// 剣のクラス
 	CGreatSword* mpSword;
 
-	bool mCan1B;
-	float m1BProb;
+	bool mCan1B;			// 1段目B攻撃が可能かどうか？
+	float m1BProb;			// 1段目B攻撃を行う確率
 	bool mNextAttack;		//連続攻撃が予約されているかどうか
 	CVector mAttackVec;
 	bool mInAttack = false;
