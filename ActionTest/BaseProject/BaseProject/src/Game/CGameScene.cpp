@@ -106,16 +106,6 @@ void CGameScene::Load()
 	//mEnemyLv = 2 + (mpSaveManager->data.day / 3);
 	mEnemyLv = ((int)mpSaveManager->data.day / 3)+ 2;
 
-	if (mpSaveManager->data.selectDiff == 1)
-	{
-		mEnemyLv--;
-	}
-	else if (mpSaveManager->data.selectDiff == 3)
-	{
-		if (mEnemyLv == 10) return;
-		mEnemyLv++;
-	}
-
 	CEnemy* enemy;
 	int enemyCount = 0;
 	int rand = 0;
@@ -142,7 +132,8 @@ void CGameScene::Load()
 		}
 		else
 		{
-			mEnemyLv++;
+			if (mEnemyLv < 10) mEnemyLv++;
+			
 			enemyCount = 1;
 		}
 		break;

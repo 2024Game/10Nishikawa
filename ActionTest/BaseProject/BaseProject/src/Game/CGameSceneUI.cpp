@@ -25,7 +25,7 @@ CGameSceneUI::CGameSceneUI(CPlayer* player)
 	, mS1MaxPoint(player->GetMaxS1())
 	, mS1CurrPoint(mS1MaxPoint)
 	, mS1Percent(1.0f)
-	, mS1GaugePos(CVector2((WINDOW_WIDTH / 2) - 110.0f, WINDOW_HEIGHT - 105.0f))
+	, mS1GaugePos(CVector2((WINDOW_WIDTH / 2) - (90.0f + 40.0f), WINDOW_HEIGHT - 105.0f))
 {
 	mpText = new CText
 	(

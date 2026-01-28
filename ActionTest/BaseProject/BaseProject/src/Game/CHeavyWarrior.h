@@ -109,9 +109,7 @@ private:
 	// 現在地から目的地までの距離を求める
 	float GetDistToTarget();
 
-	// 針を発射
-	void ShotNeedle();
-
+	// スタミナ自動回復
 	void STRegene();
 
 	// 状態切り替え

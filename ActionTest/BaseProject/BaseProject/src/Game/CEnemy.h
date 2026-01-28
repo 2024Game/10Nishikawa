@@ -83,8 +83,10 @@ protected:
 	// ステータス関連
 	int mLevel;				// 敵のレベル
 	float mGainSt;			// スタミナ回復量
-	float mA1StCost;		// 攻撃の基本ST消費量
-	float mAvoidStCost;		// 回避の基本ST消費量
+	float mAttackCost1;		// 攻撃のST消費量(少ない)
+	float mAttackCost2;		// 攻撃のST消費量(普通)
+	float mAttackCost3;		// 攻撃のST消費量(多い)
+	float mAvoidCost;		// 回避の基本ST消費量
 	float mStepMag;			// 踏み込みの移動距離倍率
 	float mAttackMag;		// 攻撃力の倍率
 	float mAtSpeedMag;		// 攻撃モーションの速度倍率

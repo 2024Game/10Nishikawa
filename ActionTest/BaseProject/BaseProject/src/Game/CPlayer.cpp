@@ -107,8 +107,8 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	, mpGreatSword(nullptr)
 	, mNextAttack(false)
 	, mAttackMag(0.0f)
-	, mA1StCost(25.0f)
-	, mAvoidStCost(20.0f)
+	, mAttackCost1(25.0f)
+	, mAvoidCost(20.0f)
 	, mpSaveManager(SaveManager)
 	, mIsLockOn(false)
 	, mpLockOnTarget(nullptr)
@@ -307,9 +307,9 @@ void CPlayer::UpdateIdle()
 	{
 		AvoidJudge();
 		// 左クリックで斬撃攻撃へ移行
-		if (CInput::PushKey(VK_LBUTTON) && mSt >= mA1StCost)
+		if (CInput::PushKey(VK_LBUTTON) && mSt >= mAttackCost1)
 		{
-			CCharaBase::UseStamina(mA1StCost);
+			CCharaBase::UseStamina(mAttackCost1);
 
 			// 先行入力コライダーをオンにする
 			mpTACol->SetEnable(true);
@@ -419,9 +419,9 @@ void CPlayer::UpdateAttack1()
 				{
 					mNextAttack = false;
 					CObjectBase::AttackStart();
-					if (mSt >= mA1StCost)
+					if (mSt >= mAttackCost1)
 					{
-						CCharaBase::UseStamina(mA1StCost);
+						CCharaBase::UseStamina(mAttackCost1);
 						// 攻撃2段目へ移行
 						ChangeState(EState::eAttack2);
 					}
@@ -524,9 +524,9 @@ void CPlayer::UpdateAttack2()
 			{
 				mNextAttack = false;
 				CObjectBase::AttackStart();
-				if (mSt >= mA1StCost)
+				if (mSt >= mAttackCost1)
 				{
-					CCharaBase::UseStamina(mA1StCost);
+					CCharaBase::UseStamina(mAttackCost1);
 					// 攻撃X段目へ移行
 					ChangeState(EState::eAttackX);
 				}
@@ -1036,7 +1036,7 @@ void CPlayer::UpdateVictory()
 void CPlayer::AvoidJudge()
 {
 	// 右クリックで回避へ移行
-	if (CInput::PushKey(VK_RBUTTON) && CInput::Key('D') && mSt >= mAvoidStCost)
+	if (CInput::PushKey(VK_RBUTTON) && CInput::Key('D') && mSt >= mAvoidCost)
 	{
 		mpTACol->SetEnable(false);
 		if (mInTypeAhead)
@@ -1046,14 +1046,14 @@ void CPlayer::AvoidJudge()
 			mInJustAction = true;
 		}
 		mNextAttack = false;
-		CCharaBase::UseStamina(mAvoidStCost);
+		CCharaBase::UseStamina(mAvoidCost);
 		mMoveSpeed = CVector::zero;
 		// プレイヤーの移動ベクトルを求める
 		mAvoidVec = CalcMoveVec();
 		ChangeState(EState::eAvoidR);
 		mIsGravity = false;
 	}
-	else if (CInput::PushKey(VK_RBUTTON) && CInput::Key('A') && mSt >= mAvoidStCost)
+	else if (CInput::PushKey(VK_RBUTTON) && CInput::Key('A') && mSt >= mAvoidCost)
 	{
 		mpTACol->SetEnable(false);
 		if (mInTypeAhead)
@@ -1063,7 +1063,7 @@ void CPlayer::AvoidJudge()
 			mInJustAction = true;
 		}
 		mNextAttack = false;
-		CCharaBase::UseStamina(mAvoidStCost);
+		CCharaBase::UseStamina(mAvoidCost);
 		mMoveSpeed = CVector::zero;
 		// プレイヤーの移動ベクトルを求める
 		mAvoidVec = CalcMoveVec();

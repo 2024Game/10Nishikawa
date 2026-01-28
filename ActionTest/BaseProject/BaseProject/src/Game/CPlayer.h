@@ -215,8 +215,8 @@ private:
 	// 剣のクラス
 	CGreatSword* mpGreatSword;
 
-	float mA1StCost;
-	float mAvoidStCost;
+	float mAttackCost1;
+	float mAvoidCost;
 
 	float mStRegeneMag; // スタミナ回復倍率
 	float mAttackMag;	// 攻撃の倍率

@@ -526,7 +526,7 @@ void CBarracksSceneUI::InformationUpdate()
 		"体力\n" + std::to_string((int)mpSaveManager->data.hp) + "/"
 		+ std::to_string((int)mpSaveManager->data.maxHp) + "\n"
 		"スタミナ\n" + std::to_string(150 + (mpSaveManager->data.stLv * 5)) + "\n"
-		"スタミナ回復量(秒間)\n" + std::to_string(10.0f * (1.0f + (mpSaveManager->data.stRegeneLv * 0.025f))) + "\n"
+		"スタミナ回復量(秒間)\n" + std::to_string(7.5f * (1.0f + (mpSaveManager->data.stRegeneLv * 0.025f))) + "\n"
 		"攻撃倍率\n" + std::to_string(1 + (mpSaveManager->data.attackLv * 0.05f)) + "\n"
 		"試合後体力回復量\n" + std::to_string(mpSaveManager->data.maxHp * (mpSaveManager->data.hpRegeneLv * 0.01f) + 5) + "\n"
 		).c_str());

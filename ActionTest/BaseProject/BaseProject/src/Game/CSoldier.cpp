@@ -82,7 +82,7 @@ const std::vector<CEnemy::AnimData> ANIM_DATA =
 };
 
 // コンストラクタ
-CSoldier::CSoldier(CPlayer* player, int level)
+CSoldier::CSoldier(CPlayer* player, int mLevel)
 	: mpRideObject(nullptr)
 	, mIsPlayedSlashSE(false)
 	, mIsSpawnedSlashEffect(false)
@@ -168,7 +168,7 @@ CSoldier::CSoldier(CPlayer* player, int level)
 	// 先行入力コライダーは最初はオフにしておく
 	mpTACol->SetEnable(false);
 
-	mLevel = level;
+	mLevel = mLevel;
 	InitStatus();
 	mGuardBreakTime = 12.5f;
 }
@@ -193,14 +193,19 @@ CSoldier::~CSoldier()
 void CSoldier::InitStatus()
 {
 	// レベルに合わせて、ステータスを切り替える
-	int level = mLevel - 2;
+	mAttackCost1 = 25.0f;
+	mAttackCost2 = 30.0f;
+	mAttackCost3 = 35.0f;
+
 	if (mLevel == 1)
 	{
 		mMaxHp = 80.0f;
 		mMaxSt = 150.0f;
 		mGainSt = 8.5f;
-		mA1StCost = 30.0f;
-		mAvoidStCost = 25.0f;
+		mAttackCost1 = 30.0f;
+		mAttackCost2 = 35.0f;
+		mAttackCost3 = 40.0f;
+		mAvoidCost = 25.0f;
 		mStepMag = 1.0f;
 		mAttackMag = 0.7f;
 		mAtSpeedMag = 0.85f;
@@ -212,8 +217,7 @@ void CSoldier::InitStatus()
 		mMaxHp = 100.0f;
 		mMaxSt = 150.0f;
 		mGainSt = 10.0f;
-		mA1StCost = 25.0f;
-		mAvoidStCost = 20.0f;
+		mAvoidCost = 20.0f;
 		mStepMag = 1.2f;
 		mAttackMag = 1.0f;
 		mAtSpeedMag = 1.0f;
@@ -222,30 +226,28 @@ void CSoldier::InitStatus()
 	}
 	else if (mLevel < 5)
 	{
-		mMaxHp = 100.0f + (15.0f * level);
-		mMaxSt = 150.0f + (15.0f * level);
-		mGainSt = 10.0f * (1 + (level * 0.025f));
-		mA1StCost = 25.0f - (level * (25.0f * 0.025f));
-		mAvoidStCost = 20.0f - (level * (20.0f * 0.025f));
-		mStepMag = 1.2f + (level * 0.05f);
-		mAttackMag = 1.0f + (level * 0.05f);
-		mAtSpeedMag = 1.0f * (1 + (level * 0.02f));
-		mNegTime = 0.8f - (level * 0.03f);
-		mNegProb = 66.6f - (level * 2.5f);
+		mMaxHp = 100.0f + (15.0f * mLevel);
+		mMaxSt = 150.0f + (15.0f * mLevel);
+		mGainSt = 10.0f * (1 + (mLevel * 0.025f));
+		mAvoidCost = 20.0f - (mLevel * (20.0f * 0.025f));
+		mStepMag = 1.2f + (mLevel * 0.05f);
+		mAttackMag = 1.0f + (mLevel * 0.05f);
+		mAtSpeedMag = 1.0f * (1 + (mLevel * 0.02f));
+		mNegTime = 0.8f - (mLevel * 0.03f);
+		mNegProb = 66.6f - (mLevel * 2.5f);
 	}
 	else if (mLevel < 10)
 	{
 		mCan1B = true;
-		mMaxHp = 100.0f + (25.0f * level);
-		mMaxSt = 150.0f + (17.5f * level);
-		mGainSt = 10.0f * (1 + (level * 0.03f));
-		mA1StCost = 25.0f - (level * (25.0f * 0.03f));
-		mAvoidStCost = 20.0f - (level * (20.0f * 0.03f));
-		mStepMag = 1.2f + (level * 0.05f);
-		mAttackMag = 1.0f + (level * 0.085f);
-		mAtSpeedMag = 1.0f * (1 + (level * 0.025f));
-		mNegTime = 0.8f - (level * 0.04f);
-		mNegProb = 66.6f - (level * 4.5f);
+		mMaxHp = 100.0f + (25.0f * mLevel);
+		mMaxSt = 150.0f + (17.5f * mLevel);
+		mGainSt = 10.0f * (1 + (mLevel * 0.03f));
+		mAvoidCost = 20.0f - (mLevel * (20.0f * 0.03f));
+		mStepMag = 1.2f + (mLevel * 0.05f);
+		mAttackMag = 1.0f + (mLevel * 0.085f);
+		mAtSpeedMag = 1.0f * (1 + (mLevel * 0.025f));
+		mNegTime = 0.8f - (mLevel * 0.04f);
+		mNegProb = 66.6f - (mLevel * 4.5f);
 	}
 	else if (mLevel == 10)
 	{
@@ -253,8 +255,7 @@ void CSoldier::InitStatus()
 		mMaxHp = 300.0f + 100.0f;
 		mMaxSt = 290.0f + 60.0f;
 		mGainSt = 12.4f + 0.6f;
-		mA1StCost = 19.0f;
-		mAvoidStCost = 15.2f;
+		mAvoidCost = 15.2f;
 		mStepMag = 1.6f + 0.2f;
 		mAttackMag = 1.68f + 0.07f;
 		mAtSpeedMag = 1.20f + 0.05f;
@@ -363,9 +364,9 @@ void CSoldier::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 	{
 		if (mState == (int)EState::eIdle || mState == (int)EState::eChase)
 		{
-			if (mSt >= mAvoidStCost)
+			if (mSt >= mAvoidCost)
 			{
-				CCharaBase::UseStamina(mAvoidStCost);
+				CCharaBase::UseStamina(mAvoidCost);
 				SelectAvoid();
 			}
 		}
@@ -504,27 +505,6 @@ void CSoldier::STRegene()
 	}
 }
 
-// 針を発射
-void CSoldier::ShotNeedle()
-{
-	/*
-	CVector pos = Position() + Rotation() * ATTACK2_NEEDLE_OFFSET_POS;
-	CVector forward = VectorZ();
-	float startAngle = -ATTACK2_NEEDLE_SHOT_ANGLE;
-	float endAngle = ATTACK2_NEEDLE_SHOT_ANGLE;
-	for (int i = 0; i < ATTACK2_NEEDLE_SHOT_DIR_COUNT; i++)
-	{
-		float alpha = (float)i / (ATTACK2_NEEDLE_SHOT_DIR_COUNT - 1);
-		float angle = Math::Lerp(startAngle, endAngle, alpha);
-		CVector dir = CQuaternion(0.0f, angle, 0.0f) * forward;
-
-		//CSoldierNeedle* needle = new CSoldierNeedle(ATTACK2_NEEDLE_SPEED, ATTACK2_NEEDLE_DIST);
-		//needle->Position(pos);
-		//needle->Rotation(CQuaternion::LookRotation(dir));
-	}
-	*/
-}
-
 // 状態切り替え
 void CSoldier::ChangeState(int state)
 {
@@ -610,17 +590,23 @@ void CSoldier::UpdateChase()
 	float dist = vec.Length();
 	if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 	{
-		if (mSt >= mA1StCost + mAvoidStCost)
+		if (mCan1B && mSt >= mAttackCost2 + mAvoidCost)
 		{
-			CCharaBase::UseStamina(mA1StCost);
-			if (mCan1B)
+			// 一定確率で、攻撃を変更
+			int rand = Math::Rand(0, 99);
+			if (rand < ATTACK1B_PROB)
 			{
-				// 一定確率で、攻撃を変更
-				int rand = Math::Rand(0, 99);
-				if (rand < ATTACK1B_PROB)
+				// 攻撃状態へ移行
+				ChangeState((int)EState::eAttack1B);
+			}
+			else
+			{
+				// 確率で攻撃を選択
+				rand = Math::Rand(0, 99);
+				if (rand < 30)
 				{
 					// 攻撃状態へ移行
-					ChangeState((int)EState::eAttack1B);
+					ChangeState((int)EState::eAttack2);
 				}
 				else
 				{
@@ -628,11 +614,41 @@ void CSoldier::UpdateChase()
 					ChangeState((int)EState::eAttack1);
 				}
 			}
+		}
+		else if (mCan1B && mSt >= mAttackCost1 + mAvoidCost)
+		{
+			// 一定確率で、攻撃を変更
+			int rand = Math::Rand(0, 99);
+			if (rand < ATTACK1B_PROB)
+			{
+				// 攻撃状態へ移行
+				ChangeState((int)EState::eAttack1B);
+			}
 			else
 			{
 				// 攻撃状態へ移行
 				ChangeState((int)EState::eAttack1);
 			}
+		}
+		else if (mSt >= mAttackCost2 + mAvoidCost)
+		{
+			// 確率で攻撃を選択
+			int rand = Math::Rand(0, 99);
+			if (rand < 30)
+			{
+				// 攻撃状態へ移行
+				ChangeState((int)EState::eAttack2);
+			}
+			else
+			{
+				// 攻撃状態へ移行
+				ChangeState((int)EState::eAttack1);
+			}
+		}
+		else if (mSt >= mAttackCost1 + mAvoidCost)
+		{
+			// 攻撃状態へ移行
+			ChangeState((int)EState::eAttack1);
 		}
 		else
 		{
@@ -705,6 +721,7 @@ void CSoldier::UpdateAttack1()
 	case 0:
 		ChangeAnimation((int)EAnimType::eAttack1, true);
 		mAttackVec = VectorZ();
+		CCharaBase::UseStamina(mAttackCost1);
 		mStateStep++;
 		break;
 	case 1:
@@ -788,9 +805,8 @@ void CSoldier::UpdateAttack1()
 				mNextAttack = false;
 				CObjectBase::AttackStart();
 
-				if (mSt >= mA1StCost * 0.9f + mAvoidStCost)
+				if (mSt >= mAttackCost2)
 				{
-					CCharaBase::UseStamina(mA1StCost * 0.9f);
 					// 攻撃2段目へ移行
 					ChangeState((int)EState::eAttack2);
 				}
@@ -843,6 +859,7 @@ void CSoldier::UpdateAttack1B()
 		mpSword->Rotation(DASH_SWORD_OFFSET_ROT);
 		ChangeAnimation((int)EAnimType::eAttack1B, true);
 		mAttackVec = VectorZ();
+		CCharaBase::UseStamina(mAttackCost1);
 		mStateStep++;
 		break;
 	case 1:
@@ -926,9 +943,8 @@ void CSoldier::UpdateAttack1B()
 				mNextAttack = false;
 				CObjectBase::AttackStart();
 
-				if (mSt >= mA1StCost * 0.9f + mAvoidStCost)
+				if (mSt >= mAttackCost2)
 				{
-					CCharaBase::UseStamina(mA1StCost * 0.9f);
 					// 攻撃2段目へ移行
 					ChangeState((int)EState::eAttack2);
 				}
@@ -978,6 +994,7 @@ void CSoldier::UpdateAttack2()
 	case 0:
 		ChangeAnimation((int)EAnimType::eAttack2, true);
 		mAttackVec = VectorZ();
+		CCharaBase::UseStamina(mAttackCost2);
 		mStateStep++;
 		break;
 	case 1:
@@ -1061,9 +1078,8 @@ void CSoldier::UpdateAttack2()
 				mNextAttack = false;
 				CObjectBase::AttackStart();
 
-				if (mSt >= mA1StCost * 0.8f)
+				if (mSt >= mAttackCost3)
 				{
-					CCharaBase::UseStamina(mA1StCost * 0.8f);
 					// 攻撃X段目へ移行
 					ChangeState((int)EState::eAttackX);
 				}
@@ -1118,7 +1134,7 @@ void CSoldier::UpdateAttackX()
 		mIsSpawnedSlashEffect = false;
 
 		mAttackVec = VectorZ();
-
+		CCharaBase::UseStamina(mAttackCost3);
 		mStateStep++;
 		break;
 	case 1:
