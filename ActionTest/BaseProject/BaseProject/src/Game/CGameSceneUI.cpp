@@ -19,13 +19,29 @@ CGameSceneUI::CGameSceneUI(CPlayer* player)
 	, mHpGaugePos(CVector2(25.0f, 25.0f))
 	, mStGaugePos(CVector2(25.0f, 50.0f))
 	, mpPlayer(player)
-	, mSkillGaugeSize(CVector2(80.0f, 80.0f))
+
+	, mKeyImgSize(CVector2(30.0f, 30.0f))
+	, mSkillGaugeSize(CVector2(70.0f, 70.0f))
+	, mpSkillBGFImg(nullptr)
+
+	, mpAttKeyImg(nullptr)
+	, mpAttIconImg(nullptr)
+
+	, mpAvoidKeyImg(nullptr)
+	, mpAvoidIconImg(nullptr)
+
+	, mpS1KeyImg(nullptr)
 	, mpS1IconImg(nullptr)
 	, mpS1WhiteImg(nullptr)
 	, mS1MaxPoint(player->GetMaxS1())
 	, mS1CurrPoint(mS1MaxPoint)
 	, mS1Percent(1.0f)
-	, mS1GaugePos(CVector2((WINDOW_WIDTH / 2) - (90.0f + 40.0f), WINDOW_HEIGHT - 105.0f))
+
+	, mKeyIconPos(CVector2((WINDOW_WIDTH / 2) - (35.0f + 100.0f), WINDOW_HEIGHT - 125.0f))
+
+	, mAttIconPos(CVector2((WINDOW_WIDTH / 2) - (35.0f + 120.0f), WINDOW_HEIGHT - 95.0f))
+	, mAvoidIconPos(CVector2((WINDOW_WIDTH / 2) - (35.0f + 40.0f), WINDOW_HEIGHT - 95.0f))
+	, mS1GaugePos(CVector2((WINDOW_WIDTH / 2) - (35.0f - 40.0f), WINDOW_HEIGHT - 95.0f))
 {
 	mpText = new CText
 	(
@@ -79,8 +95,68 @@ CGameSceneUI::CGameSceneUI(CPlayer* player)
 		false, false
 	);
 
+	// ----スキル関連----
 
-	// S1ゲージ
+	// エリア背景イメージを読み込み
+	mpSkillBGFImg = new CImage
+	(
+		"UI\\skillBGFrame.png",
+		ETaskPriority::eUI, 0,
+		ETaskPauseType::eGame,
+		false, false
+	);
+	mpSkillBGFImg->SetSize(CVector2(360.0f,90.0f));
+	mpSkillBGFImg->SetPos(CVector2((WINDOW_WIDTH / 2) - 180.0f, WINDOW_HEIGHT - 105.0f));
+
+	// 通常攻撃使用キーアイコン
+	// アイコンのイメージを読み込み
+	mpAttKeyImg = new CImage
+	(
+		"UI\\left_click.png",
+		ETaskPriority::eUI, 0,
+		ETaskPauseType::eGame,
+		false, false
+	);
+	mpAttKeyImg->SetSize(mKeyImgSize);
+	mpAttKeyImg->SetPos(mKeyIconPos);
+
+	// 通常攻撃アイコン
+	// アイコンのイメージを読み込み
+	mpAttIconImg = new CImage
+	(
+		"UI\\Attack.png",
+		ETaskPriority::eUI, 0,
+		ETaskPauseType::eGame,
+		false, false
+	);
+	mpAttIconImg->SetSize(mSkillGaugeSize);
+	mpAttIconImg->SetPos(mAttIconPos);
+
+	// 回避アイコン
+	// アイコンのイメージを読み込み
+	mpAvoidIconImg = new CImage
+	(
+		"UI\\avoid.png",
+		ETaskPriority::eUI, 0,
+		ETaskPauseType::eGame,
+		false, false
+	);
+	mpAvoidIconImg->SetSize(mSkillGaugeSize);
+	mpAvoidIconImg->SetPos(mAvoidIconPos);
+
+	// S1使用キーアイコン
+	// アイコンのイメージを読み込み
+	mpS1KeyImg = new CImage
+	(
+		"UI\\input_c.png",
+		ETaskPriority::eUI, 0,
+		ETaskPauseType::eGame,
+		false, false
+	);
+	mpS1KeyImg->SetSize(mKeyImgSize);
+	mpS1KeyImg->SetPos(mKeyIconPos.X() + 160.0f, mKeyIconPos.Y());
+
+	// S1アイコン
 	// ゲージのイメージを読み込み
 	mpS1IconImg = new CImage
 	(
@@ -111,6 +187,15 @@ CGameSceneUI::~CGameSceneUI()
 	SAFE_DELETE(mpStGaugeImg);
 	SAFE_DELETE(mpStWhiteImg);
 
+	SAFE_DELETE(mpSkillBGFImg);
+
+	SAFE_DELETE(mpAttKeyImg);
+	SAFE_DELETE(mpAttIconImg);
+
+	SAFE_DELETE(mpAvoidKeyImg);
+	SAFE_DELETE(mpAvoidIconImg);
+
+	SAFE_DELETE(mpS1KeyImg);
 	SAFE_DELETE(mpS1IconImg);
 	SAFE_DELETE(mpS1WhiteImg);
 }
@@ -251,8 +336,24 @@ void CGameSceneUI::Render()
 
 	// ------スキル関連------
 	
+	mpS1WhiteImg->SetSize(CVector2(360.0f, 90.0f));
+	mpS1WhiteImg->SetPos(CVector2((WINDOW_WIDTH / 2) - 180.0f, WINDOW_HEIGHT - 105.0f));
+	mpS1WhiteImg->SetColor(CColor::black);
+	mpS1WhiteImg->SetAlpha(0.5f);
+	mpS1WhiteImg->Render();
+
+	mpSkillBGFImg->Render();
+
+	mpAttKeyImg->Render();
+	mpAttIconImg->Render();
+
+	//mpAvoidKeyImg->Render();
+	mpAvoidIconImg->Render();
+
 	// スキル1ゲージ
 	
+	mpS1KeyImg->Render();
+
 	// ゲージ背景を描画
 	mpS1IconImg->Render();
 

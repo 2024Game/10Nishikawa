@@ -63,11 +63,32 @@ private:
 	float mStCurrPoint;			// ST現在値
 	float mStPercent;			// STポイント残量の割合
 
-	// スキル関連
-	CVector2 mSkillGaugeSize;		// ゲージのイメージのサイズ
+	// -------スキル関連-------
 
-	CImage* mpS1IconImg;		// ゲージのイメージ
-	CImage* mpS1WhiteImg;		// 白イメージ
+	CVector2 mSkillGaugeSize;	// アイコンのイメージのサイズ
+	CVector2 mKeyImgSize;		// 使用キーイメージのサイズ
+	CVector2 mKeyIconPos;		// 使用キーイメージの位置
+
+	// 通常攻撃
+	CImage* mpAttKeyImg;		// 使用キーボタンイメージ
+	CImage* mpAttIconImg;		// アイコンのイメージ
+	CVector2 mAttIconPos;		// 通常攻撃のイメージの位置
+
+	// 回避
+	CImage* mpAvoidKeyImg;		// 使用キーボタンイメージ
+	CImage* mpAvoidIconImg;		// アイコンのイメージ
+	CVector2 mAvoidIconPos;		// 回避のイメージの位置
+
+	// ロックオン
+	CImage* mpLockKeyImg;		// 使用キーボタンイメージ
+	CImage* mpLockIconImg;		// アイコンのイメージ
+	CVector2 mLockIconPos;		// ロックオンのイメージの位置
+
+	CImage* mpSkillBGFImg;		// スキルアイコン表示エリアの背景フレーム
+
+	CImage* mpS1KeyImg;			// 使用キーボタンイメージ
+	CImage* mpS1IconImg;		// アイコンのイメージ
+	CImage* mpS1WhiteImg;		// 白イメージ(フィルター)
 	CVector2 mS1GaugePos;		// ゲージのイメージの位置
 	float mS1MaxPoint;			// スキル1最大値(クールタイム)
 	float mS1CurrPoint;			// スキル1現在値
