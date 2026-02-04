@@ -94,8 +94,8 @@ void CGameScene::Load()
 	mpPlayer->Scale(1.0f, 1.0f, 1.0f);
 	mpPlayer->Position(0.0f, 5.0f, 100.0f);
 
-	CLowHealP* lowHpPotion = new CLowHealP();
-	lowHpPotion->Position(0.0f, 150.0f, 5.0f);
+	//CLowHealP* lowHpPotion = new CLowHealP();
+	//lowHpPotion->Position(0.0f, 150.0f, 5.0f);
 	//lowHpPotion->Scale(10.0f, 10.0f, 10.0f);
 
 	// サボテンの敵を作成
@@ -215,6 +215,7 @@ void CGameScene::Update()
 	//	mpGameBGM->PlayLoop(-1, 1.0f, false, 1.0f);
 	//}
 
+	/*
 	if (CInput::PushKey('H'))
 	{
 		CSceneManager::Instance()->LoadScene(EScene::eTitle);
@@ -228,6 +229,7 @@ void CGameScene::Update()
 			mpGameMenu->Open();
 		}
 	}
+	*/
 
 #ifdef _DEBUG
 	CDebugPrint::Print("ElapsedTime:%f\n", mElapsedTime);

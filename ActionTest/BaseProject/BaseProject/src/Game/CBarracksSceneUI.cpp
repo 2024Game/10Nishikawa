@@ -149,7 +149,7 @@ CBarracksSceneUI::CBarracksSceneUI(CSaveManager* saveManager)
 	// リストに追加
 	mBgImages.push_back(stImg);
 
-	// [ページめくり右]ボタンを生成
+	// [ページめくり左]ボタンを生成
 	CExpandButton* pageRBtn = new CExpandButton
 	(
 		CVector2(115.0f, 515.0f),
@@ -158,13 +158,13 @@ CBarracksSceneUI::CBarracksSceneUI(CSaveManager* saveManager)
 		false, false
 	);
 	// ボタンの画像を読み込み
-	pageRBtn->LoadButtonImage("UI/btn03_04_light.png", "UI/btn03_04_light.png");
+	pageRBtn->LoadButtonImage("UI/previouspage.png", "UI/previouspage.png");
 	// ボタンクリック時に呼び出されるコールバック関数を設定
 	pageRBtn->SetOnClickFunc(std::bind(&CBarracksSceneUI::OnClickPageUp, this));
 	// ボタンリストに追加
 	mButtons.push_back(pageRBtn);
 
-	// [ページめくり左]ボタンを生成
+	// [ページめくり右]ボタンを生成
 	CExpandButton* pageLBtn = new CExpandButton
 	(
 		CVector2(415.0f, 515.0f),
@@ -173,7 +173,7 @@ CBarracksSceneUI::CBarracksSceneUI(CSaveManager* saveManager)
 		false, false
 	);
 	// ボタンの画像を読み込み
-	pageLBtn->LoadButtonImage("UI/btn03_04_light.png", "UI/btn03_04_light.png");
+	pageLBtn->LoadButtonImage("UI/nextpage.png", "UI/nextpage.png");
 	// ボタンクリック時に呼び出されるコールバック関数を設定
 	pageLBtn->SetOnClickFunc(std::bind(&CBarracksSceneUI::OnClickPageUp, this));
 	// ボタンリストに追加
@@ -189,7 +189,7 @@ CBarracksSceneUI::CBarracksSceneUI(CSaveManager* saveManager)
 		false, false
 	);
 	// ボタンの画像を読み込み
-	homeBtn->LoadButtonImage("UI/gotitle.png", "UI/gotitle.png");
+	homeBtn->LoadButtonImage("UI/gohome.png", "UI/gohome.png");
 	// ボタンクリック時に呼び出されるコールバック関数を設定
 	homeBtn->SetOnClickFunc(std::bind(&CBarracksSceneUI::OnClickGoHome, this));
 	// ボタンリストに追加
@@ -219,54 +219,54 @@ CBarracksSceneUI::CBarracksSceneUI(CSaveManager* saveManager)
 			case 0:
 				// [体力UP]ボタンを設定
 				// ボタンの画像を読み込み
-				Btn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
+				Btn->LoadButtonImage("UI/upgrade.png", "UI/upgrade.png");
 				// ボタンクリック時に呼び出されるコールバック関数を設定
 				Btn->SetOnClickFunc(std::bind(&CBarracksSceneUI::OnClickHpUp, this));
 				break;
 			case 1:
 				// [試合後HP回復UP]ボタンを設定
 				// ボタンの画像を読み込み
-				Btn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
+				Btn->LoadButtonImage("UI/upgrade.png", "UI/upgrade.png");
 				// ボタンクリック時に呼び出されるコールバック関数を設定
 				Btn->SetOnClickFunc(std::bind(&CBarracksSceneUI::OnClickHpRegeneUp, this));
 				break;
 			case 2:
 				// [スタミナUP]ボタンを設定
 				// ボタンの画像を読み込み
-				Btn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
+				Btn->LoadButtonImage("UI/upgrade.png", "UI/upgrade.png");
 				// ボタンクリック時に呼び出されるコールバック関数を設定
 				Btn->SetOnClickFunc(std::bind(&CBarracksSceneUI::OnClickStUp, this));
 				break;
 			case 3:
 				// [スタミナ回復UP]ボタンを設定
 				// ボタンの画像を読み込み
-				Btn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
+				Btn->LoadButtonImage("UI/upgrade.png", "UI/upgrade.png");
 				// ボタンクリック時に呼び出されるコールバック関数を設定
 				Btn->SetOnClickFunc(std::bind(&CBarracksSceneUI::OnClickStRegeneUp, this));
 				break;
 			case 4:
 				// [攻撃力UP]ボタンを設定
 				// ボタンの画像を読み込み
-				Btn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
+				Btn->LoadButtonImage("UI/upgrade.png", "UI/upgrade.png");
 				// ボタンクリック時に呼び出されるコールバック関数を設定
 				Btn->SetOnClickFunc(std::bind(&CBarracksSceneUI::OnClickAttackUp, this));
 				break;
 			case 5:
 				// [治療院の効果UP]ボタンを設定
 				// ボタンの画像を読み込み
-				Btn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
+				Btn->LoadButtonImage("UI/upgrade.png", "UI/upgrade.png");
 				// ボタンクリック時に呼び出されるコールバック関数を設定
 				Btn->SetOnClickFunc(std::bind(&CBarracksSceneUI::OnClickHealerUp, this));
 				break;
 			case 6:
 				// [引き継ぎLvUP]ボタンを設定
 				// ボタンの画像を読み込み
-				Btn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
+				Btn->LoadButtonImage("UI/upgrade.png", "UI/upgrade.png");
 				// ボタンクリック時に呼び出されるコールバック関数を設定
 				Btn->SetOnClickFunc(std::bind(&CBarracksSceneUI::OnClickReincarnationUp, this));
 				break;
 			default:
-				Btn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
+				Btn->LoadButtonImage("UI/upgrade.png", "UI/upgrade.png");
 				break;
 			}
 			// ボタンリストに追加

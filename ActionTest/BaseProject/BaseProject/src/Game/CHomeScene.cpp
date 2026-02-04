@@ -59,6 +59,7 @@ void CHomeScene::Load()
 //シーンの更新処理
 void CHomeScene::Update()
 {
+	/*
 	if (CInput::PushKey('H'))
 	{
 		CSceneManager::Instance()->LoadScene(EScene::eTitle);
@@ -68,6 +69,7 @@ void CHomeScene::Update()
 		mpSaveManager->Reset();
 		mpCHomeSceneUI->InformationUpdate();
 	}
+	*/
 
 	// タイトル画面が
 	if (mpCHomeSceneUI->IsEnd())

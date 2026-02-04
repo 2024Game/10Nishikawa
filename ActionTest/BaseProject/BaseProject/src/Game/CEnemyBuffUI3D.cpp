@@ -68,7 +68,7 @@ void CEnemyBuffUI3D::ApplyPoint()
 	// 最大値が不正値でなければ
 	if (mMaxPoint > 0)
 	{
-		// 現在値が最大値の何パーセントか求める
+		// 最大値-現在値(つまり経過した分)が最大値の何パーセントか求める
 		mPercent = 1.0f - (Math::Clamp01((float)mCurrPoint / mMaxPoint));
 	}
 	// 不正値ならば、0%固定

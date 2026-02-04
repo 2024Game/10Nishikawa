@@ -141,33 +141,33 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 			case 0:
 				// [治療院へ行く]ボタンを設定
 				// ボタンの画像を読み込み
-				Btn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
+				Btn->LoadButtonImage("UI/gogame.png", "UI/gogame.png");
 				// ボタンクリック時に呼び出されるコールバック関数を設定
 				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickHealer, this));
 				break;
 			case 1:
 				// [格下との戦い]ボタンを設定
 				// ボタンの画像を読み込み
-				Btn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
+				Btn->LoadButtonImage("UI/gogame.png", "UI/gogame.png");
 				// ボタンクリック時に呼び出されるコールバック関数を設定
 				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickEasy, this));
 				break;
 			case 2:
 				// [同格との戦い]ボタンを設定
 				// ボタンの画像を読み込み
-				Btn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
+				Btn->LoadButtonImage("UI/gogame.png", "UI/gogame.png");
 				// ボタンクリック時に呼び出されるコールバック関数を設定
 				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickNormal, this));
 				break;
 			case 3:
 				// [格上との戦い]ボタンを設定
 				// ボタンの画像を読み込み
-				Btn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
+				Btn->LoadButtonImage("UI/gogame.png", "UI/gogame.png");
 				// ボタンクリック時に呼び出されるコールバック関数を設定
 				Btn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickHard, this));
 				break;
 			default:
-				Btn->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
+				Btn->LoadButtonImage("UI/gogame.png", "UI/gogame.png");
 				break;
 			}
 			// ボタンリストに追加
@@ -263,7 +263,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 		false, false
 	);
 	// ボタンの画像を読み込み
-	barracksBtn->LoadButtonImage("UI/gotitle.png", "UI/gotitle.png");
+	barracksBtn->LoadButtonImage("UI/gobarracks.png", "UI/gobarracks.png");
 	// ボタンクリック時に呼び出されるコールバック関数を設定
 	barracksBtn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickGoBarracks, this));
 	// ボタンリストに追加

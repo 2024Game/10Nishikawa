@@ -30,6 +30,9 @@ CGameSceneUI::CGameSceneUI(CPlayer* player)
 	, mpAvoidKeyImg(nullptr)
 	, mpAvoidIconImg(nullptr)
 
+	, mpLockKeyImg(nullptr)
+	, mpLockIconImg(nullptr)
+
 	, mpS1KeyImg(nullptr)
 	, mpS1IconImg(nullptr)
 	, mpS1WhiteImg(nullptr)
@@ -42,6 +45,7 @@ CGameSceneUI::CGameSceneUI(CPlayer* player)
 	, mAttIconPos(CVector2((WINDOW_WIDTH / 2) - (35.0f + 120.0f), WINDOW_HEIGHT - 95.0f))
 	, mAvoidIconPos(CVector2((WINDOW_WIDTH / 2) - (35.0f + 40.0f), WINDOW_HEIGHT - 95.0f))
 	, mS1GaugePos(CVector2((WINDOW_WIDTH / 2) - (35.0f - 40.0f), WINDOW_HEIGHT - 95.0f))
+	, mLockIconPos(CVector2((WINDOW_WIDTH / 2) - (35.0f - 120.0f), WINDOW_HEIGHT - 95.0f))
 {
 	mpText = new CText
 	(
@@ -132,6 +136,19 @@ CGameSceneUI::CGameSceneUI(CPlayer* player)
 	mpAttIconImg->SetSize(mSkillGaugeSize);
 	mpAttIconImg->SetPos(mAttIconPos);
 
+
+	// 回避使用キーアイコン
+	// アイコンのイメージを読み込み
+	mpAvoidKeyImg = new CImage
+	(
+		"UI\\right_click.png",
+		ETaskPriority::eUI, 0,
+		ETaskPauseType::eGame,
+		false, false
+	);
+	mpAvoidKeyImg->SetSize(mKeyImgSize);
+	mpAvoidKeyImg->SetPos(mKeyIconPos.X() + 80.0f, mKeyIconPos.Y());
+
 	// 回避アイコン
 	// アイコンのイメージを読み込み
 	mpAvoidIconImg = new CImage
@@ -143,6 +160,32 @@ CGameSceneUI::CGameSceneUI(CPlayer* player)
 	);
 	mpAvoidIconImg->SetSize(mSkillGaugeSize);
 	mpAvoidIconImg->SetPos(mAvoidIconPos);
+
+
+	// ロックオンキーアイコン
+	// アイコンのイメージを読み込み
+	mpLockKeyImg = new CImage
+	(
+		"UI\\input_t.png",
+		ETaskPriority::eUI, 0,
+		ETaskPauseType::eGame,
+		false, false
+	);
+	mpLockKeyImg->SetSize(mKeyImgSize);
+	mpLockKeyImg->SetPos(mKeyIconPos.X() + 240.0f, mKeyIconPos.Y());
+
+	// ロックオンアイコン
+	// アイコンのイメージを読み込み
+	mpLockIconImg = new CImage
+	(
+		"UI\\focus.png",
+		ETaskPriority::eUI, 0,
+		ETaskPauseType::eGame,
+		false, false
+	);
+	mpLockIconImg->SetSize(mSkillGaugeSize);
+	mpLockIconImg->SetPos(mLockIconPos);
+
 
 	// S1使用キーアイコン
 	// アイコンのイメージを読み込み
@@ -194,6 +237,9 @@ CGameSceneUI::~CGameSceneUI()
 
 	SAFE_DELETE(mpAvoidKeyImg);
 	SAFE_DELETE(mpAvoidIconImg);
+
+	SAFE_DELETE(mpLockKeyImg);
+	SAFE_DELETE(mpLockIconImg);
 
 	SAFE_DELETE(mpS1KeyImg);
 	SAFE_DELETE(mpS1IconImg);
@@ -347,8 +393,11 @@ void CGameSceneUI::Render()
 	mpAttKeyImg->Render();
 	mpAttIconImg->Render();
 
-	//mpAvoidKeyImg->Render();
+	mpAvoidKeyImg->Render();
 	mpAvoidIconImg->Render();
+
+	mpLockKeyImg->Render();
+	mpLockIconImg->Render();
 
 	// スキル1ゲージ
 	
