@@ -94,16 +94,6 @@ void CGameScene::Load()
 	mpPlayer->Scale(1.0f, 1.0f, 1.0f);
 	mpPlayer->Position(0.0f, 5.0f, 100.0f);
 
-	//CLowHealP* lowHpPotion = new CLowHealP();
-	//lowHpPotion->Position(0.0f, 150.0f, 5.0f);
-	//lowHpPotion->Scale(10.0f, 10.0f, 10.0f);
-
-	// サボテンの敵を作成
-	//CCactus* cactus = new CCactus();
-	//cactus->Scale(1.5f, 1.5f, 1.5f);
-	//cactus->Position(0.0f, 20.0f, -100.0f);
-	
-	//mEnemyLv = 2 + (mpSaveManager->data.day / 3);
 	mEnemyLv = ((int)mpSaveManager->data.day / 3)+ 2;
 
 	CEnemy* enemy;
