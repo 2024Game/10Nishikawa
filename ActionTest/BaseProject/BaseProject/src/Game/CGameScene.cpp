@@ -94,6 +94,14 @@ void CGameScene::Load()
 	mpPlayer->Scale(1.0f, 1.0f, 1.0f);
 	mpPlayer->Position(0.0f, 5.0f, 100.0f);
 
+	/*
+	CLowHealP* hpPotion;
+	hpPotion = new CLowHealP();
+	hpPotion->Position(0.0f, 5.0f, 25.0f);
+	*/
+
+	// Enemyを作成
+
 	mEnemyLv = ((int)mpSaveManager->data.day / 3)+ 2;
 
 	CEnemy* enemy;
