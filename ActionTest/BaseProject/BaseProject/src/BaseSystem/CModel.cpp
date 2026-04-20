@@ -136,9 +136,15 @@ bool CModel::Load(std::string path, bool dontDelete)
 
 	CreateVertexBuffer();
 
+	/*
+	// shadow330適応時に削除
 	// 読み込んだマテリアルのリストの個数分、
 	// 外部から設定するマテリアルリストの要素を追加
 	mpSetMaterials.resize(mpMaterials.size(), nullptr);
+	*/
+	
+	//シェーダー読み込み　shadow330の保存フォルダがres￥Shaderの場合
+	mShader.Load("Shader\\shadow330.vert", "Shader\\shadow330.frag");
 
 	return true;
 }
@@ -368,6 +374,12 @@ void CModel::SetMaterial(CMaterial* mat, int no)
 //Render(行列)
 void CModel::Render(const CMatrix& m)
 {
+	mShader.Render(*this, m);
+	return;
+
+	/*
+	// shadow330適応時に削除
+
 	// 完全に透明な状態であれば、描画しない
 	if (mColor.A() == 0.0f) return;
 
@@ -429,6 +441,7 @@ void CModel::Render(const CMatrix& m)
 	glEnable(GL_LIGHTING);
 	//カリング設定
 	glEnable(GL_CULL_FACE);
+	*/
 }
 
 void CModel::CreateVertexBuffer()
@@ -437,6 +450,7 @@ void CModel::CreateVertexBuffer()
 	int idx = 0;
 	for (int i = 0; i < mpMaterials.size(); i++)
 	{
+		int w = idx;
 		for (int j = 0; j < mTriangles.size(); j++)
 		{
 			if (i == mTriangles[j].MaterialIdx())
@@ -453,6 +467,17 @@ void CModel::CreateVertexBuffer()
 				mpVertexes[idx++].mTextureCoords = mTriangles[j].U2();
 			}
 		}
+		//マテリアル毎の頂点数を追加する
+		mMaterialVertexCount.push_back(idx - w);
 	}
+	//頂点バッファの作成
+	glGenBuffers(1, &mMyVertexBufferId);
+	//頂点バッファをバインド
+	glBindBuffer(GL_ARRAY_BUFFER, mMyVertexBufferId);
+	//バインドしたバッファにデータを転送
+	glBufferData(GL_ARRAY_BUFFER
+		, sizeof(CVertex) * mTriangles.size() * 3
+		, mpVertexes, GL_STATIC_DRAW);
+	//バインド解除
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
-

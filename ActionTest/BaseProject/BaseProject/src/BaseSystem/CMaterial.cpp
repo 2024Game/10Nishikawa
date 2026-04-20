@@ -62,6 +62,17 @@ CMaterial::CMaterial()
 	{
 		mDiffuse[i] = 1.0f;
 	}
+	size = ARRAY_SIZE(mSpecular);
+	for (int i = 0; i < size; i++)
+	{
+		mSpecular[i] = 0.0f;
+	}
+	size = ARRAY_SIZE(mEmissive);
+	for (int i = 0; i < size; i++)
+	{
+		mEmissive[i] = 0.0f;
+	}
+	mPower = 1.0f;
 }
 
 /*

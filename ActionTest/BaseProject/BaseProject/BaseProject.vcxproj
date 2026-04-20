@@ -52,6 +52,7 @@
     <ClCompile Include="src\BaseSystem\CRect.cpp" />
     <ClCompile Include="src\BaseSystem\CResource.cpp" />
     <ClCompile Include="src\BaseSystem\CResourceManager.cpp" />
+    <ClCompile Include="src\BaseSystem\CShadowShader.cpp" />
     <ClCompile Include="src\BaseSystem\CSoundManager.cpp" />
     <ClCompile Include="src\BaseSystem\CTrailEffect.cpp" />
     <ClCompile Include="src\BaseSystem\CUIManager.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="src\BaseSystem\CRect.h" />
     <ClInclude Include="src\BaseSystem\CResource.h" />
     <ClInclude Include="src\BaseSystem\CResourceManager.h" />
+    <ClInclude Include="src\BaseSystem\CShadowShader.h" />
     <ClInclude Include="src\BaseSystem\CSoundManager.h" />
     <ClInclude Include="src\BaseSystem\CTrailEffect.h" />
     <ClInclude Include="src\BaseSystem\CUIManager.h" />
@@ -247,6 +249,9 @@
     <ClInclude Include="src\Test\CColSphere.h" />
     <ClInclude Include="src\Test\CColTriangle.h" />
     <ClInclude Include="src\Test\CMeasure.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Shader\shadow330.frag" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8802AF2F-2920-4700-89F2-CA6778727283}</ProjectGuid>

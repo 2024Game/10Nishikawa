@@ -451,6 +451,9 @@
     <ClCompile Include="src\Game\CEnemyBuffUI3D.cpp">
       <Filter>ソース ファイル\Game\UI\GameScene</Filter>
     </ClCompile>
+    <ClCompile Include="src\BaseSystem\CShadowShader.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -816,5 +819,13 @@
     <ClInclude Include="src\Game\CEnemyBuffUI3D.h">
       <Filter>ソース ファイル\Game\UI\GameScene</Filter>
     </ClInclude>
+    <ClInclude Include="src\BaseSystem\CShadowShader.h">
+      <Filter>ソース ファイル\BaseSystem\Shader</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Shader\shadow330.frag">
+      <Filter>ソース ファイル</Filter>
+    </None>
   </ItemGroup>
 </Project>

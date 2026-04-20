@@ -382,6 +382,7 @@ void CCamera::Kill()
 // ƒJƒƒ‰”½‰f
 void CCamera::Apply()
 {
+	glMatrixMode(GL_MODELVIEW);
 	glMultMatrixf(mViewMatrix.M());
 }
 

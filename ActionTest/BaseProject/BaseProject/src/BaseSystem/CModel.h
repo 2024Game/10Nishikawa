@@ -8,6 +8,8 @@
 #include "CResource.h"
 #include "CColor.h"
 
+#include "glut.h"
+
 /*
 モデルクラス
 モデルデータの入力や表示
@@ -15,6 +17,7 @@
 class CModel : public CResource
 {
 	friend CResourceManager;
+	friend CShadowShader;
 
 public:
 	std::vector<CTriangle> Triangles() const;
@@ -63,6 +66,25 @@ public:
 	// 描画
 	// Render(行列)
 	void Render(const CMatrix& m);
+
+	//頂点バッファIDを取得する
+	const GLuint MyVertexBufferId() const
+	{
+		return mMyVertexBufferId;
+	}
+
+	//マテリアル配列のポインタを取得する
+	const std::vector<CMaterial*>* PMaterials() const
+	{
+		return &mpMaterials;
+	}
+
+	//マテリアル毎の面数を取得する
+	const std::vector<int>& MaterialVertexCount() const
+	{
+		return mMaterialVertexCount;
+	}
+
 private:
 	CModel();
 	~CModel();
@@ -91,6 +113,13 @@ private:
 	bool mIsCullFace;
 	// 描画時のブレンド処理
 	EBlend mBlendMode;
+
+	//マテリアル毎の面数
+	std::vector<int> mMaterialVertexCount;
+	//頂点バッファ識別子
+	GLuint	  mMyVertexBufferId;
+	//シェーダーのインスタンス
+	CShadowShader mShader;
 };
 
 #endif
