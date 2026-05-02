@@ -454,6 +454,9 @@
     <ClCompile Include="src\BaseSystem\CShadowShader.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="src\BaseSystem\CShadowMap.cpp">
+      <Filter>ソース ファイル\BaseSystem\Shader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -820,6 +823,9 @@
       <Filter>ソース ファイル\Game\UI\GameScene</Filter>
     </ClInclude>
     <ClInclude Include="src\BaseSystem\CShadowShader.h">
+      <Filter>ソース ファイル\BaseSystem\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CShadowMap.h">
       <Filter>ソース ファイル\BaseSystem\Shader</Filter>
     </ClInclude>
   </ItemGroup>

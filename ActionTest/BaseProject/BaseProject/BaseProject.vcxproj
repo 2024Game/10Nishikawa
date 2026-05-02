@@ -52,6 +52,7 @@
     <ClCompile Include="src\BaseSystem\CRect.cpp" />
     <ClCompile Include="src\BaseSystem\CResource.cpp" />
     <ClCompile Include="src\BaseSystem\CResourceManager.cpp" />
+    <ClCompile Include="src\BaseSystem\CShadowMap.cpp" />
     <ClCompile Include="src\BaseSystem\CShadowShader.cpp" />
     <ClCompile Include="src\BaseSystem\CSoundManager.cpp" />
     <ClCompile Include="src\BaseSystem\CTrailEffect.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="src\BaseSystem\CRect.h" />
     <ClInclude Include="src\BaseSystem\CResource.h" />
     <ClInclude Include="src\BaseSystem\CResourceManager.h" />
+    <ClInclude Include="src\BaseSystem\CShadowMap.h" />
     <ClInclude Include="src\BaseSystem\CShadowShader.h" />
     <ClInclude Include="src\BaseSystem\CSoundManager.h" />
     <ClInclude Include="src\BaseSystem\CTrailEffect.h" />

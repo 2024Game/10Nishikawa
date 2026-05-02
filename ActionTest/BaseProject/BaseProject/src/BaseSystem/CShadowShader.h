@@ -3,7 +3,8 @@
 
 #include "CMyShader.h"
 
-class CShadowShader : public CMyShader {
+class CShadowShader : public CMyShader
+{
 	//•`‰æˆ—
 	void Render(const CModelX* model, const CMesh* mesh, const CMatrix* pCombinedMatrix);
 public:

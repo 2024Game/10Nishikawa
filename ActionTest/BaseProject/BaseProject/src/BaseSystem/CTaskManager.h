@@ -1,6 +1,7 @@
 #pragma once
 #include "CTask.h"
 #include <list>
+#include "CShadowMap.h"
 
 /// <summary>
 /// タスク管理クラス
@@ -89,6 +90,9 @@ private:
 	// 2Dオブジェクトの描画処理
 	void Render2d();
 
+	//シャドウマップ用Renderメソッド
+	static void CTaskManager::RenderShadow();
+
 	// モーションブラー有効時の3Dオブジェクトの描画処理
 	void RenderMotionBlur();
 
@@ -101,4 +105,6 @@ private:
 	std::list<CTask*> m2dTasks;
 
 	int mPauseBit;	// ポーズのビットフラグ
+
+	CShadowMap mShadowMap; // シャドウマップのインスタンス
 };

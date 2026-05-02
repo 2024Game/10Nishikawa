@@ -6,6 +6,7 @@
 #include "CMyShader.h"	//シェーダークラスのインクルード
 #include "CResource.h"
 #include "CColor.h"
+#include "CShadowShader.h"
 
 class CModelX;			//CModelクラスの宣言
 class CModelXFrame;		//CModelXFrameクラスの宣言
@@ -30,6 +31,7 @@ class CModelX : public CResource
 	friend CAnimation;
 	friend CModelX;
 	friend CMyShader;
+	friend CShadowShader;
 private:
 	//コンストラクタ
 	CModelX();
@@ -119,6 +121,7 @@ class CModelXFrame {
 	friend CAnimation;
 	friend CAnimationSet;
 	friend CMyShader;
+	friend CShadowShader;
 private:
 	std::vector<CModelXFrame*> mChild; //子フレームの配列
 	CMesh* mpMesh;  //Meshデータ
@@ -150,6 +153,7 @@ class CMesh {
 	friend CModelXFrame;
 	friend CSkinWeights;
 	friend CMyShader;
+	friend CShadowShader;
 private:
 	int mFaceNum;          //面数
 	int mVertexNum;	   	   //頂点数
@@ -198,6 +202,7 @@ class CSkinWeights
 	friend CModelX;
 	friend CMesh;
 	friend CMyShader;
+	friend CShadowShader;
 private:
 	char* mpFrameName;	//フレーム名
 	int mFrameIndex;	//フレーム番号

@@ -3,6 +3,7 @@
 #include "Maths.h"
 #include "glut.h"
 
+
 std::vector<CTriangle> CModel::Triangles() const
 {
 	return mTriangles;

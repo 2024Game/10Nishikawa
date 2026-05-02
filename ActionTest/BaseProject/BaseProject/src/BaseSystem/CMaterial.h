@@ -14,6 +14,7 @@ enum class EBlend;
 */
 class CMaterial {
 	friend CMyShader;
+	friend CShadowShader;
 private:
 	//マテリアル毎の頂点数
 	int mVertexNum;
