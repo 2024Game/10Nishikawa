@@ -1,4 +1,4 @@
-﻿#include "CGameScene.h"
+#include "CGameScene.h"
 #include "CSceneManager.h"
 #include "CGameSceneUI.h"
 #include "CField.h"
@@ -13,6 +13,7 @@
 #include "CCactus.h"
 #include "CSoldier.h"
 #include "CHeavyWarrior.h"
+#include "CEnemyStatusLoader.h"
 #include "CLowHealP.h"
 #include <Maths.h>
 
@@ -47,6 +48,10 @@ void CGameScene::Load()
 
 	//ここでゲーム中に必要な
 	//リソースの読み込みやクラスの生成を行う
+
+	// 敵ステータスCSVの読み込み
+	CEnemyStatusLoader::Load("EnemyStatus\\Soldier.csv");
+	CEnemyStatusLoader::Load("EnemyStatus\\HeavyWarrior.csv");
 
 	CResourceManager::Load<CModel>(		"Field",			"Field\\field.obj");
 	CResourceManager::Load<CModel>(		"Arena",			"Field\\Arena\\arena.obj");

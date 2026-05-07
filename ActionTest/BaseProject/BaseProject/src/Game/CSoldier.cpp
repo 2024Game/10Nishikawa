@@ -3,85 +3,86 @@
 #include "CColliderSphere.h"
 #include "CGreatSword.h"
 #include "Maths.h"
+#include "CEnemyStatusLoader.h"
 
-// ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌƒpƒX
+// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ãƒ‘ã‚¹
 #define ANIM_PATH "Character\\TestPlayer\\Anims\\"
-#define BODY_HEIGHT 16.0f	// –{‘Ì‚ÌƒRƒ‰ƒCƒ_[‚Ì‚‚³
-#define BODY_RADIUS 3.0f	// –{‘Ì‚ÌƒRƒ‰ƒCƒ_[‚Ì•
-#define MOVE_SPEED 20.0f	// ˆÚ“®‘¬“x
-#define RUN_SPEED 50.0f		// ˆÚ“®‘¬“x
-#define JUMP_SPEED 1.5f		// ƒWƒƒƒ“ƒv‘¬“x
-#define GRAVITY 0.0625f		// d—Í‰Á‘¬“x
+#define BODY_HEIGHT 16.0f	// æœ¬ä½“ã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®é«˜ã•
+#define BODY_RADIUS 3.0f	// æœ¬ä½“ã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®å¹…
+#define MOVE_SPEED 20.0f	// ç§»å‹•é€Ÿåº¦
+#define RUN_SPEED 50.0f		// ç§»å‹•é€Ÿåº¦
+#define JUMP_SPEED 1.5f		// ã‚¸ãƒ£ãƒ³ãƒ—é€Ÿåº¦
+#define GRAVITY 0.0625f		// é‡åŠ›åŠ é€Ÿåº¦
 
-#define GAUGE_OFFSET_Y 20.0f		// HPESTƒQ[ƒWƒIƒtƒZƒbƒgˆÊ’u(‚‚³)
-#define BUFF_GAUGE_OFFSET_Y 23.0f	// ƒoƒtƒQ[ƒWƒIƒtƒZƒbƒgˆÊ’u(‚‚³)
+#define GAUGE_OFFSET_Y 20.0f		// HPãƒ»STã‚²ãƒ¼ã‚¸ã‚ªãƒ•ã‚»ãƒƒãƒˆä½ç½®(é«˜ã•)
+#define BUFF_GAUGE_OFFSET_Y 23.0f	// ãƒãƒ•ã‚²ãƒ¼ã‚¸ã‚ªãƒ•ã‚»ãƒƒãƒˆä½ç½®(é«˜ã•)
 #define DEATH_WAIT_TIME 3.0f
 
 #define LOOKAT_SPEED 90.0f
 #define BATTLE_IDLE_TIME_MIN 0.5f
 #define BATTLE_IDLE_TIME_MAX 2.0f
-#define ATTACK2_DIST 75.0f			// ‹ì‚¯Šñ‚Á‚Ä‚­‚é‹——£
-#define ATTACK_RANGE 23.5f			// UŒ‚‚ğs‚¤‹——£
-#define ATTACK2_PROB 75				// 2’i–ÚUŒ‚‚ğs‚¤Šm—¦iƒp[ƒZƒ“ƒgj
-#define ATTACKX_PROB 50				// X’i–ÚUŒ‚‚ğs‚¤Šm—¦iƒp[ƒZƒ“ƒgj
-#define ATTACK1B_PROB 40			// 1’i–ÚBUŒ‚‚ğs‚¤Šm—¦iƒp[ƒZƒ“ƒgj
+#define ATTACK2_DIST 75.0f			// é§†ã‘å¯„ã£ã¦ãã‚‹è·é›¢
+#define ATTACK_RANGE 23.5f			// æ”»æ’ƒã‚’è¡Œã†è·é›¢
+#define ATTACK2_PROB 75				// 2æ®µç›®æ”»æ’ƒã‚’è¡Œã†ç¢ºç‡ï¼ˆãƒ‘ãƒ¼ã‚»ãƒ³ãƒˆï¼‰
+#define ATTACKX_PROB 50				// Xæ®µç›®æ”»æ’ƒã‚’è¡Œã†ç¢ºç‡ï¼ˆãƒ‘ãƒ¼ã‚»ãƒ³ãƒˆï¼‰
+#define ATTACK1B_PROB 40			// 1æ®µç›®Bæ”»æ’ƒã‚’è¡Œã†ç¢ºç‡ï¼ˆãƒ‘ãƒ¼ã‚»ãƒ³ãƒˆï¼‰
 
-#define AT_GRACE_FRAME 6.0f			// æs“ü—ÍƒtƒŒ[ƒ€
-#define ATTACK1_START_FRAME 25.0f	// a‚èUŒ‚1‚ÌŠJnƒtƒŒ[ƒ€
-#define ATTACK1_END_FRAME 55.0f		// a‚èUŒ‚1‚ÌI—¹ƒtƒŒ[ƒ€
-#define ATTACK1B_START_FRAME 25.0f	// a‚èUŒ‚1B‚ÌŠJnƒtƒŒ[ƒ€
-#define ATTACK1B_END_FRAME 70.0f	// a‚èUŒ‚1B‚ÌI—¹ƒtƒŒ[ƒ€
-#define ATTACK2_START_FRAME 35.0f	// a‚èUŒ‚2‚ÌŠJnƒtƒŒ[ƒ€
-#define ATTACK2_END_FRAME 100.0f	// a‚èUŒ‚2‚ÌI—¹ƒtƒŒ[ƒ€
-#define ATTACKX_START_FRAME 35.0f	// a‚èUŒ‚X‚ÌŠJnƒtƒŒ[ƒ€
-#define ATTACKX_END_FRAME 210.0f	// a‚èUŒ‚X‚ÌI—¹ƒtƒŒ[ƒ€
-#define DEATH_END_FRAME 110.0f		// €–S‚ÌI—¹ƒtƒŒ[ƒ€
+#define AT_GRACE_FRAME 6.0f			// å…ˆè¡Œå…¥åŠ›ãƒ•ãƒ¬ãƒ¼ãƒ 
+#define ATTACK1_START_FRAME 25.0f	// æ–¬ã‚Šæ”»æ’ƒ1ã®é–‹å§‹ãƒ•ãƒ¬ãƒ¼ãƒ 
+#define ATTACK1_END_FRAME 55.0f		// æ–¬ã‚Šæ”»æ’ƒ1ã®çµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ 
+#define ATTACK1B_START_FRAME 25.0f	// æ–¬ã‚Šæ”»æ’ƒ1Bã®é–‹å§‹ãƒ•ãƒ¬ãƒ¼ãƒ 
+#define ATTACK1B_END_FRAME 70.0f	// æ–¬ã‚Šæ”»æ’ƒ1Bã®çµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ 
+#define ATTACK2_START_FRAME 35.0f	// æ–¬ã‚Šæ”»æ’ƒ2ã®é–‹å§‹ãƒ•ãƒ¬ãƒ¼ãƒ 
+#define ATTACK2_END_FRAME 100.0f	// æ–¬ã‚Šæ”»æ’ƒ2ã®çµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ 
+#define ATTACKX_START_FRAME 35.0f	// æ–¬ã‚Šæ”»æ’ƒXã®é–‹å§‹ãƒ•ãƒ¬ãƒ¼ãƒ 
+#define ATTACKX_END_FRAME 210.0f	// æ–¬ã‚Šæ”»æ’ƒXã®çµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ 
+#define DEATH_END_FRAME 110.0f		// æ­»äº¡ã®çµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ 
 
 
-// Œ•‚ÌƒIƒtƒZƒbƒgÀ•W
+// å‰£ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆåº§æ¨™
 #define SWORD_OFFSET_POS CVector(0.0f, 7.2f, 3.5f)
-// Œ•‚ÌƒIƒtƒZƒbƒgŒü‚«
+// å‰£ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆå‘ã
 #define SWORD_OFFSET_ROT CVector(20.0f, 0.0f, -30.0f)
 
 #define ATTACKX_SWORD_OFFSET_ROT CVector(-20.0f, 0.0f, -25.0f)
-// ƒ_ƒbƒVƒ…‚ÌŒ•‚ÌƒIƒtƒZƒbƒgŒü‚«
+// ãƒ€ãƒƒã‚·ãƒ¥æ™‚ã®å‰£ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆå‘ã
 #define DASH_SWORD_OFFSET_ROT CVector(20.0f, 0.0f, -70.0f)
 
-#define KICK_START_FRAME 26.0f		// R‚èUŒ‚‚ÌŠJnƒtƒŒ[ƒ€
-#define KICK_END_FRAME 40.0f		// R‚èUŒ‚‚ÌI—¹ƒtƒŒ[ƒ€
-#define KICK_COL_RADIUS 7.5f		// R‚èUŒ‚‚ÌƒRƒ‰ƒCƒ_[‚Ì”¼Œa
-// R‚èUŒ‚‚ÌƒRƒ‰ƒCƒ_[‚ÌƒIƒtƒZƒbƒgÀ•W
+#define KICK_START_FRAME 26.0f		// è¹´ã‚Šæ”»æ’ƒã®é–‹å§‹ãƒ•ãƒ¬ãƒ¼ãƒ 
+#define KICK_END_FRAME 40.0f		// è¹´ã‚Šæ”»æ’ƒã®çµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ 
+#define KICK_COL_RADIUS 7.5f		// è¹´ã‚Šæ”»æ’ƒã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®åŠå¾„
+// è¹´ã‚Šæ”»æ’ƒã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆåº§æ¨™
 #define KICK_COL_OFFSET_POS CVector(0.0f, 4.0f, 1.5f)
 
-// æs“ü—Í‚ÌƒRƒ‰ƒCƒ_[‚Ì”¼Œa
+// å…ˆè¡Œå…¥åŠ›ã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®åŠå¾„
 #define TA_COL_RADIUS 23.0f
-// æs“ü—Í‚ÌƒRƒ‰ƒCƒ_[‚ÌƒIƒtƒZƒbƒgÀ•W
+// å…ˆè¡Œå…¥åŠ›ã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆåº§æ¨™
 #define TA_COL_OFFSET_POS CVector(0.0f, 4.0f, 2.75f)
 
-// “G‚ÌƒAƒjƒ[ƒVƒ‡ƒ“ƒf[ƒ^‚Ìƒe[ƒuƒ‹
+// æ•µã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãƒ‡ãƒ¼ã‚¿ã®ãƒ†ãƒ¼ãƒ–ãƒ«
 const std::vector<CEnemy::AnimData> ANIM_DATA =
 {
-	{ "",						true,	0.0f,	1.0f	},	// Tƒ|[ƒY
-	{ ANIM_PATH"idle.x",		true,	121.0f,	1.0f	},	// ‘Ò‹@
-	{ ANIM_PATH"idle2.x",		true,	121.0f,	1.0f	},	// ‘Ò‹@(í“¬’†)
-	{ ANIM_PATH"walk.x",		true,	82.0f,	1.5f	},	// •às
-	{ ANIM_PATH"run.x",			true,	39.0f,	1.5f	},	// ƒ_ƒbƒVƒ…
-	{ ANIM_PATH"GSSlash1.x",	false,	77.0f,	1.20f	},	// a‚èUŒ‚
-	{ ANIM_PATH"GSSlashR.x",	false,	90.0f,	1.20f	},	// a‚èUŒ‚B
-	{ ANIM_PATH"GSSlash2.x",	false,	110.0f,	1.40f	},	// a‚èUŒ‚
-	{ ANIM_PATH"GSSlash.x",		false,	212.0f,	1.60f	},	// a‚è‚©‚©‚èUŒ‚
-	{ ANIM_PATH"kick.x",		false,	74.0f,	1.75f	},	// R‚èUŒ‚
-	{ ANIM_PATH"jump_start.x",	false,	25.0f,	1.0f	},	// ƒWƒƒƒ“ƒvŠJn
-	{ ANIM_PATH"jump.x",		true,	1.0f,	1.0f	},	// ƒWƒƒƒ“ƒv’†
-	{ ANIM_PATH"jump_end.x",	false,	26.0f,	1.0f	},	// ƒWƒƒƒ“ƒvI—¹
-	{ ANIM_PATH"avoidR.x",		true,	58.0f,	1.5f	},	// ‰ñ”ğ:‰E
-	{ ANIM_PATH"avoidL.x",		true,	58.0f,	1.5f	},	// ‰ñ”ğ:¶
-	{ ANIM_PATH"hit.x",			false,	44.0f,	0.85f	},	// ‹Â‚¯”½‚è
-	{ ANIM_PATH"death.x",		false,	182.0f,	1.0f	},	// €–S
-	{ ANIM_PATH"victory.x",		true,	271.0f,	1.0f	},	// Ÿ—˜
+	{ "",						true,	0.0f,	1.0f	},	// Tãƒãƒ¼ã‚º
+	{ ANIM_PATH"idle.x",		true,	121.0f,	1.0f	},	// å¾…æ©Ÿ
+	{ ANIM_PATH"idle2.x",		true,	121.0f,	1.0f	},	// å¾…æ©Ÿ(æˆ¦é—˜ä¸­)
+	{ ANIM_PATH"walk.x",		true,	82.0f,	1.5f	},	// æ­©è¡Œ
+	{ ANIM_PATH"run.x",			true,	39.0f,	1.5f	},	// ãƒ€ãƒƒã‚·ãƒ¥
+	{ ANIM_PATH"GSSlash1.x",	false,	77.0f,	1.20f	},	// æ–¬ã‚Šæ”»æ’ƒ
+	{ ANIM_PATH"GSSlashR.x",	false,	90.0f,	1.20f	},	// æ–¬ã‚Šæ”»æ’ƒB
+	{ ANIM_PATH"GSSlash2.x",	false,	110.0f,	1.40f	},	// æ–¬ã‚Šæ”»æ’ƒ
+	{ ANIM_PATH"GSSlash.x",		false,	212.0f,	1.60f	},	// æ–¬ã‚Šã‹ã‹ã‚Šæ”»æ’ƒ
+	{ ANIM_PATH"kick.x",		false,	74.0f,	1.75f	},	// è¹´ã‚Šæ”»æ’ƒ
+	{ ANIM_PATH"jump_start.x",	false,	25.0f,	1.0f	},	// ã‚¸ãƒ£ãƒ³ãƒ—é–‹å§‹
+	{ ANIM_PATH"jump.x",		true,	1.0f,	1.0f	},	// ã‚¸ãƒ£ãƒ³ãƒ—ä¸­
+	{ ANIM_PATH"jump_end.x",	false,	26.0f,	1.0f	},	// ã‚¸ãƒ£ãƒ³ãƒ—çµ‚äº†
+	{ ANIM_PATH"avoidR.x",		true,	58.0f,	1.5f	},	// å›é¿:å³
+	{ ANIM_PATH"avoidL.x",		true,	58.0f,	1.5f	},	// å›é¿:å·¦
+	{ ANIM_PATH"hit.x",			false,	44.0f,	0.85f	},	// ä»°ã‘åã‚Š
+	{ ANIM_PATH"death.x",		false,	182.0f,	1.0f	},	// æ­»äº¡
+	{ ANIM_PATH"victory.x",		true,	271.0f,	1.0f	},	// å‹åˆ©
 };
 
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CSoldier::CSoldier(CPlayer* player, int mLevel)
 	: mpRideObject(nullptr)
 	, mIsPlayedSlashSE(false)
@@ -95,19 +96,19 @@ CSoldier::CSoldier(CPlayer* player, int mLevel)
 {
 	mpBattleTarget = player;
 
-	// ƒQ[ƒW‚ÌƒIƒtƒZƒbƒgˆÊ’u‚ğİ’è
+	// ã‚²ãƒ¼ã‚¸ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆä½ç½®ã‚’è¨­å®š
 	mHpGaugeOffsetPos = CVector(0.0f, GAUGE_OFFSET_Y, 0.0f);
 	mStGaugeOffsetPos = CVector(0.0f, GAUGE_OFFSET_Y - 1.0f, 0.0f);
-	// ƒoƒtEƒfƒoƒtƒQ[ƒW‚ÌƒIƒtƒZƒbƒgˆÊ’u‚ğİ’è
+	// ãƒãƒ•ãƒ»ãƒ‡ãƒãƒ•ã‚²ãƒ¼ã‚¸ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆä½ç½®ã‚’è¨­å®š
 	mGBBuffOffsetPos = CVector(0.0f, BUFF_GAUGE_OFFSET_Y, 0.0f);
 
-	// “G‚ğ‰Šú‰»
+	// æ•µã‚’åˆæœŸåŒ–
 	InitEnemy("Soldier", &ANIM_DATA);
 
-	// Å‰‚Í‘Ò‹@ƒAƒjƒ[ƒVƒ‡ƒ“‚ğÄ¶
+	// æœ€åˆã¯å¾…æ©Ÿã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’å†ç”Ÿ
 	ChangeAnimation((int)EAnimType::eIdle);
 
-	// –{‘Ì‚ÌƒRƒ‰ƒCƒ_[‚ğì¬
+	// æœ¬ä½“ã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’ä½œæˆ
 	mpBodyCol = new CColliderCapsule
 	(
 		this, ELayer::eEnemy,
@@ -122,50 +123,50 @@ CSoldier::CSoldier(CPlayer* player, int mLevel)
 
 	mpSlashSE = CResourceManager::Get<CSound>("SlashSound");
 
-	// “G‚ÌŒ•‚ğì¬
+	// æ•µã®å‰£ã‚’ä½œæˆ
 	mpSword = new CGreatSword
 	(
 		this,
 		ETag::eEnemy,
-		{ ETag::ePlayer },	// ƒvƒŒƒCƒ„[‚Ìƒ^ƒO‚ªİ’è‚³‚ê‚½ƒRƒ‰ƒCƒ_[‚ÆÕ“Ë
-		{ ELayer::ePlayer }	// ƒvƒŒƒCƒ„[‚ÌƒŒƒCƒ„[‚ªİ’è‚³‚ê‚½ƒRƒ‰ƒCƒ_[‚ÆÕ“Ë
+		{ ETag::ePlayer },	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¿ã‚°ãŒè¨­å®šã•ã‚ŒãŸã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã¨è¡çª
+		{ ELayer::ePlayer }	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒè¨­å®šã•ã‚ŒãŸã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã¨è¡çª
 	);
 
 	mpSword->Scale(1.3f, 1.1f, 1.1f);
 
-	// ‰Eè‚ÌƒtƒŒ[ƒ€‚ğæ“¾‚µA
-	// Œ•‚ÉƒvƒŒƒCƒ„[‚Ì‰Eè‚Ìs—ñ‚ğƒAƒ^ƒbƒ`
+	// å³æ‰‹ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’å–å¾—ã—ã€
+	// å‰£ã«ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å³æ‰‹ã®è¡Œåˆ—ã‚’ã‚¢ã‚¿ãƒƒãƒ
 	CModelXFrame* frame = mpModel->FinedFrame("Armature_mixamorig_RightHand");
 	mpSword->SetAttachMtx(&frame->CombinedMatrix());
 	mpSword->Position(SWORD_OFFSET_POS);
 	mpSword->Rotation(SWORD_OFFSET_ROT);
 
-	// R‚èUŒ‚—p‚ÌƒRƒ‰ƒCƒ_[‚ğì¬
+	// è¹´ã‚Šæ”»æ’ƒç”¨ã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’ä½œæˆ
 	mpKickCol = new CColliderSphere
 	(
 		this, ELayer::eAttackCol,
 		KICK_COL_RADIUS
 	);
-	// “G‚Ì–{‘Ì‚ÌƒRƒ‰ƒCƒ_[‚Æ‚Ì‚İƒqƒbƒg‚·‚é‚æ‚¤‚Éİ’è
+	// æ•µã®æœ¬ä½“ã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã¨ã®ã¿ãƒ’ãƒƒãƒˆã™ã‚‹ã‚ˆã†ã«è¨­å®š
 	mpKickCol->SetCollisionTags({ ETag::ePlayer });
 	mpKickCol->SetCollisionLayers({ ELayer::ePlayer });
-	// “G‚Ì³–Ê‚ÉƒYƒ‰‚·
+	// æ•µã®æ­£é¢ã«ã‚ºãƒ©ã™
 	mpKickCol->Position(KICK_COL_OFFSET_POS);
-	// UŒ‚ƒRƒ‰ƒCƒ_[‚ÍÅ‰‚ÍƒIƒt‚É‚µ‚Ä‚¨‚­
+	// æ”»æ’ƒã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã¯æœ€åˆã¯ã‚ªãƒ•ã«ã—ã¦ãŠã
 	mpKickCol->SetEnable(false);
 
-	// æs“ü—Í(Type Ahead)—p‚ÌƒRƒ‰ƒCƒ_[‚ğì¬
+	// å…ˆè¡Œå…¥åŠ›(Type Ahead)ç”¨ã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’ä½œæˆ
 	mpTACol = new CColliderSphere
 	(
 		this, ELayer::eTypeAheadCol,
 		TA_COL_RADIUS
 	);
-	// ƒvƒŒƒCƒ„[‚Ì–{‘Ì‚ÌƒRƒ‰ƒCƒ_[‚Æ‚Ì‚İƒqƒbƒg‚·‚é‚æ‚¤‚Éİ’è
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æœ¬ä½“ã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã¨ã®ã¿ãƒ’ãƒƒãƒˆã™ã‚‹ã‚ˆã†ã«è¨­å®š
 	mpTACol->SetCollisionTags({ ETag::ePlayer });
 	mpTACol->SetCollisionLayers({ ELayer::ePlayer });
-	// ƒvƒŒƒCƒ„[‚Ì³–Ê‚ÉƒYƒ‰‚·
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ­£é¢ã«ã‚ºãƒ©ã™
 	mpTACol->Position(TA_COL_OFFSET_POS);
-	// æs“ü—ÍƒRƒ‰ƒCƒ_[‚ÍÅ‰‚ÍƒIƒt‚É‚µ‚Ä‚¨‚­
+	// å…ˆè¡Œå…¥åŠ›ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã¯æœ€åˆã¯ã‚ªãƒ•ã«ã—ã¦ãŠã
 	mpTACol->SetEnable(false);
 
 	mLevel = mLevel;
@@ -173,18 +174,18 @@ CSoldier::CSoldier(CPlayer* player, int mLevel)
 	mGuardBreakTime = 12.5f;
 }
 
-// ƒfƒXƒgƒ‰ƒNƒ^
+// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CSoldier::~CSoldier()
 {
-	// ƒRƒ‰ƒCƒ_[‚ğíœ
+	// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’å‰Šé™¤
 	SAFE_DELETE(mpBodyCol);
 	SAFE_DELETE(mpKickCol);
 	SAFE_DELETE(mpTACol);
 
-	// Œ•‚ª‘¶İ‚µ‚½‚çA
+	// å‰£ãŒå­˜åœ¨ã—ãŸã‚‰ã€
 	if (mpSword != nullptr)
 	{
-		// ‚¿å‚ğ‰ğœ‚µ‚Ä‚©‚çAíœ
+		// æŒã¡ä¸»ã‚’è§£é™¤ã—ã¦ã‹ã‚‰ã€å‰Šé™¤
 		mpSword->SetOwner(nullptr);
 		mpSword->Kill();
 	}
@@ -192,107 +193,72 @@ CSoldier::~CSoldier()
 
 void CSoldier::InitStatus()
 {
-	// ƒŒƒxƒ‹‚É‡‚í‚¹‚ÄAƒXƒe[ƒ^ƒX‚ğØ‚è‘Ö‚¦‚é
-	mAttackCost1 = 25.0f;
-	mAttackCost2 = 30.0f;
-	mAttackCost3 = 35.0f;
-
-	if (mLevel == 1)
+	// å¤–éƒ¨CSVãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’èª­ã¿è¾¼ã‚€
+	const EnemyStatusData* data =
+		CEnemyStatusLoader::GetStatus("Soldier", mLevel);
+	if (data != nullptr)
 	{
-		mMaxHp = 80.0f;
-		mMaxSt = 150.0f;
-		mGainSt = 8.5f;
-		mAttackCost1 = 30.0f;
-		mAttackCost2 = 35.0f;
-		mAttackCost3 = 40.0f;
-		mAvoidCost = 25.0f;
-		mStepMag = 1.0f;
-		mAttackMag = 0.7f;
-		mAtSpeedMag = 0.85f;
-		mNegTime = 1.0f;
-		mNegProb = 80.0f;
+		mMaxHp      = data->maxHp;
+		mMaxSt      = data->maxSt;
+		mGainSt     = data->gainSt;
+		mAttackCost1 = data->attackCost1;
+		mAttackCost2 = data->attackCost2;
+		mAttackCost3 = data->attackCost3;
+		mAvoidCost  = data->avoidCost;
+		mStepMag    = data->stepMag;
+		mAttackMag  = data->attackMag;
+		mAtSpeedMag = data->atSpeedMag;
+		mNegTime    = data->negTime;
+		mNegProb    = data->negProb;
+		mCan1B      = data->can1B;
 	}
-	else if(mLevel == 2)
+	else
 	{
+		// CSVã«ãƒ‡ãƒ¼ã‚¿ãŒãªã„å ´åˆã®ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤
 		mMaxHp = 100.0f;
 		mMaxSt = 150.0f;
 		mGainSt = 10.0f;
+		mAttackCost1 = 25.0f;
+		mAttackCost2 = 30.0f;
+		mAttackCost3 = 35.0f;
 		mAvoidCost = 20.0f;
-		mStepMag = 1.2f;
+		mStepMag = 1.0f;
 		mAttackMag = 1.0f;
 		mAtSpeedMag = 1.0f;
 		mNegTime = 0.8f;
 		mNegProb = 66.6f;
-	}
-	else if (mLevel < 5)
-	{
-		mMaxHp = 100.0f + (15.0f * mLevel);
-		mMaxSt = 150.0f + (15.0f * mLevel);
-		mGainSt = 10.0f * (1 + (mLevel * 0.025f));
-		mAvoidCost = 20.0f - (mLevel * (20.0f * 0.025f));
-		mStepMag = 1.2f + (mLevel * 0.05f);
-		mAttackMag = 1.0f + (mLevel * 0.05f);
-		mAtSpeedMag = 1.0f * (1 + (mLevel * 0.02f));
-		mNegTime = 0.8f - (mLevel * 0.03f);
-		mNegProb = 66.6f - (mLevel * 2.5f);
-	}
-	else if (mLevel < 10)
-	{
-		mCan1B = true;
-		mMaxHp = 100.0f + (25.0f * mLevel);
-		mMaxSt = 150.0f + (17.5f * mLevel);
-		mGainSt = 10.0f * (1 + (mLevel * 0.03f));
-		mAvoidCost = 20.0f - (mLevel * (20.0f * 0.03f));
-		mStepMag = 1.2f + (mLevel * 0.05f);
-		mAttackMag = 1.0f + (mLevel * 0.085f);
-		mAtSpeedMag = 1.0f * (1 + (mLevel * 0.025f));
-		mNegTime = 0.8f - (mLevel * 0.04f);
-		mNegProb = 66.6f - (mLevel * 4.5f);
-	}
-	else if (mLevel == 10)
-	{
-		mCan1B = true;
-		mMaxHp = 300.0f + 100.0f;
-		mMaxSt = 290.0f + 60.0f;
-		mGainSt = 12.4f + 0.6f;
-		mAvoidCost = 15.2f;
-		mStepMag = 1.6f + 0.2f;
-		mAttackMag = 1.68f + 0.07f;
-		mAtSpeedMag = 1.20f + 0.05f;
-		mNegTime = 0.48f - 0.08f;
-		mNegProb = 30.6f - 5.6f;
 	}
 
 	mHp = mMaxHp;
 	mSt = mMaxSt;
 }
 
-// UŒ‚’†‚©
+// æ”»æ’ƒä¸­ã‹
 bool CSoldier::IsAttacking() const
 {
-	// a‚è1UŒ‚’†
+	// æ–¬ã‚Š1æ”»æ’ƒä¸­
 	if (mState == (int)EState::eAttack1) return true;
-	// a‚è2UŒ‚’†
+	// æ–¬ã‚Š2æ”»æ’ƒä¸­
 	if (mState == (int)EState::eAttack2) return true;
-	// a‚èXUŒ‚’†
+	// æ–¬ã‚ŠXæ”»æ’ƒä¸­
 	if (mState == (int)EState::eAttackX) return true;
-	// R‚èUŒ‚UŒ‚’†
+	// è¹´ã‚Šæ”»æ’ƒæ”»æ’ƒä¸­
 	if (mState == (int)EState::eKick) return true;
 
-	// UŒ‚’†‚Å‚È‚¢
+	// æ”»æ’ƒä¸­ã§ãªã„
 	return false;
 }
 
-// UŒ‚ŠJn
+// æ”»æ’ƒé–‹å§‹
 void CSoldier::AttackStart()
 {
-	// æs“ü—ÍƒRƒ‰ƒCƒ_[‚ğƒIƒt‚É‚·‚é
+	// å…ˆè¡Œå…¥åŠ›ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’ã‚ªãƒ•ã«ã™ã‚‹
 	mpTACol->SetEnable(false);
 
-	// ƒx[ƒXƒNƒ‰ƒX‚ÌUŒ‚ŠJnˆ—‚ğŒÄ‚Ño‚µ
+	// ãƒ™ãƒ¼ã‚¹ã‚¯ãƒ©ã‚¹ã®æ”»æ’ƒé–‹å§‹å‡¦ç†ã‚’å‘¼ã³å‡ºã—
 	CEnemy::AttackStart();
 
-	// a‚èUŒ‚’†‚Å‚ ‚ê‚ÎAŒ•‚ÌƒRƒ‰ƒCƒ_[‚ğƒIƒ“‚É‚·‚é
+	// æ–¬ã‚Šæ”»æ’ƒä¸­ã§ã‚ã‚Œã°ã€å‰£ã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’ã‚ªãƒ³ã«ã™ã‚‹
 	if (mState == (int)EState::eAttack1 
 		|| mState == (int)EState::eAttack1B 
 		|| mState == (int)EState::eAttack2 
@@ -300,66 +266,66 @@ void CSoldier::AttackStart()
 	{
 		mpSword->SetEnableCol(true);
 	}
-	// R‚èUŒ‚’†‚Å‚ ‚ê‚ÎAR‚èUŒ‚—p‚ÌƒRƒ‰ƒCƒ_[‚ğƒIƒ“‚É‚·‚é
+	// è¹´ã‚Šæ”»æ’ƒä¸­ã§ã‚ã‚Œã°ã€è¹´ã‚Šæ”»æ’ƒç”¨ã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’ã‚ªãƒ³ã«ã™ã‚‹
 	else if (mState == (int)EState::eKick)
 	{
 		mpKickCol->SetEnable(true);
 	}
 }
 
-// UŒ‚I—¹
+// æ”»æ’ƒçµ‚äº†
 void CSoldier::AttackEnd()
 {
-	// ƒx[ƒXƒNƒ‰ƒX‚ÌUŒ‚I—¹ˆ—‚ğŒÄ‚Ño‚µ
+	// ãƒ™ãƒ¼ã‚¹ã‚¯ãƒ©ã‚¹ã®æ”»æ’ƒçµ‚äº†å‡¦ç†ã‚’å‘¼ã³å‡ºã—
 	CEnemy::AttackEnd();
 
-	// UŒ‚ƒRƒ‰ƒCƒ_[‚ğƒIƒt
+	// æ”»æ’ƒã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’ã‚ªãƒ•
 	mpSword->SetEnableCol(false);
 	mpKickCol->SetEnable(false);
 }
 
-// ƒ_ƒ[ƒW‚ğó‚¯‚é
+// ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ã‚‹
 void CSoldier::TakeDamage(float damage, CObjectBase* causer)
 {
 	float amount = (!mInGuardBreak) ? damage : damage * 2;
 
-	// ƒx[ƒXƒNƒ‰ƒX‚Ìƒ_ƒ[ƒWˆ—‚ğŒÄ‚Ño‚·
+	// ãƒ™ãƒ¼ã‚¹ã‚¯ãƒ©ã‚¹ã®ãƒ€ãƒ¡ãƒ¼ã‚¸å‡¦ç†ã‚’å‘¼ã³å‡ºã™
 	CEnemy::TakeDamage(amount, causer);
 
-	// €–S‚µ‚Ä‚¢‚È‚¯‚ê‚ÎA
+	// æ­»äº¡ã—ã¦ã„ãªã‘ã‚Œã°ã€
 	if (!IsDeath())
 	{
-		// ‹Â‚¯”½‚èó‘Ô‚ÖˆÚs
+		// ä»°ã‘åã‚ŠçŠ¶æ…‹ã¸ç§»è¡Œ
 		ChangeState((int)EState::eHit);
 
-		// UŒ‚‚ğ‰Á‚¦‚½‘Šè‚ğí“¬‘Šè‚Éİ’è
+		// æ”»æ’ƒã‚’åŠ ãˆãŸç›¸æ‰‹ã‚’æˆ¦é—˜ç›¸æ‰‹ã«è¨­å®š
 		mpBattleTarget = causer;
 
-		// UŒ‚‚ğ‰Á‚¦‚½‘Šè‚Ì•ûŒü‚ÖŒü‚­
+		// æ”»æ’ƒã‚’åŠ ãˆãŸç›¸æ‰‹ã®æ–¹å‘ã¸å‘ã
 		LookAtBattleTarget(true);
 
-		// í“¬ó‘Ô‚ÖØ‚è‘Ö‚¦
+		// æˆ¦é—˜çŠ¶æ…‹ã¸åˆ‡ã‚Šæ›¿ãˆ
 		mIsBattle = true;
 
-		// ˆÚ“®‚ğ’â~
+		// ç§»å‹•ã‚’åœæ­¢
 		mMoveSpeed = CVector::zero;
 	}
 }
 
-// €–S
+// æ­»äº¡
 void CSoldier::Death()
 {
-	// €–Só‘Ô‚ÉØ‚è‘Ö‚¦
+	// æ­»äº¡çŠ¶æ…‹ã«åˆ‡ã‚Šæ›¿ãˆ
 	ChangeState((int)EState::eDeath);
 }
 
-// Õ“Ëˆ—
+// è¡çªå‡¦ç†
 void CSoldier::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
-	// ƒx[ƒX‚ÌÕ“Ëˆ—‚ğŒÄ‚Ño‚·
+	// ãƒ™ãƒ¼ã‚¹ã®è¡çªå‡¦ç†ã‚’å‘¼ã³å‡ºã™
 	CEnemy::Collision(self, other, hit);
 
-	// æs“ü—Í—pƒRƒ‰ƒCƒ_[‚ªƒqƒbƒg‚µ‚½
+	// å…ˆè¡Œå…¥åŠ›ç”¨ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ãŒãƒ’ãƒƒãƒˆã—ãŸ
 	if (other->Layer() == ELayer::eTypeAheadCol)
 	{
 		if (mState == (int)EState::eIdle || mState == (int)EState::eChase)
@@ -372,28 +338,28 @@ void CSoldier::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		}
 	}
 
-	// Œ•‚ÌƒRƒ‰ƒCƒ_[‚ªÕ“Ë‚µ‚½
+	// å‰£ã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ãŒè¡çªã—ãŸ
 	if (self == mpSword->Collider())
 	{
 		CCharaBase* hitChara = dynamic_cast<CCharaBase*>(other->Owner());
 		if (hitChara != nullptr && !IsAttackHitObj(hitChara))
 		{
 			AddAttackHitObj(hitChara);
-			// ó‘Ô‚É‡‚í‚¹‚ÄAXVˆ—‚ğØ‚è‘Ö‚¦‚é
+			// çŠ¶æ…‹ã«åˆã‚ã›ã¦ã€æ›´æ–°å‡¦ç†ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
 			switch (mState)
 			{
-				// a‚èUŒ‚1
+				// æ–¬ã‚Šæ”»æ’ƒ1
 			case (int)EState::eAttack1:		hitChara->TakeDamage(4 * mAttackMag, this);	break;
-				// a‚èUŒ‚1B
+				// æ–¬ã‚Šæ”»æ’ƒ1B
 			case (int)EState::eAttack1B:	hitChara->TakeDamage(4 * mAttackMag, this);	break;
-				// a‚èUŒ‚2
+				// æ–¬ã‚Šæ”»æ’ƒ2
 			case (int)EState::eAttack2:		hitChara->TakeDamage(6 * mAttackMag, this);	break;
-				// a‚èUŒ‚X
+				// æ–¬ã‚Šæ”»æ’ƒX
 			case (int)EState::eAttackX:		hitChara->TakeDamage(5 * mAttackMag, this);	break;
 			}
 		}
 	}
-	// R‚èUŒ‚‚ÌƒRƒ‰ƒCƒ_[‚ªÕ“Ë‚µ‚½
+	// è¹´ã‚Šæ”»æ’ƒã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ãŒè¡çªã—ãŸ
 	else if (self == mpKickCol)
 	{
 		CCharaBase* hitChara = dynamic_cast<CCharaBase*>(other->Owner());
@@ -417,7 +383,7 @@ void CSoldier::ChangeAnimation(int type, bool restart)
 		data.frameLength,
 		restart
 	);
-	// UŒ‚ƒXƒs[ƒh‚ğ­‚µƒ‰ƒ“ƒ_ƒ€‚É‚·‚é
+	// æ”»æ’ƒã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’å°‘ã—ãƒ©ãƒ³ãƒ€ãƒ ã«ã™ã‚‹
 	float rand = Math::Rand(0.85f, 1.15f);
 	switch (type)
 	{
@@ -456,23 +422,23 @@ void CSoldier::UpdateBattleTempo()
 	}
 }
 
-// í“¬‘Šè‚Ì•û‚ÖŒü‚­
+// æˆ¦é—˜ç›¸æ‰‹ã®æ–¹ã¸å‘ã
 void CSoldier::LookAtBattleTarget(bool immediate)
 {
-	// í“¬‘Šè‚ª‚¢‚È‚¯‚ê‚ÎAˆ—‚µ‚È‚¢
+	// æˆ¦é—˜ç›¸æ‰‹ãŒã„ãªã‘ã‚Œã°ã€å‡¦ç†ã—ãªã„
 	if (mpBattleTarget == nullptr) return;
 
-	// í“¬‘Šè‚Ü‚Å‚Ì•ûŒüƒxƒNƒgƒ‹‚ğ‹‚ß‚é
+	// æˆ¦é—˜ç›¸æ‰‹ã¾ã§ã®æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ±‚ã‚ã‚‹
 	CVector targetPos = mpBattleTarget->Position();
 	CVector vec = targetPos - Position();
 	vec.Y(0.0f);
 	vec.Normalize();
-	// ‚·‚®‚Éí“¬‘Šè‚Ì•ûŒü‚ÖŒü‚­
+	// ã™ãã«æˆ¦é—˜ç›¸æ‰‹ã®æ–¹å‘ã¸å‘ã
 	if (immediate)
 	{
 		Rotation(CQuaternion::LookRotation(vec));
 	}
-	// ™X‚Éí“¬‘Šè‚Ì•ûŒü‚ÖŒü‚­
+	// å¾ã€…ã«æˆ¦é—˜ç›¸æ‰‹ã®æ–¹å‘ã¸å‘ã
 	else
 	{
 		CVector forward = CVector::Slerp
@@ -486,13 +452,13 @@ void CSoldier::LookAtBattleTarget(bool immediate)
 
 float CSoldier::GetDistToTarget()
 {
-	// Œ»İ’n‚Æ–Ú“I’n‚ğæ“¾
+	// ç¾åœ¨åœ°ã¨ç›®çš„åœ°ã‚’å–å¾—
 	CVector pos = Position();
 	CVector targetPos = mpBattleTarget->Position();
 	targetPos.Y(pos.Y());
-	// Œ»İ’n‚©‚ç–Ú“I’n‚Ü‚Å‚ÌƒxƒNƒgƒ‹‚ğ‹‚ß‚é
+	// ç¾åœ¨åœ°ã‹ã‚‰ç›®çš„åœ°ã¾ã§ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ±‚ã‚ã‚‹
 	CVector vec = targetPos - pos;
-	// ‹——£‚ÉŠ·Z
+	// è·é›¢ã«æ›ç®—
 	float dist = vec.Length();
 	return dist;
 }
@@ -505,19 +471,19 @@ void CSoldier::STRegene()
 	}
 }
 
-// ó‘ÔØ‚è‘Ö‚¦
+// çŠ¶æ…‹åˆ‡ã‚Šæ›¿ãˆ
 void CSoldier::ChangeState(int state)
 {
 	if (mState == state) return;
 
-	// UŒ‚’†‚É‘¼‚Éó‘Ô‚É•Ï‚í‚é‚ÍA
-	// UŒ‚I—¹ˆ—‚ğŒÄ‚Ño‚µ‚Ä‚¨‚­
+	// æ”»æ’ƒä¸­ã«ä»–ã«çŠ¶æ…‹ã«å¤‰ã‚ã‚‹æ™‚ã¯ã€
+	// æ”»æ’ƒçµ‚äº†å‡¦ç†ã‚’å‘¼ã³å‡ºã—ã¦ãŠã
 	if (IsAttacking())
 	{
 		AttackEnd();
 	}
 
-	// ó‘ÔØ‚è‘Ö‚¦
+	// çŠ¶æ…‹åˆ‡ã‚Šæ›¿ãˆ
 	CEnemy::ChangeState(state);
 }
 
@@ -525,48 +491,48 @@ void CSoldier::UpdateReserve()
 {
 }
 
-// ‘Ò‹@ó‘Ô‚ÌXVˆ—
+// å¾…æ©ŸçŠ¶æ…‹ã®æ›´æ–°å‡¦ç†
 void CSoldier::UpdateIdle()
 {
 	STRegene();
-	// ’Êí‚Ì‘Ò‹@
+	// é€šå¸¸æ™‚ã®å¾…æ©Ÿ
 	if (!mIsBattle)
 	{
 		ChangeAnimation((int)EAnimType::eIdle);
 	}
-	// í“¬‚Ì‘Ò‹@
+	// æˆ¦é—˜æ™‚ã®å¾…æ©Ÿ
 	else
 	{
 		ChangeAnimation((int)EAnimType::eIdleBattle);
-		// ™X‚Éí“¬‘Šè‚Ì•ûŒü‚ÖŒü‚­
+		// å¾ã€…ã«æˆ¦é—˜ç›¸æ‰‹ã®æ–¹å‘ã¸å‘ã
 		LookAtBattleTarget();
 
-		// ƒXƒeƒbƒv‚²‚Æ‚Éˆ—‚ğØ‚è‘Ö‚¦
+		// ã‚¹ãƒ†ãƒƒãƒ—ã”ã¨ã«å‡¦ç†ã‚’åˆ‡ã‚Šæ›¿ãˆ
 		switch (mStateStep)
 		{
-			// ƒXƒeƒbƒv0F‘Ò‹@ŠÔ‚ğƒ‰ƒ“ƒ_ƒ€‚ÅŒˆ’è
+			// ã‚¹ãƒ†ãƒƒãƒ—0ï¼šå¾…æ©Ÿæ™‚é–“ã‚’ãƒ©ãƒ³ãƒ€ãƒ ã§æ±ºå®š
 		case 0:
-			// ‘Ò‹@ŠÔ‚ªŒˆ‚Ü‚Á‚Ä‚È‚¯‚ê‚Î
-			// ‘Ò‹@ŠÔ‚È‚µ
+			// å¾…æ©Ÿæ™‚é–“ãŒæ±ºã¾ã£ã¦ãªã‘ã‚Œã°
+			// å¾…æ©Ÿæ™‚é–“ãªã—
 			mStateStep++;
 			break;
-			// ƒXƒeƒbƒv1F‘Ò‹@ŠÔ‚ÌŒo‰ß‘Ò‚¿
+			// ã‚¹ãƒ†ãƒƒãƒ—1ï¼šå¾…æ©Ÿæ™‚é–“ã®çµŒéå¾…ã¡
 		case 1:
-			// Ÿ‚Ìó‘ÔiƒfƒtƒHƒ‹ƒg‚Í’ÇÕó‘Ôj
+			// æ¬¡ã®çŠ¶æ…‹ï¼ˆãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯è¿½è·¡çŠ¶æ…‹ï¼‰
 			EState nextState = EState::eChase;
 
-			// í“¬‘Šè‚Ü‚Å‚Ì‹——£‚ğ‹‚ß‚é
+			// æˆ¦é—˜ç›¸æ‰‹ã¾ã§ã®è·é›¢ã‚’æ±‚ã‚ã‚‹
 			CVector targetPos = mpBattleTarget->Position();
 			CVector vec = targetPos - Position();
 			vec.Y(0.0f);
 			float dist = vec.Length();
-			// í“¬‘Šè‚Ü‚Å‚Ì‹——£‚ª—£‚ê‚Ä‚¢‚½‚çA
+			// æˆ¦é—˜ç›¸æ‰‹ã¾ã§ã®è·é›¢ãŒé›¢ã‚Œã¦ã„ãŸã‚‰ã€
 			if (dist >= ATTACK2_DIST)
 			{
 				
 			}
 
-			// Ÿ‚Ìó‘Ô‚ÖˆÚs
+			// æ¬¡ã®çŠ¶æ…‹ã¸ç§»è¡Œ
 			ChangeState((int)nextState);
 
 			break;
@@ -574,105 +540,105 @@ void CSoldier::UpdateIdle()
 	}
 }
 
-// ’Ç‚¢‚©‚¯‚é‚ÌXVˆ—
+// è¿½ã„ã‹ã‘ã‚‹æ™‚ã®æ›´æ–°å‡¦ç†
 void CSoldier::UpdateChase()
 {
 	mMoveSpeed = CVector::zero;
 	STRegene();
 
-	// Œ»İ’n‚Æ–Ú“I’n‚ğæ“¾
+	// ç¾åœ¨åœ°ã¨ç›®çš„åœ°ã‚’å–å¾—
 	CVector pos = Position();
 	CVector targetPos = mpBattleTarget->Position();
 	targetPos.Y(pos.Y());
-	// Œ»İ’n‚©‚ç–Ú“I’n‚Ü‚Å‚ÌƒxƒNƒgƒ‹‚ğ‹‚ß‚é
+	// ç¾åœ¨åœ°ã‹ã‚‰ç›®çš„åœ°ã¾ã§ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ±‚ã‚ã‚‹
 	CVector vec = targetPos - pos;
-	// UŒ‚”ÍˆÍ“à‚Å‚ ‚ê‚Î
+	// æ”»æ’ƒç¯„å›²å†…ã§ã‚ã‚Œã°
 	float dist = vec.Length();
 	if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 	{
 		if (mCan1B && mSt >= mAttackCost2 + mAvoidCost)
 		{
-			// ˆê’èŠm—¦‚ÅAUŒ‚‚ğ•ÏX
+			// ä¸€å®šç¢ºç‡ã§ã€æ”»æ’ƒã‚’å¤‰æ›´
 			int rand = Math::Rand(0, 99);
 			if (rand < ATTACK1B_PROB)
 			{
-				// UŒ‚ó‘Ô‚ÖˆÚs
+				// æ”»æ’ƒçŠ¶æ…‹ã¸ç§»è¡Œ
 				ChangeState((int)EState::eAttack1B);
 			}
 			else
 			{
-				// Šm—¦‚ÅUŒ‚‚ğ‘I‘ğ
+				// ç¢ºç‡ã§æ”»æ’ƒã‚’é¸æŠ
 				rand = Math::Rand(0, 99);
 				if (rand < 30)
 				{
-					// UŒ‚ó‘Ô‚ÖˆÚs
+					// æ”»æ’ƒçŠ¶æ…‹ã¸ç§»è¡Œ
 					ChangeState((int)EState::eAttack2);
 				}
 				else
 				{
-					// UŒ‚ó‘Ô‚ÖˆÚs
+					// æ”»æ’ƒçŠ¶æ…‹ã¸ç§»è¡Œ
 					ChangeState((int)EState::eAttack1);
 				}
 			}
 		}
 		else if (mCan1B && mSt >= mAttackCost1 + mAvoidCost)
 		{
-			// ˆê’èŠm—¦‚ÅAUŒ‚‚ğ•ÏX
+			// ä¸€å®šç¢ºç‡ã§ã€æ”»æ’ƒã‚’å¤‰æ›´
 			int rand = Math::Rand(0, 99);
 			if (rand < ATTACK1B_PROB)
 			{
-				// UŒ‚ó‘Ô‚ÖˆÚs
+				// æ”»æ’ƒçŠ¶æ…‹ã¸ç§»è¡Œ
 				ChangeState((int)EState::eAttack1B);
 			}
 			else
 			{
-				// UŒ‚ó‘Ô‚ÖˆÚs
+				// æ”»æ’ƒçŠ¶æ…‹ã¸ç§»è¡Œ
 				ChangeState((int)EState::eAttack1);
 			}
 		}
 		else if (mSt >= mAttackCost2 + mAvoidCost)
 		{
-			// Šm—¦‚ÅUŒ‚‚ğ‘I‘ğ
+			// ç¢ºç‡ã§æ”»æ’ƒã‚’é¸æŠ
 			int rand = Math::Rand(0, 99);
 			if (rand < 30)
 			{
-				// UŒ‚ó‘Ô‚ÖˆÚs
+				// æ”»æ’ƒçŠ¶æ…‹ã¸ç§»è¡Œ
 				ChangeState((int)EState::eAttack2);
 			}
 			else
 			{
-				// UŒ‚ó‘Ô‚ÖˆÚs
+				// æ”»æ’ƒçŠ¶æ…‹ã¸ç§»è¡Œ
 				ChangeState((int)EState::eAttack1);
 			}
 		}
 		else if (mSt >= mAttackCost1 + mAvoidCost)
 		{
-			// UŒ‚ó‘Ô‚ÖˆÚs
+			// æ”»æ’ƒçŠ¶æ…‹ã¸ç§»è¡Œ
 			ChangeState((int)EState::eAttack1);
 		}
 		else
 		{
-			// ‘Ò‹@ó‘Ô‚ÖˆÚs
+			// å¾…æ©ŸçŠ¶æ…‹ã¸ç§»è¡Œ
 			ChangeState((int)EState::eIdle);
 		}
 	}
-	// UŒ‚”ÍˆÍŠO
+	// æ”»æ’ƒç¯„å›²å¤–
 	else if (dist >= ATTACK2_DIST &&
 		mBattleTempo == (int)EBattleTempo::Aggressive)
 	{
 		mpSword->Rotation(DASH_SWORD_OFFSET_ROT);
-		// ‘–sƒAƒjƒ[ƒVƒ‡ƒ“‚ğÄ¶
+		// èµ°è¡Œã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’å†ç”Ÿ
 		ChangeAnimation((int)EAnimType::eRun);
 
-		// c‚è‹——£‚ªˆÚ“®‹——£‚æ‚è‘å‚«‚¢ê‡‚ÍAˆÚ“®‹——£•ªˆÚ“®
+		// æ®‹ã‚Šè·é›¢ãŒç§»å‹•è·é›¢ã‚ˆã‚Šå¤§ãã„å ´åˆã¯ã€ç§»å‹•è·é›¢åˆ†ç§»å‹•
 		CVector dir = vec.Normalized();
 		float moveDist = RUN_SPEED * Times::DeltaTime();
 		if (dist > moveDist)
 		{
 			mMoveSpeed = dir * moveDist;
 		}
-		// c‚è‹——£‚Ì•û‚ª¬‚³‚¢ê‡‚ÍA
-		// c‚è‹——£•ªˆÚ“®‚µ‚ÄA‘Ò‹@ó‘Ô‚ÖˆÚs
+		// æ®‹ã‚Šè·é›¢ã®æ–¹ãŒå°ã•ã„å ´åˆã¯ã€
+		// æ®‹ã‚Šè·é›¢åˆ†ç§»å‹•ã—ã¦ã€å¾…æ©ŸçŠ¶æ…‹ã¸ç§»è¡Œ
 		else
 		{
 			mpSword->Rotation(SWORD_OFFSET_ROT);
@@ -683,18 +649,18 @@ void CSoldier::UpdateChase()
 	else if (mBattleTempo != (int)EBattleTempo::Defensive)
 	{
 		mpSword->Rotation(SWORD_OFFSET_ROT);
-		// •àsƒAƒjƒ[ƒVƒ‡ƒ“‚ğÄ¶
+		// æ­©è¡Œã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’å†ç”Ÿ
 		ChangeAnimation((int)EAnimType::eWalk);
 
-		// c‚è‹——£‚ªˆÚ“®‹——£‚æ‚è‘å‚«‚¢ê‡‚ÍAˆÚ“®‹——£•ªˆÚ“®
+		// æ®‹ã‚Šè·é›¢ãŒç§»å‹•è·é›¢ã‚ˆã‚Šå¤§ãã„å ´åˆã¯ã€ç§»å‹•è·é›¢åˆ†ç§»å‹•
 		CVector dir = vec.Normalized();
 		float moveDist = MOVE_SPEED * Times::DeltaTime();
 		if (dist > moveDist)
 		{
 			mMoveSpeed = dir * moveDist;
 		}
-		// c‚è‹——£‚Ì•û‚ª¬‚³‚¢ê‡‚ÍA
-		// c‚è‹——£•ªˆÚ“®‚µ‚ÄA‘Ò‹@ó‘Ô‚ÖˆÚs
+		// æ®‹ã‚Šè·é›¢ã®æ–¹ãŒå°ã•ã„å ´åˆã¯ã€
+		// æ®‹ã‚Šè·é›¢åˆ†ç§»å‹•ã—ã¦ã€å¾…æ©ŸçŠ¶æ…‹ã¸ç§»è¡Œ
 		else
 		{
 			mMoveSpeed = dir * dist;
@@ -703,21 +669,21 @@ void CSoldier::UpdateChase()
 	}
 	else
 	{
-		// ‘Ò‹@ƒAƒjƒ[ƒVƒ‡ƒ“‚ğÄ¶
+		// å¾…æ©Ÿã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’å†ç”Ÿ
 		ChangeAnimation((int)EAnimType::eIdle);
 	}
 
-	// ™X‚Éí“¬‘Šè‚Ì•ûŒü‚ÖŒü‚­
+	// å¾ã€…ã«æˆ¦é—˜ç›¸æ‰‹ã®æ–¹å‘ã¸å‘ã
 	LookAtBattleTarget();
 }
 
-// a‚èUŒ‚1‚ÌXVˆ—
+// æ–¬ã‚Šæ”»æ’ƒ1ã®æ›´æ–°å‡¦ç†
 void CSoldier::UpdateAttack1()
 {
-	// ƒXƒeƒbƒv‚²‚Æ‚Éˆ—‚ğ•ª‚¯‚é
+	// ã‚¹ãƒ†ãƒƒãƒ—ã”ã¨ã«å‡¦ç†ã‚’åˆ†ã‘ã‚‹
 	switch (mStateStep)
 	{
-		// ƒXƒeƒbƒv0FUŒ‚ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+		// ã‚¹ãƒ†ãƒƒãƒ—0ï¼šæ”»æ’ƒã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
 	case 0:
 		ChangeAnimation((int)EAnimType::eAttack1, true);
 		mAttackVec = VectorZ();
@@ -725,25 +691,25 @@ void CSoldier::UpdateAttack1()
 		mStateStep++;
 		break;
 	case 1:
-		// æs“ü—ÍƒtƒŒ[ƒ€ŠJnƒtƒŒ[ƒ€‚Ü‚ÅŒo‰ß‚µ‚½‚©
+		// å…ˆè¡Œå…¥åŠ›ãƒ•ãƒ¬ãƒ¼ãƒ é–‹å§‹ãƒ•ãƒ¬ãƒ¼ãƒ ã¾ã§çµŒéã—ãŸã‹
 		if (GetAnimationFrame() >= ATTACK1_START_FRAME - AT_GRACE_FRAME)
 		{
-			// æs“ü—ÍƒRƒ‰ƒCƒ_[‚ğƒIƒ“‚É‚·‚é
+			// å…ˆè¡Œå…¥åŠ›ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’ã‚ªãƒ³ã«ã™ã‚‹
 			mpTACol->SetEnable(true);
 			mStateStep++;
 		}
 		break;
-		// ƒXƒeƒbƒv2FUŒ‚ŠJn
+		// ã‚¹ãƒ†ãƒƒãƒ—2ï¼šæ”»æ’ƒé–‹å§‹
 	case 2:
-		// UŒ‚‚ğŠJn‚·‚é‚Ü‚ÅA™X‚Éí“¬‘Šè‚Ì•ûŒü‚ÖŒü‚­
+		// æ”»æ’ƒã‚’é–‹å§‹ã™ã‚‹ã¾ã§ã€å¾ã€…ã«æˆ¦é—˜ç›¸æ‰‹ã®æ–¹å‘ã¸å‘ã
 		LookAtBattleTarget();
 
-		// UŒ‚ŠJnƒtƒŒ[ƒ€‚Ü‚ÅŒo‰ß‚µ‚½‚©
+		// æ”»æ’ƒé–‹å§‹ãƒ•ãƒ¬ãƒ¼ãƒ ã¾ã§çµŒéã—ãŸã‹
 		if (GetAnimationFrame() >= ATTACK1_START_FRAME)
 		{
-			// aŒ‚SE‚ğÄ¶
+			// æ–¬æ’ƒSEã‚’å†ç”Ÿ
 			mpSlashSE->Play();
-			// UŒ‚ŠJnˆ—‚ğŒÄ‚Ño‚·
+			// æ”»æ’ƒé–‹å§‹å‡¦ç†ã‚’å‘¼ã³å‡ºã™
 			AttackStart();
 
 			mInAttack = true;
@@ -751,18 +717,18 @@ void CSoldier::UpdateAttack1()
 			mStateStep++;
 		}
 		break;
-		// ƒXƒeƒbƒv3FUŒ‚I—¹
+		// ã‚¹ãƒ†ãƒƒãƒ—3ï¼šæ”»æ’ƒçµ‚äº†
 	case 3:
-		// UŒ‚I—¹ƒtƒŒ[ƒ€‚Ü‚ÅŒo‰ß‚µ‚½‚©
+		// æ”»æ’ƒçµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ ã¾ã§çµŒéã—ãŸã‹
 		if (GetAnimationFrame() >= ATTACK1_END_FRAME)
 		{
-			// UŒ‚I—¹ˆ—‚ğŒÄ‚Ño‚·
+			// æ”»æ’ƒçµ‚äº†å‡¦ç†ã‚’å‘¼ã³å‡ºã™
 			AttackEnd();
 
 			float dist = GetDistToTarget();
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 			{
-				// ˆê’èŠm—¦‚ÅA˜A‘±UŒ‚‚ğ—\–ñ
+				// ä¸€å®šç¢ºç‡ã§ã€é€£ç¶šæ”»æ’ƒã‚’äºˆç´„
 				int rand = Math::Rand(0, 99);
 
 				switch (mBattleTempo)
@@ -786,14 +752,14 @@ void CSoldier::UpdateAttack1()
 
 		if (mInAttack)
 		{
-			// 1•b‚ ‚½‚è‚ÌˆÚ“®‘¬“x
+			// 1ç§’ã‚ãŸã‚Šã®ç§»å‹•é€Ÿåº¦
 			CVector move = mAttackVec * (15.0f * mStepMag * mAtSpeedMag) * Times::DeltaTime();
 			Position(Position() + move);
 		}
 		break;
-		// ƒXƒeƒbƒv4FUŒ‚ƒAƒjƒ[ƒVƒ‡ƒ“I—¹‘Ò‚¿
+		// ã‚¹ãƒ†ãƒƒãƒ—4ï¼šæ”»æ’ƒã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†å¾…ã¡
 	case 4:
-		// ƒAƒjƒ[ƒVƒ‡ƒ“I—¹‚µ‚½‚çA‘Ò‹@ó‘Ô‚Ö–ß‚·
+		// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†ã—ãŸã‚‰ã€å¾…æ©ŸçŠ¶æ…‹ã¸æˆ»ã™
 		if (IsAnimationFinished())
 		{
 			if (!mNextAttack)
@@ -807,12 +773,12 @@ void CSoldier::UpdateAttack1()
 
 				if (mSt >= mAttackCost2)
 				{
-					// UŒ‚2’i–Ú‚ÖˆÚs
+					// æ”»æ’ƒ2æ®µç›®ã¸ç§»è¡Œ
 					ChangeState((int)EState::eAttack2);
 				}
 				else
 				{
-					// Šm—¦‚ÅAŒ„‚ª‚Å‚«‚é
+					// ç¢ºç‡ã§ã€éš™ãŒã§ãã‚‹
 					float rand = Math::Rand(0.0f, 99.9f);
 					if (rand < mNegProb)
 					{
@@ -820,7 +786,7 @@ void CSoldier::UpdateAttack1()
 					}
 					else
 					{
-						// ‘Ò‹@ó‘Ô‚ÖˆÚs
+						// å¾…æ©ŸçŠ¶æ…‹ã¸ç§»è¡Œ
 						ChangeState((int)EState::eIdle);
 						ChangeAnimation((int)EAnimType::eIdle);
 					}
@@ -830,15 +796,15 @@ void CSoldier::UpdateAttack1()
 		break;
 	case 5:
 		STRegene();
-		// ˜A‘±UŒ‚‚ÌI—¹‚È‚çAn•bŠÔŒ„‚ª‚Å‚«‚é
+		// é€£ç¶šæ”»æ’ƒã®çµ‚äº†ãªã‚‰ã€nç§’é–“éš™ãŒã§ãã‚‹
 		if (mElapsedTime < mNegTime)
 		{
 			mElapsedTime += Times::DeltaTime();
 		}
-		// ‘Ò‚¿ŠÔ‚ªI—¹‚µ‚½‚çAíœ
+		// å¾…ã¡æ™‚é–“ãŒçµ‚äº†ã—ãŸã‚‰ã€å‰Šé™¤
 		else
 		{
-			// ‘Ò‹@ó‘Ô‚ÖˆÚs
+			// å¾…æ©ŸçŠ¶æ…‹ã¸ç§»è¡Œ
 			ChangeState((int)EState::eIdle);
 			ChangeAnimation((int)EAnimType::eIdle);
 		}
@@ -846,15 +812,15 @@ void CSoldier::UpdateAttack1()
 	}
 }
 
-// a‚èUŒ‚1B‚ÌXVˆ—
-// a‚èUŒ‚1B‚Í’Êí‚Ìa‚èUŒ‚1‚Å‚ª‚ç‹ó‚«‚É‚È‚é‰EƒTƒCƒh‚ğ
-// Š ‚èæ‚é‰E“ã‚¬•¥‚¢UŒ‚
+// æ–¬ã‚Šæ”»æ’ƒ1Bã®æ›´æ–°å‡¦ç†
+// æ–¬ã‚Šæ”»æ’ƒ1Bã¯é€šå¸¸ã®æ–¬ã‚Šæ”»æ’ƒ1ã§ãŒã‚‰ç©ºãã«ãªã‚‹å³ã‚µã‚¤ãƒ‰ã‚’
+// åˆˆã‚Šå–ã‚‹å³è–™ãæ‰•ã„æ”»æ’ƒ
 void CSoldier::UpdateAttack1B()
 {
-	// ƒXƒeƒbƒv‚²‚Æ‚Éˆ—‚ğ•ª‚¯‚é
+	// ã‚¹ãƒ†ãƒƒãƒ—ã”ã¨ã«å‡¦ç†ã‚’åˆ†ã‘ã‚‹
 	switch (mStateStep)
 	{
-		// ƒXƒeƒbƒv0FUŒ‚ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+		// ã‚¹ãƒ†ãƒƒãƒ—0ï¼šæ”»æ’ƒã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
 	case 0:
 		mpSword->Rotation(DASH_SWORD_OFFSET_ROT);
 		ChangeAnimation((int)EAnimType::eAttack1B, true);
@@ -863,25 +829,25 @@ void CSoldier::UpdateAttack1B()
 		mStateStep++;
 		break;
 	case 1:
-		// æs“ü—ÍƒtƒŒ[ƒ€ŠJnƒtƒŒ[ƒ€‚Ü‚ÅŒo‰ß‚µ‚½‚©
+		// å…ˆè¡Œå…¥åŠ›ãƒ•ãƒ¬ãƒ¼ãƒ é–‹å§‹ãƒ•ãƒ¬ãƒ¼ãƒ ã¾ã§çµŒéã—ãŸã‹
 		if (GetAnimationFrame() >= ATTACK1_START_FRAME - AT_GRACE_FRAME)
 		{
-			// æs“ü—ÍƒRƒ‰ƒCƒ_[‚ğƒIƒ“‚É‚·‚é
+			// å…ˆè¡Œå…¥åŠ›ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’ã‚ªãƒ³ã«ã™ã‚‹
 			mpTACol->SetEnable(true);
 			mStateStep++;
 		}
 		break;
-		// ƒXƒeƒbƒv2FUŒ‚ŠJn
+		// ã‚¹ãƒ†ãƒƒãƒ—2ï¼šæ”»æ’ƒé–‹å§‹
 	case 2:
-		// UŒ‚‚ğŠJn‚·‚é‚Ü‚ÅA™X‚Éí“¬‘Šè‚Ì•ûŒü‚ÖŒü‚­
+		// æ”»æ’ƒã‚’é–‹å§‹ã™ã‚‹ã¾ã§ã€å¾ã€…ã«æˆ¦é—˜ç›¸æ‰‹ã®æ–¹å‘ã¸å‘ã
 		LookAtBattleTarget();
 
-		// UŒ‚ŠJnƒtƒŒ[ƒ€‚Ü‚ÅŒo‰ß‚µ‚½‚©
+		// æ”»æ’ƒé–‹å§‹ãƒ•ãƒ¬ãƒ¼ãƒ ã¾ã§çµŒéã—ãŸã‹
 		if (GetAnimationFrame() >= ATTACK1B_START_FRAME)
 		{
-			// aŒ‚SE‚ğÄ¶
+			// æ–¬æ’ƒSEã‚’å†ç”Ÿ
 			mpSlashSE->Play();
-			// UŒ‚ŠJnˆ—‚ğŒÄ‚Ño‚·
+			// æ”»æ’ƒé–‹å§‹å‡¦ç†ã‚’å‘¼ã³å‡ºã™
 			AttackStart();
 
 			mInAttack = true;
@@ -889,18 +855,18 @@ void CSoldier::UpdateAttack1B()
 			mStateStep++;
 		}
 		break;
-		// ƒXƒeƒbƒv3FUŒ‚I—¹
+		// ã‚¹ãƒ†ãƒƒãƒ—3ï¼šæ”»æ’ƒçµ‚äº†
 	case 3:
-		// UŒ‚I—¹ƒtƒŒ[ƒ€‚Ü‚ÅŒo‰ß‚µ‚½‚©
+		// æ”»æ’ƒçµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ ã¾ã§çµŒéã—ãŸã‹
 		if (GetAnimationFrame() >= ATTACK1B_END_FRAME)
 		{
-			// UŒ‚I—¹ˆ—‚ğŒÄ‚Ño‚·
+			// æ”»æ’ƒçµ‚äº†å‡¦ç†ã‚’å‘¼ã³å‡ºã™
 			AttackEnd();
 
 			float dist = GetDistToTarget();
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 			{
-				// ˆê’èŠm—¦‚ÅA˜A‘±UŒ‚‚ğ—\–ñ
+				// ä¸€å®šç¢ºç‡ã§ã€é€£ç¶šæ”»æ’ƒã‚’äºˆç´„
 				int rand = Math::Rand(0, 99);
 
 				switch (mBattleTempo)
@@ -923,14 +889,14 @@ void CSoldier::UpdateAttack1B()
 
 		if (mInAttack)
 		{
-			// 1•b‚ ‚½‚è‚ÌˆÚ“®‘¬“x
+			// 1ç§’ã‚ãŸã‚Šã®ç§»å‹•é€Ÿåº¦
 			CVector move = mAttackVec * (27.5f * mStepMag * mAtSpeedMag) * Times::DeltaTime();
 			Position(Position() + move);
 		}
 		break;
-		// ƒXƒeƒbƒv4FUŒ‚ƒAƒjƒ[ƒVƒ‡ƒ“I—¹‘Ò‚¿
+		// ã‚¹ãƒ†ãƒƒãƒ—4ï¼šæ”»æ’ƒã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†å¾…ã¡
 	case 4:
-		// ƒAƒjƒ[ƒVƒ‡ƒ“I—¹‚µ‚½‚çA‘Ò‹@ó‘Ô‚Ö–ß‚·
+		// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†ã—ãŸã‚‰ã€å¾…æ©ŸçŠ¶æ…‹ã¸æˆ»ã™
 		if (IsAnimationFinished())
 		{
 			mpSword->Rotation(SWORD_OFFSET_ROT);
@@ -945,12 +911,12 @@ void CSoldier::UpdateAttack1B()
 
 				if (mSt >= mAttackCost2)
 				{
-					// UŒ‚2’i–Ú‚ÖˆÚs
+					// æ”»æ’ƒ2æ®µç›®ã¸ç§»è¡Œ
 					ChangeState((int)EState::eAttack2);
 				}
 				else
 				{
-					// Šm—¦‚ÅAŒ„‚ª‚Å‚«‚é
+					// ç¢ºç‡ã§ã€éš™ãŒã§ãã‚‹
 					float rand = Math::Rand(0.0f, 99.9f);
 					if (rand < mNegProb)
 					{
@@ -958,7 +924,7 @@ void CSoldier::UpdateAttack1B()
 					}
 					else
 					{
-						// ‘Ò‹@ó‘Ô‚ÖˆÚs
+						// å¾…æ©ŸçŠ¶æ…‹ã¸ç§»è¡Œ
 						ChangeState((int)EState::eIdle);
 						ChangeAnimation((int)EAnimType::eIdle);
 					}
@@ -968,15 +934,15 @@ void CSoldier::UpdateAttack1B()
 		break;
 	case 5:
 		STRegene();
-		// ˜A‘±UŒ‚‚ÌI—¹‚È‚çAn•bŠÔŒ„‚ª‚Å‚«‚é
+		// é€£ç¶šæ”»æ’ƒã®çµ‚äº†ãªã‚‰ã€nç§’é–“éš™ãŒã§ãã‚‹
 		if (mElapsedTime < mNegTime)
 		{
 			mElapsedTime += Times::DeltaTime();
 		}
-		// ‘Ò‚¿ŠÔ‚ªI—¹‚µ‚½‚çAíœ
+		// å¾…ã¡æ™‚é–“ãŒçµ‚äº†ã—ãŸã‚‰ã€å‰Šé™¤
 		else
 		{
-			// ‘Ò‹@ó‘Ô‚ÖˆÚs
+			// å¾…æ©ŸçŠ¶æ…‹ã¸ç§»è¡Œ
 			ChangeState((int)EState::eIdle);
 			ChangeAnimation((int)EAnimType::eIdle);
 		}
@@ -984,13 +950,13 @@ void CSoldier::UpdateAttack1B()
 	}
 }
 
-// a‚èUŒ‚2‚ÌXVˆ—
+// æ–¬ã‚Šæ”»æ’ƒ2ã®æ›´æ–°å‡¦ç†
 void CSoldier::UpdateAttack2()
 {
-	// ƒXƒeƒbƒv‚²‚Æ‚Éˆ—‚ğ•ª‚¯‚é
+	// ã‚¹ãƒ†ãƒƒãƒ—ã”ã¨ã«å‡¦ç†ã‚’åˆ†ã‘ã‚‹
 	switch (mStateStep)
 	{
-	// ƒXƒeƒbƒv0FUŒ‚ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+	// ã‚¹ãƒ†ãƒƒãƒ—0ï¼šæ”»æ’ƒã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
 	case 0:
 		ChangeAnimation((int)EAnimType::eAttack2, true);
 		mAttackVec = VectorZ();
@@ -998,37 +964,37 @@ void CSoldier::UpdateAttack2()
 		mStateStep++;
 		break;
 	case 1:
-		// æs“ü—ÍƒtƒŒ[ƒ€ŠJnƒtƒŒ[ƒ€‚Ü‚ÅŒo‰ß‚µ‚½‚©
+		// å…ˆè¡Œå…¥åŠ›ãƒ•ãƒ¬ãƒ¼ãƒ é–‹å§‹ãƒ•ãƒ¬ãƒ¼ãƒ ã¾ã§çµŒéã—ãŸã‹
 		if (GetAnimationFrame() >= ATTACK1_START_FRAME - AT_GRACE_FRAME)
 		{
-			// æs“ü—ÍƒRƒ‰ƒCƒ_[‚ğƒIƒ“‚É‚·‚é
+			// å…ˆè¡Œå…¥åŠ›ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’ã‚ªãƒ³ã«ã™ã‚‹
 			mpTACol->SetEnable(true);
 			mStateStep++;
 		}
 		break;
 
-	// ƒXƒeƒbƒv2FUŒ‚ŠJn
+	// ã‚¹ãƒ†ãƒƒãƒ—2ï¼šæ”»æ’ƒé–‹å§‹
 	case 2:
-		// UŒ‚‚ğŠJn‚·‚é‚Ü‚ÅA™X‚Éí“¬‘Šè‚Ì•ûŒü‚ÖŒü‚­
+		// æ”»æ’ƒã‚’é–‹å§‹ã™ã‚‹ã¾ã§ã€å¾ã€…ã«æˆ¦é—˜ç›¸æ‰‹ã®æ–¹å‘ã¸å‘ã
 		LookAtBattleTarget();
 
-		// UŒ‚ŠJnƒtƒŒ[ƒ€‚Ü‚ÅŒo‰ß‚µ‚½‚©
+		// æ”»æ’ƒé–‹å§‹ãƒ•ãƒ¬ãƒ¼ãƒ ã¾ã§çµŒéã—ãŸã‹
 		if (GetAnimationFrame() >= ATTACK2_START_FRAME)
 		{
-			// aŒ‚SE‚ğÄ¶
+			// æ–¬æ’ƒSEã‚’å†ç”Ÿ
 			mpSlashSE->Play();
-			// UŒ‚ŠJnˆ—‚ğŒÄ‚Ño‚·
+			// æ”»æ’ƒé–‹å§‹å‡¦ç†ã‚’å‘¼ã³å‡ºã™
 			AttackStart();
 			mStateStep++;
 		}
 		break;
 
-	// ƒXƒeƒbƒv3FUŒ‚I—¹
+	// ã‚¹ãƒ†ãƒƒãƒ—3ï¼šæ”»æ’ƒçµ‚äº†
 	case 3:
-		// UŒ‚I—¹ƒtƒŒ[ƒ€‚Ü‚ÅŒo‰ß‚µ‚½‚©
+		// æ”»æ’ƒçµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ ã¾ã§çµŒéã—ãŸã‹
 		if (GetAnimationFrame() >= ATTACK2_END_FRAME)
 		{
-			// UŒ‚I—¹ˆ—‚ğŒÄ‚Ño‚·
+			// æ”»æ’ƒçµ‚äº†å‡¦ç†ã‚’å‘¼ã³å‡ºã™
 			AttackEnd();
 
 			mInAttack = false;
@@ -1036,7 +1002,7 @@ void CSoldier::UpdateAttack2()
 			float dist = GetDistToTarget();
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 			{
-				// ˆê’èŠm—¦‚ÅA˜A‘±UŒ‚‚ğ—\–ñ
+				// ä¸€å®šç¢ºç‡ã§ã€é€£ç¶šæ”»æ’ƒã‚’äºˆç´„
 				int rand = Math::Rand(0, 99);
 
 				switch (mBattleTempo)
@@ -1058,15 +1024,15 @@ void CSoldier::UpdateAttack2()
 
 		if (mInAttack)
 		{
-			// 1•b‚ ‚½‚è‚ÌˆÚ“®‘¬“x
+			// 1ç§’ã‚ãŸã‚Šã®ç§»å‹•é€Ÿåº¦
 			CVector move = mAttackVec * (10.0f * mStepMag * mAtSpeedMag) * Times::DeltaTime();
 			Position(Position() + move);
 		}
 		break;
 
-	// ƒXƒeƒbƒv4FUŒ‚ƒAƒjƒ[ƒVƒ‡ƒ“I—¹‘Ò‚¿
+	// ã‚¹ãƒ†ãƒƒãƒ—4ï¼šæ”»æ’ƒã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†å¾…ã¡
 	case 4:
-		// ƒAƒjƒ[ƒVƒ‡ƒ“I—¹‚µ‚½‚çA‘Ò‹@ó‘Ô‚Ö–ß‚·
+		// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†ã—ãŸã‚‰ã€å¾…æ©ŸçŠ¶æ…‹ã¸æˆ»ã™
 		if (IsAnimationFinished())
 		{
 			if (!mNextAttack)
@@ -1080,12 +1046,12 @@ void CSoldier::UpdateAttack2()
 
 				if (mSt >= mAttackCost3)
 				{
-					// UŒ‚X’i–Ú‚ÖˆÚs
+					// æ”»æ’ƒXæ®µç›®ã¸ç§»è¡Œ
 					ChangeState((int)EState::eAttackX);
 				}
 				else
 				{
-					// Šm—¦‚ÅAŒ„‚ª‚Å‚«‚é
+					// ç¢ºç‡ã§ã€éš™ãŒã§ãã‚‹
 					float rand = Math::Rand(0.0f, 99.9f);
 					if (rand < mNegProb)
 					{
@@ -1093,7 +1059,7 @@ void CSoldier::UpdateAttack2()
 					}
 					else
 					{
-						// ‘Ò‹@ó‘Ô‚ÖˆÚs
+						// å¾…æ©ŸçŠ¶æ…‹ã¸ç§»è¡Œ
 						ChangeState((int)EState::eIdle);
 						ChangeAnimation((int)EAnimType::eIdle);
 					}
@@ -1104,15 +1070,15 @@ void CSoldier::UpdateAttack2()
 
 	case 5:
 		STRegene();
-		// ˜A‘±UŒ‚‚ÌI—¹‚È‚çAn•bŠÔŒ„‚ª‚Å‚«‚é
+		// é€£ç¶šæ”»æ’ƒã®çµ‚äº†ãªã‚‰ã€nç§’é–“éš™ãŒã§ãã‚‹
 		if (mElapsedTime < mNegTime)
 		{
 			mElapsedTime += Times::DeltaTime();
 		}
-		// ‘Ò‚¿ŠÔ‚ªI—¹‚µ‚½‚çAíœ
+		// å¾…ã¡æ™‚é–“ãŒçµ‚äº†ã—ãŸã‚‰ã€å‰Šé™¤
 		else
 		{
-			// ‘Ò‹@ó‘Ô‚ÖˆÚs
+			// å¾…æ©ŸçŠ¶æ…‹ã¸ç§»è¡Œ
 			ChangeState((int)EState::eIdle);
 			ChangeAnimation((int)EAnimType::eIdle);
 		}
@@ -1126,11 +1092,11 @@ void CSoldier::UpdateAttackX()
 	{
 	case 0:
 		mpSword->Rotation(ATTACKX_SWORD_OFFSET_ROT);
-		// UŒ‚ƒAƒjƒ[ƒVƒ‡ƒ“‚ğŠJn
+		// æ”»æ’ƒã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’é–‹å§‹
 		ChangeAnimation((int)EAnimType::eAttackX, true);
-		// aŒ‚SE‚ÌÄ¶Ï‚İƒtƒ‰ƒO‚ğ‰Šú‰»
+		// æ–¬æ’ƒSEã®å†ç”Ÿæ¸ˆã¿ãƒ•ãƒ©ã‚°ã‚’åˆæœŸåŒ–
 		mIsPlayedSlashSE = false;
-		// aŒ‚ƒGƒtƒFƒNƒg‚Ì¶¬Ï‚İƒtƒ‰ƒO‚ğ‰Šú‰»
+		// æ–¬æ’ƒã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®ç”Ÿæˆæ¸ˆã¿ãƒ•ãƒ©ã‚°ã‚’åˆæœŸåŒ–
 		mIsSpawnedSlashEffect = false;
 
 		mAttackVec = VectorZ();
@@ -1138,23 +1104,23 @@ void CSoldier::UpdateAttackX()
 		mStateStep++;
 		break;
 	case 1:
-		// æs“ü—ÍƒtƒŒ[ƒ€ŠJnƒtƒŒ[ƒ€‚Ü‚ÅŒo‰ß‚µ‚½‚©
+		// å…ˆè¡Œå…¥åŠ›ãƒ•ãƒ¬ãƒ¼ãƒ é–‹å§‹ãƒ•ãƒ¬ãƒ¼ãƒ ã¾ã§çµŒéã—ãŸã‹
 		if (GetAnimationFrame() >= ATTACK1_START_FRAME - AT_GRACE_FRAME)
 		{
-			// æs“ü—ÍƒRƒ‰ƒCƒ_[‚ğƒIƒ“‚É‚·‚é
+			// å…ˆè¡Œå…¥åŠ›ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’ã‚ªãƒ³ã«ã™ã‚‹
 			mpTACol->SetEnable(true);
 			mStateStep++;
 		}
 		break;
 	case 2:
-		// UŒ‚‚ğŠJn‚·‚é‚Ü‚ÅA™X‚Éí“¬‘Šè‚Ì•ûŒü‚ÖŒü‚­
+		// æ”»æ’ƒã‚’é–‹å§‹ã™ã‚‹ã¾ã§ã€å¾ã€…ã«æˆ¦é—˜ç›¸æ‰‹ã®æ–¹å‘ã¸å‘ã
 		LookAtBattleTarget();
 
 		if (GetAnimationFrame() >= ATTACKX_START_FRAME)
 		{
-			// aŒ‚SE‚ğÄ¶
+			// æ–¬æ’ƒSEã‚’å†ç”Ÿ
 			mpSlashSE->Play();
-			// UŒ‚ŠJn
+			// æ”»æ’ƒé–‹å§‹
 			AttackStart();
 
 			mStateStep++;
@@ -1173,7 +1139,7 @@ void CSoldier::UpdateAttackX()
 	case 4:
 		if (GetAnimationFrame() >= ATTACKX_END_FRAME)
 		{
-			// UŒ‚I—¹
+			// æ”»æ’ƒçµ‚äº†
 			AttackEnd();
 
 			mInAttack = false;
@@ -1183,19 +1149,19 @@ void CSoldier::UpdateAttackX()
 
 		if (mInAttack)
 		{
-			// 1•b‚ ‚½‚è‚ÌˆÚ“®‘¬“x
+			// 1ç§’ã‚ãŸã‚Šã®ç§»å‹•é€Ÿåº¦
 			CVector move = mAttackVec * (30.0f * mStepMag * mAtSpeedMag) * Times::DeltaTime();
 			Position(Position() + move);
 		}
 
 		break;
 	case 5:
-		// UŒ‚ƒAƒjƒ[ƒVƒ‡ƒ“‚ªI—¹‚µ‚½‚çA
+		// æ”»æ’ƒã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒçµ‚äº†ã—ãŸã‚‰ã€
 		if (IsAnimationFinished())
 		{
 			mpSword->Rotation(SWORD_OFFSET_ROT);
 
-			// Šm—¦‚ÅAŒ„‚ª‚Å‚«‚é
+			// ç¢ºç‡ã§ã€éš™ãŒã§ãã‚‹
 			float rand = Math::Rand(0.0f, 99.9f);
 			if (rand < mNegProb)
 			{
@@ -1203,7 +1169,7 @@ void CSoldier::UpdateAttackX()
 			}
 			else
 			{
-				// ‘Ò‹@ó‘Ô‚ÖˆÚs
+				// å¾…æ©ŸçŠ¶æ…‹ã¸ç§»è¡Œ
 				ChangeState((int)EState::eIdle);
 				ChangeAnimation((int)EAnimType::eIdle);
 			}
@@ -1212,15 +1178,15 @@ void CSoldier::UpdateAttackX()
 
 	case 6:
 		STRegene();
-		// ˜A‘±UŒ‚‚ÌI—¹‚È‚çAn•bŠÔŒ„‚ª‚Å‚«‚é
+		// é€£ç¶šæ”»æ’ƒã®çµ‚äº†ãªã‚‰ã€nç§’é–“éš™ãŒã§ãã‚‹
 		if (mElapsedTime < mNegTime)
 		{
 			mElapsedTime += Times::DeltaTime();
 		}
-		// ‘Ò‚¿ŠÔ‚ªI—¹‚µ‚½‚çAíœ
+		// å¾…ã¡æ™‚é–“ãŒçµ‚äº†ã—ãŸã‚‰ã€å‰Šé™¤
 		else
 		{
-			// ‘Ò‹@ó‘Ô‚ÖˆÚs
+			// å¾…æ©ŸçŠ¶æ…‹ã¸ç§»è¡Œ
 			ChangeState((int)EState::eIdle);
 			ChangeAnimation((int)EAnimType::eIdle);
 		}
@@ -1232,24 +1198,24 @@ void CSoldier::SelectAvoid()
 {
 	if (!mpBattleTarget) return;
 
-	// ©•ª‚Ì‘O•ûŒü
+	// è‡ªåˆ†ã®å‰æ–¹å‘
 	CVector myForward = VectorZ();
 	myForward.Y(0.0f);
 	myForward.Normalize();
 
-	// ©•ª ¨ “G ‚Ì•ûŒü
+	// è‡ªåˆ† â†’ æ•µ ã®æ–¹å‘
 	CVector toTarget = mpBattleTarget->Position() - Position();
 	toTarget.Y(0.0f);
 	toTarget.Normalize();
 
-	// ŠOÏ‚Å¶‰E”»’è
-	// Y‚ª + ¨ “G‚Í‰E‘¤
-	// Y‚ª - ¨ “G‚Í¶‘¤
+	// å¤–ç©ã§å·¦å³åˆ¤å®š
+	// YãŒ + â†’ æ•µã¯å³å´
+	// YãŒ - â†’ æ•µã¯å·¦å´
 	float crossY = CVector::Cross(myForward, toTarget).Y();
 
 	if (crossY > 0.0f)
 	{
-		// “G‚ª‰E ¨ ¶‚É‰ñ”ğ
+		// æ•µãŒå³ â†’ å·¦ã«å›é¿
 		mAvoidVec = -CVector::Cross(myForward, CVector::up);
 		mAvoidVec.Normalize();
 		ChangeState((int)EState::eAvoidL);
@@ -1257,7 +1223,7 @@ void CSoldier::SelectAvoid()
 	}
 	else if (crossY <= 0.0f)
 	{
-		// “G‚ª¶ ¨ ‰E‚É‰ñ”ğ
+		// æ•µãŒå·¦ â†’ å³ã«å›é¿
 		mAvoidVec = CVector::Cross(myForward, CVector::up);
 		mAvoidVec.Normalize();
 		ChangeState((int)EState::eAvoidR);
@@ -1270,7 +1236,7 @@ void CSoldier::UpdateAvoidR()
 	switch (mStateStep)
 	{
 	case 0:
-		// ‰ñ”ğƒAƒjƒ[ƒVƒ‡ƒ“‚ğŠJn
+		// å›é¿ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’é–‹å§‹
 		ChangeAnimation((int)EAnimType::eAvoidR, true);
 		mStateStep++;
 		break;
@@ -1285,7 +1251,7 @@ void CSoldier::UpdateAvoidR()
 	case 2:
 		if (mAvoidMoving)
 		{
-			// 1•b‚ ‚½‚è‚ÌˆÚ“®‘¬“x
+			// 1ç§’ã‚ãŸã‚Šã®ç§»å‹•é€Ÿåº¦
 			CVector move = mAvoidVec * 150.0f * Times::DeltaTime();
 			Position(Position() + move);
 
@@ -1297,12 +1263,12 @@ void CSoldier::UpdateAvoidR()
 		}
 		break;
 	case 3:
-		// ‰ñ”ğƒAƒjƒ[ƒVƒ‡ƒ“‚ªI—¹‚µ‚½‚ç
+		// å›é¿ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒçµ‚äº†ã—ãŸã‚‰
 		if (IsAnimationFinished())
 		{
 			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::ePlayer, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
 			mIsGravity = true;
-			// ‘Ò‹@ó‘Ô‚ÖˆÚs
+			// å¾…æ©ŸçŠ¶æ…‹ã¸ç§»è¡Œ
 			ChangeState((int)EState::eIdle);
 			ChangeAnimation((int)EAnimType::eIdle);
 		}
@@ -1315,7 +1281,7 @@ void CSoldier::UpdateAvoidL()
 	switch (mStateStep)
 	{
 	case 0:
-		// ‰ñ”ğƒAƒjƒ[ƒVƒ‡ƒ“‚ğŠJn
+		// å›é¿ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’é–‹å§‹
 		ChangeAnimation((int)EAnimType::eAvoidL, true);
 		mStateStep++;
 		break;
@@ -1330,7 +1296,7 @@ void CSoldier::UpdateAvoidL()
 	case 2:
 		if (mAvoidMoving)
 		{
-			// 1•b‚ ‚½‚è‚ÌˆÚ“®‘¬“x
+			// 1ç§’ã‚ãŸã‚Šã®ç§»å‹•é€Ÿåº¦
 			CVector move = mAvoidVec * 150.0f * Times::DeltaTime();
 			Position(Position() + move);
 
@@ -1342,12 +1308,12 @@ void CSoldier::UpdateAvoidL()
 		}
 		break;
 	case 3:
-		// ‰ñ”ğƒAƒjƒ[ƒVƒ‡ƒ“‚ªI—¹‚µ‚½‚ç
+		// å›é¿ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒçµ‚äº†ã—ãŸã‚‰
 		if (IsAnimationFinished())
 		{
 			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::ePlayer, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
 			mIsGravity = true;
-			// ‘Ò‹@ó‘Ô‚ÖˆÚs
+			// å¾…æ©ŸçŠ¶æ…‹ã¸ç§»è¡Œ
 			ChangeState((int)EState::eIdle);
 			ChangeAnimation((int)EAnimType::eIdle);
 		}
@@ -1355,27 +1321,27 @@ void CSoldier::UpdateAvoidL()
 	}
 }
 
-// ‹Â‚¯”½‚èó‘Ô‚ÌXVˆ—
+// ä»°ã‘åã‚ŠçŠ¶æ…‹ã®æ›´æ–°å‡¦ç†
 void CSoldier::UpdateHit()
 {
 	if (!mIsGravity) mIsGravity = true;
-	// ƒXƒeƒbƒv‚²‚Æ‚Éˆ—‚ğ•ª‚¯‚é
+	// ã‚¹ãƒ†ãƒƒãƒ—ã”ã¨ã«å‡¦ç†ã‚’åˆ†ã‘ã‚‹
 	switch (mStateStep)
 	{
-		// ƒXƒeƒbƒv0F‹Â‚¯”½‚èƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+		// ã‚¹ãƒ†ãƒƒãƒ—0ï¼šä»°ã‘åã‚Šã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
 	case 0:
-		// æs“ü—ÍƒRƒ‰ƒCƒ_[‚ÍÅ‰‚ÍƒIƒt‚É‚µ‚Ä‚¨‚­
+		// å…ˆè¡Œå…¥åŠ›ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã¯æœ€åˆã¯ã‚ªãƒ•ã«ã—ã¦ãŠã
 		mpTACol->SetEnable(false);
 		ChangeAnimation((int)EAnimType::eHit, true);
 		mStateStep++;
 		break;
-		// ƒXƒeƒbƒv1FƒAƒjƒ[ƒVƒ‡ƒ“I—¹‘Ò‚¿
+		// ã‚¹ãƒ†ãƒƒãƒ—1ï¼šã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†å¾…ã¡
 	case 1:
-		// ‹Â‚¯”½‚èƒAƒjƒ[ƒVƒ‡ƒ“‚ªI—¹‚µ‚½‚çA
-		// ‘Ò‹@ó‘Ô‚Ö–ß‚·
+		// ä»°ã‘åã‚Šã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒçµ‚äº†ã—ãŸã‚‰ã€
+		// å¾…æ©ŸçŠ¶æ…‹ã¸æˆ»ã™
 		if (IsAnimationFinished())
 		{
-			// Šm—¦‚ÅAŒ„‚ª‚Å‚«‚é
+			// ç¢ºç‡ã§ã€éš™ãŒã§ãã‚‹
 			float rand = Math::Rand(0.0f, 99.9f);
 			if (rand < mNegProb / 3)
 			{
@@ -1383,7 +1349,7 @@ void CSoldier::UpdateHit()
 			}
 			else
 			{
-				// ‘Ò‹@ó‘Ô‚ÖˆÚs
+				// å¾…æ©ŸçŠ¶æ…‹ã¸ç§»è¡Œ
 				ChangeState((int)EState::eIdle);
 				ChangeAnimation((int)EAnimType::eIdle);
 			}
@@ -1391,15 +1357,15 @@ void CSoldier::UpdateHit()
 		break;
 	case 2:
 		STRegene();
-		// ˜A‘±UŒ‚‚ÌI—¹‚È‚çAn•bŠÔŒ„‚ª‚Å‚«‚é
+		// é€£ç¶šæ”»æ’ƒã®çµ‚äº†ãªã‚‰ã€nç§’é–“éš™ãŒã§ãã‚‹
 		if (mElapsedTime < mNegTime)
 		{
 			mElapsedTime += Times::DeltaTime();
 		}
-		// ‘Ò‚¿ŠÔ‚ªI—¹‚µ‚½‚çAíœ
+		// å¾…ã¡æ™‚é–“ãŒçµ‚äº†ã—ãŸã‚‰ã€å‰Šé™¤
 		else
 		{
-			// ‘Ò‹@ó‘Ô‚ÖˆÚs
+			// å¾…æ©ŸçŠ¶æ…‹ã¸ç§»è¡Œ
 			ChangeState((int)EState::eIdle);
 			ChangeAnimation((int)EAnimType::eIdle);
 		}
@@ -1407,13 +1373,13 @@ void CSoldier::UpdateHit()
 	}
 }
 
-// €–Só‘Ô‚ÌXVˆ—
+// æ­»äº¡çŠ¶æ…‹ã®æ›´æ–°å‡¦ç†
 void CSoldier::UpdateDeath()
 {
-	// ƒXƒeƒbƒv‚²‚Æ‚Éˆ—‚ğ•ª‚¯‚é
+	// ã‚¹ãƒ†ãƒƒãƒ—ã”ã¨ã«å‡¦ç†ã‚’åˆ†ã‘ã‚‹
 	switch (mStateStep)
 	{
-		// ƒXƒeƒbƒv0F€–SƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+		// ã‚¹ãƒ†ãƒƒãƒ—0ï¼šæ­»äº¡ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
 	case 0:
 		mMoveSpeed = CVector::zero;
 		ChangeAnimation((int)EAnimType::eDeath, true);
@@ -1422,7 +1388,7 @@ void CSoldier::UpdateDeath()
 		mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
 		mStateStep++;
 		break;
-		// ƒXƒeƒbƒv1F€–SƒAƒjƒ[ƒVƒ‡ƒ“’…’n‘Ò‚¿
+		// ã‚¹ãƒ†ãƒƒãƒ—1ï¼šæ­»äº¡ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ç€åœ°å¾…ã¡
 	case 1:
 		if (GetAnimationFrame() >= DEATH_END_FRAME)
 		{
@@ -1432,26 +1398,26 @@ void CSoldier::UpdateDeath()
 
 		if (mToDeath)
 		{
-			// 1•b‚ ‚½‚è‚ÌˆÚ“®‘¬“x
+			// 1ç§’ã‚ãŸã‚Šã®ç§»å‹•é€Ÿåº¦
 			CVector move = mDeathVec * 20.0f * Times::DeltaTime();
 			Position(Position() + move);
 		}
 		break;
-		// ƒXƒeƒbƒv2FƒAƒjƒ[ƒVƒ‡ƒ“I—¹‘Ò‚¿
+		// ã‚¹ãƒ†ãƒƒãƒ—2ï¼šã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†å¾…ã¡
 	case 2:
-		// €–SƒAƒjƒ[ƒVƒ‡ƒ“‚ªI—¹‚µ‚½‚çAíœ
+		// æ­»äº¡ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒçµ‚äº†ã—ãŸã‚‰ã€å‰Šé™¤
 		if (IsAnimationFinished())
 		{
 			mStateStep++;
 		}
 		break;
-		// ƒXƒeƒbƒv3F€–SŒã‚Ì‘Ò‚¿
+		// ã‚¹ãƒ†ãƒƒãƒ—3ï¼šæ­»äº¡å¾Œã®å¾…ã¡
 	case 3:
 		if (mElapsedTime < DEATH_WAIT_TIME)
 		{
 			mElapsedTime += Times::DeltaTime();
 		}
-		// ‘Ò‚¿ŠÔ‚ªI—¹‚µ‚½‚çAíœ
+		// å¾…ã¡æ™‚é–“ãŒçµ‚äº†ã—ãŸã‚‰ã€å‰Šé™¤
 		else
 		{
 			Kill();
@@ -1466,7 +1432,7 @@ void CSoldier::UpdateVictory()
 	{
 	case 0:
 		mMoveSpeed = CVector::zero;
-		// Ÿ—˜ƒAƒjƒ[ƒVƒ‡ƒ“‚ğÄ¶
+		// å‹åˆ©ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’å†ç”Ÿ
 		ChangeAnimation((int)EAnimType::eVictory);
 		mStateStep++;
 		break;
@@ -1478,35 +1444,35 @@ void CSoldier::UpdateVictory()
 	}
 }
 
-// XV
+// æ›´æ–°
 void CSoldier::Update()
 {
-	// ó‘Ô‚É‡‚í‚¹‚ÄAXVˆ—‚ğØ‚è‘Ö‚¦‚é
+	// çŠ¶æ…‹ã«åˆã‚ã›ã¦ã€æ›´æ–°å‡¦ç†ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
 	switch ((EState)mState)
 	{
-		// í“¬€”õó‘Ô
+		// æˆ¦é—˜æº–å‚™çŠ¶æ…‹
 	case EState::eReserve:	UpdateReserve();	break;
-		// ‘Ò‹@ó‘Ô
+		// å¾…æ©ŸçŠ¶æ…‹
 	case EState::eIdle:		UpdateIdle();		break;
-		// ’Ç‚¢‚©‚¯‚é
+		// è¿½ã„ã‹ã‘ã‚‹
 	case EState::eChase:	UpdateChase();		break;
-		// a‚èUŒ‚1
+		// æ–¬ã‚Šæ”»æ’ƒ1
 	case EState::eAttack1:	UpdateAttack1();	break;
-		// a‚èUŒ‚1B
+		// æ–¬ã‚Šæ”»æ’ƒ1B
 	case EState::eAttack1B:	UpdateAttack1B();	break;
-		// a‚èUŒ‚2
+		// æ–¬ã‚Šæ”»æ’ƒ2
 	case EState::eAttack2:	UpdateAttack2();	break;
-		// a‚èUŒ‚X
+		// æ–¬ã‚Šæ”»æ’ƒX
 	case EState::eAttackX:	UpdateAttackX();	break;
-		// ‰ñ”ğ:‰E
+		// å›é¿:å³
 	case EState::eAvoidR:	UpdateAvoidR();		break;
-		// ‰ñ”ğ:¶
+		// å›é¿:å·¦
 	case EState::eAvoidL:	UpdateAvoidL();		break;
-		// ‹Â‚¯”½‚è
+		// ä»°ã‘åã‚Š
 	case EState::eHit:		UpdateHit();		break;
-		// €–Só‘Ô
+		// æ­»äº¡çŠ¶æ…‹
 	case EState::eDeath:	UpdateDeath();		break;
-		// Ÿ—˜
+		// å‹åˆ©
 	case EState::eVictory:	UpdateVictory();	break;
 	}
 
@@ -1516,10 +1482,10 @@ void CSoldier::Update()
 		UpdateBattleTempo();
 	}
 
-	// “G‚Ìƒx[ƒXƒNƒ‰ƒX‚ÌXV
+	// æ•µã®ãƒ™ãƒ¼ã‚¹ã‚¯ãƒ©ã‚¹ã®æ›´æ–°
 	CEnemy::Update();
 
-	// •Ší‚Ìs—ñ‚ğXV
+	// æ­¦å™¨ã®è¡Œåˆ—ã‚’æ›´æ–°
 	mpSword->UpdateMtx();
 
 	if (Position().Y() < -100.0f)
@@ -1528,7 +1494,7 @@ void CSoldier::Update()
 	}
 
 #ifdef _DEBUG
-	// í“¬‘Šè‚Ü‚Å‚Ì‹——£‚ğƒfƒoƒbƒO•\¦
+	// æˆ¦é—˜ç›¸æ‰‹ã¾ã§ã®è·é›¢ã‚’ãƒ‡ãƒãƒƒã‚°è¡¨ç¤º
 	if (mpBattleTarget != nullptr)
 	{
 		CVector targetPos = mpBattleTarget->Position();
@@ -1547,12 +1513,12 @@ void CSoldier::SetInBattle(int state)
 {
 	if (state == 0)
 	{
-		// ‘Ò‹@ó‘Ô‚ÖˆÚs
+		// å¾…æ©ŸçŠ¶æ…‹ã¸ç§»è¡Œ
 		ChangeState((int)EState::eIdle);
 	}
 	if (state == 2)
 	{
-		// Ÿ—˜ó‘Ô‚ÖˆÚs
+		// å‹åˆ©çŠ¶æ…‹ã¸ç§»è¡Œ
 		ChangeState((int)EState::eVictory);
 	}
 }
