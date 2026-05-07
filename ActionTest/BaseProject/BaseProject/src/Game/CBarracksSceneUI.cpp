@@ -477,6 +477,15 @@ void CBarracksSceneUI::InformationUpdate()
 			// [引き継ぎLvUP]ボタンを設定
 			// ボタンの画像を読み込み
 			//mURButtons[i]->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
+			
+			// ボタンクリック時に呼び出されるコールバック関数を設定
+			mURButtons[i]->SetOnClickFunc(std::bind(&CBarracksSceneUI::OnClickReincarnationUp, this));
+			break;
+		case 7:
+			// [引き継ぎLvUP]ボタンを設定
+			// ボタンの画像を読み込み
+			//mURButtons[i]->LoadButtonImage("UI/btn03_03_light.png", "UI/btn03_03_light.png");
+			
 			// ボタンクリック時に呼び出されるコールバック関数を設定
 			mURButtons[i]->SetOnClickFunc(std::bind(&CBarracksSceneUI::OnClickReincarnationUp, this));
 			break;
@@ -688,16 +697,16 @@ void CBarracksSceneUI::InformationUpdate()
 					).c_str());
 				break;
 			case 6:
-				cost = (mpSaveManager->data.hpLv + 1) * 150;
+				cost = (mpSaveManager->data.hpLv + 1) * 0;
 				newText->SetText((
-					"体力を25増加します\n強化費用\n$"
+					"近日公開\n強化費用\n$"
 					+ std::to_string(cost)
 					).c_str());
 				break;
 			case 7:
-				cost = (mpSaveManager->data.hpLv + 1) * 150;
+				cost = (mpSaveManager->data.hpLv + 1) * 0;
 				newText->SetText((
-					"体力を25増加します\n強化費用\n$"
+					"近日公開\n強化費用\n$"
 					+ std::to_string(cost)
 					).c_str());
 				break;

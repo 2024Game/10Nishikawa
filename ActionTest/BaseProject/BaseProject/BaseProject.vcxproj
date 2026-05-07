@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -86,6 +86,7 @@
     <ClCompile Include="src\Game\CEnemy.cpp" />
     <ClCompile Include="src\Game\CEnemyBuffUI3D.cpp" />
     <ClCompile Include="src\Game\CEnemyManager.cpp" />
+    <ClCompile Include="src\Game\CEnemyStatusLoader.cpp" />
     <ClCompile Include="src\Game\CField.cpp" />
     <ClCompile Include="src\Game\CFlame.cpp" />
     <ClCompile Include="src\Game\CFlamethrower.cpp" />
@@ -212,6 +213,7 @@
     <ClInclude Include="src\Game\CEnemy.h" />
     <ClInclude Include="src\Game\CEnemyBuffUI3D.h" />
     <ClInclude Include="src\Game\CEnemyManager.h" />
+    <ClInclude Include="src\Game\CEnemyStatusLoader.h" />
     <ClInclude Include="src\Game\CField.h" />
     <ClInclude Include="src\Game\CFlame.h" />
     <ClInclude Include="src\Game\CFlamethrower.h" />

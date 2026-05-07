@@ -233,7 +233,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 		false, false
 	);
 	// ボタンの画像を読み込み
-	startBtn->LoadButtonImage("UI/gogame.png", "UI/gogame.png");
+	startBtn->LoadButtonImage("UI/goquit.png", "UI/goquit.png");
 	// ボタンクリック時に呼び出されるコールバック関数を設定
 	startBtn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickQuit, this));
 	// ボタンリストに追加
