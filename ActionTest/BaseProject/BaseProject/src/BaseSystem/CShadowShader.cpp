@@ -35,10 +35,10 @@ void CShadowShader::Render(const CModelX* model, const CMesh* mesh, const CMatri
 void CShadowShader::Render330(
 	const CModel* model
 	, const CMatrix* skin_matrix
-	, int skin_matrix_size
+	, const int skin_matrix_size
 )
 {
-	Render330(model->MyVertexBufferId(), model->PMaterials(), model->MaterialVertexCount(),
+	Render330(model->MyVertexBufferId(), *model->PMaterials(), model->MaterialVertexCount(),
 		skin_matrix, skin_matrix_size);
 }
 
@@ -74,7 +74,7 @@ void CShadowShader::Render330(
 	glUniformMatrix4fv(MatrixLocation, 1, GL_FALSE, (modelview * projection).M());
 
 	MatrixLocation = glGetUniformLocation(GetProgram(), "TextureMatrix1");
-	glUniformMatrix4fv(MatrixLocation, 1, GL_FALSE, CShadowMap::msDepthTextureMatrix.M());
+	glUniformMatrix4fv(MatrixLocation, 1, GL_FALSE, CShadowMap::msModelviewLight.M());
 
 	/* テクスチャユニット1を指定する */
 	glUniform1i(glGetUniformLocation(GetProgram(), "DepthTexture"), 1);

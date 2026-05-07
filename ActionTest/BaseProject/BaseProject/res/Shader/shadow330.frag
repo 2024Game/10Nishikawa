@@ -38,8 +38,8 @@ void main() {
 	//値が0は影にする
 	if(shd == 0.0) 
 	{
-		//texColor = texColor * 0.4; //影にする
-		//texColor.w = 1.0;
+		texColor = texColor * 0.4; //影にする
+		texColor.w = 1.0;
 	}
 	// テクスチャをサンプリング
 	FragColor= texColor 

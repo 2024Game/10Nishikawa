@@ -1,4 +1,4 @@
-#include "CEnemy.h"
+﻿#include "CEnemy.h"
 #include "CEffect.h"
 #include "CCollisionManager.h"
 #include "CColliderCapsule.h"
@@ -8,7 +8,7 @@
 
 #define GRAVITY 0.0625f
 
-// �R���X�g���N�^
+// コンストラクタ
 CEnemy::CEnemy()
 	: CXCharacter(ETag::eEnemy, ETaskPriority::eEnemy)
 	, mState(0)
@@ -37,91 +37,91 @@ CEnemy::CEnemy()
 	, mGuardBreakTime(0.0f)
 	, mGBRemainTime(0.0f)
 {
-	// HP�Q�[�W���쐬
+	// HPゲージを作成
 	mpHpGauge = new CGaugeUI3D(this);
 	mpHpGauge->SetMaxPoint(mMaxHp);
 	mpHpGauge->SetCurrPoint(mHp);
 	mpHpGauge->SetGaugeTypeNum(1);
 
-	// �X�^�~�i�Q�[�W���쐬
+	// スタミナゲージを作成
 	mpStGauge = new CGaugeUI3D(this);
 	mpStGauge->SetMaxPoint(mMaxSt);
 	mpStGauge->SetCurrPoint(mSt);
 	mpStGauge->SetGaugeTypeNum(2);
 
-	// �h��_�E���f�o�t�Q�[�W���쐬
+	// 防御ダウンデバフゲージを作成
 	mpGBBuffGauge = new CEnemyBuffUI3D(this);
 	mpGBBuffGauge->SetMaxPoint(mGuardBreakTime);
 	mpGBBuffGauge->SetCurrPoint(mGBRemainTime);
 
-	// �G�l�~�[�Ǘ��N���X�̃��X�g�Ɏ��g��ǉ�����
+	// エネミー管理クラスのリストに自身を追加する
 	CEnemyManager::Instance()->Add(this);
 
 	mLockOnOffset = CVector(0.0f, 10.0f, 0.0f);
 }
 
-// �f�X�g���N�^
+// デストラクタ
 CEnemy::~CEnemy()
 {
-	// �R���C�_�[�폜
+	// コライダー削除
 	SAFE_DELETE(mpBodyCol);
 
-	// HP�Q�[�W�����݂�����A�ꏏ�ɍ폜����
+	// HPゲージが存在したら、一緒に削除する
 	if (mpHpGauge != nullptr)
 	{
 		mpHpGauge->SetOwner(nullptr);
 		mpHpGauge->Kill();
 	}
-	// �X�^�~�i�Q�[�W�����݂�����A�ꏏ�ɍ폜����
+	// スタミナゲージが存在したら、一緒に削除する
 	if (mpStGauge != nullptr)
 	{
 		mpStGauge->SetOwner(nullptr);
 		mpStGauge->Kill();
 	}
-	// �h��_�E���f�o�t�Q�[�W�����݂�����A�ꏏ�ɍ폜����
+	// 防御ダウンデバフゲージが存在したら、一緒に削除する
 	if (mpGBBuffGauge != nullptr)
 	{
 		mpGBBuffGauge->SetOwner(nullptr);
 		mpGBBuffGauge->Kill();
 	}
 
-	// �G�l�~�[�Ǘ��N���X�̃��X�g���玩�g�����O����
+	// エネミー管理クラスのリストから自身を除外する
 	CEnemyManager::Instance()->Remove(this);
 }
 
-// �I�u�W�F�N�g�폜��`����֐�
+// オブジェクト削除を伝える関数
 void CEnemy::DeleteObject(CObjectBase* obj)
 {
-	// �폜���ꂽ�̂�HP�Q�[�W�ł���΁A
-	// HP�Q�[�W�̃|�C���^����ɂ���
+	// 削除されたのがHPゲージであれば、
+	// HPゲージのポインタを空にする
 	if (obj == mpHpGauge)
 	{
 		mpHpGauge = nullptr;
 	}
-	// �폜���ꂽ�̂��X�^�~�i�Q�[�W�ł���΁A
-	// �X�^�~�i�Q�[�W�̃|�C���^����ɂ���
+	// 削除されたのがスタミナゲージであれば、
+	// スタミナゲージのポインタを空にする
 	if (obj == mpStGauge)
 	{
 		mpStGauge = nullptr;
 	}
-	// �폜���ꂽ�̂��h��_�E���f�o�t�Q�[�W�ł���΁A
-	// �h��_�E���f�o�t�Q�[�W�̃|�C���^����ɂ���
+	// 削除されたのが防御ダウンデバフゲージであれば、
+	// 防御ダウンデバフゲージのポインタを空にする
 	if (obj == mpGBBuffGauge)
 	{
 		mpGBBuffGauge = nullptr;
 	}
 }
 
-// �G�̏�����
+// 敵の初期化
 void CEnemy::InitEnemy(std::string path, const std::vector<AnimData>* pAnimData)
 {
-	// �A�j���[�V�����f�[�^�e�[�u����ݒ�
+	// アニメーションデータテーブルを設定
 	mpAnimData = pAnimData;
 
-	// ���f���f�[�^��ǂݍ���
+	// モデルデータを読み込み
 	CModelX* model = CResourceManager::Get<CModelX>(path);
 
-	// �e�[�u�����̃A�j���[�V�����f�[�^��ǂݍ���
+	// テーブル内のアニメーションデータを読み込み
 	int size = mpAnimData->size();
 	for (int i = 0; i < size; i++)
 	{
@@ -130,69 +130,69 @@ void CEnemy::InitEnemy(std::string path, const std::vector<AnimData>* pAnimData)
 		model->AddAnimationSet(data.path.c_str());
 	}
 
-	// CXCharacter�̏�����
+	// CXCharacterの初期化
 	Init(model);
 }
 
-// �Փˏ���
+// 衝突処理
 void CEnemy::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
-	// �{�̂��Փ˂���
+	// 本体が衝突した
 	if (self == mpBodyCol)
 	{
-		// �t�B�[���h�ƏՓ˂���
+		// フィールドと衝突した
 		if (other->Layer() == ELayer::eField)
 		{
-			// �⓹�Ŋ���Ȃ��悤�ɁA�����߂��x�N�g����X��Z�̒l��0�ɂ���
+			// 坂道で滑らないように、押し戻しベクトルのXとZの値を0にする
 			CVector adjust = hit.adjust;
 			adjust.X(0.0f);
 			adjust.Z(0.0f);
 
 			Position(Position() + adjust * hit.weight);
 
-			// �Փ˂����n�ʂ������V�䂩����ςŔ���
+			// 衝突した地面が床か天井かを内積で判定
 			CVector normal = hit.adjust.Normalized();
 			float dot = CVector::Dot(normal, CVector::up);
-			// ���ς̌��ʂ��v���X�ł���΁A���ƏՓ˂���
+			// 内積の結果がプラスであれば、床と衝突した
 			if (dot >= 0.0f)
 			{
-				// �����Ȃǂŏ��ɏォ��Փ˂������i���ړ��j�̂�
-				// �㉺�̈ړ����x��0�ɂ���
+				// 落下などで床に上から衝突した時（下移動）のみ
+				// 上下の移動速度を0にする
 				if (mMoveSpeedY < 0.0f)
 				{
 					mMoveSpeedY = 0.0f;
 				}
 
-				// �ڒn����
+				// 接地した
 				mIsGrounded = true;
-				// �ڒn�����n�ʂ̖@�����L�����Ă���
+				// 接地した地面の法線を記憶しておく
 				mGroundNormal = hit.adjust.Normalized();
 			}
-			// ���ς̌��ʂ��}�C�i�X�ł���΁A�V��ƏՓ˂���
+			// 内積の結果がマイナスであれば、天井と衝突した
 			else
 			{
-				// �W�����v�ȂǂœV��ɉ�����Փ˂������i��ړ��j�̂�
-				// �㉺�̈ړ����x��0�ɂ���
+				// ジャンプなどで天井に下から衝突した時（上移動）のみ
+				// 上下の移動速度を0にする
 				if (mMoveSpeedY > 0.0f)
 				{
 					mMoveSpeedY = 0.0f;
 				}
 			}
 		}
-		// �v���C���[�ƏՓ˂����ꍇ
+		// プレイヤーと衝突した場合
 		else if (other->Layer() == ELayer::ePlayer)
 		{
-			// �������ɂ̂݉����߂����߁A
-			// �����߂��x�N�g����Y�̒l��0�ɂ���
+			// 横方向にのみ押し戻すため、
+			// 押し戻しベクトルのYの値を0にする
 			CVector adjust = hit.adjust;
 			adjust.Y(0.0f);
 			Position(Position() + adjust * hit.weight);
 		}
-		// �v���C���[�ƏՓ˂����ꍇ
+		// プレイヤーと衝突した場合
 		else if (other->Layer() == ELayer::eEnemy)
 		{
-			// �������ɂ̂݉����߂����߁A
-			// �����߂��x�N�g����Y�̒l��0�ɂ���
+			// 横方向にのみ押し戻すため、
+			// 押し戻しベクトルのYの値を0にする
 			CVector adjust = hit.adjust;
 			adjust.Y(0.0f);
 			Position(Position() + adjust * hit.weight);
@@ -204,53 +204,53 @@ void CEnemy::SetInBattle(int state)
 {
 }
 
-// �A�j���[�V�����؂�ւ�
+// アニメーション切り替え
 void CEnemy::ChangeAnimation(int type, bool restart)
 {
 	
 }
 
-// ��Ԑ؂�ւ�
+// 状態切り替え
 void CEnemy::ChangeState(int state)
 {
-	// ������Ԃ̏ꍇ�͐؂�ւ��Ȃ�
+	// 同じ状態の場合は切り替えない
 	if (state == mState) return;
 
-	// ��Ԃ�ύX���āA��Ԋ֘A�̕ϐ��̏�����
+	// 状態を変更して、状態関連の変数の初期化
 	mState = state;
 	mStateStep = 0;
 	mElapsedTime = 0.0f;
 }
 
-// �X�V
+// 更新
 void CEnemy::Update()
 {
 	if (mIsGravity)
 	{
-		// �d��
+		// 重力
 		mMoveSpeedY -= GRAVITY;
 	}
 	
-	// �ړ�
+	// 移動
 	CVector moveSpeed = mMoveSpeed + CVector(0.0f, mMoveSpeedY, 0.0f);
 	Position(Position() + moveSpeed);
 
-	// �L�����N�^�[�̍X�V
+	// キャラクターの更新
 	CXCharacter::Update();
 
 	mIsGrounded = false;
 	
-	// HP�Q�[�W���X�V
+	// HPゲージを更新
 	mpHpGauge->Position(Position() + mHpGaugeOffsetPos);
 	mpHpGauge->SetMaxPoint(mMaxHp);
 	mpHpGauge->SetCurrPoint(mHp);
 
-	// �X�^�~�i�Q�[�W���X�V
+	// スタミナゲージを更新
 	mpStGauge->Position(Position() + mStGaugeOffsetPos);
 	mpStGauge->SetMaxPoint(mMaxSt);
 	mpStGauge->SetCurrPoint(mSt);
 
-	// �o�t�E�f�o�t
+	// バフ・デバフ
 	if (mGBRemainTime > 0)
 	{
 		mGBRemainTime -= 1 * Times::DeltaTime();
@@ -261,13 +261,13 @@ void CEnemy::Update()
 		}
 	}
 	
-	// �o�t�E�f�o�t�C���W�P�[�^�[���X�V
+	// バフ・デバフインジケーターを更新
 	mpGBBuffGauge->Position(Position() + mGBBuffOffsetPos);
 	mpGBBuffGauge->SetMaxPoint(mGuardBreakTime);
 	mpGBBuffGauge->SetCurrPoint(mGBRemainTime);
 }
 
-// �`��
+// 描画
 void CEnemy::Render()
 {
 	CXCharacter::Render();

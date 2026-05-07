@@ -1,3 +1,4 @@
+#include "glew.h"
 #include "CModel.h"
 #include "CVector.h"
 #include "Maths.h"
@@ -9,13 +10,13 @@ std::vector<CTriangle> CModel::Triangles() const
 	return mTriangles;
 }
 
-//ƒ‚ƒfƒ‹“Ç‚İ‚İ
+//ãƒ¢ãƒ‡ãƒ«èª­ã¿è¾¼ã¿
 bool CModel::Load(std::string path, bool dontDelete)
 {
-	//’¸“_ƒf[ƒ^‚Ì•Û‘¶(CVectorŒ^)
+	//é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã®ä¿å­˜(CVectorå‹)
 	std::vector<CVector> vertex;
 	std::vector<CVector> normal;
-	//ƒeƒNƒXƒ`ƒƒƒ}ƒbƒsƒ“ƒO‚Ì•Û‘¶(CVectorŒ^)
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒƒãƒ”ãƒ³ã‚°ã®ä¿å­˜(CVectorå‹)
 	std::vector<CVector> uv;
 
 	std::string dirPath = path;
@@ -28,129 +29,129 @@ bool CModel::Load(std::string path, bool dontDelete)
 	std::string objPath = RES_DIR;
 	objPath += path;
 
-	//ƒtƒ@ƒCƒ‹ƒ|ƒCƒ“ƒ^•Ï”‚Ìì¬
+	//ãƒ•ã‚¡ã‚¤ãƒ«ãƒã‚¤ãƒ³ã‚¿å¤‰æ•°ã®ä½œæˆ
 	FILE* fp;
-	//ƒtƒ@ƒCƒ‹‚©‚çƒf[ƒ^‚ğ“ü—Í
-	//“ü—ÍƒGƒŠƒA‚ğì¬‚·‚é
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰ãƒ‡ãƒ¼ã‚¿ã‚’å…¥åŠ›
+	//å…¥åŠ›ã‚¨ãƒªã‚¢ã‚’ä½œæˆã™ã‚‹
 	char buf[256];
 
-	//ƒtƒ@ƒCƒ‹‚ÌƒI[ƒvƒ“
-	//fopen(ƒtƒ@ƒCƒ‹–¼,ƒ‚[ƒh)
-	//ƒI[ƒvƒ“‚Å‚«‚È‚¢‚ÍNULL‚ğ•Ô‚·
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚ªãƒ¼ãƒ—ãƒ³
+	//fopen(ãƒ•ã‚¡ã‚¤ãƒ«å,ãƒ¢ãƒ¼ãƒ‰)
+	//ã‚ªãƒ¼ãƒ—ãƒ³ã§ããªã„æ™‚ã¯NULLã‚’è¿”ã™
 	fp = fopen(objPath.c_str(), "r");
-	//ƒtƒ@ƒCƒ‹ƒI[ƒvƒ“ƒGƒ‰[‚Ì”»’è
-	//fp‚ªNULL‚Ì‚ÍƒGƒ‰[
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã‚ªãƒ¼ãƒ—ãƒ³ã‚¨ãƒ©ãƒ¼ã®åˆ¤å®š
+	//fpãŒNULLã®æ™‚ã¯ã‚¨ãƒ©ãƒ¼
 	if (fp == NULL) {
-		//ƒRƒ“ƒ\[ƒ‹‚ÉƒGƒ‰[o—Í‚µ‚Ä–ß‚é
-		printf("%s file open errorn", objPath.c_str());
+		//ã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã«ã‚¨ãƒ©ãƒ¼å‡ºåŠ›ã—ã¦æˆ»ã‚‹
+		printf("%s file open errorï¿¥n", objPath.c_str());
 		return false;
 	}
 
 	int matIdx = 0;
 
-	//ƒtƒ@ƒCƒ‹‚©‚ç1s“ü—Í
-	//fgets(“ü—ÍƒGƒŠƒA,ƒGƒŠƒAƒTƒCƒY,ƒtƒ@ƒCƒ‹ƒ|ƒCƒ“ƒ^)
-	//ƒtƒ@ƒCƒ‹‚ÌÅŒã‚É‚È‚é‚ÆNULL‚ğ•Ô‚·
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰1è¡Œå…¥åŠ›
+	//fgets(å…¥åŠ›ã‚¨ãƒªã‚¢,ã‚¨ãƒªã‚¢ã‚µã‚¤ã‚º,ãƒ•ã‚¡ã‚¤ãƒ«ãƒã‚¤ãƒ³ã‚¿)
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã®æœ€å¾Œã«ãªã‚‹ã¨NULLã‚’è¿”ã™
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		//ƒf[ƒ^‚ğ•ªŠ„‚·‚é
+		//ãƒ‡ãƒ¼ã‚¿ã‚’åˆ†å‰²ã™ã‚‹
 		char str[4][64] = { "", "", "", "" };
-		//•¶š—ñ‚©‚çƒf[ƒ^‚ğ4‚Â•Ï”‚Ö‘ã“ü‚·‚é
-		//sscanf(•¶š—ñ, •ÏŠ·w’èq, •Ï”)
+		//æ–‡å­—åˆ—ã‹ã‚‰ãƒ‡ãƒ¼ã‚¿ã‚’4ã¤å¤‰æ•°ã¸ä»£å…¥ã™ã‚‹
+		//sscanf(æ–‡å­—åˆ—, å¤‰æ›æŒ‡å®šå­, å¤‰æ•°)
 		sscanf(buf, "%s %s %s %s", str[0], str[1], str[2], str[3]);
-		//•¶š—ñ‚Ì”äŠr
-		//strcmp(•¶š—ñ1, •¶š—ñ2)
-		//•¶š—ñ1‚Æ•¶š—ñ2‚ª“¯‚¶0AˆÙ‚È‚é0ˆÈŠO‚ğ•Ô‚·
-		//æ“ª‚ªv‚ÌA’¸“_‚ğvertex‚É’Ç‰Á‚·‚é
+		//æ–‡å­—åˆ—ã®æ¯”è¼ƒ
+		//strcmp(æ–‡å­—åˆ—1, æ–‡å­—åˆ—2)
+		//æ–‡å­—åˆ—1ã¨æ–‡å­—åˆ—2ãŒåŒã˜æ™‚0ã€ç•°ãªã‚‹æ™‚0ä»¥å¤–ã‚’è¿”ã™
+		//å…ˆé ­ãŒvã®æ™‚ã€é ‚ç‚¹ã‚’vertexã«è¿½åŠ ã™ã‚‹
 		if (strcmp(str[0], "v") == 0) {
-			//‰Â•Ï’·”z—ñvertex‚É’Ç‰Á
-			//atof(•¶š—ñ)@•¶š—ñ‚©‚çfloatŒ^‚Ì’l‚ğ•Ô‚·
+			//å¯å¤‰é•·é…åˆ—vertexã«è¿½åŠ 
+			//atof(æ–‡å­—åˆ—)ã€€æ–‡å­—åˆ—ã‹ã‚‰floatå‹ã®å€¤ã‚’è¿”ã™
 			vertex.push_back(CVector(atof(str[1]), atof(str[2]), atof(str[3])));
 		}
 		else if (strcmp(str[0], "vn") == 0) {
-			//‰Â•Ï’·”z—ñvertex‚É’Ç‰Á
-			//atof(•¶š—ñ)@•¶š—ñ‚©‚çfloatŒ^‚Ì’l‚ğ•Ô‚·
+			//å¯å¤‰é•·é…åˆ—vertexã«è¿½åŠ 
+			//atof(æ–‡å­—åˆ—)ã€€æ–‡å­—åˆ—ã‹ã‚‰floatå‹ã®å€¤ã‚’è¿”ã™
 			normal.push_back(CVector(atof(str[1]), atof(str[2]), atof(str[3])));
 		}
-		//æ“ª‚ªf‚ÌAOŠpŒ`‚ğì¬‚µ‚Ä’Ç‰Á‚·‚é
+		//å…ˆé ­ãŒfã®æ™‚ã€ä¸‰è§’å½¢ã‚’ä½œæˆã—ã¦è¿½åŠ ã™ã‚‹
 		else if (strcmp(str[0], "f") == 0) {
-			//’¸“_‚Æ–@ü‚Ì”Ô†ì¬
+			//é ‚ç‚¹ã¨æ³•ç·šã®ç•ªå·ä½œæˆ
 			int v[3], n[3];
-			//ƒeƒNƒXƒ`ƒƒƒ}ƒbƒsƒ“ƒO‚Ì—L–³‚ğ”»’è
+			//ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒƒãƒ”ãƒ³ã‚°ã®æœ‰ç„¡ã‚’åˆ¤å®š
 			if (strstr(str[1], "//")) {
-				//’¸“_‚Æ–@ü‚Ì”Ô†æ“¾
+				//é ‚ç‚¹ã¨æ³•ç·šã®ç•ªå·å–å¾—
 				sscanf(str[1], "%d//%d", &v[0], &n[0]);
 				sscanf(str[2], "%d//%d", &v[1], &n[1]);
 				sscanf(str[3], "%d//%d", &v[2], &n[2]);
-				//OŠpŒ`ì¬
+				//ä¸‰è§’å½¢ä½œæˆ
 				CTriangle t;
 				t.Vertex(vertex[v[0] - 1], vertex[v[1] - 1], vertex[v[2] - 1]);
 				t.Normal(normal[n[0] - 1], normal[n[1] - 1], normal[n[2] - 1]);
-				//ƒ}ƒeƒŠƒAƒ‹”Ô†‚Ìİ’è
+				//ãƒãƒ†ãƒªã‚¢ãƒ«ç•ªå·ã®è¨­å®š
 				t.MaterialIdx(matIdx);
-				//‰Â•Ï’·”z—ñmTriangles‚ÉOŠpŒ`‚ğ’Ç‰Á
+				//å¯å¤‰é•·é…åˆ—mTrianglesã«ä¸‰è§’å½¢ã‚’è¿½åŠ 
 				mTriangles.push_back(t);
 			}
 			else {
-				//ƒeƒNƒXƒ`ƒƒƒ}ƒbƒsƒ“ƒO—L‚è
-				int u[3]; //ƒeƒNƒXƒ`ƒƒƒ}ƒbƒsƒ“ƒO‚Ì”Ô†
-				//’¸“_‚Æ–@ü‚Ì”Ô†æ“¾‚Æƒ}ƒbƒsƒ“ƒO‚Ì”Ô†æ“¾
+				//ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒƒãƒ”ãƒ³ã‚°æœ‰ã‚Š
+				int u[3]; //ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒƒãƒ”ãƒ³ã‚°ã®ç•ªå·
+				//é ‚ç‚¹ã¨æ³•ç·šã®ç•ªå·å–å¾—ã¨ãƒãƒƒãƒ”ãƒ³ã‚°ã®ç•ªå·å–å¾—
 				sscanf(str[1], "%d/%d/%d", &v[0], &u[0], &n[0]);
 				sscanf(str[2], "%d/%d/%d", &v[1], &u[1], &n[1]);
 				sscanf(str[3], "%d/%d/%d", &v[2], &u[2], &n[2]);
-				//OŠpŒ`ì¬
+				//ä¸‰è§’å½¢ä½œæˆ
 				CTriangle t;
 				t.Vertex(vertex[v[0] - 1], vertex[v[1] - 1], vertex[v[2] - 1]);
 				t.Normal(normal[n[0] - 1], normal[n[1] - 1], normal[n[2] - 1]);
-				//ƒeƒNƒXƒ`ƒƒƒ}ƒbƒsƒ“ƒO‚Ìİ’è
+				//ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒƒãƒ”ãƒ³ã‚°ã®è¨­å®š
 				t.UV(uv[u[0] - 1], uv[u[1] - 1], uv[u[2] - 1]);
-				//ƒ}ƒeƒŠƒAƒ‹”Ô†‚Ìİ’è
+				//ãƒãƒ†ãƒªã‚¢ãƒ«ç•ªå·ã®è¨­å®š
 				t.MaterialIdx(matIdx);
-				//‰Â•Ï’·”z—ñmTriangles‚ÉOŠpŒ`‚ğ’Ç‰Á
+				//å¯å¤‰é•·é…åˆ—mTrianglesã«ä¸‰è§’å½¢ã‚’è¿½åŠ 
 				mTriangles.push_back(t);
 			}
 		}
-		//æ“ª‚ªmtllib‚ÌAƒ}ƒeƒŠƒAƒ‹‚ğ“Ç‚İ‚Ş
+		//å…ˆé ­ãŒmtllibã®æ™‚ã€ãƒãƒ†ãƒªã‚¢ãƒ«ã‚’èª­ã¿è¾¼ã‚€
 		else if (strcmp(str[0], "mtllib") == 0) {
 			std::string mtlPath = dirPath + "\\" + str[1];
 			LoadMaterial(mtlPath, dontDelete);
 		}
-		//æ“ª‚ªusemtl‚ÌAƒ}ƒeƒŠƒAƒ‹ƒCƒ“ƒfƒbƒNƒX‚ğæ“¾‚·‚é
+		//å…ˆé ­ãŒusemtlã®æ™‚ã€ãƒãƒ†ãƒªã‚¢ãƒ«ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—ã™ã‚‹
 		else if (strcmp(str[0], "usemtl") == 0) {
-			//‰Â•Ï’·”z—ñ‚ğŒã‚©‚ç”äŠr
+			//å¯å¤‰é•·é…åˆ—ã‚’å¾Œã‹ã‚‰æ¯”è¼ƒ
 			for (matIdx = mpMaterials.size() - 1; matIdx > 0; matIdx--) {
-				//“¯‚¶–¼‘O‚Ìƒ}ƒeƒŠƒAƒ‹‚ª‚ ‚ê‚Îƒ‹[ƒvI—¹
+				//åŒã˜åå‰ã®ãƒãƒ†ãƒªã‚¢ãƒ«ãŒã‚ã‚Œã°ãƒ«ãƒ¼ãƒ—çµ‚äº†
 				if (strcmp(mpMaterials[matIdx]->Name(), str[1]) == 0) {
-					break; //ƒ‹[ƒv‚©‚ço‚é
+					break; //ãƒ«ãƒ¼ãƒ—ã‹ã‚‰å‡ºã‚‹
 				}
 			}
 		}
-		//æ“ª‚ªvt‚ÌAuv‚É’Ç‰Á‚·‚é
+		//å…ˆé ­ãŒvtã®æ™‚ã€uvã«è¿½åŠ ã™ã‚‹
 		else if (strcmp(str[0], "vt") == 0) {
-			//‰Â•Ï’·”z—ñuv‚É’Ç‰Á
-			//atof(•¶š—ñ)@•¶š—ñ‚©‚çfloatŒ^‚Ì’l‚ğ•Ô‚·
+			//å¯å¤‰é•·é…åˆ—uvã«è¿½åŠ 
+			//atof(æ–‡å­—åˆ—)ã€€æ–‡å­—åˆ—ã‹ã‚‰floatå‹ã®å€¤ã‚’è¿”ã™
 			uv.push_back(CVector(atof(str[1]), atof(str[2]), 0.0));
 		}
 	}
 
-	//ƒtƒ@ƒCƒ‹‚ÌƒNƒ[ƒY
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚¯ãƒ­ãƒ¼ã‚º
 	fclose(fp);
 
 	CreateVertexBuffer();
 
 	/*
-	// shadow330“K‰‚Éíœ
-	// “Ç‚İ‚ñ‚¾ƒ}ƒeƒŠƒAƒ‹‚ÌƒŠƒXƒg‚ÌŒÂ”•ªA
-	// ŠO•”‚©‚çİ’è‚·‚éƒ}ƒeƒŠƒAƒ‹ƒŠƒXƒg‚Ì—v‘f‚ğ’Ç‰Á
+	// shadow330é©å¿œæ™‚ã«å‰Šé™¤
+	// èª­ã¿è¾¼ã‚“ã ãƒãƒ†ãƒªã‚¢ãƒ«ã®ãƒªã‚¹ãƒˆã®å€‹æ•°åˆ†ã€
+	// å¤–éƒ¨ã‹ã‚‰è¨­å®šã™ã‚‹ãƒãƒ†ãƒªã‚¢ãƒ«ãƒªã‚¹ãƒˆã®è¦ç´ ã‚’è¿½åŠ 
 	mpSetMaterials.resize(mpMaterials.size(), nullptr);
 	*/
 	
-	//ƒVƒF[ƒ_[“Ç‚İ‚İ@shadow330‚Ì•Û‘¶ƒtƒHƒ‹ƒ_‚ªresShader‚Ìê‡
+	//ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼èª­ã¿è¾¼ã¿ã€€shadow330ã®ä¿å­˜ãƒ•ã‚©ãƒ«ãƒ€ãŒresï¿¥Shaderã®å ´åˆ
 	mShader.Load("Shader\\shadow330.vert", "Shader\\shadow330.frag");
 
 	return true;
 }
 
-//ƒ}ƒeƒŠƒAƒ‹“Ç‚İ‚İ
+//ãƒãƒ†ãƒªã‚¢ãƒ«èª­ã¿è¾¼ã¿
 bool CModel::LoadMaterial(std::string path, bool dontDelete)
 {
 	std::string mtlPath = RES_DIR + path;
@@ -162,57 +163,57 @@ bool CModel::LoadMaterial(std::string path, bool dontDelete)
 		dirPath = dirPath.substr(0, index + 1);
 	}
 
-	//ƒtƒ@ƒCƒ‹ƒ|ƒCƒ“ƒ^•Ï”‚Ìì¬
+	//ãƒ•ã‚¡ã‚¤ãƒ«ãƒã‚¤ãƒ³ã‚¿å¤‰æ•°ã®ä½œæˆ
 	FILE* fp;
-	//ƒtƒ@ƒCƒ‹‚©‚çƒf[ƒ^‚ğ“ü—Í
-	//“ü—ÍƒGƒŠƒA‚ğì¬‚·‚é
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰ãƒ‡ãƒ¼ã‚¿ã‚’å…¥åŠ›
+	//å…¥åŠ›ã‚¨ãƒªã‚¢ã‚’ä½œæˆã™ã‚‹
 	char buf[256];
 
-	//ƒtƒ@ƒCƒ‹‚ÌƒI[ƒvƒ“
-	//fopen(ƒtƒ@ƒCƒ‹–¼,ƒ‚[ƒh)
-	//ƒI[ƒvƒ“‚Å‚«‚È‚¢‚ÍNULL‚ğ•Ô‚·
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚ªãƒ¼ãƒ—ãƒ³
+	//fopen(ãƒ•ã‚¡ã‚¤ãƒ«å,ãƒ¢ãƒ¼ãƒ‰)
+	//ã‚ªãƒ¼ãƒ—ãƒ³ã§ããªã„æ™‚ã¯NULLã‚’è¿”ã™
 	fp = fopen(mtlPath.c_str(), "r");
-	//ƒtƒ@ƒCƒ‹ƒI[ƒvƒ“ƒGƒ‰[‚Ì”»’è
-	//fp‚ªNULL‚Ì‚ÍƒGƒ‰[
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã‚ªãƒ¼ãƒ—ãƒ³ã‚¨ãƒ©ãƒ¼ã®åˆ¤å®š
+	//fpãŒNULLã®æ™‚ã¯ã‚¨ãƒ©ãƒ¼
 	if (fp == NULL) {
-		//ƒRƒ“ƒ\[ƒ‹‚ÉƒGƒ‰[o—Í‚µ‚Ä–ß‚é
-		printf("%s file open errorn", mtlPath.c_str());
+		//ã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã«ã‚¨ãƒ©ãƒ¼å‡ºåŠ›ã—ã¦æˆ»ã‚‹
+		printf("%s file open errorï¿¥n", mtlPath.c_str());
 		return false;
 	}
 
-	//ƒ}ƒeƒŠƒAƒ‹ƒCƒ“ƒfƒbƒNƒX
+	//ãƒãƒ†ãƒªã‚¢ãƒ«ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
 	int idx = 0;
-	//ƒtƒ@ƒCƒ‹‚©‚ç1s“ü—Í
-	//fgets(“ü—ÍƒGƒŠƒA,ƒGƒŠƒAƒTƒCƒY,ƒtƒ@ƒCƒ‹ƒ|ƒCƒ“ƒ^)
-	//ƒtƒ@ƒCƒ‹‚ÌÅŒã‚É‚È‚é‚ÆNULL‚ğ•Ô‚·
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰1è¡Œå…¥åŠ›
+	//fgets(å…¥åŠ›ã‚¨ãƒªã‚¢,ã‚¨ãƒªã‚¢ã‚µã‚¤ã‚º,ãƒ•ã‚¡ã‚¤ãƒ«ãƒã‚¤ãƒ³ã‚¿)
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã®æœ€å¾Œã«ãªã‚‹ã¨NULLã‚’è¿”ã™
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		//ƒf[ƒ^‚ğ•ªŠ„‚·‚é
+		//ãƒ‡ãƒ¼ã‚¿ã‚’åˆ†å‰²ã™ã‚‹
 		char str[4][64] = { "", "", "", "" };
-		//•¶š—ñ‚©‚çƒf[ƒ^‚ğ4‚Â•Ï”‚Ö‘ã“ü‚·‚é
+		//æ–‡å­—åˆ—ã‹ã‚‰ãƒ‡ãƒ¼ã‚¿ã‚’4ã¤å¤‰æ•°ã¸ä»£å…¥ã™ã‚‹
 		sscanf(buf, "%s %s %s %s", str[0], str[1], str[2], str[3]);
-		//æ“ª‚ªnewmtl‚ÌAƒ}ƒeƒŠƒAƒ‹‚ğ’Ç‰Á‚·‚é
+		//å…ˆé ­ãŒnewmtlã®æ™‚ã€ãƒãƒ†ãƒªã‚¢ãƒ«ã‚’è¿½åŠ ã™ã‚‹
 		if (strcmp(str[0], "newmtl") == 0) {
 			CMaterial* pm = new CMaterial();
-			//ƒfƒBƒŒƒNƒgƒŠƒpƒX‚ğİ’è
+			//ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãƒ‘ã‚¹ã‚’è¨­å®š
 			pm->DirPath(dirPath);
-			//ƒ}ƒeƒŠƒAƒ‹–¼‚Ìİ’è
+			//ãƒãƒ†ãƒªã‚¢ãƒ«åã®è¨­å®š
 			pm->Name(str[1]);
-			//ƒ}ƒeƒŠƒAƒ‹‚Ì‰Â•Ï’·”z—ñ‚É’Ç‰Á
+			//ãƒãƒ†ãƒªã‚¢ãƒ«ã®å¯å¤‰é•·é…åˆ—ã«è¿½åŠ 
 			mpMaterials.push_back(pm);
-			//”z—ñ‚Ì’·‚³‚ğæ“¾
+			//é…åˆ—ã®é•·ã•ã‚’å–å¾—
 			idx = mpMaterials.size() - 1;
 		}
-		//æ“ª‚ªKd‚ÌADiffuse‚ğİ’è‚·‚é
+		//å…ˆé ­ãŒKdã®æ™‚ã€Diffuseã‚’è¨­å®šã™ã‚‹
 		else if (strcmp(str[0], "Kd") == 0) {
 			mpMaterials[idx]->Diffuse()[0] = atof(str[1]);
 			mpMaterials[idx]->Diffuse()[1] = atof(str[2]);
 			mpMaterials[idx]->Diffuse()[2] = atof(str[3]);
 		}
-		//æ“ª‚ªd‚ÌAƒ¿’l‚ğİ’è‚·‚é
+		//å…ˆé ­ãŒdã®æ™‚ã€Î±å€¤ã‚’è¨­å®šã™ã‚‹
 		else if (strcmp(str[0], "d") == 0) {
 			mpMaterials[idx]->Diffuse()[3] = atof(str[1]);
 		}
-		//æ“ª‚ªmap_Kd‚ÌAƒeƒNƒXƒ`ƒƒ‚ğ“ü—Í‚·‚é
+		//å…ˆé ­ãŒmap_Kdã®æ™‚ã€ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’å…¥åŠ›ã™ã‚‹
 		else if (strcmp(str[0], "map_Kd") == 0) {
 			std::string texPath = dirPath + str[1];
 			mpMaterials[idx]->LoadTexture(str[1], texPath.c_str(), dontDelete);
@@ -220,7 +221,7 @@ bool CModel::LoadMaterial(std::string path, bool dontDelete)
 
 	}
 
-	//ƒtƒ@ƒCƒ‹‚ÌƒNƒ[ƒY
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚¯ãƒ­ãƒ¼ã‚º
 	fclose(fp);
 
 	return true;
@@ -228,20 +229,20 @@ bool CModel::LoadMaterial(std::string path, bool dontDelete)
 
 void CModel::Render()
 {
-	// Š®‘S‚É“§–¾‚Èó‘Ô‚Å‚ ‚ê‚ÎA•`‰æ‚µ‚È‚¢
+	// å®Œå…¨ã«é€æ˜ãªçŠ¶æ…‹ã§ã‚ã‚Œã°ã€æç”»ã—ãªã„
 	if (mColor.A() == 0.0f) return;
 
-	//‰Â•Ï’·”z—ñ‚Ì—v‘f”‚¾‚¯ŒJ‚è•Ô‚µ
+	//å¯å¤‰é•·é…åˆ—ã®è¦ç´ æ•°ã ã‘ç¹°ã‚Šè¿”ã—
 	for (int i = 0; i < mTriangles.size(); i++) {
 		CMaterial* baseMat = mpMaterials[mTriangles[i].MaterialIdx()];
 		CMaterial* setMat = mpSetMaterials[mTriangles[i].MaterialIdx()];
 
-		//ƒ}ƒeƒŠƒAƒ‹‚Ì“K—p
+		//ãƒãƒ†ãƒªã‚¢ãƒ«ã®é©ç”¨
 		if (setMat == nullptr) baseMat->Enabled(mColor);
 		else setMat->Enabled(mColor);
-		//‰Â•Ï’·”z—ñ‚É“Y‚¦š‚ÅƒAƒNƒZƒX‚·‚é
+		//å¯å¤‰é•·é…åˆ—ã«æ·»ãˆå­—ã§ã‚¢ã‚¯ã‚»ã‚¹ã™ã‚‹
 		mTriangles[i].Render();
-		//ƒ}ƒeƒŠƒAƒ‹‚ğ–³Œø
+		//ãƒãƒ†ãƒªã‚¢ãƒ«ã‚’ç„¡åŠ¹
 		if (setMat == nullptr) baseMat->Disabled();
 		else setMat->Disabled();
 	}
@@ -266,67 +267,67 @@ CModel::~CModel()
 	delete[] mpVertexes;
 }
 
-// ƒJƒ‰[‚ğİ’è
+// ã‚«ãƒ©ãƒ¼ã‚’è¨­å®š
 void CModel::SetColor(const CColor& color)
 {
 	mColor = color;
 }
 
-// ƒJƒ‰[‚ğæ“¾
+// ã‚«ãƒ©ãƒ¼ã‚’å–å¾—
 const CColor& CModel::GetColor() const
 {
 	return mColor;
 }
 
-// ƒAƒ‹ƒtƒ@’lİ’è
+// ã‚¢ãƒ«ãƒ•ã‚¡å€¤è¨­å®š
 void CModel::SetAlpha(float alpha)
 {
 	mColor.A(Math::Clamp01(alpha));
 }
 
-// ƒAƒ‹ƒtƒ@’læ“¾
+// ã‚¢ãƒ«ãƒ•ã‚¡å€¤å–å¾—
 float CModel::GetAlpha() const
 {
 	return mColor.A();
 }
 
-// ƒ‰ƒCƒeƒBƒ“ƒO‚Ì—LŒøó‘Ô‚ğİ’è
+// ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°ã®æœ‰åŠ¹çŠ¶æ…‹ã‚’è¨­å®š
 void CModel::SetLighting(bool enable)
 {
 	mIsLighting = enable;
 }
 
-// ƒ‰ƒCƒeƒBƒ“ƒO‚Ì—LŒøó‘Ô‚ğæ“¾
+// ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°ã®æœ‰åŠ¹çŠ¶æ…‹ã‚’å–å¾—
 bool CModel::IsLighting() const
 {
 	return mIsLighting;
 }
 
-// ƒfƒvƒX’l‚Ì‘‚«‚İ‚ğs‚¤‚©İ’è
+// ãƒ‡ãƒ—ã‚¹å€¤ã®æ›¸ãè¾¼ã¿ã‚’è¡Œã†ã‹è¨­å®š
 void CModel::SetDepthWrite(bool enable)
 {
 	mIsDepthWrite = enable;
 }
 
-// ƒfƒvƒX’l‚Ì‘‚«‚İ‚ğs‚¤‚©‚Ç‚¤‚©
+// ãƒ‡ãƒ—ã‚¹å€¤ã®æ›¸ãè¾¼ã¿ã‚’è¡Œã†ã‹ã©ã†ã‹
 bool CModel::IsDepthWrite() const
 {
 	return mIsDepthWrite;
 }
 
-// ƒJƒŠƒ“ƒO‚ğs‚¤‚©‚Ç‚¤‚©‚ğİ’è
+// ã‚«ãƒªãƒ³ã‚°ã‚’è¡Œã†ã‹ã©ã†ã‹ã‚’è¨­å®š
 void CModel::SetCullFace(bool enable)
 {
 	mIsCullFace = enable;
 }
 
-// ƒJƒŠƒ“ƒO‚ğs‚¤‚©‚Ç‚¤‚©
+// ã‚«ãƒªãƒ³ã‚°ã‚’è¡Œã†ã‹ã©ã†ã‹
 bool CModel::IsCullFace() const
 {
 	return mIsCullFace;
 }
 
-// •`‰æ‚ÌƒuƒŒƒ“ƒhˆ—‚ğİ’è
+// æç”»æ™‚ã®ãƒ–ãƒ¬ãƒ³ãƒ‰å‡¦ç†ã‚’è¨­å®š
 void CModel::SetBlend(EBlend mode)
 {
 	mBlendMode = mode;
@@ -336,13 +337,13 @@ void CModel::SetBlend(EBlend mode)
 	}
 }
 
-// •`‰æ‚ÌƒuƒŒƒ“ƒhˆ—‚ğæ“¾
+// æç”»æ™‚ã®ãƒ–ãƒ¬ãƒ³ãƒ‰å‡¦ç†ã‚’å–å¾—
 EBlend CModel::GetBlend() const
 {
 	return mBlendMode;
 }
 
-// ƒGƒtƒFƒNƒg—p‚Ìİ’è
+// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆç”¨ã®è¨­å®š
 void CModel::SetupEffectSettings()
 {
 	SetLighting(false);
@@ -351,96 +352,96 @@ void CModel::SetupEffectSettings()
 	SetBlend(EBlend::eAdd);
 }
 
-// ƒ}ƒeƒŠƒAƒ‹”‚ğæ“¾
+// ãƒãƒ†ãƒªã‚¢ãƒ«æ•°ã‚’å–å¾—
 int CModel::GetMaterialCount() const
 {
 	return mpMaterials.size();
 }
 
-// ƒ}ƒeƒŠƒAƒ‹‚ğæ“¾
+// ãƒãƒ†ãƒªã‚¢ãƒ«ã‚’å–å¾—
 CMaterial* CModel::GetMaterial(int no) const
 {
 	if (!(0 <= no && no < mpMaterials.size())) return nullptr;
 	return mpMaterials[no];
 }
 
-// ƒ}ƒeƒŠƒAƒ‹‚ğİ’è
+// ãƒãƒ†ãƒªã‚¢ãƒ«ã‚’è¨­å®š
 void CModel::SetMaterial(CMaterial* mat, int no)
 {
 	if (!(0 <= no && no < mpSetMaterials.size())) return;
 	mpSetMaterials[no] = mat;
 }
 
-//•`‰æ
-//Render(s—ñ)
+//æç”»
+//Render(è¡Œåˆ—)
 void CModel::Render(const CMatrix& m)
 {
-	mShader.Render(*this, m);
+	mShader.Render330(this, &m, 1);
 	return;
 
 	/*
-	// shadow330“K‰‚Éíœ
+	// shadow330é©å¿œæ™‚ã«å‰Šé™¤
 
-	// Š®‘S‚É“§–¾‚Èó‘Ô‚Å‚ ‚ê‚ÎA•`‰æ‚µ‚È‚¢
+	// å®Œå…¨ã«é€æ˜ãªçŠ¶æ…‹ã§ã‚ã‚Œã°ã€æç”»ã—ãªã„
 	if (mColor.A() == 0.0f) return;
 
-	//ƒfƒvƒX’l‚Ì‘‚«‚İİ’è
+	//ãƒ‡ãƒ—ã‚¹å€¤ã®æ›¸ãè¾¼ã¿è¨­å®š
 	glDepthMask(mIsDepthWrite);
-	//ƒ‰ƒCƒeƒBƒ“ƒOİ’è
+	//ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°è¨­å®š
 	if (!mIsLighting) glDisable(GL_LIGHTING);
-	//ƒJƒŠƒ“ƒOİ’è
+	//ã‚«ãƒªãƒ³ã‚°è¨­å®š
 	if (!mIsCullFace) glDisable(GL_CULL_FACE);
 
-	//s—ñ‚Ì‘Ş”ğ
+	//è¡Œåˆ—ã®é€€é¿
 	glPushMatrix();
-	//‡¬s—ñ‚ğŠ|‚¯‚é
+	//åˆæˆè¡Œåˆ—ã‚’æ›ã‘ã‚‹
 	glMultMatrixf(m.M());
 
-	//’¸“_À•W‚ÌˆÊ’u‚ğİ’è
+	//é ‚ç‚¹åº§æ¨™ã®ä½ç½®ã‚’è¨­å®š
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3, GL_FLOAT, sizeof(CVertex), (void*)&mpVertexes[0].mPosition);
-	//–@üƒxƒNƒgƒ‹‚ÌˆÊ’u‚ğİ’è
+	//æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«ã®ä½ç½®ã‚’è¨­å®š
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glNormalPointer(GL_FLOAT, sizeof(CVertex), (void*)&mpVertexes[0].mNormal);
-	//ƒeƒNƒXƒ`ƒƒƒ}ƒbƒsƒ“ƒO‚ÌˆÊ’u‚ğİ’è
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒƒãƒ”ãƒ³ã‚°ã®ä½ç½®ã‚’è¨­å®š
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, sizeof(CVertex), (void*)&mpVertexes[0].mTextureCoords);
 
-	int first = 0; //•`‰æˆÊ’u
-	//ƒ}ƒeƒŠƒAƒ‹–ˆ‚É•`‰æ‚·‚é
+	int first = 0; //æç”»ä½ç½®
+	//ãƒãƒ†ãƒªã‚¢ãƒ«æ¯ã«æç”»ã™ã‚‹
 	for (size_t i = 0; i < mpMaterials.size(); i++) {
 		CMaterial* baseMat = mpMaterials[i];
 		CMaterial* setMat = mpSetMaterials[i];
 
-		//ƒ}ƒeƒŠƒAƒ‹‚ğ“K—p‚·‚é
+		//ãƒãƒ†ãƒªã‚¢ãƒ«ã‚’é©ç”¨ã™ã‚‹
 		if (setMat == nullptr) baseMat->Enabled(mColor);
 		else setMat->Enabled(mColor);
 
-		//•`‰æˆÊ’u‚©‚ç‚Ìƒf[ƒ^‚ÅOŠpŒ`‚ğ•`‰æ‚µ‚Ü‚·
+		//æç”»ä½ç½®ã‹ã‚‰ã®ãƒ‡ãƒ¼ã‚¿ã§ä¸‰è§’å½¢ã‚’æç”»ã—ã¾ã™
 		glDrawArrays(GL_TRIANGLES, first, baseMat->VertexNum());
 
-		//ƒ}ƒeƒŠƒAƒ‹‚ğ–³Œø‚É‚·‚é
+		//ãƒãƒ†ãƒªã‚¢ãƒ«ã‚’ç„¡åŠ¹ã«ã™ã‚‹
 		if (setMat == nullptr) baseMat->Disabled();
 		else setMat->Disabled();
 
-		//•`‰æˆÊ’u‚ğˆÚ“®
+		//æç”»ä½ç½®ã‚’ç§»å‹•
 		first += baseMat->VertexNum();
 	}
-	//s—ñ‚ğ–ß‚·
+	//è¡Œåˆ—ã‚’æˆ»ã™
 	glPopMatrix();
 
-	//’¸“_À•W‚Ì”z—ñ‚ğ–³Œø‚É‚·‚é
+	//é ‚ç‚¹åº§æ¨™ã®é…åˆ—ã‚’ç„¡åŠ¹ã«ã™ã‚‹
 	glDisableClientState(GL_VERTEX_ARRAY);
-	//–@ü‚Ì”z—ñ‚ğ–³Œø‚É‚·‚é
+	//æ³•ç·šã®é…åˆ—ã‚’ç„¡åŠ¹ã«ã™ã‚‹
 	glDisableClientState(GL_NORMAL_ARRAY);
-	//ƒeƒNƒXƒ`ƒƒƒ}ƒbƒsƒ“ƒO‚Ì”z—ñ‚ğ–³Œø‚É‚·‚é
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒƒãƒ”ãƒ³ã‚°ã®é…åˆ—ã‚’ç„¡åŠ¹ã«ã™ã‚‹
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	//ƒfƒvƒX’l‚Ì‘‚«‚İó‘Ô‚ğ–ß‚·
+	//ãƒ‡ãƒ—ã‚¹å€¤ã®æ›¸ãè¾¼ã¿çŠ¶æ…‹ã‚’æˆ»ã™
 	glDepthMask(true);
-	//ƒ‰ƒCƒeƒBƒ“ƒOİ’è
+	//ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°è¨­å®š
 	glEnable(GL_LIGHTING);
-	//ƒJƒŠƒ“ƒOİ’è
+	//ã‚«ãƒªãƒ³ã‚°è¨­å®š
 	glEnable(GL_CULL_FACE);
 	*/
 }
@@ -468,17 +469,17 @@ void CModel::CreateVertexBuffer()
 				mpVertexes[idx++].mTextureCoords = mTriangles[j].U2();
 			}
 		}
-		//ƒ}ƒeƒŠƒAƒ‹–ˆ‚Ì’¸“_”‚ğ’Ç‰Á‚·‚é
+		//ãƒãƒ†ãƒªã‚¢ãƒ«æ¯ã®é ‚ç‚¹æ•°ã‚’è¿½åŠ ã™ã‚‹
 		mMaterialVertexCount.push_back(idx - w);
 	}
-	//’¸“_ƒoƒbƒtƒ@‚Ìì¬
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
 	glGenBuffers(1, &mMyVertexBufferId);
-	//’¸“_ƒoƒbƒtƒ@‚ğƒoƒCƒ“ƒh
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ãƒã‚¤ãƒ³ãƒ‰
 	glBindBuffer(GL_ARRAY_BUFFER, mMyVertexBufferId);
-	//ƒoƒCƒ“ƒh‚µ‚½ƒoƒbƒtƒ@‚Éƒf[ƒ^‚ğ“]‘—
+	//ãƒã‚¤ãƒ³ãƒ‰ã—ãŸãƒãƒƒãƒ•ã‚¡ã«ãƒ‡ãƒ¼ã‚¿ã‚’è»¢é€
 	glBufferData(GL_ARRAY_BUFFER
 		, sizeof(CVertex) * mTriangles.size() * 3
 		, mpVertexes, GL_STATIC_DRAW);
-	//ƒoƒCƒ“ƒh‰ğœ
+	//ãƒã‚¤ãƒ³ãƒ‰è§£é™¤
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
