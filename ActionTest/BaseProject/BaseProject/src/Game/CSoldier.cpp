@@ -83,7 +83,7 @@ const std::vector<CEnemy::AnimData> ANIM_DATA =
 };
 
 // コンストラクタ
-CSoldier::CSoldier(CPlayer* player, int mLevel)
+CSoldier::CSoldier(CPlayer* player, int enemyLevel)
 	: mpRideObject(nullptr)
 	, mIsPlayedSlashSE(false)
 	, mIsSpawnedSlashEffect(false)
@@ -169,7 +169,7 @@ CSoldier::CSoldier(CPlayer* player, int mLevel)
 	// 先行入力コライダーは最初はオフにしておく
 	mpTACol->SetEnable(false);
 
-	mLevel = mLevel;
+	mLevel = enemyLevel;
 	InitStatus();
 	mGuardBreakTime = 12.5f;
 }

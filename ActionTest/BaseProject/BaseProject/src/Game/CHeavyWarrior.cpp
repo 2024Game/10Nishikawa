@@ -83,7 +83,7 @@ const std::vector<CEnemy::AnimData> ANIM_DATA =
 };
 
 // コンストラクタ
-CHeavyWarrior::CHeavyWarrior(CPlayer* player, int mLevel)
+CHeavyWarrior::CHeavyWarrior(CPlayer* player, int enemyLevel)
 	: mpRideObject(nullptr)
 	, mIsPlayedSlashSE(false)
 	, mIsSpawnedSlashEffect(false)
@@ -167,7 +167,7 @@ CHeavyWarrior::CHeavyWarrior(CPlayer* player, int mLevel)
 	// 先行入力コライダーは最初はオフにしておく
 	mpTACol->SetEnable(false);
 
-	mLevel = mLevel;
+	mLevel = enemyLevel;
 	InitStatus();
 	mGuardBreakTime = 12.5f;
 }
@@ -209,6 +209,7 @@ void CHeavyWarrior::InitStatus()
 		mNegTime    = data->negTime;
 		mNegProb    = data->negProb;
 		mCan1B      = data->can1B;
+		isCSV = true;
 	}
 	else
 	{
@@ -1503,6 +1504,14 @@ void CHeavyWarrior::Update()
 	}
 	CDebugPrint::Print("EnemyState:%d\n", mState);
 	CDebugPrint::Print("EnemyAnimType:%d\n", mAnimType);
+	if (isCSV)
+	{
+		CDebugPrint::Print("CSV:on\n");
+	}
+	else
+	{
+		CDebugPrint::Print("CSV:off\n");
+	}
 #endif // _DEBUG
 }
 
