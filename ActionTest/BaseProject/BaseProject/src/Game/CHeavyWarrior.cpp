@@ -196,19 +196,19 @@ void CHeavyWarrior::InitStatus()
 		CEnemyStatusLoader::GetStatus("HeavyWarrior", mLevel);
 	if (data != nullptr)
 	{
-		mMaxHp      = data->maxHp;
-		mMaxSt      = data->maxSt;
-		mGainSt     = data->gainSt;
+		mMaxHp       = data->maxHp;
+		mMaxSt       = data->maxSt;
+		mGainSt      = data->gainSt;
 		mAttackCost1 = data->attackCost1;
 		mAttackCost2 = data->attackCost2;
 		mAttackCost3 = data->attackCost3;
-		mAvoidCost  = data->avoidCost;
-		mStepMag    = data->stepMag;
-		mAttackMag  = data->attackMag;
-		mAtSpeedMag = data->atSpeedMag;
-		mNegTime    = data->negTime;
-		mNegProb    = data->negProb;
-		mCan1B      = data->can1B;
+		mAvoidCost   = data->avoidCost;
+		mStepMag     = data->stepMag;
+		mAttackMag   = data->attackMag;
+		mAtSpeedMag  = data->atSpeedMag;
+		mNegTime     = data->negTime;
+		mNegProb     = data->negProb;
+		mCan1B       = data->can1B;
 		isCSV = true;
 	}
 	else

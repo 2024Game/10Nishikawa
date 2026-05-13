@@ -167,5 +167,5 @@ private:
 	CVector mAvoidVec;
 	bool  mAvoidMoving = false;
 
-	bool isCSV = false;
+	bool isCSV = false;		// csv‚ª“Ç‚İ‚Ü‚ê‚Ä‚¢‚é‚©‚Ç‚¤‚©
 };

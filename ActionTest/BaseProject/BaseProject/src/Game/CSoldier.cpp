@@ -780,7 +780,7 @@ void CSoldier::UpdateAttack1()
 				{
 					// 確率で、隙ができる
 					float rand = Math::Rand(0.0f, 99.9f);
-					if (rand < mNegProb)
+					if (rand < mNegProb / 2)
 					{
 						mStateStep++;
 					}
@@ -918,7 +918,7 @@ void CSoldier::UpdateAttack1B()
 				{
 					// 確率で、隙ができる
 					float rand = Math::Rand(0.0f, 99.9f);
-					if (rand < mNegProb)
+					if (rand < mNegProb / 2)
 					{
 						mStateStep++;
 					}
@@ -1053,7 +1053,7 @@ void CSoldier::UpdateAttack2()
 				{
 					// 確率で、隙ができる
 					float rand = Math::Rand(0.0f, 99.9f);
-					if (rand < mNegProb)
+					if (rand < mNegProb * 0.75f)
 					{
 						mStateStep++;
 					}

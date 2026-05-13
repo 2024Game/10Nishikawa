@@ -149,6 +149,7 @@ void CGameScene::Load()
 	{
 		// ランダムで敵の種類を選ぶ
 		rand = Math::Rand(0, 99);
+		rand = 0;
 		if (rand < 49)
 		{
 			enemy = new CSoldier(mpPlayer, mEnemyLv);
