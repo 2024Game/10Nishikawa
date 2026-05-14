@@ -23,8 +23,8 @@
 #define BATTLE_IDLE_TIME_MAX 2.0f
 #define ATTACK2_DIST 75.0f			// 駆け寄ってくる距離
 #define ATTACK_RANGE 23.5f			// 攻撃を行う距離
-#define ATTACK2_PROB 75				// 2段目攻撃を行う確率（パーセント）
-#define ATTACKX_PROB 50				// X段目攻撃を行う確率（パーセント）
+#define ATTACK2_PROB 85				// 2段目攻撃を行う確率（パーセント）
+#define ATTACKX_PROB 70				// X段目攻撃を行う確率（パーセント）
 #define ATTACK1B_PROB 40			// 1段目B攻撃を行う確率（パーセント）
 
 #define AT_GRACE_FRAME 6.0f			// 先行入力フレーム

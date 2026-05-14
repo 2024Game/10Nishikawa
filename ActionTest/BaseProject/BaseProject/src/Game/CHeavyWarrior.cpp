@@ -24,7 +24,7 @@
 #define ATTACK2_DIST 75.0f			// 駆け寄ってくる距離
 #define ATTACK_RANGE 34.5f			// 攻撃を行う距離
 #define ATTACK2_PROB 75				// 2段目攻撃を行う確率（パーセント）
-#define ATTACKX_PROB 50				// X段目攻撃を行う確率（パーセント）
+#define ATTACKX_PROB 60				// X段目攻撃を行う確率（パーセント）
 #define ATTACK1B_PROB 40			// 1段目B攻撃を行う確率（パーセント）
 
 #define AT_GRACE_FRAME 5.0f			// 先行入力フレーム
@@ -779,7 +779,7 @@ void CHeavyWarrior::UpdateAttack1()
 				{
 					// 確率で、隙ができる
 					float rand = Math::Rand(0.0f, 99.9f);
-					if (rand < mNegProb)
+					if (rand < mNegProb * 0.8f)
 					{
 						mStateStep++;
 					}
