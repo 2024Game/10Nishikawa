@@ -88,7 +88,6 @@ CSoldier::CSoldier(CPlayer* player, int enemyLevel)
 	, mIsPlayedSlashSE(false)
 	, mIsSpawnedSlashEffect(false)
 	, mpSword(nullptr)
-	, mNextAttack(false)
 	, mIsBattle(true)
 	, mBattleIdletime(0.0f)
 	, mpBattleTarget(nullptr)
@@ -475,7 +474,7 @@ CSoldier::EState CSoldier::DecideNextAction()
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 			{
 				// 次の攻撃は何段目か
-				if (mNextAttackNum = 1 && mSt >= mAttackCost1)
+				if (mNextAttackNum == 1 && mSt >= mAttackCost1)
 				{
 					// 1段目B攻撃が許可されていれば
 					if (mCan1B)
@@ -494,7 +493,7 @@ CSoldier::EState CSoldier::DecideNextAction()
 					return EState::eAttack1;
 				}
 				// 2段目
-				else if (mNextAttackNum = 2 && mSt >= mAttackCost2)
+				else if (mNextAttackNum == 2 && mSt >= mAttackCost2)
 				{
 					rand = Math::Rand(0, 99);
 					if (rand < ATTACK2_PROB + 25)
@@ -503,13 +502,12 @@ CSoldier::EState CSoldier::DecideNextAction()
 					}
 					else
 					{
-						mNextAttackNum == 1;
+						mNextAttackNum = 1;
 						return EState::eIdle;
 					}
-					
 				}
 				// 3段目
-				else if (mNextAttackNum = 3 && mSt >= mAttackCost3)
+				else if (mNextAttackNum == 3 && mSt >= mAttackCost3)
 				{
 					rand = Math::Rand(0, 99);
 					if (rand < ATTACKX_PROB + 30)
@@ -518,14 +516,13 @@ CSoldier::EState CSoldier::DecideNextAction()
 					}
 					else
 					{
-						mNextAttackNum == 1;
+						mNextAttackNum = 1;
 						return EState::eIdle;
 					}
-
 				}
 				else
 				{
-					mNextAttackNum == 1;
+					mNextAttackNum = 1;
 					return EState::eIdle;
 				}
 			}
@@ -557,7 +554,7 @@ CSoldier::EState CSoldier::DecideNextAction()
 					return EState::eAttack1;
 				}
 				// 2段目
-				else if (mNextAttackNum = 2 && mSt >= mAttackCost2)
+				else if (mNextAttackNum == 2 && mSt >= mAttackCost2)
 				{
 					rand = Math::Rand(0, 99);
 					if (rand < ATTACK2_PROB + 15)
@@ -566,13 +563,12 @@ CSoldier::EState CSoldier::DecideNextAction()
 					}
 					else
 					{
-						mNextAttackNum == 1;
+						mNextAttackNum = 1;
 						return EState::eIdle;
 					}
-
 				}
 				// 3段目
-				else if (mNextAttackNum = 3 && mSt >= mAttackCost3)
+				else if (mNextAttackNum == 3 && mSt >= mAttackCost3)
 				{
 					rand = Math::Rand(0, 99);
 					if (rand < ATTACKX_PROB + 20)
@@ -581,14 +577,13 @@ CSoldier::EState CSoldier::DecideNextAction()
 					}
 					else
 					{
-						mNextAttackNum == 1;
+						mNextAttackNum = 1;
 						return EState::eIdle;
 					}
-
 				}
 				else
 				{
-					mNextAttackNum == 1;
+					mNextAttackNum = 1;
 					return EState::eIdle;
 				}
 			}
@@ -601,7 +596,7 @@ CSoldier::EState CSoldier::DecideNextAction()
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 			{
 				// 次の攻撃は何段目か
-				if (mNextAttackNum = 1 && mSt >= mAttackCost1)
+				if (mNextAttackNum == 1 && mSt >= mAttackCost1)
 				{
 					// 1段目B攻撃が許可されていれば
 					if (mCan1B)
@@ -620,7 +615,7 @@ CSoldier::EState CSoldier::DecideNextAction()
 					return EState::eAttack1;
 				}
 				// 2段目
-				else if (mNextAttackNum = 2 && mSt >= mAttackCost2)
+				else if (mNextAttackNum == 2 && mSt >= mAttackCost2)
 				{
 					rand = Math::Rand(0, 99);
 					if (rand < ATTACK2_PROB + 5)
@@ -629,10 +624,9 @@ CSoldier::EState CSoldier::DecideNextAction()
 					}
 					else
 					{
-						mNextAttackNum == 1;
+						mNextAttackNum = 1;
 						return EState::eIdle;
 					}
-
 				}
 				// 3段目
 				else if (mNextAttackNum = 3 && mSt >= mAttackCost3)
@@ -644,14 +638,13 @@ CSoldier::EState CSoldier::DecideNextAction()
 					}
 					else
 					{
-						mNextAttackNum == 1;
+						mNextAttackNum = 1;
 						return EState::eIdle;
 					}
-
 				}
 				else
 				{
-					mNextAttackNum == 1;
+					mNextAttackNum = 1;
 					return EState::eIdle;
 				}
 			}
@@ -662,13 +655,13 @@ CSoldier::EState CSoldier::DecideNextAction()
 	// ===== バランス =====
 	else if (mTactics == (int)ETactics::Balanced)
 	{
-		// バランス × 高スタミナ：確実な時だけ大技を狙う
+		// バランス × 高スタミナ：少しスタミナを残しつつ連撃
 		if (mBattleTempo == (int)EBattleTempo::HighSt)
 		{
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 			{
 				// 次の攻撃は何段目か
-				if (mNextAttackNum = 1)
+				if (mNextAttackNum == 1 && mSt >= (mAttackCost1 + mAvoidCost))
 				{
 					// 1段目B攻撃が許可されていれば
 					if (mCan1B)
@@ -684,48 +677,47 @@ CSoldier::EState CSoldier::DecideNextAction()
 						}
 					}
 					// 攻撃範囲内なら攻撃
-					if (mSt >= mAttackCost1) return EState::eAttack1;
+					return EState::eAttack1;
 				}
 				// 2段目
-				else if (mNextAttackNum = 2)
+				else if (mNextAttackNum == 2 && mSt >= (mAttackCost2 + mAvoidCost))
 				{
 					rand = Math::Rand(0, 99);
-					if (rand < ATTACK2_PROB + 15)
+					if (rand < ATTACK2_PROB + 25)
 					{
 						return EState::eAttack2;
 					}
 					else
 					{
-						mNextAttackNum == 1;
+						mNextAttackNum = 1;
 						return EState::eIdle;
 					}
-
 				}
 				// 3段目
-				else if (mNextAttackNum = 3)
+				else if (mNextAttackNum = 3 && mSt >= (mAttackCost3 + mAvoidCost))
 				{
 					rand = Math::Rand(0, 99);
-					if (rand < ATTACKX_PROB + 10)
+					if (rand < ATTACKX_PROB + 25)
 					{
 						return EState::eAttackX;
 					}
 					else
 					{
-						mNextAttackNum == 1;
+						mNextAttackNum = 1;
 						return EState::eIdle;
 					}
-
 				}
 			}
 			// 遠ければ接近
 			return EState::eChase;
 		}
+		// バランス × 中スタミナ：確実な戦い方
 		else if (mBattleTempo == (int)EBattleTempo::MidSt)
 		{
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 			{
 				// 次の攻撃は何段目か
-				if (mNextAttackNum = 1)
+				if (mNextAttackNum == 1 && mSt >= (mAttackCost1 + mAvoidCost))
 				{
 					// 1段目B攻撃が許可されていれば
 					if (mCan1B)
@@ -740,11 +732,11 @@ CSoldier::EState CSoldier::DecideNextAction()
 							return EState::eAttack1;
 						}
 					}
-					// 攻撃範囲内なら攻撃
-					if (mSt >= mAttackCost1) return EState::eAttack1;
+					// 攻撃
+					return EState::eAttack1;
 				}
 				// 2段目
-				else if (mNextAttackNum = 2)
+				else if (mNextAttackNum == 2 && mSt >= (mAttackCost2 + mAvoidCost))
 				{
 					rand = Math::Rand(0, 99);
 					if (rand < ATTACK2_PROB)
@@ -753,13 +745,13 @@ CSoldier::EState CSoldier::DecideNextAction()
 					}
 					else
 					{
-						mNextAttackNum == 1;
+						mNextAttackNum = 1;
 						return EState::eIdle;
 					}
 
 				}
 				// 3段目
-				else if (mNextAttackNum = 3)
+				else if (mNextAttackNum == 3 && mSt >= (mAttackCost3 + mAvoidCost))
 				{
 					rand = Math::Rand(0, 99);
 					if (rand < ATTACKX_PROB)
@@ -768,48 +760,244 @@ CSoldier::EState CSoldier::DecideNextAction()
 					}
 					else
 					{
-						mNextAttackNum == 1;
+						mNextAttackNum = 1;
 						return EState::eIdle;
 					}
-
 				}
 			}
 			// 遠ければ接近
 			return EState::eChase;
 		}
+		// バランス × 低スタミナ：下がってスタミナ回復を優先
 		else
 		{
-			// バランス × 低スタミナ：下がってスタミナ回復を優先
+			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
+			{
+				// 次の攻撃は何段目か
+				if (mNextAttackNum == 1 && mSt >= (mAttackCost1 + mAvoidCost))
+				{
+					// 1段目B攻撃が許可されていれば
+					if (mCan1B)
+					{
+						rand = Math::Rand(0, 99);
+						if (rand < ATTACK1B_PROB)
+						{
+							return EState::eAttack1B;
+						}
+						else
+						{
+							return EState::eAttack1;
+						}
+					}
+					// 攻撃
+					return EState::eAttack1;
+				}
+				// 2段目
+				else if (mNextAttackNum == 2 && mSt >= (mAttackCost2 + mAvoidCost))
+				{
+					rand = Math::Rand(0, 99);
+					if (rand < ATTACK2_PROB)
+					{
+						return EState::eAttack2;
+					}
+					else
+					{
+						mNextAttackNum = 1;
+						return EState::eIdle;
+					}
+
+				}
+				// 3段目
+				else if (mNextAttackNum == 3 && mSt >= (mAttackCost3 + mAvoidCost))
+				{
+					rand = Math::Rand(0, 99);
+					if (rand < ATTACKX_PROB)
+					{
+						return EState::eAttackX;
+					}
+					else
+					{
+						mNextAttackNum = 1;
+						return EState::eIdle;
+					}
+				}
+			}
+			// 追わない
 			return EState::eIdle;
 		}
 	}
 	// ===== 慎重 (HP 30%未満) =====
 	else
 	{
+		// 慎重 × 高スタミナ：スタミナがあっても追わずに戦う
 		if (mBattleTempo == (int)EBattleTempo::HighSt)
 		{
-			// 慎重 × 高スタミナ：スタミナがあってもカウンター狙いのみ
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 			{
-				// 30%でだけ攻撃する（カウンター想定）
-				if (mSt >= mAttackCost1 + mAvoidCost && rand < 30)
+				// 次の攻撃は何段目か
+				if (mNextAttackNum == 1 && mSt >= (mAttackCost1 + mAvoidCost))
+				{
+					// 1段目B攻撃が許可されていれば
+					if (mCan1B)
+					{
+						rand = Math::Rand(0, 99);
+						if (rand < ATTACK1B_PROB)
+						{
+							return EState::eAttack1B;
+						}
+						else
+						{
+							return EState::eAttack1;
+						}
+					}
+					// 攻撃
 					return EState::eAttack1;
+				}
+				// 2段目
+				else if (mNextAttackNum == 2 && mSt >= (mAttackCost2 + mAvoidCost))
+				{
+					rand = Math::Rand(0, 99);
+					if (rand < ATTACK2_PROB + 10)
+					{
+						return EState::eAttack2;
+					}
+					else
+					{
+						mNextAttackNum = 1;
+						return EState::eIdle;
+					}
+
+				}
+				// 3段目
+				else if (mNextAttackNum == 3 && mSt >= (mAttackCost3 + mAvoidCost))
+				{
+					rand = Math::Rand(0, 99);
+					if (rand < ATTACKX_PROB + 5)
+					{
+						return EState::eAttackX;
+					}
+					else
+					{
+						mNextAttackNum = 1;
+						return EState::eIdle;
+					}
+				}
 			}
-			// 基本は待機（近づかない）
+			// 基本は待機（追わない）
 			return EState::eIdle;
 		}
+		// 慎重 × 中スタミナ：距離を取りたがる
 		else if (mBattleTempo == (int)EBattleTempo::MidSt)
 		{
-			// 慎重 × 中スタミナ：常に距離を取りたがる
-			// 20%でしか追いかけず、ほとんど待機
-			if (rand < 20)
-				return EState::eChase;
-			else
-				return EState::eIdle;
+			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
+			{
+				// 次の攻撃は何段目か
+				if (mNextAttackNum == 1 && mSt >= (mAttackCost1 + mAvoidCost))
+				{
+					// 1段目B攻撃が許可されていれば
+					if (mCan1B)
+					{
+						rand = Math::Rand(0, 99);
+						if (rand < ATTACK1B_PROB)
+						{
+							return EState::eAttack1B;
+						}
+						else
+						{
+							return EState::eAttack1;
+						}
+					}
+					// 攻撃
+					return EState::eAttack1;
+				}
+				// 2段目
+				else if (mNextAttackNum == 2 && mSt >= (mAttackCost2 + mAvoidCost))
+				{
+					rand = Math::Rand(0, 99);
+					if (rand < ATTACK2_PROB)
+					{
+						return EState::eAttack2;
+					}
+					else
+					{
+						mNextAttackNum = 1;
+						return EState::eIdle;
+					}
+
+				}
+				// 3段目
+				else if (mNextAttackNum == 3 && mSt >= (mAttackCost3 + mAvoidCost))
+				{
+					rand = Math::Rand(0, 99);
+					if (rand < ATTACKX_PROB)
+					{
+						return EState::eAttackX;
+					}
+					else
+					{
+						mNextAttackNum = 1;
+						return EState::eIdle;
+					}
+				}
+			}
+			// 基本は待機（追わない）
+			return EState::eIdle;
 		}
+		// 慎重 × 低スタミナ：瀕死かつ息切れ。必死にスタミナ回復
 		else
 		{
-			// 慎重 × 低スタミナ：瀕死かつ息切れ。必死にスタミナ回復
+			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
+			{
+				// 次の攻撃は何段目か
+				if (mNextAttackNum == 1 && mSt >= (mAttackCost1 + mAvoidCost))
+				{
+					// 1段目B攻撃が許可されていれば
+					if (mCan1B)
+					{
+						rand = Math::Rand(0, 99);
+						if (rand < ATTACK1B_PROB)
+						{
+							return EState::eAttack1B;
+						}
+						else
+						{
+							return EState::eAttack1;
+						}
+					}
+					// 攻撃
+					return EState::eAttack1;
+				}
+				// 2段目
+				else if (mNextAttackNum == 2 && mSt >= (mAttackCost2 + mAvoidCost))
+				{
+					rand = Math::Rand(0, 99);
+					if (rand < ATTACK2_PROB)
+					{
+						return EState::eAttack2;
+					}
+					else
+					{
+						mNextAttackNum = 1;
+						return EState::eIdle;
+					}
+
+				}
+				// 3段目
+				else if (mNextAttackNum == 3 && mSt >= (mAttackCost3 + mAvoidCost))
+				{
+					rand = Math::Rand(0, 99);
+					if (rand < ATTACKX_PROB - 5)
+					{
+						return EState::eAttackX;
+					}
+					else
+					{
+						mNextAttackNum = 1;
+						return EState::eIdle;
+					}
+				}
+			}
+			// 基本は待機（追わない）
 			return EState::eIdle;
 		}
 	}
@@ -1046,28 +1234,7 @@ void CSoldier::UpdateAttack1()
 		{
 			// 攻撃終了処理を呼び出す
 			AttackEnd();
-
-			float dist = GetDistToTarget();
-			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
-			{
-				// 一定確率で、連続攻撃を予約
-				int rand = Math::Rand(0, 99);
-
-				switch (mBattleTempo)
-				{
-				case (int)EBattleTempo::HighSt:
-					if (rand < ATTACK2_PROB * 1.5f) mNextAttack = true;
-					break;
-				case (int)EBattleTempo::MidSt:
-					if (rand < ATTACK2_PROB) mNextAttack = true;
-					break;
-				case (int)EBattleTempo::LowSt:
-					if (rand < ATTACK2_PROB * 0.5f) mNextAttack = true;
-					break;
-				}
-				
-			}
-			
+			mNextAttackNum = 2;
 			mInAttack = false;
 			mStateStep++;
 		}
@@ -1084,35 +1251,17 @@ void CSoldier::UpdateAttack1()
 		// アニメーション終了したら、待機状態へ戻す
 		if (IsAnimationFinished())
 		{
-			if (!mNextAttack)
+			// 確率で、隙ができる
+			float rand = Math::Rand(0.0f, 99.9f);
+			if (rand < mNegProb / 2)
 			{
 				mStateStep++;
 			}
 			else
 			{
-				mNextAttack = false;
-				CObjectBase::AttackStart();
-
-				if (mSt >= mAttackCost2)
-				{
-					// 攻撃2段目へ移行
-					ChangeState((int)EState::eAttack2);
-				}
-				else
-				{
-					// 確率で、隙ができる
-					float rand = Math::Rand(0.0f, 99.9f);
-					if (rand < mNegProb / 2)
-					{
-						mStateStep++;
-					}
-					else
-					{
-						// 待機状態へ移行
-						ChangeState((int)EState::eIdle);
-						ChangeAnimation((int)EAnimType::eIdle);
-					}
-				}
+				// 待機状態へ移行
+				ChangeState((int)EState::eIdle);
+				ChangeAnimation((int)EAnimType::eIdle);
 			}
 		}
 		break;
@@ -1184,27 +1333,7 @@ void CSoldier::UpdateAttack1B()
 		{
 			// 攻撃終了処理を呼び出す
 			AttackEnd();
-
-			float dist = GetDistToTarget();
-			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
-			{
-				// 一定確率で、連続攻撃を予約
-				int rand = Math::Rand(0, 99);
-
-				switch (mBattleTempo)
-				{
-				case (int)EBattleTempo::HighSt:
-					if (rand < ATTACK2_PROB * 1.5f) mNextAttack = true;
-					break;
-				case (int)EBattleTempo::MidSt:
-					if (rand < ATTACK2_PROB) mNextAttack = true;
-					break;
-				case (int)EBattleTempo::LowSt:
-					if (rand < ATTACK2_PROB * 0.5f) mNextAttack = true;
-					break;
-				}
-
-			}
+			mNextAttackNum = 2;
 			mInAttack = false;
 			mStateStep++;
 		}
@@ -1222,35 +1351,17 @@ void CSoldier::UpdateAttack1B()
 		if (IsAnimationFinished())
 		{
 			mpSword->Rotation(SWORD_OFFSET_ROT);
-			if (!mNextAttack)
+			// 確率で、隙ができる
+			float rand = Math::Rand(0.0f, 99.9f);
+			if (rand < mNegProb * 0.8f)
 			{
 				mStateStep++;
 			}
 			else
 			{
-				mNextAttack = false;
-				CObjectBase::AttackStart();
-
-				if (mSt >= mAttackCost2)
-				{
-					// 攻撃2段目へ移行
-					ChangeState((int)EState::eAttack2);
-				}
-				else
-				{
-					// 確率で、隙ができる
-					float rand = Math::Rand(0.0f, 99.9f);
-					if (rand < mNegProb / 2)
-					{
-						mStateStep++;
-					}
-					else
-					{
-						// 待機状態へ移行
-						ChangeState((int)EState::eIdle);
-						ChangeAnimation((int)EAnimType::eIdle);
-					}
-				}
+				// 待機状態へ移行
+				ChangeState((int)EState::eIdle);
+				ChangeAnimation((int)EAnimType::eIdle);
 			}
 		}
 		break;
@@ -1318,29 +1429,9 @@ void CSoldier::UpdateAttack2()
 		{
 			// 攻撃終了処理を呼び出す
 			AttackEnd();
-
+			mNextAttackNum = 3;
 			mInAttack = false;
 
-			float dist = GetDistToTarget();
-			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
-			{
-				// 一定確率で、連続攻撃を予約
-				int rand = Math::Rand(0, 99);
-
-				switch (mBattleTempo)
-				{
-				case (int)EBattleTempo::HighSt:
-					if (rand < ATTACKX_PROB * 1.5f) mNextAttack = true;
-					break;
-				case (int)EBattleTempo::MidSt:
-					if (rand < ATTACKX_PROB) mNextAttack = true;
-					break;
-				case (int)EBattleTempo::LowSt:
-					if (rand < ATTACKX_PROB * 0.5f) mNextAttack = true;
-					break;
-				}
-
-			}
 			mStateStep++;
 		}
 
@@ -1357,35 +1448,17 @@ void CSoldier::UpdateAttack2()
 		// アニメーション終了したら、待機状態へ戻す
 		if (IsAnimationFinished())
 		{
-			if (!mNextAttack)
+			// 確率で、隙ができる
+			float rand = Math::Rand(0.0f, 99.9f);
+			if (rand < mNegProb * 0.75f)
 			{
 				mStateStep++;
 			}
 			else
 			{
-				mNextAttack = false;
-				CObjectBase::AttackStart();
-
-				if (mSt >= mAttackCost3)
-				{
-					// 攻撃X段目へ移行
-					ChangeState((int)EState::eAttackX);
-				}
-				else
-				{
-					// 確率で、隙ができる
-					float rand = Math::Rand(0.0f, 99.9f);
-					if (rand < mNegProb * 0.75f)
-					{
-						mStateStep++;
-					}
-					else
-					{
-						// 待機状態へ移行
-						ChangeState((int)EState::eIdle);
-						ChangeAnimation((int)EAnimType::eIdle);
-					}
-				}
+				// 待機状態へ移行
+				ChangeState((int)EState::eIdle);
+				ChangeAnimation((int)EAnimType::eIdle);
 			}
 		}
 		break;
