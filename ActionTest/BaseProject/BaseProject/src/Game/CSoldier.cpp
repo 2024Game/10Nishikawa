@@ -1839,6 +1839,21 @@ void CSoldier::UpdateVictory()
 	}
 }
 
+void CSoldier::AttPatternA()
+{
+	switch (mAttStep)
+	{
+	case 0:
+		mAttStep++;
+		break;
+	case 1:
+		mAttStep++;
+		break;
+	case 2:
+		break;
+	}
+}
+
 // 更新
 void CSoldier::Update()
 {

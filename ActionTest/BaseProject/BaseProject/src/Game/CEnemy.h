@@ -63,6 +63,7 @@ protected:
 	int mState;				// 状態
 	int mAnimType;
 	int mBattleTempo;		// Stateとは別の「戦術レイヤー」
+	int mAttStep;			// 連続する行動のステップ管理用
 	int mStateStep;			// 状態内のステップ管理用
 	float mElapsedTime;		// 経過時間計測用
 	bool mIsGravity;

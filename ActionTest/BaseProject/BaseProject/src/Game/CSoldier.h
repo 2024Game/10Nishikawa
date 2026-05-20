@@ -157,6 +157,16 @@ private:
 	// 勝利
 	void UpdateVictory();
 
+	// ----- 連続攻撃などの攻撃パターン -----
+	// 1段目のみ
+	void AttPatternA();
+	// 1段目→2段目
+	void AttPatternB();
+	// 1段目→2段目→3段目
+	void AttPatternC();
+	// 
+	void AttPatternD();
+
 
 	CCollider* mpKickCol;			// 蹴り攻撃用コライダー
 	CCollider* mpTACol;				// 先行入力(Type Ahead)用コライダー
