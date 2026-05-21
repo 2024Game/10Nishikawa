@@ -94,6 +94,7 @@ CSoldier::CSoldier(CPlayer* player, int enemyLevel)
 	, mCan1B(false)
 	, mTactics((int)ETactics::Aggressive)
 	, mNextAttackNum(1)
+	, mAttPattern((int)EAttPattern::None)
 {
 	mpBattleTarget = player;
 
@@ -1251,33 +1252,11 @@ void CSoldier::UpdateAttack1()
 		// アニメーション終了したら、待機状態へ戻す
 		if (IsAnimationFinished())
 		{
-			// 確率で、隙ができる
-			float rand = Math::Rand(0.0f, 99.9f);
-			if (rand < mNegProb / 2)
-			{
-				mStateStep++;
-			}
-			else
-			{
-				// 待機状態へ移行
-				ChangeState((int)EState::eIdle);
-				ChangeAnimation((int)EAnimType::eIdle);
-			}
-		}
-		break;
-	case 5:
-		STRegene();
-		// 連続攻撃の終了なら、n秒間隙ができる
-		if (mElapsedTime < mNegTime)
-		{
-			mElapsedTime += Times::DeltaTime();
-		}
-		// 待ち時間が終了したら、削除
-		else
-		{
 			// 待機状態へ移行
 			ChangeState((int)EState::eIdle);
 			ChangeAnimation((int)EAnimType::eIdle);
+			mAttStep++;
+			AttPattGearBox();
 		}
 		break;
 	}
@@ -1448,34 +1427,11 @@ void CSoldier::UpdateAttack2()
 		// アニメーション終了したら、待機状態へ戻す
 		if (IsAnimationFinished())
 		{
-			// 確率で、隙ができる
-			float rand = Math::Rand(0.0f, 99.9f);
-			if (rand < mNegProb * 0.75f)
-			{
-				mStateStep++;
-			}
-			else
-			{
-				// 待機状態へ移行
-				ChangeState((int)EState::eIdle);
-				ChangeAnimation((int)EAnimType::eIdle);
-			}
-		}
-		break;
-
-	case 5:
-		STRegene();
-		// 連続攻撃の終了なら、n秒間隙ができる
-		if (mElapsedTime < mNegTime)
-		{
-			mElapsedTime += Times::DeltaTime();
-		}
-		// 待ち時間が終了したら、削除
-		else
-		{
 			// 待機状態へ移行
 			ChangeState((int)EState::eIdle);
 			ChangeAnimation((int)EAnimType::eIdle);
+			mAttStep++;
+			AttPattGearBox();
 		}
 		break;
 	}
@@ -1839,17 +1795,55 @@ void CSoldier::UpdateVictory()
 	}
 }
 
+void CSoldier::AttPattGearBox()
+{
+	switch (mAttPattern)
+	{
+	case (int)EAttPattern::PatternA:
+		AttPatternA();
+		break;
+	case (int)EAttPattern::PatternB:
+		AttPatternB();
+		break;
+	case (int)EAttPattern::PatternC:
+		AttPatternC();
+		break;
+	case (int)EAttPattern::PatternD:
+		AttPatternD();
+		break;
+	default:
+
+	}
+}
+
 void CSoldier::AttPatternA()
 {
 	switch (mAttStep)
 	{
 	case 0:
-		mAttStep++;
+		// Attack1へ移行
+		ChangeState((int)EState::eAttack1);
 		break;
 	case 1:
-		mAttStep++;
+		mAttStep = 0;
+		break;
+	}
+}
+
+void CSoldier::AttPatternB()
+{
+	switch (mAttStep)
+	{
+	case 0:
+		// Attack1へ移行
+		ChangeState((int)EState::eAttack1);
+		break;
+	case 1:
+		// Attack2へ移行
+		ChangeState((int)EState::eAttack2);
 		break;
 	case 2:
+		mAttStep = 0;
 		break;
 	}
 }

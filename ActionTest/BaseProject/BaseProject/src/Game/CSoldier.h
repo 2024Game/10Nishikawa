@@ -106,6 +106,16 @@ private:
 		LowSt	// 低スタミナ：守りに入る
 	};
 
+	// 攻撃パーターン用の列挙型
+	enum class EAttPattern
+	{
+		None,
+		PatternA,
+		PatternB,
+		PatternC,
+		PatternD
+	};
+
 	// アニメーション切り替え
 	void ChangeAnimation(int type, bool restart = false) override;
 
@@ -158,6 +168,9 @@ private:
 	void UpdateVictory();
 
 	// ----- 連続攻撃などの攻撃パターン -----
+	// 行動連結用ギアボックス
+	// 行動ごとにここに戻ってきて次の行動に連結する
+	void AttPattGearBox();
 	// 1段目のみ
 	void AttPatternA();
 	// 1段目→2段目
@@ -188,6 +201,7 @@ private:
 	int mNextAttackNum;		// 次の攻撃は何段目か
 	CVector mAttackVec;
 	bool mInAttack = false;
+	int mAttPattern;
 
 	CVector mAvoidVec;
 	bool  mAvoidMoving = false;
