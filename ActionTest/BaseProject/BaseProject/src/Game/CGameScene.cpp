@@ -150,7 +150,7 @@ void CGameScene::Load()
 		// ランダムで敵の種類を選ぶ
 		rand = Math::Rand(0, 99);
 		// デバック用マックスレベル
-		mEnemyLv = 10;
+		//mEnemyLv = 10;
 		rand = 0;
 		if (rand < 49)
 		{
