@@ -461,7 +461,7 @@ void CSoldier::UpdateBattleTempo()
 
 // 戦術×テンポの3×3マトリクスから次の行動ステートを決定
 // 距離も考慮して最終的な行動を返す
-CSoldier::EState CSoldier::DecideNextAction()
+CSoldier::DecideNextAction()
 {
 	float dist = GetDistToTarget();
 	int rand = Math::Rand(0, 99);
@@ -472,63 +472,14 @@ CSoldier::EState CSoldier::DecideNextAction()
 		// 攻撃的 × 高スタミナ：とにかく攻める
 		if (mBattleTempo == (int)EBattleTempo::HighSt)
 		{
+			// 攻撃が当たる距離にいるか
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 			{
-				// 次の攻撃は何段目か
-				if (mNextAttackNum == 1 && mSt >= mAttackCost1)
-				{
-					// 1段目B攻撃が許可されていれば
-					if (mCan1B)
-					{
-						rand = Math::Rand(0, 99);
-						if (rand < ATTACK1B_PROB)
-						{
-							return EState::eAttack1B;
-						}
-						else
-						{
-							return EState::eAttack1;
-						}
-					}
-					// 攻撃範囲内なら攻撃
-					return EState::eAttack1;
-				}
-				// 2段目
-				else if (mNextAttackNum == 2 && mSt >= mAttackCost2)
-				{
-					rand = Math::Rand(0, 99);
-					if (rand < ATTACK2_PROB + 25)
-					{
-						return EState::eAttack2;
-					}
-					else
-					{
-						mNextAttackNum = 1;
-						return EState::eIdle;
-					}
-				}
-				// 3段目
-				else if (mNextAttackNum == 3 && mSt >= mAttackCost3)
-				{
-					rand = Math::Rand(0, 99);
-					if (rand < ATTACKX_PROB + 30)
-					{
-						return EState::eAttackX;
-					}
-					else
-					{
-						mNextAttackNum = 1;
-						return EState::eIdle;
-					}
-				}
-				else
-				{
-					mNextAttackNum = 1;
-					return EState::eIdle;
-				}
+				// ToDo : ここで攻撃のパターンを選択した後、
+				// EAttPatternを変更してAttPattGearBoxへ
 			}
-			// 遠ければ接近
-			return EState::eChase;
+			// 遠ければ接近の状態へ移行
+			ChangeState((int)EState::eChase);
 		}
 		// 攻撃的 × 中スタミナ：攻め気は保つが少し抑えめ
 		else if (mBattleTempo == (int)EBattleTempo::MidSt)
@@ -1100,19 +1051,15 @@ void CSoldier::UpdateIdle()
 			break;
 			// ステップ1：マトリクスから次の行動を決定
 		case 1:
-		{
+		
 			// 戦術レイヤーとテンポレイヤーを更新
 			UpdateTactics();
 			UpdateBattleTempo();
 
 			// 3×3マトリクスで次の行動を決定
-			EState nextState = DecideNextAction();
-
-			// 次の状態へ移行
-			ChangeState((int)nextState);
+			DecideNextAction();
 
 			break;
-		}
 		}
 	}
 }
@@ -1826,6 +1773,8 @@ void CSoldier::AttPatternA()
 		break;
 	case 1:
 		mAttStep = 0;
+		// Idleへ移行
+		ChangeState((int)EState::eIdle);
 		break;
 	}
 }

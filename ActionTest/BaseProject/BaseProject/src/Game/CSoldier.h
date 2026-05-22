@@ -126,7 +126,7 @@ private:
 	void UpdateBattleTempo();
 
 	// 戦術×テンポのマトリクスから次の行動ステートを決定
-	EState DecideNextAction();
+	void DecideNextAction();
 
 	// 戦闘相手の方へ向く
 	void LookAtBattleTarget(bool immediate = false);
