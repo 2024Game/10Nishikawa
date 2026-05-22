@@ -106,6 +106,16 @@ private:
 		LowSt	// 低スタミナ：守りに入る
 	};
 
+	// 攻撃パーターン用の列挙型
+	enum class EAttPattern
+	{
+		None,
+		PatternA,
+		PatternB,
+		PatternC,
+		PatternD
+	};
+
 	// アニメーション切り替え
 	void ChangeAnimation(int type, bool restart = false) override;
 
@@ -116,7 +126,7 @@ private:
 	void UpdateBattleTempo();
 
 	// 戦術×テンポのマトリクスから次の行動ステートを決定
-	EState DecideNextAction();
+	void DecideNextAction();
 
 	// 戦闘相手の方へ向く
 	void LookAtBattleTarget(bool immediate = false);
@@ -157,6 +167,19 @@ private:
 	// 勝利
 	void UpdateVictory();
 
+	// ----- 連続攻撃などの攻撃パターン -----
+	// 行動連結用ギアボックス
+	// 行動ごとにここに戻ってきて次の行動に連結する
+	void AttPattGearBox();
+	// 1段目のみ
+	void AttPatternA();
+	// 1段目→2段目
+	void AttPatternB();
+	// 1段目→2段目→3段目
+	void AttPatternC();
+	// 
+	void AttPatternD();
+
 
 	CCollider* mpKickCol;			// 蹴り攻撃用コライダー
 	CCollider* mpTACol;				// 先行入力(Type Ahead)用コライダー
@@ -178,6 +201,7 @@ private:
 	int mNextAttackNum;		// 次の攻撃は何段目か
 	CVector mAttackVec;
 	bool mInAttack = false;
+	int mAttPattern;
 
 	CVector mAvoidVec;
 	bool  mAvoidMoving = false;

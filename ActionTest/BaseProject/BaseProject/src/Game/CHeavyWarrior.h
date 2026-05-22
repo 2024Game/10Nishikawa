@@ -1,7 +1,7 @@
-#pragma once
+ï»¿#pragma once
 #include "CEnemy.h"
 
-//ƒLƒƒƒ‰ƒNƒ^ƒNƒ‰ƒX‚ÌƒCƒ“ƒNƒ‹[ƒh
+//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ã‚¯ãƒ©ã‚¹ã®ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
 #include "CRideableObject.h"
 #include "CSound.h"
 
@@ -10,162 +10,178 @@
 class CCollider;
 class CBusterSword;
 
-// •ºm‚Ì“GƒNƒ‰ƒX
+// å…µå£«ã®æ•µã‚¯ãƒ©ã‚¹
 class CHeavyWarrior : public CEnemy
 {
 public:
-	// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	CHeavyWarrior(CPlayer* player, int level);
-	// ƒfƒXƒgƒ‰ƒNƒ^
+	// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	~CHeavyWarrior();
 
 	void InitStatus();
 
-	// UŒ‚’†‚©
+	// æ”»æ’ƒä¸­ã‹
 	bool IsAttacking() const override;
-	// UŒ‚ŠJn
+	// æ”»æ’ƒé–‹å§‹
 	void AttackStart() override;
-	// UŒ‚I—¹
+	// æ”»æ’ƒçµ‚äº†
 	void AttackEnd() override;
 
-	// ƒ_ƒ[ƒW‚ğó‚¯‚é
+	// ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ã‚‹
 	void TakeDamage(float damage, CObjectBase* causer) override;
-	// €–S
+	// æ­»äº¡
 	void Death() override;
-	// Õ“Ëˆ—
+	// è¡çªå‡¦ç†
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
-	// XV
+	// æ›´æ–°
 	void Update() override;
 
-	// CGameScene‚©‚çó‘Ô‚ÌˆÚsw¦‚ğó‚¯æ‚é
+	// CGameSceneã‹ã‚‰çŠ¶æ…‹ã®ç§»è¡ŒæŒ‡ç¤ºã‚’å—ã‘å–ã‚‹
 	void SetInBattle(int state);
 
 private:
-	// ƒAƒjƒ[ƒVƒ‡ƒ“‚Ìí—Ş
+	// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ç¨®é¡
 	enum class EAnimType
 	{
 		None = -1,
 
-		eTPose,		// Tƒ|[ƒY			0
-		eIdle,		// ‘Ò‹@				1
-		eIdleBattle,// í“¬’†‚Ì‘Ò‹@		2
-		eWalk,		// •às				3
-		eRun,		// ƒ_ƒbƒVƒ…			4
-		eAttack1,	// a‚èUŒ‚1		5
-		eAttack1B,	// a‚èUŒ‚1B		6
-		eAttack2,	// a‚èUŒ‚2		7
-		eAttackX,	// a‚è‚©‚©‚èUŒ‚	8
-		eKick,		// R‚èUŒ‚			9
-		eJumpStart,	// ƒWƒƒƒ“ƒvŠJn		10
-		eJump,		// ƒWƒƒƒ“ƒv’†		11
-		eJumpEnd,	// ƒWƒƒƒ“ƒvI—¹		12
-		eAvoidR,	// ‰ñ”ğ:‰E			13
-		eAvoidL,	// ‰ñ”ğ:¶			14
-		eHit,		// ‹Â‚¯”½‚è			15
-		eDeath,		// €–S				16
-		eVictory,	// Ÿ—˜				17
+		eTPose,		// Tãƒãƒ¼ã‚º			0
+		eIdle,		// å¾…æ©Ÿ				1
+		eIdleBattle,// æˆ¦é—˜ä¸­ã®å¾…æ©Ÿ		2
+		eWalk,		// æ­©è¡Œ				3
+		eRun,		// ãƒ€ãƒƒã‚·ãƒ¥			4
+		eAttack1,	// æ–¬ã‚Šæ”»æ’ƒ1		5
+		eAttack1B,	// æ–¬ã‚Šæ”»æ’ƒ1B		6
+		eAttack2,	// æ–¬ã‚Šæ”»æ’ƒ2		7
+		eAttackX,	// æ–¬ã‚Šã‹ã‹ã‚Šæ”»æ’ƒ	8
+		eKick,		// è¹´ã‚Šæ”»æ’ƒ			9
+		eJumpStart,	// ã‚¸ãƒ£ãƒ³ãƒ—é–‹å§‹		10
+		eJump,		// ã‚¸ãƒ£ãƒ³ãƒ—ä¸­		11
+		eJumpEnd,	// ã‚¸ãƒ£ãƒ³ãƒ—çµ‚äº†		12
+		eAvoidR,	// å›é¿:å³			13
+		eAvoidL,	// å›é¿:å·¦			14
+		eHit,		// ä»°ã‘åã‚Š			15
+		eDeath,		// æ­»äº¡				16
+		eVictory,	// å‹åˆ©				17
 
 		Num
 	};
 
-	// “G‚Ìó‘Ô
+	// æ•µã®çŠ¶æ…‹
 	enum class EState
 	{
-		eReserve,	// í“¬€”õ
-		eIdle,		// ‘Ò‹@
-		eChase,		// ’Ç‚¢‚©‚¯‚é
-		eAttack1,	// a‚èUŒ‚1
-		eAttack1B,	// a‚èUŒ‚1B(‰E“ã‚¬•¥‚¢)
-		eAttack2,	// a‚èUŒ‚2
-		eAttackX,	// a‚è‚©‚©‚èUŒ‚
-		eKick,		// R‚èUŒ‚
-		eJumpStart,	// ƒWƒƒƒ“ƒvŠJn
-		eJump,		// ƒWƒƒƒ“ƒv’†
-		eJumpEnd,	// ƒWƒƒƒ“ƒvI—¹
-		eAvoidR,	// ‰ñ”ğ:‰E
-		eAvoidL,	// ‰ñ”ğ:¶
-		eHit,		// ‹Â‚¯”½‚è
-		eDeath,		// €–S
-		eVictory,	// Ÿ—˜
+		eReserve,	// æˆ¦é—˜æº–å‚™
+		eIdle,		// å¾…æ©Ÿ
+		eChase,		// è¿½ã„ã‹ã‘ã‚‹
+		eAttack1,	// æ–¬ã‚Šæ”»æ’ƒ1
+		eAttack1B,	// æ–¬ã‚Šæ”»æ’ƒ1B(å³è–™ãæ‰•ã„)
+		eAttack2,	// æ–¬ã‚Šæ”»æ’ƒ2
+		eAttackX,	// æ–¬ã‚Šã‹ã‹ã‚Šæ”»æ’ƒ
+		eKick,		// è¹´ã‚Šæ”»æ’ƒ
+		eJumpStart,	// ã‚¸ãƒ£ãƒ³ãƒ—é–‹å§‹
+		eJump,		// ã‚¸ãƒ£ãƒ³ãƒ—ä¸­
+		eJumpEnd,	// ã‚¸ãƒ£ãƒ³ãƒ—çµ‚äº†
+		eAvoidR,	// å›é¿:å³
+		eAvoidL,	// å›é¿:å·¦
+		eHit,		// ä»°ã‘åã‚Š
+		eDeath,		// æ­»äº¡
+		eVictory,	// å‹åˆ©
 	};
 
+	// 1ç•ªç›®ã€Œæˆ¦è¡“ãƒ¬ã‚¤ãƒ¤ãƒ¼ã€(HPãƒ™ãƒ¼ã‚¹)
+	enum class ETactics
+	{
+		Aggressive,		// æ”»æ’ƒçš„ (HP 70%ä»¥ä¸Š)
+		Balanced,		// ãƒãƒ©ãƒ³ã‚¹ (HP 30%ã€œ70%)
+		Cautious		// æ…é‡     (HP 30%æœªæº€)
+	};
+
+	// 2ç•ªç›®ã€Œè¡Œå‹•ãƒ†ãƒ³ãƒãƒ¬ã‚¤ãƒ¤ãƒ¼ã€(ã‚¹ã‚¿ãƒŸãƒŠãƒ™ãƒ¼ã‚¹)
 	enum class EBattleTempo
 	{
-		Aggressive,   // U‚ß‚é
-		Neutral,      // —lqŒ©
-		Defensive     // ˆø‚¢‚Ä—§‚Ä’¼‚·
+		HighSt,	// é«˜ã‚¹ã‚¿ãƒŸãƒŠï¼šç©æ¥µçš„ã«æ”»æ’ƒ
+		MidSt,	// ä¸­ã‚¹ã‚¿ãƒŸãƒŠï¼šé€šå¸¸ã®ç«‹ã¡å›ã‚Š
+		LowSt	// ä½ã‚¹ã‚¿ãƒŸãƒŠï¼šå®ˆã‚Šã«å…¥ã‚‹
 	};
 
-	// ƒAƒjƒ[ƒVƒ‡ƒ“Ø‚è‘Ö‚¦
+	// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³åˆ‡ã‚Šæ›¿ãˆ
 	void ChangeAnimation(int type, bool restart = false) override;
 
-	// State‚Æ‚Í•Ê‚ÌuípƒŒƒCƒ„[vØ‚è‘Ö‚¦
+	// 1ç•ªç›® ç¾åœ¨ã®HPã‚’å‚ç…§ã—ã¦ã€Œæˆ¦è¡“ãƒ¬ã‚¤ãƒ¤ãƒ¼ã€åˆ‡ã‚Šæ›¿ãˆ
+	void UpdateTactics();
+
+	// 2ç•ªç›® ç¾åœ¨ã®ã‚¹ã‚¿ãƒŸãƒŠã‚’å‚ç…§ã—ã¦ã€Œè¡Œå‹•ãƒ†ãƒ³ãƒãƒ¬ã‚¤ãƒ¤ãƒ¼ã€åˆ‡ã‚Šæ›¿ãˆ
 	void UpdateBattleTempo();
 
-	// í“¬‘Šè‚Ì•û‚ÖŒü‚­
+	// æˆ¦è¡“Ã—ãƒ†ãƒ³ãƒã®ãƒãƒˆãƒªã‚¯ã‚¹ã‹ã‚‰æ¬¡ã®è¡Œå‹•ã‚¹ãƒ†ãƒ¼ãƒˆã‚’æ±ºå®š
+	EState DecideNextAction();
+
+	// æˆ¦é—˜ç›¸æ‰‹ã®æ–¹ã¸å‘ã
 	void LookAtBattleTarget(bool immediate = false);
 
-	// Œ»İ’n‚©‚ç–Ú“I’n‚Ü‚Å‚Ì‹——£‚ğ‹‚ß‚é
+	// ç¾åœ¨åœ°ã‹ã‚‰ç›®çš„åœ°ã¾ã§ã®è·é›¢ã‚’æ±‚ã‚ã‚‹
 	float GetDistToTarget();
 
-	// ƒXƒ^ƒ~ƒi©“®‰ñ•œ
+	// ã‚¹ã‚¿ãƒŸãƒŠè‡ªå‹•å›å¾©
 	void STRegene();
 
-	// ó‘ÔØ‚è‘Ö‚¦
+	// çŠ¶æ…‹åˆ‡ã‚Šæ›¿ãˆ
 	void ChangeState(int state) override;
 
-	// í“¬€”õó‘Ô
+	// æˆ¦é—˜æº–å‚™çŠ¶æ…‹
 	void UpdateReserve();
-	// ‘Ò‹@ó‘Ô‚ÌXVˆ—
+	// å¾…æ©ŸçŠ¶æ…‹ã®æ›´æ–°å‡¦ç†
 	void UpdateIdle();
-	// ’Ç‚¢‚©‚¯‚é‚ÌXVˆ—
+	// è¿½ã„ã‹ã‘ã‚‹æ™‚ã®æ›´æ–°å‡¦ç†
 	void UpdateChase();
-	// a‚èUŒ‚1‚ÌXVˆ—
+	// æ–¬ã‚Šæ”»æ’ƒ1ã®æ›´æ–°å‡¦ç†
 	void UpdateAttack1();
-	// a‚èUŒ‚1B‚ÌXVˆ—
+	// æ–¬ã‚Šæ”»æ’ƒ1Bã®æ›´æ–°å‡¦ç†
 	void UpdateAttack1B();
-	// a‚èUŒ‚2‚ÌXVˆ—
+	// æ–¬ã‚Šæ”»æ’ƒ2ã®æ›´æ–°å‡¦ç†
 	void UpdateAttack2();
-	// a‚èUŒ‚X‚ÌXVˆ—
+	// æ–¬ã‚Šæ”»æ’ƒXã®æ›´æ–°å‡¦ç†
 	void UpdateAttackX();
-	// ‚Ç‚Ì•ûŒü‚É‰ñ”ğ‚·‚é‚×‚«‚©‚ğŒˆ’è‚·‚é
+	// ã©ã®æ–¹å‘ã«å›é¿ã™ã‚‹ã¹ãã‹ã‚’æ±ºå®šã™ã‚‹
 	void SelectAvoid();
-	// ‰ñ”ğ:‰E
+	// å›é¿:å³
 	void UpdateAvoidR();
-	// ‰ñ”ğ:¶
+	// å›é¿:å·¦
 	void UpdateAvoidL();
-	// ‹Â‚¯”½‚èó‘Ô‚ÌXVˆ—
+	// ä»°ã‘åã‚ŠçŠ¶æ…‹ã®æ›´æ–°å‡¦ç†
 	void UpdateHit();
-	// €–Só‘Ô‚ÌXVˆ—
+	// æ­»äº¡çŠ¶æ…‹ã®æ›´æ–°å‡¦ç†
 	void UpdateDeath();
-	// Ÿ—˜
+	// å‹åˆ©
 	void UpdateVictory();
 
 
-	CCollider* mpKickCol;			// R‚èUŒ‚—pƒRƒ‰ƒCƒ_[
-	CCollider* mpTACol;				// æs“ü—Í(Type Ahead)—pƒRƒ‰ƒCƒ_[
+	CCollider* mpKickCol;			// è¹´ã‚Šæ”»æ’ƒç”¨ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼
+	CCollider* mpTACol;				// å…ˆè¡Œå…¥åŠ›(Type Ahead)ç”¨ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼
 	CTransform* mpRideObject;
 
 	CSound* mpSlashSE;
 	bool mIsPlayedSlashSE;
 	bool mIsSpawnedSlashEffect;
 
-	bool mIsBattle;					// í“¬ó‘Ô‚©
-	float mBattleIdletime;			// í“¬‚Ì‘Ò‹@ŠÔ
-	CObjectBase* mpBattleTarget;	// í“¬‘Šè
+	bool mIsBattle;					// æˆ¦é—˜çŠ¶æ…‹ã‹
+	float mBattleIdletime;			// æˆ¦é—˜æ™‚ã®å¾…æ©Ÿæ™‚é–“
+	CObjectBase* mpBattleTarget;	// æˆ¦é—˜ç›¸æ‰‹
 
-	// Œ•‚ÌƒNƒ‰ƒX
+	// å‰£ã®ã‚¯ãƒ©ã‚¹
 	CBusterSword* mpSword;
 
-	bool mCan1B;			// 1’i–ÚBUŒ‚‚ª‰Â”\‚©‚Ç‚¤‚©H
-	float m1BProb;			// 1’i–ÚBUŒ‚‚ğs‚¤Šm—¦
-	bool mNextAttack;		//˜A‘±UŒ‚‚ª—\–ñ‚³‚ê‚Ä‚¢‚é‚©‚Ç‚¤‚©
+	bool mCan1B;			// 1æ®µç›®Bæ”»æ’ƒãŒå¯èƒ½ã‹ã©ã†ã‹ï¼Ÿ
+	float m1BProb;			// 1æ®µç›®Bæ”»æ’ƒã‚’è¡Œã†ç¢ºç‡
+	int mNextAttackNum;		// æ¬¡ã®æ”»æ’ƒã¯ä½•æ®µç›®ã‹
 	CVector mAttackVec;
 	bool mInAttack = false;
 
 	CVector mAvoidVec;
 	bool  mAvoidMoving = false;
 
-	bool isCSV = false;		// csv‚ª“Ç‚İ‚Ü‚ê‚Ä‚¢‚é‚©‚Ç‚¤‚©
+	int mTactics;			// ç¾åœ¨ã®æˆ¦è¡“ãƒ¬ã‚¤ãƒ¤ãƒ¼ (ETactics)
+	bool isCSV = false;		// csvãŒèª­ã¿è¾¼ã¾ã‚Œã¦ã„ã‚‹ã‹ã©ã†ã‹
 };
