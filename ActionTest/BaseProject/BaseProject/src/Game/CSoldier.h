@@ -109,11 +109,11 @@ private:
 	// 攻撃パーターン用の列挙型
 	enum class EAttPattern
 	{
-		None,
-		PatternA,
-		PatternB,
-		PatternC,
-		PatternD
+		None,		// 攻撃無し
+		PatternA,	// 1段目のみ
+		PatternB,	// 1段目→2段目
+		PatternC,	// 1段目→2段目→3段目
+		PatternD	// 考え中
 	};
 
 	// アニメーション切り替え

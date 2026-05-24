@@ -23,9 +23,6 @@
 #define BATTLE_IDLE_TIME_MAX 2.0f
 #define DASH_DIST 75.0f				// 駆け寄ってくる距離
 #define ATTACK_RANGE 23.5f			// 攻撃を行う距離
-#define ATTACK2_PROB 60				// 2段目攻撃を行う確率（パーセント）
-#define ATTACKX_PROB 50				// X段目攻撃を行う確率（パーセント）
-#define ATTACK1B_PROB 40			// 1段目B攻撃を行う確率（パーセント）
 
 #define AT_GRACE_FRAME 6.0f			// 先行入力フレーム
 #define ATTACK1_START_FRAME 25.0f	// 斬り攻撃1の開始フレーム
@@ -461,17 +458,47 @@ void CSoldier::UpdateBattleTempo()
 
 // 戦術×テンポの3×3マトリクスから次の行動ステートを決定
 // 距離も考慮して最終的な行動を返す
-CSoldier::DecideNextAction()
+void CSoldier::DecideNextAction()
 {
 	float dist = GetDistToTarget();
-	int rand = Math::Rand(0, 99);
+	int rand = Math::Rand(1, 100);
 
-	// ===== 攻撃的 =====
-	if (mTactics == (int)ETactics::Aggressive)
+	// 戦術レイヤー
+	switch (static_cast<ETactics>(mTactics))
 	{
-		// 攻撃的 × 高スタミナ：とにかく攻める
-		if (mBattleTempo == (int)EBattleTempo::HighSt)
+	// ===== 攻撃的 =====
+	case ETactics::Aggressive:
+		// テンポレイヤー
+		switch (static_cast<EBattleTempo>(mBattleTempo))
 		{
+		// 攻撃的 × 高スタミナ：とにかく攻める
+		case EBattleTempo::HighSt:
+			// 攻撃が当たる距離にいるか
+			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
+			{
+				// ToDo : ここで攻撃のパターンを選択した後、
+				// EAttPatternを変更してAttPattGearBoxへ
+				if (rand <= 10)
+				{
+					mAttPattern = (int)EAttPattern::PatternA;
+				}
+				else if (rand <= 30)
+				{
+					mAttPattern = (int)EAttPattern::PatternB;
+				}
+				else
+				{
+					mAttPattern = (int)EAttPattern::PatternC;
+				}
+				AttPattGearBox();
+				break;
+			}
+			// 遠ければ接近の状態へ移行
+			ChangeState((int)EState::eChase);
+			break;
+
+		// 攻撃的 × 中スタミナ：攻め気は保つが少し抑えめ
+		case EBattleTempo::MidSt:
 			// 攻撃が当たる距離にいるか
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 			{
@@ -480,478 +507,110 @@ CSoldier::DecideNextAction()
 			}
 			// 遠ければ接近の状態へ移行
 			ChangeState((int)EState::eChase);
-		}
-		// 攻撃的 × 中スタミナ：攻め気は保つが少し抑えめ
-		else if (mBattleTempo == (int)EBattleTempo::MidSt)
-		{
-			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
-			{
-				// 次の攻撃は何段目か
-				if (mNextAttackNum = 1 && mSt >= mAttackCost1)
-				{
-					// 1段目B攻撃が許可されていれば
-					if (mCan1B)
-					{
-						rand = Math::Rand(0, 99);
-						if (rand < ATTACK1B_PROB)
-						{
-							return EState::eAttack1B;
-						}
-						else
-						{
-							return EState::eAttack1;
-						}
-					}
-					// 攻撃範囲内なら攻撃
-					return EState::eAttack1;
-				}
-				// 2段目
-				else if (mNextAttackNum == 2 && mSt >= mAttackCost2)
-				{
-					rand = Math::Rand(0, 99);
-					if (rand < ATTACK2_PROB + 15)
-					{
-						return EState::eAttack2;
-					}
-					else
-					{
-						mNextAttackNum = 1;
-						return EState::eIdle;
-					}
-				}
-				// 3段目
-				else if (mNextAttackNum == 3 && mSt >= mAttackCost3)
-				{
-					rand = Math::Rand(0, 99);
-					if (rand < ATTACKX_PROB + 20)
-					{
-						return EState::eAttackX;
-					}
-					else
-					{
-						mNextAttackNum = 1;
-						return EState::eIdle;
-					}
-				}
-				else
-				{
-					mNextAttackNum = 1;
-					return EState::eIdle;
-				}
-			}
-			// 遠ければ接近
-			return EState::eChase;
-		}
+			break;
+
 		// 攻撃的 × 低スタミナ：攻撃は積極的に行うが、追わない
-		else
-		{
+		case EBattleTempo::LowSt:
+		default:
+			// 攻撃が当たる距離にいるか
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 			{
-				// 次の攻撃は何段目か
-				if (mNextAttackNum == 1 && mSt >= mAttackCost1)
-				{
-					// 1段目B攻撃が許可されていれば
-					if (mCan1B)
-					{
-						rand = Math::Rand(0, 99);
-						if (rand < ATTACK1B_PROB)
-						{
-							return EState::eAttack1B;
-						}
-						else
-						{
-							return EState::eAttack1;
-						}
-					}
-					// 攻撃範囲内なら攻撃
-					return EState::eAttack1;
-				}
-				// 2段目
-				else if (mNextAttackNum == 2 && mSt >= mAttackCost2)
-				{
-					rand = Math::Rand(0, 99);
-					if (rand < ATTACK2_PROB + 5)
-					{
-						return EState::eAttack2;
-					}
-					else
-					{
-						mNextAttackNum = 1;
-						return EState::eIdle;
-					}
-				}
-				// 3段目
-				else if (mNextAttackNum = 3 && mSt >= mAttackCost3)
-				{
-					rand = Math::Rand(0, 99);
-					if (rand < ATTACKX_PROB + 10)
-					{
-						return EState::eAttackX;
-					}
-					else
-					{
-						mNextAttackNum = 1;
-						return EState::eIdle;
-					}
-				}
-				else
-				{
-					mNextAttackNum = 1;
-					return EState::eIdle;
-				}
+				// ToDo : ここで攻撃のパターンを選択した後、
+				// EAttPatternを変更してAttPattGearBoxへ
 			}
 			// 遠くても追わない
-			return EState::eIdle;
+			ChangeState((int)EState::eIdle);
+			break;
 		}
-	}
+		break;
+
 	// ===== バランス =====
-	else if (mTactics == (int)ETactics::Balanced)
-	{
+	case ETactics::Balanced:
+		switch (static_cast<EBattleTempo>(mBattleTempo))
+		{
 		// バランス × 高スタミナ：少しスタミナを残しつつ連撃
-		if (mBattleTempo == (int)EBattleTempo::HighSt)
-		{
+		case EBattleTempo::HighSt:
+			// 攻撃が当たる距離にいるか
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 			{
-				// 次の攻撃は何段目か
-				if (mNextAttackNum == 1 && mSt >= (mAttackCost1 + mAvoidCost))
-				{
-					// 1段目B攻撃が許可されていれば
-					if (mCan1B)
-					{
-						rand = Math::Rand(0, 99);
-						if (rand < ATTACK1B_PROB)
-						{
-							return EState::eAttack1B;
-						}
-						else
-						{
-							return EState::eAttack1;
-						}
-					}
-					// 攻撃範囲内なら攻撃
-					return EState::eAttack1;
-				}
-				// 2段目
-				else if (mNextAttackNum == 2 && mSt >= (mAttackCost2 + mAvoidCost))
-				{
-					rand = Math::Rand(0, 99);
-					if (rand < ATTACK2_PROB + 25)
-					{
-						return EState::eAttack2;
-					}
-					else
-					{
-						mNextAttackNum = 1;
-						return EState::eIdle;
-					}
-				}
-				// 3段目
-				else if (mNextAttackNum = 3 && mSt >= (mAttackCost3 + mAvoidCost))
-				{
-					rand = Math::Rand(0, 99);
-					if (rand < ATTACKX_PROB + 25)
-					{
-						return EState::eAttackX;
-					}
-					else
-					{
-						mNextAttackNum = 1;
-						return EState::eIdle;
-					}
-				}
+				// ToDo : ここで攻撃のパターンを選択した後、
+				// EAttPatternを変更してAttPattGearBoxへ
+				mAttPattern = (int)EAttPattern::PatternA;
 			}
-			// 遠ければ接近
-			return EState::eChase;
-		}
+			// 遠ければ接近の状態へ移行
+			ChangeState((int)EState::eChase);
+			break;
+
 		// バランス × 中スタミナ：確実な戦い方
-		else if (mBattleTempo == (int)EBattleTempo::MidSt)
-		{
+		case EBattleTempo::MidSt:
+			// 攻撃が当たる距離にいるか
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 			{
-				// 次の攻撃は何段目か
-				if (mNextAttackNum == 1 && mSt >= (mAttackCost1 + mAvoidCost))
-				{
-					// 1段目B攻撃が許可されていれば
-					if (mCan1B)
-					{
-						rand = Math::Rand(0, 99);
-						if (rand < ATTACK1B_PROB)
-						{
-							return EState::eAttack1B;
-						}
-						else
-						{
-							return EState::eAttack1;
-						}
-					}
-					// 攻撃
-					return EState::eAttack1;
-				}
-				// 2段目
-				else if (mNextAttackNum == 2 && mSt >= (mAttackCost2 + mAvoidCost))
-				{
-					rand = Math::Rand(0, 99);
-					if (rand < ATTACK2_PROB)
-					{
-						return EState::eAttack2;
-					}
-					else
-					{
-						mNextAttackNum = 1;
-						return EState::eIdle;
-					}
-
-				}
-				// 3段目
-				else if (mNextAttackNum == 3 && mSt >= (mAttackCost3 + mAvoidCost))
-				{
-					rand = Math::Rand(0, 99);
-					if (rand < ATTACKX_PROB)
-					{
-						return EState::eAttackX;
-					}
-					else
-					{
-						mNextAttackNum = 1;
-						return EState::eIdle;
-					}
-				}
+				// ToDo : ここで攻撃のパターンを選択した後、
+				// EAttPatternを変更してAttPattGearBoxへ
 			}
-			// 遠ければ接近
-			return EState::eChase;
-		}
+			// 遠ければ接近の状態へ移行
+			ChangeState((int)EState::eChase);
+			break;
+
 		// バランス × 低スタミナ：下がってスタミナ回復を優先
-		else
-		{
+		case EBattleTempo::LowSt:
+		default:
+			// 攻撃が当たる距離にいるか
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 			{
-				// 次の攻撃は何段目か
-				if (mNextAttackNum == 1 && mSt >= (mAttackCost1 + mAvoidCost))
-				{
-					// 1段目B攻撃が許可されていれば
-					if (mCan1B)
-					{
-						rand = Math::Rand(0, 99);
-						if (rand < ATTACK1B_PROB)
-						{
-							return EState::eAttack1B;
-						}
-						else
-						{
-							return EState::eAttack1;
-						}
-					}
-					// 攻撃
-					return EState::eAttack1;
-				}
-				// 2段目
-				else if (mNextAttackNum == 2 && mSt >= (mAttackCost2 + mAvoidCost))
-				{
-					rand = Math::Rand(0, 99);
-					if (rand < ATTACK2_PROB)
-					{
-						return EState::eAttack2;
-					}
-					else
-					{
-						mNextAttackNum = 1;
-						return EState::eIdle;
-					}
-
-				}
-				// 3段目
-				else if (mNextAttackNum == 3 && mSt >= (mAttackCost3 + mAvoidCost))
-				{
-					rand = Math::Rand(0, 99);
-					if (rand < ATTACKX_PROB)
-					{
-						return EState::eAttackX;
-					}
-					else
-					{
-						mNextAttackNum = 1;
-						return EState::eIdle;
-					}
-				}
+				// ToDo : ここで攻撃のパターンを選択した後、
+				// EAttPatternを変更してAttPattGearBoxへ
 			}
-			// 追わない
-			return EState::eIdle;
+			// 遠くても追わない
+			ChangeState((int)EState::eIdle);
+			break;
 		}
-	}
+		break;
+
 	// ===== 慎重 (HP 30%未満) =====
-	else
-	{
+	case ETactics::Cautious:
+	default:
+		switch (static_cast<EBattleTempo>(mBattleTempo))
+		{
 		// 慎重 × 高スタミナ：スタミナがあっても追わずに戦う
-		if (mBattleTempo == (int)EBattleTempo::HighSt)
-		{
+		case EBattleTempo::HighSt:
+			// 攻撃が当たる距離にいるか
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 			{
-				// 次の攻撃は何段目か
-				if (mNextAttackNum == 1 && mSt >= (mAttackCost1 + mAvoidCost))
-				{
-					// 1段目B攻撃が許可されていれば
-					if (mCan1B)
-					{
-						rand = Math::Rand(0, 99);
-						if (rand < ATTACK1B_PROB)
-						{
-							return EState::eAttack1B;
-						}
-						else
-						{
-							return EState::eAttack1;
-						}
-					}
-					// 攻撃
-					return EState::eAttack1;
-				}
-				// 2段目
-				else if (mNextAttackNum == 2 && mSt >= (mAttackCost2 + mAvoidCost))
-				{
-					rand = Math::Rand(0, 99);
-					if (rand < ATTACK2_PROB + 10)
-					{
-						return EState::eAttack2;
-					}
-					else
-					{
-						mNextAttackNum = 1;
-						return EState::eIdle;
-					}
-
-				}
-				// 3段目
-				else if (mNextAttackNum == 3 && mSt >= (mAttackCost3 + mAvoidCost))
-				{
-					rand = Math::Rand(0, 99);
-					if (rand < ATTACKX_PROB + 5)
-					{
-						return EState::eAttackX;
-					}
-					else
-					{
-						mNextAttackNum = 1;
-						return EState::eIdle;
-					}
-				}
+				// ToDo : ここで攻撃のパターンを選択した後、
+				// EAttPatternを変更してAttPattGearBoxへ
 			}
-			// 基本は待機（追わない）
-			return EState::eIdle;
-		}
+			// 遠くても追わない
+			ChangeState((int)EState::eIdle);
+			break;
+
 		// 慎重 × 中スタミナ：距離を取りたがる
-		else if (mBattleTempo == (int)EBattleTempo::MidSt)
-		{
+		case EBattleTempo::MidSt:
+			// 攻撃が当たる距離にいるか
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 			{
-				// 次の攻撃は何段目か
-				if (mNextAttackNum == 1 && mSt >= (mAttackCost1 + mAvoidCost))
-				{
-					// 1段目B攻撃が許可されていれば
-					if (mCan1B)
-					{
-						rand = Math::Rand(0, 99);
-						if (rand < ATTACK1B_PROB)
-						{
-							return EState::eAttack1B;
-						}
-						else
-						{
-							return EState::eAttack1;
-						}
-					}
-					// 攻撃
-					return EState::eAttack1;
-				}
-				// 2段目
-				else if (mNextAttackNum == 2 && mSt >= (mAttackCost2 + mAvoidCost))
-				{
-					rand = Math::Rand(0, 99);
-					if (rand < ATTACK2_PROB)
-					{
-						return EState::eAttack2;
-					}
-					else
-					{
-						mNextAttackNum = 1;
-						return EState::eIdle;
-					}
-
-				}
-				// 3段目
-				else if (mNextAttackNum == 3 && mSt >= (mAttackCost3 + mAvoidCost))
-				{
-					rand = Math::Rand(0, 99);
-					if (rand < ATTACKX_PROB)
-					{
-						return EState::eAttackX;
-					}
-					else
-					{
-						mNextAttackNum = 1;
-						return EState::eIdle;
-					}
-				}
+				// ToDo : ここで攻撃のパターンを選択した後、
+				// EAttPatternを変更してAttPattGearBoxへ
 			}
-			// 基本は待機（追わない）
-			return EState::eIdle;
-		}
+			// 遠くても追わない
+			ChangeState((int)EState::eIdle);
+			break;
+
 		// 慎重 × 低スタミナ：瀕死かつ息切れ。必死にスタミナ回復
-		else
-		{
+		case EBattleTempo::LowSt:
+		default:
+			// 攻撃が当たる距離にいるか
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 			{
-				// 次の攻撃は何段目か
-				if (mNextAttackNum == 1 && mSt >= (mAttackCost1 + mAvoidCost))
-				{
-					// 1段目B攻撃が許可されていれば
-					if (mCan1B)
-					{
-						rand = Math::Rand(0, 99);
-						if (rand < ATTACK1B_PROB)
-						{
-							return EState::eAttack1B;
-						}
-						else
-						{
-							return EState::eAttack1;
-						}
-					}
-					// 攻撃
-					return EState::eAttack1;
-				}
-				// 2段目
-				else if (mNextAttackNum == 2 && mSt >= (mAttackCost2 + mAvoidCost))
-				{
-					rand = Math::Rand(0, 99);
-					if (rand < ATTACK2_PROB)
-					{
-						return EState::eAttack2;
-					}
-					else
-					{
-						mNextAttackNum = 1;
-						return EState::eIdle;
-					}
-
-				}
-				// 3段目
-				else if (mNextAttackNum == 3 && mSt >= (mAttackCost3 + mAvoidCost))
-				{
-					rand = Math::Rand(0, 99);
-					if (rand < ATTACKX_PROB - 5)
-					{
-						return EState::eAttackX;
-					}
-					else
-					{
-						mNextAttackNum = 1;
-						return EState::eIdle;
-					}
-				}
+				// ToDo : ここで攻撃のパターンを選択した後、
+				// EAttPatternを変更してAttPattGearBoxへ
 			}
-			// 基本は待機（追わない）
-			return EState::eIdle;
+			// 遠くても追わない
+			ChangeState((int)EState::eIdle);
+			break;
 		}
+		break;
 	}
 }
 
@@ -1058,7 +717,6 @@ void CSoldier::UpdateIdle()
 
 			// 3×3マトリクスで次の行動を決定
 			DecideNextAction();
-
 			break;
 		}
 	}
@@ -1454,39 +1112,14 @@ void CSoldier::UpdateAttackX()
 
 		break;
 	case 5:
-		// 攻撃アニメーションが終了したら、
+		// アニメーション終了したら、待機状態へ戻す
 		if (IsAnimationFinished())
-		{
-			mpSword->Rotation(SWORD_OFFSET_ROT);
-
-			// 確率で、隙ができる
-			float rand = Math::Rand(0.0f, 99.9f);
-			if (rand < mNegProb)
-			{
-				mStateStep++;
-			}
-			else
-			{
-				// 待機状態へ移行
-				ChangeState((int)EState::eIdle);
-				ChangeAnimation((int)EAnimType::eIdle);
-			}
-		}
-		break;
-
-	case 6:
-		STRegene();
-		// 連続攻撃の終了なら、n秒間隙ができる
-		if (mElapsedTime < mNegTime)
-		{
-			mElapsedTime += Times::DeltaTime();
-		}
-		// 待ち時間が終了したら、削除
-		else
 		{
 			// 待機状態へ移行
 			ChangeState((int)EState::eIdle);
 			ChangeAnimation((int)EAnimType::eIdle);
+			mAttStep++;
+			AttPattGearBox();
 		}
 		break;
 	}
@@ -1744,6 +1377,12 @@ void CSoldier::UpdateVictory()
 
 void CSoldier::AttPattGearBox()
 {
+	if (GetDistToTarget() > ATTACK_RANGE + (mStepMag * 0.5f))
+	{
+		// Idleへ移行
+		ChangeState((int)EState::eIdle);
+		mAttPattern = (int)EAttPattern::None;
+	}
 	switch (mAttPattern)
 	{
 	case (int)EAttPattern::PatternA:
@@ -1759,7 +1398,7 @@ void CSoldier::AttPattGearBox()
 		AttPatternD();
 		break;
 	default:
-
+		break;
 	}
 }
 
@@ -1795,6 +1434,32 @@ void CSoldier::AttPatternB()
 		mAttStep = 0;
 		break;
 	}
+}
+
+void CSoldier::AttPatternC()
+{
+	switch (mAttStep)
+	{
+	case 0:
+		// Attack1へ移行
+		ChangeState((int)EState::eAttack1);
+		break;
+	case 1:
+		// Attack2へ移行
+		ChangeState((int)EState::eAttack2);
+		break;
+	case 2:
+		// AttackXへ移行
+		ChangeState((int)EState::eAttackX);
+		break;
+	case 3:
+		mAttStep = 0;
+		break;
+	}
+}
+
+void CSoldier::AttPatternD()
+{
 }
 
 // 更新
