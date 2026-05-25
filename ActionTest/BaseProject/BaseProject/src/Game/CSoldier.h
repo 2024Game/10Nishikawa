@@ -86,6 +86,7 @@ private:
 		eAvoidR,	// 回避:右
 		eAvoidL,	// 回避:左
 		eHit,		// 仰け反り
+		eNeglect,	// 攻撃後の隙
 		eDeath,		// 死亡
 		eVictory,	// 勝利
 	};
@@ -160,6 +161,8 @@ private:
 	void UpdateAvoidR();
 	// 回避:左
 	void UpdateAvoidL();
+	// 攻撃後の隙あり状態の更新処理
+	void UpdateNeg();
 	// 仰け反り状態の更新処理
 	void UpdateHit();
 	// 死亡状態の更新処理

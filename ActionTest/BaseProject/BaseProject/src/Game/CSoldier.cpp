@@ -504,6 +504,19 @@ void CSoldier::DecideNextAction()
 			{
 				// ToDo : ここで攻撃のパターンを選択した後、
 				// EAttPatternを変更してAttPattGearBoxへ
+				if (rand <= 15)
+				{
+					mAttPattern = (int)EAttPattern::PatternA;
+				}
+				else if (rand <= 30)
+				{
+					mAttPattern = (int)EAttPattern::PatternB;
+				}
+				else
+				{
+					mAttPattern = (int)EAttPattern::PatternC;
+				}
+				AttPattGearBox();
 			}
 			// 遠ければ接近の状態へ移行
 			ChangeState((int)EState::eChase);
@@ -517,6 +530,19 @@ void CSoldier::DecideNextAction()
 			{
 				// ToDo : ここで攻撃のパターンを選択した後、
 				// EAttPatternを変更してAttPattGearBoxへ
+				if (rand <= 15)
+				{
+					mAttPattern = (int)EAttPattern::PatternA;
+				}
+				else if (rand <= 35)
+				{
+					mAttPattern = (int)EAttPattern::PatternB;
+				}
+				else
+				{
+					mAttPattern = (int)EAttPattern::PatternC;
+				}
+				AttPattGearBox();
 			}
 			// 遠くても追わない
 			ChangeState((int)EState::eIdle);
@@ -535,7 +561,19 @@ void CSoldier::DecideNextAction()
 			{
 				// ToDo : ここで攻撃のパターンを選択した後、
 				// EAttPatternを変更してAttPattGearBoxへ
-				mAttPattern = (int)EAttPattern::PatternA;
+				if (rand <= 10)
+				{
+					mAttPattern = (int)EAttPattern::PatternA;
+				}
+				else if (rand <= 45)
+				{
+					mAttPattern = (int)EAttPattern::PatternB;
+				}
+				else
+				{
+					mAttPattern = (int)EAttPattern::PatternC;
+				}
+				AttPattGearBox();
 			}
 			// 遠ければ接近の状態へ移行
 			ChangeState((int)EState::eChase);
@@ -548,6 +586,19 @@ void CSoldier::DecideNextAction()
 			{
 				// ToDo : ここで攻撃のパターンを選択した後、
 				// EAttPatternを変更してAttPattGearBoxへ
+				if (rand <= 15)
+				{
+					mAttPattern = (int)EAttPattern::PatternA;
+				}
+				else if (rand <= 50)
+				{
+					mAttPattern = (int)EAttPattern::PatternB;
+				}
+				else
+				{
+					mAttPattern = (int)EAttPattern::PatternC;
+				}
+				AttPattGearBox();
 			}
 			// 遠ければ接近の状態へ移行
 			ChangeState((int)EState::eChase);
@@ -561,6 +612,19 @@ void CSoldier::DecideNextAction()
 			{
 				// ToDo : ここで攻撃のパターンを選択した後、
 				// EAttPatternを変更してAttPattGearBoxへ
+				if (rand <= 20)
+				{
+					mAttPattern = (int)EAttPattern::PatternA;
+				}
+				else if (rand <= 55)
+				{
+					mAttPattern = (int)EAttPattern::PatternB;
+				}
+				else
+				{
+					mAttPattern = (int)EAttPattern::PatternC;
+				}
+				AttPattGearBox();
 			}
 			// 遠くても追わない
 			ChangeState((int)EState::eIdle);
@@ -580,6 +644,19 @@ void CSoldier::DecideNextAction()
 			{
 				// ToDo : ここで攻撃のパターンを選択した後、
 				// EAttPatternを変更してAttPattGearBoxへ
+				if (rand <= 10)
+				{
+					mAttPattern = (int)EAttPattern::PatternA;
+				}
+				else if (rand <= 35)
+				{
+					mAttPattern = (int)EAttPattern::PatternB;
+				}
+				else
+				{
+					mAttPattern = (int)EAttPattern::PatternC;
+				}
+				AttPattGearBox();
 			}
 			// 遠くても追わない
 			ChangeState((int)EState::eIdle);
@@ -592,6 +669,19 @@ void CSoldier::DecideNextAction()
 			{
 				// ToDo : ここで攻撃のパターンを選択した後、
 				// EAttPatternを変更してAttPattGearBoxへ
+				if (rand <= 20)
+				{
+					mAttPattern = (int)EAttPattern::PatternA;
+				}
+				else if (rand <= 55)
+				{
+					mAttPattern = (int)EAttPattern::PatternB;
+				}
+				else
+				{
+					mAttPattern = (int)EAttPattern::PatternC;
+				}
+				AttPattGearBox();
 			}
 			// 遠くても追わない
 			ChangeState((int)EState::eIdle);
@@ -605,6 +695,19 @@ void CSoldier::DecideNextAction()
 			{
 				// ToDo : ここで攻撃のパターンを選択した後、
 				// EAttPatternを変更してAttPattGearBoxへ
+				if (rand <= 20)
+				{
+					mAttPattern = (int)EAttPattern::PatternA;
+				}
+				else if (rand <= 60)
+				{
+					mAttPattern = (int)EAttPattern::PatternB;
+				}
+				else
+				{
+					mAttPattern = (int)EAttPattern::PatternC;
+				}
+				AttPattGearBox();
 			}
 			// 遠くても追わない
 			ChangeState((int)EState::eIdle);
@@ -1252,6 +1355,36 @@ void CSoldier::UpdateAvoidL()
 	}
 }
 
+void CSoldier::UpdateNeg()
+{
+	STRegene();
+	// 戦闘時の待機
+	ChangeAnimation((int)EAnimType::eIdleBattle);
+	// ステップごとに処理を切り替え
+	// 何か処理をはさむかもなのでswitch制御にしています
+	switch (mStateStep)
+	{
+		// ステップ0：待機時間
+	case 0:
+		// n秒間隙ができる
+		if (mElapsedTime < mNegTime)
+		{
+			mElapsedTime += Times::DeltaTime();
+		}
+		// 待ち時間が終了したら、終了
+		else
+		{
+			mStateStep++;
+		}
+		break;
+	case 1:
+		// 待機状態へ移行
+		ChangeState((int)EState::eIdle);
+		ChangeAnimation((int)EAnimType::eIdle);
+		break;
+	}
+}
+
 // 仰け反り状態の更新処理
 void CSoldier::UpdateHit()
 {
@@ -1265,36 +1398,13 @@ void CSoldier::UpdateHit()
 		mpTACol->SetEnable(false);
 		ChangeAnimation((int)EAnimType::eHit, true);
 		mStateStep++;
+		mAttStep = 0;
 		break;
 		// ステップ1：アニメーション終了待ち
 	case 1:
 		// 仰け反りアニメーションが終了したら、
 		// 待機状態へ戻す
 		if (IsAnimationFinished())
-		{
-			// 確率で、隙ができる
-			float rand = Math::Rand(0.0f, 99.9f);
-			if (rand < mNegProb / 3)
-			{
-				mStateStep++;
-			}
-			else
-			{
-				// 待機状態へ移行
-				ChangeState((int)EState::eIdle);
-				ChangeAnimation((int)EAnimType::eIdle);
-			}
-		}
-		break;
-	case 2:
-		STRegene();
-		// 連続攻撃の終了なら、n秒間隙ができる
-		if (mElapsedTime < mNegTime)
-		{
-			mElapsedTime += Times::DeltaTime();
-		}
-		// 待ち時間が終了したら、削除
-		else
 		{
 			// 待機状態へ移行
 			ChangeState((int)EState::eIdle);
@@ -1412,8 +1522,18 @@ void CSoldier::AttPatternA()
 		break;
 	case 1:
 		mAttStep = 0;
-		// Idleへ移行
-		ChangeState((int)EState::eIdle);
+		int rand = Math::Rand(1, 100);
+		// 確率で隙ができる
+		if (rand <= mNegProb)
+		{
+			// Neglectへ移行
+			ChangeState((int)EState::eNeglect);
+		}
+		else
+		{
+			// Idleへ移行
+			ChangeState((int)EState::eIdle);
+		}
 		break;
 	}
 }
@@ -1432,6 +1552,18 @@ void CSoldier::AttPatternB()
 		break;
 	case 2:
 		mAttStep = 0;
+		int rand = Math::Rand(1, 100);
+		// 確率で隙ができる
+		if (rand <= mNegProb)
+		{
+			// Neglectへ移行
+			ChangeState((int)EState::eNeglect);
+		}
+		else
+		{
+			// Idleへ移行
+			ChangeState((int)EState::eIdle);
+		}
 		break;
 	}
 }
@@ -1454,6 +1586,18 @@ void CSoldier::AttPatternC()
 		break;
 	case 3:
 		mAttStep = 0;
+		int rand = Math::Rand(1, 100);
+		// 確率で隙ができる
+		if (rand <= mNegProb)
+		{
+			// Neglectへ移行
+			ChangeState((int)EState::eNeglect);
+		}
+		else
+		{
+			// Idleへ移行
+			ChangeState((int)EState::eIdle);
+		}
 		break;
 	}
 }
@@ -1486,6 +1630,8 @@ void CSoldier::Update()
 	case EState::eAvoidR:	UpdateAvoidR();		break;
 		// 回避:左
 	case EState::eAvoidL:	UpdateAvoidL();		break;
+		// 後隙
+	case EState::eNeglect:	UpdateNeg();		break;
 		// 仰け反り
 	case EState::eHit:		UpdateHit();		break;
 		// 死亡状態
