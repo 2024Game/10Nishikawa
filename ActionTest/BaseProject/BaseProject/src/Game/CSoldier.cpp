@@ -76,6 +76,7 @@ const std::vector<CEnemy::AnimData> ANIM_DATA =
 	{ ANIM_PATH"jump_end.x",	false,	26.0f,	1.0f	},	// ジャンプ終了
 	{ ANIM_PATH"avoidR.x",		true,	58.0f,	1.5f	},	// 回避:右
 	{ ANIM_PATH"avoidL.x",		true,	58.0f,	1.5f	},	// 回避:左
+	{ ANIM_PATH"avoidB.x",		true,	98.0f,	1.5f	},	// 回避:後ろ
 	{ ANIM_PATH"hit.x",			false,	44.0f,	0.85f	},	// 仰け反り
 	{ ANIM_PATH"death.x",		false,	182.0f,	1.0f	},	// 死亡
 	{ ANIM_PATH"victory.x",		true,	271.0f,	1.0f	},	// 勝利
@@ -853,7 +854,11 @@ void CSoldier::UpdateChase()
 		// 待機状態へ移行
 		ChangeState((int)EState::eIdle);
 	}
-
+	else if (dist <= SLASH_RANGE)
+	{
+		// 待機状態へ移行
+		ChangeState((int)EState::eIdle);
+	}
 	// 攻撃範囲外
 	else if (dist >= DASH_DIST && mBattleTempo == (int)EBattleTempo::HighSt && mTactics != (int)ETactics::Cautious)
 	{
@@ -1276,7 +1281,7 @@ void CSoldier::UpdateSlash()
 		// 攻撃終了フレームまで経過したか
 		if (GetAnimationFrame() >= ATTACK1_END_FRAME)
 		{
-			new CSlash
+			CSlash* slash = new CSlash
 			(
 				this,
 				Position() + CVector(0.0f, 10.0f, 0.0f) + VectorZ() * 5.0f,
@@ -1419,6 +1424,51 @@ void CSoldier::UpdateAvoidL()
 			Position(Position() + move);
 
 			if (GetAnimationFrame() >= 50.0f)
+			{
+				mAvoidMoving = false;
+				mStateStep++;
+			}
+		}
+		break;
+	case 3:
+		// 回避アニメーションが終了したら
+		if (IsAnimationFinished())
+		{
+			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::ePlayer, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
+			mIsGravity = true;
+			// 待機状態へ移行
+			ChangeState((int)EState::eIdle);
+			ChangeAnimation((int)EAnimType::eIdle);
+		}
+		break;
+	}
+}
+
+void CSoldier::UpdateAvoidB()
+{
+	switch (mStateStep)
+	{
+	case 0:
+		// 回避アニメーションを開始
+		ChangeAnimation((int)EAnimType::eAvoidB, true);
+		mStateStep++;
+		break;
+	case 1:
+		if (GetAnimationFrame() >= 12.0f && !mAvoidMoving)
+		{
+			mAvoidMoving = true;
+			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
+			mStateStep++;
+		}
+		break;
+	case 2:
+		if (mAvoidMoving)
+		{
+			// 1秒あたりの移動速度
+			CVector move = -VectorZ() * 125.0f * Times::DeltaTime();
+			Position(Position() + move);
+
+			if (GetAnimationFrame() >= 52.0f)
 			{
 				mAvoidMoving = false;
 				mStateStep++;
@@ -1692,9 +1742,21 @@ void CSoldier::AttPatternD()
 	{
 	case 0:
 		// Attack1へ移行
-		ChangeState((int)EState::eSlash);
+		ChangeState((int)EState::eAttack1);
 		break;
 	case 1:
+		if (GetDistToTarget() <= SLASH_RANGE)
+		{
+			// Slashへ移行
+			ChangeState((int)EState::eSlash);
+		}
+		else
+		{
+			// Idleへ移行
+			ChangeState((int)EState::eIdle);
+		}
+		break;
+	case 2:
 		mAttStep = 0;
 		int rand = Math::Rand(1, 100);
 		// 確率で隙ができる

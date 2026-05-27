@@ -93,6 +93,8 @@ private:
 	void UpdateAvoidR();
 	// 回避:左
 	void UpdateAvoidL();
+	// 回避:後ろ
+	void UpdateAvoidB();
 	// 仰け反り
 	void UpdateHit();
 	// 死亡
@@ -136,6 +138,7 @@ private:
 		eJumpEnd,	// ジャンプ終了
 		eAvoidR,	// 回避:右
 		eAvoidL,	// 回避:左
+		eAvoidB,	// 回避:後ろ
 		eHit,		// 仰け反り
 		eDeath,		// 死亡
 		eVictory,	// 勝利
@@ -174,6 +177,7 @@ private:
 		eJumpEnd,	// ジャンプ終了
 		eAvoidR,	// 回避:右
 		eAvoidL,	// 回避:左
+		eAvoidB,	// 回避:後ろ
 		eHit,		// 仰け反り
 		eDeath,		// 死亡
 		eVictory,	// 勝利

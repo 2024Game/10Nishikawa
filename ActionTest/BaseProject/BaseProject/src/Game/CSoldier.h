@@ -62,9 +62,10 @@ private:
 		eJumpEnd,	// ジャンプ終了		12
 		eAvoidR,	// 回避:右			13
 		eAvoidL,	// 回避:左			14
-		eHit,		// 仰け反り			15
-		eDeath,		// 死亡				16
-		eVictory,	// 勝利				17
+		eAvoidB,	// 回避:後ろ		15
+		eHit,		// 仰け反り			16
+		eDeath,		// 死亡				17
+		eVictory,	// 勝利				18
 		
 		Num
 	};
@@ -86,6 +87,7 @@ private:
 		eJumpEnd,	// ジャンプ終了
 		eAvoidR,	// 回避:右
 		eAvoidL,	// 回避:左
+		eAvoidB,	// 回避:後ろ
 		eHit,		// 仰け反り
 		eNeglect,	// 攻撃後の隙
 		eDeath,		// 死亡
@@ -164,6 +166,8 @@ private:
 	void UpdateAvoidR();
 	// 回避:左
 	void UpdateAvoidL();
+	// 回避:後ろ
+	void UpdateAvoidB();
 	// 攻撃後の隙あり状態の更新処理
 	void UpdateNeg();
 	// 仰け反り状態の更新処理

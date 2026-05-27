@@ -84,6 +84,7 @@ const CPlayer::AnimData CPlayer::ANIM_DATA[] =
 	{ ANIM_PATH"jump_end.x",	false,	26.0f,	1.0f	},	// ジャンプ終了
 	{ ANIM_PATH"avoidR.x",		false,	58.0f,	1.5f	},	// 回避:右
 	{ ANIM_PATH"avoidL.x",		false,	58.0f,	1.5f	},	// 回避:左
+	{ ANIM_PATH"avoidB.x",		true,	78.0f,	1.5f	},	// 回避:後ろ98
 	{ ANIM_PATH"hit.x",			false,	44.0f,	1.0f	},	// 仰け反り
 	{ ANIM_PATH"death.x",		false,	182.0f,	1.0f	},	// 死亡
 	{ ANIM_PATH"victory.x",		true,	271.0f,	1.0f	},	// 勝利
@@ -948,6 +949,65 @@ void CPlayer::UpdateAvoidL()
 	}
 }
 
+void CPlayer::UpdateAvoidB()
+{
+	{
+		switch (mStateStep)
+		{
+		case 0:
+			// 回避アニメーションを開始
+			ChangeAnimation(EAnimType::eAvoidB, true);
+			mStateStep++;
+			break;
+		case 1:
+			if (GetAnimationFrame() >= 12.0f && !mAvoidMoving)
+			{
+				SetInvincible(true);
+				mAvoidMoving = true;
+				mStateStep++;
+			}
+			break;
+		case 2:
+			if (mAvoidMoving)
+			{
+				// 1秒あたりの移動速度
+				mMoveSpeed = mAvoidVec * 125.0f * Times::DeltaTime();
+
+				if (GetAnimationFrame() >= 52.0f)
+				{
+					mAvoidMoving = false;
+					mMoveSpeed = CVector::zero;
+					mStateStep++;
+				}
+			}
+			break;
+		case 3:
+			// 回避アニメーションが終了したら
+			if (IsAnimationFinished())
+			{
+				if (!mInJustAction)
+				{
+					SetInvincible(false);
+					mIsGravity = true;
+					Times::SetTimeScale(1.0f);
+					// 待機状態へ移行
+					ChangeState(EState::eIdle);
+					ChangeAnimation(EAnimType::eIdle);
+				}
+				else
+				{
+					mIsGravity = true;
+					Times::SetTimeScale(0.1f);
+					// スライド斬り攻撃状態へ移行
+					ChangeState(EState::eSlideAtt);
+				}
+				mInJustAction = false;
+			}
+			break;
+		}
+	}
+}
+
 // 仰け反り
 void CPlayer::UpdateHit()
 {
@@ -1068,6 +1128,23 @@ void CPlayer::AvoidJudge()
 		// プレイヤーの移動ベクトルを求める
 		mAvoidVec = CalcMoveVec();
 		ChangeState(EState::eAvoidL);
+		mIsGravity = false;
+	}
+	else if (CInput::PushKey(VK_RBUTTON) && mSt >= mAvoidCost)
+	{
+		mpTACol->SetEnable(false);
+		if (mInTypeAhead)
+		{
+			Times::SetTimeScale(0.2f);
+			SetInvincible(true);
+			mInJustAction = true;
+		}
+		mNextAttack = false;
+		CCharaBase::UseStamina(mAvoidCost);
+		mMoveSpeed = CVector::zero;
+		// プレイヤーの移動ベクトルを求める
+		mAvoidVec = -VectorZ();
+		ChangeState(EState::eAvoidB);
 		mIsGravity = false;
 	}
 }
@@ -1334,6 +1411,8 @@ void CPlayer::Update()
 		case EState::eAvoidR:		UpdateAvoidR();			break;
 		// 回避:左
 		case EState::eAvoidL:		UpdateAvoidL();			break;
+		// 回避:後ろ
+		case EState::eAvoidB:		UpdateAvoidB();			break;
 		// 仰け反り
 		case EState::eHit:			UpdateHit();			break;
 		// 死亡
@@ -1360,9 +1439,12 @@ void CPlayer::Update()
 	// 移動
 	Position(Position() + moveSpeed);
 
-	if (mState != EState::eDeath &&
+	if (
+		mState != EState::eDeath &&
 		mState != EState::eAvoidR &&
-		mState != EState::eAvoidL)
+		mState != EState::eAvoidL &&
+		mState != EState::eAvoidB
+		)
 	{
 		// プレイヤーを移動方向へ向ける
 		CVector current = VectorZ();
