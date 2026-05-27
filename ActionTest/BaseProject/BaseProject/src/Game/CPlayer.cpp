@@ -299,7 +299,7 @@ void CPlayer::UpdateIdle()
 {
 	if (mHp > 0.0f)
 	{
-		CCharaBase::GainStamina(8.25f * Times::DeltaTime() * mStRegeneMag);
+		CCharaBase::GainStamina(18.25f * Times::DeltaTime() * mStRegeneMag);
 	}
 
 	// Ú’n‚µ‚Ä‚¢‚ê‚ÎA

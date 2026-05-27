@@ -4,6 +4,7 @@
 #include "CGreatSword.h"
 #include "Maths.h"
 #include "CEnemyStatusLoader.h"
+#include "CSlash.h"
 
 // アニメーションのパス
 #define ANIM_PATH "Character\\TestPlayer\\Anims\\"
@@ -23,6 +24,7 @@
 #define BATTLE_IDLE_TIME_MAX 2.0f
 #define DASH_DIST 75.0f				// 駆け寄ってくる距離
 #define ATTACK_RANGE 23.5f			// 攻撃を行う距離
+#define SLASH_RANGE 100.0f			// 遠距離攻撃を行う距離
 
 #define AT_GRACE_FRAME 6.0f			// 先行入力フレーム
 #define ATTACK1_START_FRAME 25.0f	// 斬り攻撃1の開始フレーム
@@ -90,7 +92,6 @@ CSoldier::CSoldier(CPlayer* player, int enemyLevel)
 	, mpBattleTarget(nullptr)
 	, mCan1B(false)
 	, mTactics((int)ETactics::Aggressive)
-	, mNextAttackNum(1)
 	, mAttPattern((int)EAttPattern::None)
 {
 	mpBattleTarget = player;
@@ -439,7 +440,7 @@ void CSoldier::UpdateBattleTempo()
 	{
 		// 慎重：スタミナが多くてもLowStになりやすい
 		highThreshold = 0.8f;
-		lowThreshold = 0.5f;
+		lowThreshold = 0.4f;
 	}
 
 	if (stRate >= highThreshold)
@@ -493,6 +494,12 @@ void CSoldier::DecideNextAction()
 				AttPattGearBox();
 				break;
 			}
+			else if (dist <= SLASH_RANGE)
+			{
+				mAttPattern = (int)EAttPattern::PatternD;
+				AttPattGearBox();
+				break;
+			}
 			// 遠ければ接近の状態へ移行
 			ChangeState((int)EState::eChase);
 			break;
@@ -524,7 +531,6 @@ void CSoldier::DecideNextAction()
 
 		// 攻撃的 × 低スタミナ：攻撃は積極的に行うが、追わない
 		case EBattleTempo::LowSt:
-		default:
 			// 攻撃が当たる距離にいるか
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 			{
@@ -574,6 +580,7 @@ void CSoldier::DecideNextAction()
 					mAttPattern = (int)EAttPattern::PatternC;
 				}
 				AttPattGearBox();
+				break;
 			}
 			// 遠ければ接近の状態へ移行
 			ChangeState((int)EState::eChase);
@@ -599,6 +606,7 @@ void CSoldier::DecideNextAction()
 					mAttPattern = (int)EAttPattern::PatternC;
 				}
 				AttPattGearBox();
+				break;
 			}
 			// 遠ければ接近の状態へ移行
 			ChangeState((int)EState::eChase);
@@ -606,7 +614,6 @@ void CSoldier::DecideNextAction()
 
 		// バランス × 低スタミナ：下がってスタミナ回復を優先
 		case EBattleTempo::LowSt:
-		default:
 			// 攻撃が当たる距離にいるか
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 			{
@@ -625,6 +632,7 @@ void CSoldier::DecideNextAction()
 					mAttPattern = (int)EAttPattern::PatternC;
 				}
 				AttPattGearBox();
+				break;
 			}
 			// 遠くても追わない
 			ChangeState((int)EState::eIdle);
@@ -634,7 +642,6 @@ void CSoldier::DecideNextAction()
 
 	// ===== 慎重 (HP 30%未満) =====
 	case ETactics::Cautious:
-	default:
 		switch (static_cast<EBattleTempo>(mBattleTempo))
 		{
 		// 慎重 × 高スタミナ：スタミナがあっても追わずに戦う
@@ -657,6 +664,7 @@ void CSoldier::DecideNextAction()
 					mAttPattern = (int)EAttPattern::PatternC;
 				}
 				AttPattGearBox();
+				break;
 			}
 			// 遠くても追わない
 			ChangeState((int)EState::eIdle);
@@ -682,6 +690,7 @@ void CSoldier::DecideNextAction()
 					mAttPattern = (int)EAttPattern::PatternC;
 				}
 				AttPattGearBox();
+				break;
 			}
 			// 遠くても追わない
 			ChangeState((int)EState::eIdle);
@@ -689,7 +698,6 @@ void CSoldier::DecideNextAction()
 
 		// 慎重 × 低スタミナ：瀕死かつ息切れ。必死にスタミナ回復
 		case EBattleTempo::LowSt:
-		default:
 			// 攻撃が当たる距離にいるか
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
 			{
@@ -708,6 +716,7 @@ void CSoldier::DecideNextAction()
 					mAttPattern = (int)EAttPattern::PatternC;
 				}
 				AttPattGearBox();
+				break;
 			}
 			// 遠くても追わない
 			ChangeState((int)EState::eIdle);
@@ -846,9 +855,7 @@ void CSoldier::UpdateChase()
 	}
 
 	// 攻撃範囲外
-	else if (dist >= DASH_DIST &&
-			mBattleTempo == (int)EBattleTempo::HighSt &&
-			mTactics != (int)ETactics::Cautious)
+	else if (dist >= DASH_DIST && mBattleTempo == (int)EBattleTempo::HighSt && mTactics != (int)ETactics::Cautious)
 	{
 		mpSword->Rotation(DASH_SWORD_OFFSET_ROT);
 		// 走行アニメーションを再生
@@ -943,7 +950,6 @@ void CSoldier::UpdateAttack1()
 		{
 			// 攻撃終了処理を呼び出す
 			AttackEnd();
-			mNextAttackNum = 2;
 			mInAttack = false;
 			mStateStep++;
 		}
@@ -1020,7 +1026,6 @@ void CSoldier::UpdateAttack1B()
 		{
 			// 攻撃終了処理を呼び出す
 			AttackEnd();
-			mNextAttackNum = 2;
 			mInAttack = false;
 			mStateStep++;
 		}
@@ -1116,7 +1121,6 @@ void CSoldier::UpdateAttack2()
 		{
 			// 攻撃終了処理を呼び出す
 			AttackEnd();
-			mNextAttackNum = 3;
 			mInAttack = false;
 
 			mStateStep++;
@@ -1215,6 +1219,86 @@ void CSoldier::UpdateAttackX()
 
 		break;
 	case 5:
+		// アニメーション終了したら、待機状態へ戻す
+		if (IsAnimationFinished())
+		{
+			// 待機状態へ移行
+			ChangeState((int)EState::eIdle);
+			ChangeAnimation((int)EAnimType::eIdle);
+			mAttStep++;
+			AttPattGearBox();
+		}
+		break;
+	}
+}
+
+void CSoldier::UpdateSlash()
+{
+	// ステップごとに処理を分ける
+	switch (mStateStep)
+	{
+		// ステップ0：攻撃アニメーション再生
+	case 0:
+		ChangeAnimation((int)EAnimType::eAttack2, true);
+		mAttackVec = VectorZ();
+		CCharaBase::UseStamina(mAttackCost1);
+		mStateStep++;
+		break;
+	case 1:
+		// 先行入力フレーム開始フレームまで経過したか
+		if (GetAnimationFrame() >= ATTACK1_START_FRAME - AT_GRACE_FRAME)
+		{
+			// 先行入力コライダーをオンにする
+			mpTACol->SetEnable(true);
+			mStateStep++;
+		}
+		break;
+		// ステップ2：攻撃開始
+	case 2:
+		// 攻撃を開始するまで、徐々に戦闘相手の方向へ向く
+		LookAtBattleTarget();
+
+		// 攻撃開始フレームまで経過したか
+		if (GetAnimationFrame() >= ATTACK1_START_FRAME)
+		{
+			// 斬撃SEを再生
+			mpSlashSE->Play();
+			// 攻撃開始処理を呼び出す
+			AttackStart();
+
+			mInAttack = true;
+
+			mStateStep++;
+		}
+		break;
+		// ステップ3：攻撃終了
+	case 3:
+		// 攻撃終了フレームまで経過したか
+		if (GetAnimationFrame() >= ATTACK1_END_FRAME)
+		{
+			new CSlash
+			(
+				this,
+				Position() + CVector(0.0f, 10.0f, 0.0f) + VectorZ() * 5.0f,
+				VectorZ(),
+				150.0f * 1.3f,
+				SLASH_RANGE
+			);
+			// 攻撃終了処理を呼び出す
+			AttackEnd();
+			mInAttack = false;
+			mStateStep++;
+		}
+
+		if (mInAttack)
+		{
+			// 1秒あたりの移動速度
+			CVector move = mAttackVec * (5.0f * mStepMag * mAtSpeedMag) * Times::DeltaTime();
+			Position(Position() + move);
+		}
+		break;
+		// ステップ4：攻撃アニメーション終了待ち
+	case 4:
 		// アニメーション終了したら、待機状態へ戻す
 		if (IsAnimationFinished())
 		{
@@ -1487,7 +1571,7 @@ void CSoldier::UpdateVictory()
 
 void CSoldier::AttPattGearBox()
 {
-	if (GetDistToTarget() > ATTACK_RANGE + (mStepMag * 0.5f))
+	if (GetDistToTarget() > ATTACK_RANGE + (mStepMag * 0.5f) && mAttPattern != (int)EAttPattern::PatternD)
 	{
 		// Idleへ移行
 		ChangeState((int)EState::eIdle);
@@ -1604,6 +1688,28 @@ void CSoldier::AttPatternC()
 
 void CSoldier::AttPatternD()
 {
+	switch (mAttStep)
+	{
+	case 0:
+		// Attack1へ移行
+		ChangeState((int)EState::eSlash);
+		break;
+	case 1:
+		mAttStep = 0;
+		int rand = Math::Rand(1, 100);
+		// 確率で隙ができる
+		if (rand <= mNegProb)
+		{
+			// Neglectへ移行
+			ChangeState((int)EState::eNeglect);
+		}
+		else
+		{
+			// Idleへ移行
+			ChangeState((int)EState::eIdle);
+		}
+		break;
+	}
 }
 
 // 更新
@@ -1626,6 +1732,8 @@ void CSoldier::Update()
 	case EState::eAttack2:	UpdateAttack2();	break;
 		// 斬り攻撃X
 	case EState::eAttackX:	UpdateAttackX();	break;
+		// 斬撃(遠距離)攻撃
+	case EState::eSlash:	UpdateSlash();		break;
 		// 回避:右
 	case EState::eAvoidR:	UpdateAvoidR();		break;
 		// 回避:左
@@ -1672,6 +1780,8 @@ void CSoldier::Update()
 	CDebugPrint::Print("EnemyState:%d\n", mState);
 	CDebugPrint::Print("EnemyAnimType:%d\n", mAnimType);
 	CDebugPrint::Print("Tactics:%d Tempo:%d\n", mTactics, mBattleTempo);
+	CDebugPrint::Print("EAttPattern:%d\n", mAttPattern);
+	CDebugPrint::Print("mAttStep:%d\n", mAttStep);
 #endif // _DEBUG
 }
 

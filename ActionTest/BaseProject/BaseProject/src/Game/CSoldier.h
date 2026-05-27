@@ -79,6 +79,7 @@ private:
 		eAttack1B,	// 斬り攻撃1B(右薙ぎ払い)
 		eAttack2,	// 斬り攻撃2
 		eAttackX,	// 斬りかかり攻撃
+		eSlash,		// 斬撃(遠距離)攻撃
 		eKick,		// 蹴り攻撃
 		eJumpStart,	// ジャンプ開始
 		eJump,		// ジャンプ中
@@ -155,6 +156,8 @@ private:
 	void UpdateAttack2();
 	// 斬り攻撃Xの更新処理
 	void UpdateAttackX();
+	// 斬り攻撃1の更新処理
+	void UpdateSlash();
 	// どの方向に回避するべきかを決定する
 	void SelectAvoid();
 	// 回避:右
@@ -201,7 +204,6 @@ private:
 
 	bool mCan1B;			// 1段目B攻撃が可能かどうか？
 	float m1BProb;			// 1段目B攻撃を行う確率
-	int mNextAttackNum;		// 次の攻撃は何段目か
 	CVector mAttackVec;
 	bool mInAttack = false;
 	int mAttPattern;
