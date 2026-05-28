@@ -1326,32 +1326,155 @@ void CSoldier::SelectAvoid()
 	myForward.Y(0.0f);
 	myForward.Normalize();
 
-	// 自分 → 敵 の方向
-	CVector toTarget = mpBattleTarget->Position() - Position();
-	toTarget.Y(0.0f);
-	toTarget.Normalize();
+	// 右方向
+	CVector right = CVector::Cross(myForward, CVector::up);
+	right.Y(0.0f);
+	right.Normalize();
 
-	// 外積で左右判定
-	// Yが + → 敵は右側
-	// Yが - → 敵は左側
-	float crossY = CVector::Cross(myForward, toTarget).Y();
+	// 左方向
+	CVector left = -right;
 
-	if (crossY > 0.0f)
+	// 後方向
+	CVector back = -myForward;
+
+	// 回避距離
+	const float avoidDist = 30.0f;
+
+	// レイ開始位置（少し浮かせる）
+	CVector start = Position();
+	start.Y(start.Y() + 10.0f);
+
+	// 各方向の終了位置
+	CVector rightEnd = start + right * avoidDist;
+	CVector leftEnd = start + left * avoidDist;
+	CVector backEnd = start + back * avoidDist;
+
+	// 壁チェック
+	bool hitRight = false;
+	bool hitLeft = false;
+	bool hitBack = false;
+
+	float rightDist = avoidDist;
+	float leftDist = avoidDist;
+	float backDist = avoidDist;
+
+	CHitInfo hit;
+
+	//-----------------------------------
+	// 右チェック
+	//-----------------------------------
+	for (auto col : CCollisionManager::Instance()->Colliders())
 	{
-		// 敵が右 → 左に回避
-		mAvoidVec = -CVector::Cross(myForward, CVector::up);
-		mAvoidVec.Normalize();
-		ChangeState((int)EState::eAvoidL);
-		mIsGravity = false;
+		if (col->Layer() != ELayer::eField) continue;
+
+		if (CCollider::CollisionRay(col, start, rightEnd, &hit))
+		{
+			hitRight = true;
+			rightDist = hit.dist;
+			break;
+		}
 	}
-	else if (crossY <= 0.0f)
+
+	//-----------------------------------
+	// 左チェック
+	//-----------------------------------
+	for (auto col : CCollisionManager::Instance()->Colliders())
 	{
-		// 敵が左 → 右に回避
-		mAvoidVec = CVector::Cross(myForward, CVector::up);
-		mAvoidVec.Normalize();
+		if (col->Layer() != ELayer::eField) continue;
+
+		if (CCollider::CollisionRay(col, start, leftEnd, &hit))
+		{
+			hitLeft = true;
+			leftDist = hit.dist;
+			break;
+		}
+	}
+
+	//-----------------------------------
+	// 後チェック
+	//-----------------------------------
+	for (auto col : CCollisionManager::Instance()->Colliders())
+	{
+		if (col->Layer() != ELayer::eField) continue;
+
+		if (CCollider::CollisionRay(col, start, backEnd, &hit))
+		{
+			hitBack = true;
+			backDist = hit.dist;
+			break;
+		}
+	}
+
+	//-----------------------------------
+	// 一番安全な方向を選択
+	//-----------------------------------
+	float bestDist = -1.0f;
+
+	enum class EAvoidType
+	{
+		Right,
+		Left,
+		Back
+	};
+
+	EAvoidType avoid = EAvoidType::Back;
+
+	if (!hitRight && avoidDist > bestDist)
+	{
+		bestDist = avoidDist;
+		avoid = EAvoidType::Right;
+	}
+	else if (rightDist > bestDist)
+	{
+		bestDist = rightDist;
+		avoid = EAvoidType::Right;
+	}
+
+	if (!hitLeft && avoidDist > bestDist)
+	{
+		bestDist = avoidDist;
+		avoid = EAvoidType::Left;
+	}
+	else if (leftDist > bestDist)
+	{
+		bestDist = leftDist;
+		avoid = EAvoidType::Left;
+	}
+
+	if (!hitBack && avoidDist > bestDist)
+	{
+		bestDist = avoidDist;
+		avoid = EAvoidType::Back;
+	}
+	else if (backDist > bestDist)
+	{
+		bestDist = backDist;
+		avoid = EAvoidType::Back;
+	}
+
+	//-----------------------------------
+	// 回避実行
+	//-----------------------------------
+	switch (avoid)
+	{
+	case EAvoidType::Right:
+		mAvoidVec = right;
 		ChangeState((int)EState::eAvoidR);
-		mIsGravity = false;
+		break;
+
+	case EAvoidType::Left:
+		mAvoidVec = left;
+		ChangeState((int)EState::eAvoidL);
+		break;
+
+	case EAvoidType::Back:
+		mAvoidVec = back;
+		ChangeState((int)EState::eAvoidB);
+		break;
 	}
+
+	mAvoidVec.Normalize();
+	mIsGravity = false;
 }
 
 void CSoldier::UpdateAvoidR()

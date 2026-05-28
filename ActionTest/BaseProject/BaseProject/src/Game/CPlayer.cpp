@@ -31,7 +31,7 @@
 #define INDICATOR_OFFSET_Y 5.0f
 
 //#define ATTACK_START_FRAME 26.0f	// 斬り攻撃の開始フレーム
-//#define ATTACK_END_FRAME 50.0f		// 斬り攻撃の終了フレーム
+//#define ATTACK_END_FRAME 50.0f	// 斬り攻撃の終了フレーム
 
 #define ATTACK1_START_FRAME 25.0f	// 斬り攻撃1の開始フレーム
 #define ATTACK1_END_FRAME 55.0f		// 斬り攻撃1の終了フレーム
