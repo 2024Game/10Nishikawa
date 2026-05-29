@@ -141,6 +141,11 @@ void CCollisionManager::CollisionAll()
 	}
 }
 
+std::list<CCollider*>& CCollisionManager::GetColList()
+{
+	return mColliderList;
+}
+
 #if _DEBUG
 // 全コライダーを描画
 void CCollisionManager::Render()

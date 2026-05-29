@@ -5,6 +5,7 @@
 #include "Maths.h"
 #include "CEnemyStatusLoader.h"
 #include "CSlash.h"
+#include "CCollisionManager.h"
 
 // アニメーションのパス
 #define ANIM_PATH "Character\\TestPlayer\\Anims\\"
@@ -1338,7 +1339,7 @@ void CSoldier::SelectAvoid()
 	CVector back = -myForward;
 
 	// 回避距離
-	const float avoidDist = 30.0f;
+	const float avoidDist = 75.0f;
 
 	// レイ開始位置（少し浮かせる）
 	CVector start = Position();
@@ -1363,7 +1364,7 @@ void CSoldier::SelectAvoid()
 	//-----------------------------------
 	// 右チェック
 	//-----------------------------------
-	for (auto col : CCollisionManager::Instance()->Colliders())
+	for (auto col : CCollisionManager::Instance()->GetColList())
 	{
 		if (col->Layer() != ELayer::eField) continue;
 
@@ -1378,7 +1379,7 @@ void CSoldier::SelectAvoid()
 	//-----------------------------------
 	// 左チェック
 	//-----------------------------------
-	for (auto col : CCollisionManager::Instance()->Colliders())
+	for (auto col : CCollisionManager::Instance()->GetColList())
 	{
 		if (col->Layer() != ELayer::eField) continue;
 
@@ -1393,7 +1394,7 @@ void CSoldier::SelectAvoid()
 	//-----------------------------------
 	// 後チェック
 	//-----------------------------------
-	for (auto col : CCollisionManager::Instance()->Colliders())
+	for (auto col : CCollisionManager::Instance()->GetColList())
 	{
 		if (col->Layer() != ELayer::eField) continue;
 

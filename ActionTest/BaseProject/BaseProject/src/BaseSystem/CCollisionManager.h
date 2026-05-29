@@ -43,6 +43,8 @@ public:
 	/// </summary>
 	void CollisionAll();
 
+	std::list<CCollider*>& GetColList();
+
 #if _DEBUG
 	// 全コライダーを描画
 	void Render();
