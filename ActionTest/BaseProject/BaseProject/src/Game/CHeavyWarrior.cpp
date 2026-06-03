@@ -4,6 +4,7 @@
 #include "CBusterSword.h"
 #include "Maths.h"
 #include "CEnemyStatusLoader.h"
+#include "CCollisionManager.h"
 
 // アニメーションのパス
 #define ANIM_PATH "Character\\TestPlayer\\Anims\\"
@@ -74,6 +75,7 @@ const std::vector<CEnemy::AnimData> ANIM_DATA =
 	{ ANIM_PATH"jump_end.x",	false,	26.0f,	1.0f	},	// ジャンプ終了
 	{ ANIM_PATH"avoidR.x",		true,	58.0f,	1.5f	},	// 回避:右
 	{ ANIM_PATH"avoidL.x",		true,	58.0f,	1.5f	},	// 回避:左
+	{ ANIM_PATH"avoidB.x",		true,	98.0f,	1.5f	},	// 回避:後ろ
 	{ ANIM_PATH"hit.x",			false,	44.0f,	0.90f	},	// 仰け反り
 	{ ANIM_PATH"death.x",		false,	182.0f,	1.0f	},	// 死亡
 	{ ANIM_PATH"victory.x",		true,	271.0f,	1.0f	},	// 勝利
@@ -1625,6 +1627,22 @@ void CHeavyWarrior::UpdateVictory()
 }
 
 void CHeavyWarrior::AttPattGearBox()
+{
+}
+
+void CHeavyWarrior::AttPatternA()
+{
+}
+
+void CHeavyWarrior::AttPatternB()
+{
+}
+
+void CHeavyWarrior::AttPatternC()
+{
+}
+
+void CHeavyWarrior::AttPatternD()
 {
 }
 

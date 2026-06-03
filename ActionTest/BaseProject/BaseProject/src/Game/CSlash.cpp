@@ -1,4 +1,5 @@
 #include "CSlash.h"
+#include "CColliderSphere.h"
 
 // コンストラクタ
 CSlash::CSlash(CObjectBase* owner, const CVector& pos, const CVector& dir,
@@ -15,11 +16,23 @@ CSlash::CSlash(CObjectBase* owner, const CVector& pos, const CVector& dir,
 
 	mpModel = CResourceManager::Get<CModel>("Slash");
 	mpModel->SetupEffectSettings();
+
+	// エフェクトのコライダーを作成
+	mpCollider = new CColliderSphere
+	(
+		this, ELayer::eAttackCol,
+		10.0f, true, 1.0f
+	);
+	// タグとレイヤーの衝突設定
+	mpCollider->SetCollisionTags(hitTags);
+	mpCollider->SetCollisionLayers(hitLayers);
 }
 
 // デストラクタ
 CSlash::~CSlash()
 {
+	// コライダーを削除
+	SAFE_DELETE(mpCollider);
 }
 
 // 更新

@@ -26,6 +26,7 @@ public:
 private:
 	CObjectBase* mpOwner;	// このエフェクトの持ち主
 	CModel* mpModel;		// エフェクトのモデルデータ
+	CCollider* mpCollider;	// このエフェクトのコライダー
 	CVector mMoveSpeed;		// 移動速度
 	float mKillMoveDist;	// 移動したら消える距離
 	float mMovedDist;		// 現在移動した距離
