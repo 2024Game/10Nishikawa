@@ -62,9 +62,10 @@ private:
 		eJumpEnd,	// ジャンプ終了		12
 		eAvoidR,	// 回避:右			13
 		eAvoidL,	// 回避:左			14
-		eHit,		// 仰け反り			15
-		eDeath,		// 死亡				16
-		eVictory,	// 勝利				17
+		eAvoidB,	// 回避:後ろ		15
+		eHit,		// 仰け反り			16
+		eDeath,		// 死亡				17
+		eVictory,	// 勝利				18
 
 		Num
 	};
@@ -85,7 +86,9 @@ private:
 		eJumpEnd,	// ジャンプ終了
 		eAvoidR,	// 回避:右
 		eAvoidL,	// 回避:左
+		eAvoidB,	// 回避:後ろ
 		eHit,		// 仰け反り
+		eNeglect,	// 攻撃後の隙
 		eDeath,		// 死亡
 		eVictory,	// 勝利
 	};
@@ -106,6 +109,16 @@ private:
 		LowSt	// 低スタミナ：守りに入る
 	};
 
+	// 攻撃パーターン用の列挙型
+	enum class EAttPattern
+	{
+		None,		// 攻撃無し
+		PatternA,	// 1段目のみ
+		PatternB,	// 1段目→2段目
+		PatternC,	// 1段目→2段目→3段目
+		PatternD	// 考え中
+	};
+
 	// アニメーション切り替え
 	void ChangeAnimation(int type, bool restart = false) override;
 
@@ -116,7 +129,7 @@ private:
 	void UpdateBattleTempo();
 
 	// 戦術×テンポのマトリクスから次の行動ステートを決定
-	EState DecideNextAction();
+	void DecideNextAction();
 
 	// 戦闘相手の方へ向く
 	void LookAtBattleTarget(bool immediate = false);
@@ -150,12 +163,29 @@ private:
 	void UpdateAvoidR();
 	// 回避:左
 	void UpdateAvoidL();
+	// 回避:後ろ
+	void UpdateAvoidB();
+	// 攻撃後の隙あり状態の更新処理
+	void UpdateNeg();
 	// 仰け反り状態の更新処理
 	void UpdateHit();
 	// 死亡状態の更新処理
 	void UpdateDeath();
 	// 勝利
 	void UpdateVictory();
+
+	// ----- 連続攻撃などの攻撃パターン -----
+	// 行動連結用ギアボックス
+	// 行動ごとにここに戻ってきて次の行動に連結する
+	void AttPattGearBox();
+	// 1段目のみ
+	void AttPatternA();
+	// 1段目→2段目
+	void AttPatternB();
+	// 1段目→2段目→3段目
+	void AttPatternC();
+	// 
+	void AttPatternD();
 
 
 	CCollider* mpKickCol;			// 蹴り攻撃用コライダー
@@ -175,13 +205,12 @@ private:
 
 	bool mCan1B;			// 1段目B攻撃が可能かどうか？
 	float m1BProb;			// 1段目B攻撃を行う確率
-	int mNextAttackNum;		// 次の攻撃は何段目か
 	CVector mAttackVec;
 	bool mInAttack = false;
+	int mAttPattern;
 
 	CVector mAvoidVec;
 	bool  mAvoidMoving = false;
 
 	int mTactics;			// 現在の戦術レイヤー (ETactics)
-	bool isCSV = false;		// csvが読み込まれているかどうか
 };

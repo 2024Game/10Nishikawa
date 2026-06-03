@@ -244,6 +244,8 @@ bool CSoldier::IsAttacking() const
 	if (mState == (int)EState::eAttack2) return true;
 	// 斬りX攻撃中
 	if (mState == (int)EState::eAttackX) return true;
+	// 斬りX攻撃中
+	if (mState == (int)EState::eSlash) return true;
 	// 蹴り攻撃攻撃中
 	if (mState == (int)EState::eKick) return true;
 
@@ -264,7 +266,8 @@ void CSoldier::AttackStart()
 	if (mState == (int)EState::eAttack1 
 		|| mState == (int)EState::eAttack1B 
 		|| mState == (int)EState::eAttack2 
-		|| mState == (int)EState::eAttackX)
+		|| mState == (int)EState::eAttackX
+		|| mState == (int)EState::eSlash)
 	{
 		mpSword->SetEnableCol(true);
 	}
@@ -1049,33 +1052,11 @@ void CSoldier::UpdateAttack1B()
 		if (IsAnimationFinished())
 		{
 			mpSword->Rotation(SWORD_OFFSET_ROT);
-			// 確率で、隙ができる
-			float rand = Math::Rand(0.0f, 99.9f);
-			if (rand < mNegProb * 0.8f)
-			{
-				mStateStep++;
-			}
-			else
-			{
-				// 待機状態へ移行
-				ChangeState((int)EState::eIdle);
-				ChangeAnimation((int)EAnimType::eIdle);
-			}
-		}
-		break;
-	case 5:
-		STRegene();
-		// 連続攻撃の終了なら、n秒間隙ができる
-		if (mElapsedTime < mNegTime)
-		{
-			mElapsedTime += Times::DeltaTime();
-		}
-		// 待ち時間が終了したら、削除
-		else
-		{
 			// 待機状態へ移行
 			ChangeState((int)EState::eIdle);
 			ChangeAnimation((int)EAnimType::eIdle);
+			mAttStep++;
+			AttPattGearBox();
 		}
 		break;
 	}
@@ -1128,7 +1109,6 @@ void CSoldier::UpdateAttack2()
 			// 攻撃終了処理を呼び出す
 			AttackEnd();
 			mInAttack = false;
-
 			mStateStep++;
 		}
 
