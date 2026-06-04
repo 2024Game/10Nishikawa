@@ -4,7 +4,6 @@
 //キャラクタクラスのインクルード
 #include "CRideableObject.h"
 #include "CSound.h"
-
 #include "CPlayer.h"
 
 class CCollider;
@@ -205,6 +204,8 @@ private:
 
 	// 剣のクラス
 	CGreatSword* mpSword;
+	// 斬撃オブジェクト
+	CSlash* mpSlash;
 
 	bool mCan1B;			// 1段目B攻撃が可能かどうか？
 	float m1BProb;			// 1段目B攻撃を行う確率

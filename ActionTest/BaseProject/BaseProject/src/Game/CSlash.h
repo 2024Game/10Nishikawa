@@ -14,7 +14,7 @@ public:
 	/// <param name="dir">移動方向</param>
 	/// <param name="speed">移動速度</param>
 	/// <param name="dist">移動したら消える距離</param>
-	CSlash(CObjectBase* owner, const CVector& pos, const CVector& dir, float speed, float dist);
+	CSlash(CObjectBase* owner, const CVector& pos, const CVector& dir, float speed, float dist, Tags hitTags, Layers hitLayers);
 	// デストラクタ
 	~CSlash();
 
@@ -22,6 +22,9 @@ public:
 	void Update() override;
 	// 描画
 	void Render() override;
+
+	// コライダーを取得
+	CCollider* Collider() const;
 
 private:
 	CObjectBase* mpOwner;	// このエフェクトの持ち主

@@ -2,9 +2,9 @@
 #include "CColliderCapsule.h"
 #include "CColliderSphere.h"
 #include "CGreatSword.h"
+#include "CSlash.h"
 #include "Maths.h"
 #include "CEnemyStatusLoader.h"
-#include "CSlash.h"
 #include "CCollisionManager.h"
 
 // アニメーションのパス
@@ -89,6 +89,7 @@ CSoldier::CSoldier(CPlayer* player, int enemyLevel)
 	, mIsPlayedSlashSE(false)
 	, mIsSpawnedSlashEffect(false)
 	, mpSword(nullptr)
+	, mpSlash(nullptr)
 	, mIsBattle(true)
 	, mBattleIdletime(0.0f)
 	, mpBattleTarget(nullptr)
@@ -244,7 +245,7 @@ bool CSoldier::IsAttacking() const
 	if (mState == (int)EState::eAttack2) return true;
 	// 斬りX攻撃中
 	if (mState == (int)EState::eAttackX) return true;
-	// 斬りX攻撃中
+	// 斬撃(遠距離)攻撃中
 	if (mState == (int)EState::eSlash) return true;
 	// 蹴り攻撃攻撃中
 	if (mState == (int)EState::eKick) return true;
@@ -349,6 +350,7 @@ void CSoldier::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		CCharaBase* hitChara = dynamic_cast<CCharaBase*>(other->Owner());
 		if (hitChara != nullptr && !IsAttackHitObj(hitChara))
 		{
+			
 			AddAttackHitObj(hitChara);
 			// 状態に合わせて、更新処理を切り替える
 			switch (mState)
@@ -361,6 +363,8 @@ void CSoldier::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			case (int)EState::eAttack2:		hitChara->TakeDamage(6 * mAttackMag, this);	break;
 				// 斬り攻撃X
 			case (int)EState::eAttackX:		hitChara->TakeDamage(5 * mAttackMag, this);	break;
+				// 斬り攻撃X
+			case (int)EState::eSlash:		hitChara->TakeDamage(5 * mAttackMag, this);	break;
 			}
 		}
 	}
@@ -372,6 +376,15 @@ void CSoldier::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		{
 			AddAttackHitObj(hitChara);
 			hitChara->TakeDamage(1, this);
+		}
+	}
+	else if (self == mpSlash->Collider())
+	{
+		CCharaBase* hitChara = dynamic_cast<CCharaBase*>(other->Owner());
+		if (hitChara != nullptr && !IsAttackHitObj(hitChara))
+		{
+			AddAttackHitObj(hitChara);
+			hitChara->TakeDamage(5 * mAttackMag, this);
 		}
 	}
 }
@@ -1262,13 +1275,15 @@ void CSoldier::UpdateSlash()
 		// 攻撃終了フレームまで経過したか
 		if (GetAnimationFrame() >= ATTACK1_END_FRAME)
 		{
-			CSlash* slash = new CSlash
+			mpSlash = new CSlash
 			(
 				this,
 				Position() + CVector(0.0f, 10.0f, 0.0f) + VectorZ() * 5.0f,
 				VectorZ(),
 				150.0f * 1.3f,
-				SLASH_RANGE
+				SLASH_RANGE,
+				{ ETag::ePlayer },	// プレイヤーのタグが設定されたコライダーと衝突
+				{ ELayer::ePlayer }	// プレイヤーのレイヤーが設定されたコライダーと衝突
 			);
 			// 攻撃終了処理を呼び出す
 			AttackEnd();

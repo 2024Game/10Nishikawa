@@ -3,7 +3,7 @@
 
 // コンストラクタ
 CSlash::CSlash(CObjectBase* owner, const CVector& pos, const CVector& dir,
-	float speed, float dist)
+	float speed, float dist, Tags hitTags, Layers hitLayers)
 	: CObjectBase(ETag::eSlash, ETaskPriority::eEffect, 0, ETaskPauseType::eGame)
 	, mpOwner(owner)
 	, mKillMoveDist(dist)
@@ -59,4 +59,9 @@ void CSlash::Render()
 {
 	mpModel->SetColor(mColor);
 	mpModel->Render(Matrix());
+}
+
+CCollider* CSlash::Collider() const
+{
+	return mpCollider;
 }
