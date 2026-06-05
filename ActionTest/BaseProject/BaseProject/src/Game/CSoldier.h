@@ -8,6 +8,7 @@
 
 class CCollider;
 class CGreatSword;
+class CSlash;
 
 // 兵士の敵クラス
 class CSoldier : public CEnemy

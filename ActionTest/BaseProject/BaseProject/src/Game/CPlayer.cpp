@@ -1454,49 +1454,6 @@ void CPlayer::Update()
 		CVector forward = CVector::Slerp(current, target, 0.125f);
 		Rotation(CQuaternion::LookRotation(forward));
 	}
-	
-	// ホイールクリックで弾丸発射
-	if (CInput::PushKey(VK_MBUTTON))
-	{
-		// 弾丸を生成
-		new CBullet
-		(
-			// 発射位置
-			Position() + CVector(0.0f, 10.0f, 0.0f) + VectorZ() * 5.0f,
-			VectorZ(),	// 発射方向
-			1000.0f,	// 移動距離
-			1000.0f		// 飛距離
-		);
-	}
-
-	// 「E」キーで炎の発射をオンオフする
-	if (CInput::PushKey('E'))
-	{
-		if (!mpFlamethrower->IsThrowing())
-		{
-			mpFlamethrower->Start();
-		}
-		else
-		{
-			mpFlamethrower->Stop();
-		}
-	}
-
-
-	// 「F」キーを押したら、
-	//Times::SetTimeScale(CInput::Key('F') ? 0.1f : 1.0f);
-
-	// 「B」キーを押したら、モーションブラー開始
-	if (CInput::PushKey('B'))
-	{
-		// モーションブラーを掛けている最中であれば、
-		// 新しくモーションブラーを掛け直さない
-		if (mMotionBlurRemainTime <= 0.0f)
-		{
-			System::SetEnableMotionBlur(true);
-			mMotionBlurRemainTime = MOTION_BLUR_TIME;
-		}
-	}
 
 	// モーションブラーの更新処理
 	UpdateMotionBlur();

@@ -1708,14 +1708,6 @@ void CHeavyWarrior::Update()
 	}
 	CDebugPrint::Print("EnemyState:%d\n", mState);
 	CDebugPrint::Print("EnemyAnimType:%d\n", mAnimType);
-	if (isCSV)
-	{
-		CDebugPrint::Print("CSV:on\n");
-	}
-	else
-	{
-		CDebugPrint::Print("CSV:off\n");
-	}
 #endif // _DEBUG
 }
 

@@ -150,7 +150,7 @@ CSoldier::CSoldier(CPlayer* player, int enemyLevel)
 		this, ELayer::eAttackCol,
 		KICK_COL_RADIUS
 	);
-	// 敵の本体のコライダーとのみヒットするように設定
+	// プレイヤーの本体のコライダーとのみヒットするように設定
 	mpKickCol->SetCollisionTags({ ETag::ePlayer });
 	mpKickCol->SetCollisionLayers({ ELayer::ePlayer });
 	// 敵の正面にズラす
@@ -378,7 +378,8 @@ void CSoldier::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			hitChara->TakeDamage(1, this);
 		}
 	}
-	else if (self == mpSlash->Collider())
+	// 剣のコライダーが衝突した
+	else if (mpSlash != nullptr && self == mpSlash->Collider())
 	{
 		CCharaBase* hitChara = dynamic_cast<CCharaBase*>(other->Owner());
 		if (hitChara != nullptr && !IsAttackHitObj(hitChara))
@@ -1282,6 +1283,7 @@ void CSoldier::UpdateSlash()
 				VectorZ(),
 				150.0f * 1.3f,
 				SLASH_RANGE,
+				ETag::eEnemy,
 				{ ETag::ePlayer },	// プレイヤーのタグが設定されたコライダーと衝突
 				{ ELayer::ePlayer }	// プレイヤーのレイヤーが設定されたコライダーと衝突
 			);
