@@ -1336,7 +1336,7 @@ void CSoldier::SelectAvoid()
 	CVector back = -myForward;
 
 	// 回避距離
-	const float avoidDist = 75.0f;
+	const float avoidDist = 90.0f;
 
 	// レイ開始位置（少し浮かせる）
 	CVector start = Position();

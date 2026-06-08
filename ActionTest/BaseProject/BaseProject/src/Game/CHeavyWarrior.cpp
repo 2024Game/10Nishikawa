@@ -8,14 +8,14 @@
 
 // アニメーションのパス
 #define ANIM_PATH "Character\\TestPlayer\\Anims\\"
-#define BODY_HEIGHT 16.0f	// 本体のコライダーの高さ
+#define BODY_HEIGHT 18.0f	// 本体のコライダーの高さ
 #define BODY_RADIUS 3.0f	// 本体のコライダーの幅
 #define MOVE_SPEED 13.5f	// 移動速度
 #define RUN_SPEED 27.0f		// 移動速度
 #define JUMP_SPEED 1.5f		// ジャンプ速度
 #define GRAVITY 0.0625f		// 重力加速度
 
-#define GAUGE_OFFSET_Y 20.0f		// HP・STゲージオフセット位置(高さ)
+#define GAUGE_OFFSET_Y 27.0f		// HP・STゲージオフセット位置(高さ)
 #define BUFF_GAUGE_OFFSET_Y 23.0f	// バフゲージオフセット位置(高さ)
 #define DEATH_WAIT_TIME 3.0f
 
@@ -130,7 +130,11 @@ CHeavyWarrior::CHeavyWarrior(CPlayer* player, int enemyLevel)
 		{ ELayer::ePlayer }	// プレイヤーのレイヤーが設定されたコライダーと衝突
 	);
 
-	mpSword->Scale(1.2f, 1.0f, 1.0f);
+	// mpSword->Scale(1.2f, 1.0f, 1.0f);
+
+	// 大きくして威圧感を出す
+	Scale(1.5f, 1.5f, 1.5f);
+	mpSword->Scale(1.0f, 0.9f, 0.9f);
 
 	// 右手のフレームを取得し、
 	// 剣にプレイヤーの右手の行列をアタッチ
@@ -170,6 +174,9 @@ CHeavyWarrior::CHeavyWarrior(CPlayer* player, int enemyLevel)
 	mLevel = enemyLevel;
 	InitStatus();
 	mGuardBreakTime = 12.5f;
+
+	// ロックオンしたときの注視点の高さ
+	mLockOnOffset = CVector(0.0f, 15.0f, 0.0f);
 }
 
 // デストラクタ
@@ -1222,7 +1229,7 @@ void CHeavyWarrior::SelectAvoid()
 	CVector back = -myForward;
 
 	// 回避距離
-	const float avoidDist = 75.0f;
+	const float avoidDist = 90.0f;
 
 	// レイ開始位置（少し浮かせる）
 	CVector start = Position();
