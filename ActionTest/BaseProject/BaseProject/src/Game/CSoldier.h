@@ -117,7 +117,8 @@ private:
 		PatternA,	// 1段目のみ
 		PatternB,	// 1段目→2段目
 		PatternC,	// 1段目→2段目→3段目
-		PatternD	// 考え中
+		PatternD,	// 1段目→2段目(当たる位置にいなければ遠距離攻撃)→3段目
+		PatternE	// 1段目→遠距離攻撃
 	};
 
 	// アニメーション切り替え
@@ -187,8 +188,10 @@ private:
 	void AttPatternB();
 	// 1段目→2段目→3段目
 	void AttPatternC();
-	// 
+	// 1段目→2段目(当たる位置にいなければ遠距離攻撃)→3段目
 	void AttPatternD();
+	// 1段目→遠距離攻撃
+	void AttPatternE();
 
 
 	CCollider* mpKickCol;			// 蹴り攻撃用コライダー

@@ -513,12 +513,6 @@ void CSoldier::DecideNextAction()
 				AttPattGearBox();
 				break;
 			}
-			else if (dist <= SLASH_RANGE)
-			{
-				mAttPattern = (int)EAttPattern::PatternD;
-				AttPattGearBox();
-				break;
-			}
 			// 遠ければ接近の状態へ移行
 			ChangeState((int)EState::eChase);
 			break;
@@ -576,6 +570,7 @@ void CSoldier::DecideNextAction()
 		break;
 
 	// ===== バランス =====
+	// ここから遠距離攻撃を交えた戦い方に
 	case ETactics::Balanced:
 		switch (static_cast<EBattleTempo>(mBattleTempo))
 		{
@@ -588,11 +583,15 @@ void CSoldier::DecideNextAction()
 				// EAttPatternを変更してAttPattGearBoxへ
 				if (rand <= 10)
 				{
-					mAttPattern = (int)EAttPattern::PatternA;
+					mAttPattern = (int)EAttPattern::PatternE;
 				}
-				else if (rand <= 45)
+				else if (rand <= 35)
 				{
 					mAttPattern = (int)EAttPattern::PatternB;
+				}
+				else if (rand <= 65)
+				{
+					mAttPattern = (int)EAttPattern::PatternD;
 				}
 				else
 				{
@@ -612,9 +611,13 @@ void CSoldier::DecideNextAction()
 			{
 				// ToDo : ここで攻撃のパターンを選択した後、
 				// EAttPatternを変更してAttPattGearBoxへ
-				if (rand <= 15)
+				if (rand <= 5)
 				{
 					mAttPattern = (int)EAttPattern::PatternA;
+				}
+				else if (rand <= 25)
+				{
+					mAttPattern = (int)EAttPattern::PatternE;
 				}
 				else if (rand <= 50)
 				{
@@ -868,11 +871,6 @@ void CSoldier::UpdateChase()
 	// 攻撃範囲内であれば
 	float dist = vec.Length();
 	if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
-	{
-		// 待機状態へ移行
-		ChangeState((int)EState::eIdle);
-	}
-	else if (dist <= SLASH_RANGE)
 	{
 		// 待機状態へ移行
 		ChangeState((int)EState::eIdle);
@@ -1762,6 +1760,9 @@ void CSoldier::AttPattGearBox()
 	case (int)EAttPattern::PatternD:
 		AttPatternD();
 		break;
+	case (int)EAttPattern::PatternE:
+		AttPatternE();
+		break;
 	default:
 		break;
 	}
@@ -1858,6 +1859,61 @@ void CSoldier::AttPatternC()
 }
 
 void CSoldier::AttPatternD()
+{
+	switch (mAttStep)
+	{
+	case 0:
+		// Attack1へ移行
+		ChangeState((int)EState::eAttack1);
+		break;
+	case 1:
+		if (GetDistToTarget() <= ATTACK_RANGE + (mStepMag * 0.5f))
+		{
+			// Attack2へ移行
+			ChangeState((int)EState::eAttack2);
+		}
+		else if (GetDistToTarget() <= SLASH_RANGE)
+		{
+			// Slashへ移行
+			ChangeState((int)EState::eSlash);
+		}
+		else
+		{
+			// Idleへ移行
+			ChangeState((int)EState::eIdle);
+		}
+		break;
+	case 2:
+		if (GetDistToTarget() <= ATTACK_RANGE + (mStepMag * 0.5f))
+		{
+			// AttackXへ移行
+			ChangeState((int)EState::eAttackX);
+		}
+		else
+		{
+			// Idleへ移行
+			ChangeState((int)EState::eIdle);
+		}
+		break;
+	case 3:
+		mAttStep = 0;
+		int rand = Math::Rand(1, 100);
+		// 確率で隙ができる
+		if (rand <= mNegProb)
+		{
+			// Neglectへ移行
+			ChangeState((int)EState::eNeglect);
+		}
+		else
+		{
+			// Idleへ移行
+			ChangeState((int)EState::eIdle);
+		}
+		break;
+	}
+}
+
+void CSoldier::AttPatternE()
 {
 	switch (mAttStep)
 	{
