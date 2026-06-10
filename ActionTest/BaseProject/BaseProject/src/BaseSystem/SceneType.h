@@ -9,6 +9,7 @@ enum class EScene
 	eHome,		//ホームシーン
 	eBarracks,	//兵舎シーン
 	eGame,		//ゲームシーン
+	eTutorial,	//チュートリアルシーン
 
 	eBootMenu,	//起動時メニュー
 	eColTest,	//衝突判定テスト
