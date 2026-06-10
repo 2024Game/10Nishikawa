@@ -110,6 +110,9 @@
     <Filter Include="ソース ファイル\Game\Items">
       <UniqueIdentifier>{bb7497f4-c96b-4534-b8df-9bdf49773a44}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\UI\Tutorial">
+      <UniqueIdentifier>{578df710-b869-4be0-bca9-339e6946a686}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -456,6 +459,15 @@
     </ClCompile>
     <ClCompile Include="src\BaseSystem\CShadowMap.cpp">
       <Filter>ソース ファイル\BaseSystem\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CEnemyStatusLoader.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTutorialScene.cpp">
+      <Filter>ソース ファイル\Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTutoPlayer.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -827,6 +839,13 @@
     </ClInclude>
     <ClInclude Include="src\BaseSystem\CShadowMap.h">
       <Filter>ソース ファイル\BaseSystem\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CEnemyStatusLoader.h" />
+    <ClInclude Include="src\Game\CTutorialScene.h">
+      <Filter>ソース ファイル\Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTutoPlayer.h">
+      <Filter>ソース ファイル\Game\Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
