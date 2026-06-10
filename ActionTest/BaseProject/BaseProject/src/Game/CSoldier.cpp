@@ -11,8 +11,8 @@
 #define ANIM_PATH "Character\\TestPlayer\\Anims\\"
 #define BODY_HEIGHT 16.0f	// 本体のコライダーの高さ
 #define BODY_RADIUS 3.0f	// 本体のコライダーの幅
-#define MOVE_SPEED 20.0f	// 移動速度
-#define RUN_SPEED 50.0f		// 移動速度
+#define MOVE_SPEED 24.0f	// 移動速度
+#define RUN_SPEED 54.0f		// ダッシュ移動速度
 #define JUMP_SPEED 1.5f		// ジャンプ速度
 #define GRAVITY 0.0625f		// 重力加速度
 
@@ -65,7 +65,7 @@ const std::vector<CEnemy::AnimData> ANIM_DATA =
 	{ "",						true,	0.0f,	1.0f	},	// Tポーズ
 	{ ANIM_PATH"idle.x",		true,	121.0f,	1.0f	},	// 待機
 	{ ANIM_PATH"idle2.x",		true,	121.0f,	1.0f	},	// 待機(戦闘中)
-	{ ANIM_PATH"walk.x",		true,	82.0f,	1.5f	},	// 歩行
+	{ ANIM_PATH"walk.x",		true,	82.0f,	2.25f	},	// 歩行
 	{ ANIM_PATH"run.x",			true,	39.0f,	1.5f	},	// ダッシュ
 	{ ANIM_PATH"GSSlash1.x",	false,	77.0f,	1.20f	},	// 斬り攻撃
 	{ ANIM_PATH"GSSlashR.x",	false,	90.0f,	1.20f	},	// 斬り攻撃B
