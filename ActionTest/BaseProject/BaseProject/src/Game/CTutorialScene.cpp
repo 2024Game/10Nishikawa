@@ -1,21 +1,22 @@
 ﻿#include "CTutorialScene.h"
+#include <Maths.h>
+
 #include "CSceneManager.h"
-#include "CTutorialSceneUI.h"
+#include "CGameSceneUI.h"
 #include "CField.h"
-#include "CPlayer.h"
 #include "CGameCamera.h"
 #include "CGameCamera2.h"
 #include "CInput.h"
 #include "CGameMenu.h"
 #include "CBGMManager.h"
 #include "CLineEffect.h"
+
 #include "CEnemyManager.h"
-#include "CCactus.h"
-#include "CSoldier.h"
-#include "CHeavyWarrior.h"
+#include "CPlayer.h"
+#include "CTutoSoldier.h"
+
 #include "CEnemyStatusLoader.h"
-#include "CLowHealP.h"
-#include <Maths.h>
+
 
 //コンストラクタ
 CTutorialScene::CTutorialScene()
@@ -96,73 +97,14 @@ void CTutorialScene::Load()
 	mpPlayer->Position(0.0f, 5.0f, 100.0f);
 
 	// Enemyを作成
-	mEnemyLv = ((int)mpSaveManager->data.day / 3) + 2;
+	mEnemyLv = 1;
 
 	CEnemy* enemy;
-	int enemyCount = 0;
 	int rand = 0;
 
-	switch (mpSaveManager->data.selectDiff)
-	{
-	case 1:
-		mEnemyLv--;
-		enemyCount = 1;
-		break;
-	case 2:
-		enemyCount = 1;
-		break;
-	case 3:
-		rand = Math::Rand(0, 5);
-		if (rand == 5)
-		{
-			mEnemyLv--;
-			enemyCount = 3;
-		}
-		else if (rand > 2)
-		{
-			enemyCount = 2;
-		}
-		else
-		{
-			if (mEnemyLv < 10) mEnemyLv++;
-
-			enemyCount = 1;
-		}
-		break;
-	default:
-		break;
-	}
-
 	// 兵士の敵を1体生成
-	for (int i = 0; i < enemyCount; i++)
-	{
-		// ランダムで敵の種類を選ぶ
-		rand = Math::Rand(0, 99);
-		// デバック用マックスレベル
-		//mEnemyLv = 10;
-		rand = 10;
-		if (rand < 49)
-		{
-			enemy = new CSoldier(mpPlayer, mEnemyLv);
-		}
-		else
-		{
-			enemy = new CHeavyWarrior(mpPlayer, mEnemyLv);
-		}
-
-		switch (i)
-		{
-		case 0:
-			enemy->Position(0.0f, 5.0f, -100.0f);
-			break;
-		case 1:
-			enemy->Position(50.0f, 5.0f, -125.0f);
-			break;
-		case 2:
-			enemy->Position(-50.0f, 5.0f, -125.0f);
-			break;
-		}
-	}
+	enemy = new CTutoSoldier(mpPlayer, mEnemyLv);
+	enemy->Position(0.0f, 5.0f, -50.0f);
 
 	// CGameCamera2のテスト
 	CVector atPos = mpPlayer->Position() + CVector(0.0f, 10.0f, 0.0f);
@@ -178,8 +120,8 @@ void CTutorialScene::Load()
 	mpGameMenu = new CGameMenu();
 
 	// UI作成
-	//new CTutorialSceneUI();
-	AddTask(new CTutorialSceneUI(mpPlayer));
+	//new CGameSceneUI();
+	AddTask(new CGameSceneUI(mpPlayer));
 }
 
 //シーンの更新処理
@@ -189,11 +131,11 @@ void CTutorialScene::Update()
 	switch (mState)
 	{
 		// 戦闘準備状態
-	case EState::ebattlereserve:	UpdateBattleReserve();		break;
+	case EState::ephase1:		UpdateTuto1();		break;
 		// 待機状態
-	case EState::ebattle:			UpdateBattle();				break;
+	case EState::ephase2:		UpdateTuto2();		break;
 		// 戦闘結果状態
-	case EState::ebattleresult:		UpdateBattleResult();		break;
+	case EState::ephase3:		UpdateTuto3();		break;
 	}
 
 #ifdef _DEBUG
@@ -203,7 +145,7 @@ void CTutorialScene::Update()
 #endif // _DEBUG
 }
 
-void CTutorialScene::UpdateBattleReserve()
+void CTutorialScene::UpdateTuto1()
 {
 	switch (mStateStep)
 	{
@@ -215,7 +157,7 @@ void CTutorialScene::UpdateBattleReserve()
 
 	case 1:
 		// 戦闘準備時の待機時間待ち
-		if (mElapsedTime < 5.0f)
+		if (mElapsedTime < 3.0f)
 		{
 			mElapsedTime += Times::DeltaTime();
 		}
@@ -228,34 +170,111 @@ void CTutorialScene::UpdateBattleReserve()
 
 	case 2:
 		mpPlayer->SetInBattle(0);
-		CEnemyManager::Instance()->SetInBattle(0);
+		CEnemyManager::Instance()->SetInBattle(4);
+		mStateStep++;
+		break;
+	case 3:
+		// プレイヤーが敵に攻撃を５回当てたら次のフェーズへ
+		if (mpPlayer->mAttHitCount >= 5)
+		{
+			CEnemyManager::Instance()->SetInBattle(5);
 
-		// ゲームBGMを読み込み
-		//CBGMManager::Instance()->Play(EBGMType::eGame);
-		// 戦闘状態へ移行
-		ChangeState(EState::ebattle);
+			// フェーズ2 : 一定間隔で​攻撃を​する​がダメージ無し、無敵の敵
+			ChangeState(EState::ephase2);
+		}
 		break;
 	}
 }
 
-void CTutorialScene::UpdateBattle()
-{
-	if (mpPlayer->GetHp() <= 0.0f || !CEnemyManager::Instance()->Surviv())
-	{
-		Times::SetTimeScale(0.25f);
-		ChangeState(EState::ebattleresult);
-	}
-}
-
-void CTutorialScene::UpdateBattleResult()
+void CTutorialScene::UpdateTuto2()
 {
 	switch (mStateStep)
 	{
 	case 0:
+		// ジャスト回避のチュートリアル
+		if (mpPlayer->mJustAvoidCount >= 1)
+		{
+			// 次のキックのカウントを0にしておく
+			mpPlayer->mKickHitCount = 0;
+			mStateStep++;
+		}
+		break;
+
+	case 1:
+		// キックのチュートリアル
+		if (mpPlayer->mKickHitCount >= 1)
+		{
+			// 次のジャストキックのカウントを0にしておく
+			mpPlayer->mJustKickHitCount = 0;
+			mStateStep++;
+		}
+		break;
+
+	case 2:
+		// ジャストキックのチュートリアル
+		if (mpPlayer->mJustKickHitCount >= 1)
+		{
+			mElapsedTime = 0.0f;
+			mStateStep++;
+		}
+		break;
+
+	case 3:
+		// n秒経ったら次のチュートリアルに
+		if (mElapsedTime < 15.0f)
+		{
+			mElapsedTime += Times::DeltaTime();
+		}
+		// 待機時間が経過した
+		else
+		{
+			// フェーズ2 : 一定間隔で​攻撃を​する​がダメージ無し、無敵の敵
+			ChangeState(EState::ephase3);
+
+			mElapsedTime = 0.0f;
+		}
+		break;
+	}
+}
+
+void CTutorialScene::UpdateTuto3()
+{
+	switch (mStateStep)
+	{
+	case 0:
+		// 敵を動ける状態に移行
+		CEnemyManager::Instance()->SetInBattle(0);
+
 		mStateStep++;
 		break;
 
 	case 1:
+		// 決着の瞬間をスローモーションに
+		if (mpPlayer->GetHp() <= 0.0f || !CEnemyManager::Instance()->Surviv())
+		{
+			Times::SetTimeScale(0.25f);
+		}
+		break;
+
+	case 2:
+		if (mpPlayer->GetHp() <= 0.0f)
+		{
+			CEnemyManager::Instance()->SetInBattle(2);
+			// 歓声SEを再生
+			mpKanseiSE->Play(0.25f);
+			mStateStep++;
+		}
+		else if (!CEnemyManager::Instance()->Surviv())
+		{
+			mpPlayer->SetInBattle(2);
+			// 歓声SEを再生
+			mpKanseiSE->Play(0.25f);
+			mElapsedTime = 0.0f;
+			mStateStep++;
+		}
+		break;
+
+	case 3:
 		// 戦闘結果時の待機時間待ち
 		if (mElapsedTime < 0.75f)
 		{
@@ -264,85 +283,23 @@ void CTutorialScene::UpdateBattleResult()
 		// 待機時間が経過した
 		else
 		{
+			Times::SetTimeScale(1.0f);
 			mElapsedTime = 0.0f;
 			mStateStep++;
 		}
 		break;
 
-	case 2:
-		Times::SetTimeScale(1.0f);
-		if (mpPlayer->GetHp() <= 0.0f)
-		{
-			mPlayerWin = false;
-			CEnemyManager::Instance()->SetInBattle(2);
-			// 歓声SEを再生
-			mpKanseiSE->Play(0.25f);
-			mStateStep++;
-		}
-		else if (!CEnemyManager::Instance()->Surviv())
-		{
-			mPlayerWin = true;
-			mpPlayer->SetInBattle(2);
-			// 歓声SEを再生
-			mpKanseiSE->Play(0.25f);
-			mStateStep++;
-		}
-		break;
-
-	case 3:
-
+	case 4:
 		// 待機時間待ち
-		if (mElapsedTime < 6.0f)
+		if (mElapsedTime < 4.0f)
 		{
 			mElapsedTime += Times::DeltaTime();
 		}
-		// 待機時間が経過した
+		// 待機時間が経過したら兵舎に戻る
 		else
 		{
-			if (mPlayerWin)
-			{
-				mpSaveManager->data.hp = mpPlayer->GetHp();
-
-				// HPを5+最大HPのhpRegeneLv(%)分、回復させる
-				float hpCapa = mpSaveManager->data.maxHp - mpSaveManager->data.hp;
-				float recovery = (mpSaveManager->data.maxHp * (mpSaveManager->data.hpRegeneLv * 0.01f) + 5);
-				if (hpCapa >= recovery)
-				{
-					mpSaveManager->data.hp += recovery;
-				}
-				else
-				{
-					mpSaveManager->data.hp = mpSaveManager->data.maxHp;
-				}
-				mpSaveManager->data.day++;
-
-				switch (mpSaveManager->data.selectDiff)
-				{
-				case 1:
-					mpSaveManager->data.money += 125 + 50;
-					break;
-				case 2:
-					mpSaveManager->data.money += 150 + 75;
-					break;
-				case 3:
-					mpSaveManager->data.money += 175 + 175;
-					break;
-				default:
-					break;
-				}
-				mpSaveManager->Save();
-				CSceneManager::Instance()->LoadScene(EScene::eHome);
-			}
-			else
-			{
-				mpSaveManager->Reset();
-				CSceneManager::Instance()->LoadScene(EScene::eTitle);
-			}
-			mStateStep++;
+			CSceneManager::Instance()->LoadScene(EScene::eHome);
 		}
-		break;
-	case 4:
-
 		break;
 	}
 }

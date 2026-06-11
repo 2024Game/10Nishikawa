@@ -2,7 +2,7 @@
 #include "CSceneBase.h"
 #include <memory>
 #include "CSaveManager.h"
-#include "CTutoPlayer.h"
+#include "CPlayer.h"
 #include "CEnemy.h"
 class CGameMenu;
 class CSound;
@@ -22,11 +22,11 @@ public:
 
 private:
 	//戦闘準備時の更新処理
-	void UpdateBattleReserve();
+	void UpdateTuto1();
 	//戦闘時の更新処理
-	void UpdateBattle();
+	void UpdateTuto2();
 	//戦闘結果時の更新処理
-	void UpdateBattleResult();
+	void UpdateTuto3();
 	// ゲームの状態
 	enum class EState
 	{
@@ -43,8 +43,7 @@ private:
 	CSound* mpKanseiSE;
 	CSaveManager* mpSaveManager;
 	CGameMenu* mpGameMenu;
-	CPlayer* mpPlayer;
+	CPlayer* mpPlayer;		// プレイヤーのインスタンス
 	int mEnemyLv;
-	bool mPlayerWin;
 	int mTimeCount;
 };

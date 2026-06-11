@@ -27,12 +27,19 @@ public:
 	// デストラクタ
 	~CPlayer();
 
+	// チュートリアル時にチュートリアル用のステータスに
+	void TutorialInit();
+
 	// 更新
 	void Update();
 	//最後更新
 	void LastUpdate() override;
 
 	// CGameSceneから状態の移行指示を受け取る
+	/*
+	0 = 戦闘前待機
+	2 = 勝利状態
+	*/
 	void SetInBattle(int state);
 
 	// 攻撃中か
@@ -61,6 +68,13 @@ public:
 
 	float GetMaxS1();
 	float GetS1();
+
+	// ----- チュートリアル用 -----
+	int mAttHitCount;		// 攻撃が何回当たったか
+	int mJustAvoidCount;	// ジャスト回避成功数
+	int mRushHitCount;		// カウンター攻撃成功数
+	int mKickHitCount;		// キックをあてた回数
+	int mJustKickHitCount;	// ジャストでキックをあてた回数
 
 private:
 	// オブジェクト削除を伝える
@@ -201,8 +215,8 @@ private:
 	CCollider* mpTACol;				// 先行入力(Type Ahead)用コライダー
 	CTransform* mpRideObject;
 
-	CSaveManager* mpSaveManager;
-	CSound* mpSlashSE;
+	CSaveManager* mpSaveManager;	// セーブデータ管理クラス
+	CSound* mpSlashSE;				// 攻撃時のサウンド
 	bool mIsPlayedSlashSE;
 	bool mIsSpawnedSlashEffect;
 
@@ -211,7 +225,7 @@ private:
 	float mS1CastTime;			// スキル１の経過クールタイム
 
 	// 火炎放射エフェクト
-	CFlamethrower* mpFlamethrower;
+	// CFlamethrower* mpFlamethrower;
 
 	// モーションブラーを掛ける残り時間
 	float mMotionBlurRemainTime;
@@ -219,9 +233,9 @@ private:
 	// 剣のクラス
 	CGreatSword* mpGreatSword;
 
+	// ----- ステータス関連 -----
 	float mAttackCost1;
 	float mAvoidCost;
-
 	float mStRegeneMag; // スタミナ回復倍率
 	float mAttackMag;	// 攻撃の倍率
 	bool mNextAttack;	// 連続攻撃が予約されているかどうか

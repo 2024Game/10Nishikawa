@@ -466,8 +466,8 @@
     <ClCompile Include="src\Game\CTutorialScene.cpp">
       <Filter>ソース ファイル\Game\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CTutoPlayer.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\Game\CTutoSoldier.cpp">
+      <Filter>ソース ファイル\Game\Character\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -844,8 +844,8 @@
     <ClInclude Include="src\Game\CTutorialScene.h">
       <Filter>ソース ファイル\Game\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CTutoPlayer.h">
-      <Filter>ソース ファイル\Game\Character</Filter>
+    <ClInclude Include="src\Game\CTutoSoldier.h">
+      <Filter>ソース ファイル\Game\Character\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

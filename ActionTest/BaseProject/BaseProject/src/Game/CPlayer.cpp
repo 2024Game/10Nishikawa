@@ -120,6 +120,12 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	, mInJustAction(false)
 	, mS1RecastTime(10.0f)
 	, mS1CastTime(mS1RecastTime)
+
+	, mAttHitCount(0)
+	, mJustAvoidCount(0)
+	, mRushHitCount(0)
+	, mKickHitCount(0)
+	, mJustKickHitCount(0)
 {
 	mMaxHp = mpSaveManager->data.maxHp;
 	mHp = mpSaveManager->data.hp;
@@ -160,13 +166,15 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 
 	mpSlashSE = CResourceManager::Get<CSound>("SlashSound");
 
+	/*
 	mpFlamethrower = new CFlamethrower
 	(
 		this, nullptr,
 		CVector(0.0f, 14.0f, -1.0f),
 		CQuaternion(0.0f, 90.0f, 0.0f).Matrix()
 	);
-
+	*/
+	
 	// プレイヤーの剣を作成
 	mpGreatSword = new CGreatSword
 	(
@@ -247,6 +255,16 @@ CPlayer::~CPlayer()
 		mpIndicator->SetOwner(nullptr);
 		mpIndicator->Kill();
 	}
+}
+
+void CPlayer::TutorialInit()
+{
+	mMaxHp = 100.0f;
+	mHp = mMaxHp;
+	mMaxSt = 150.0f;
+	mSt = mMaxSt;
+	mAttackMag = 1.0f;
+	mStRegeneMag = 1.0f;
 }
 
 CPlayer* CPlayer::Instance()
@@ -708,6 +726,9 @@ void CPlayer::UpdateSlideAttack()
 					System::SetEnableMotionBlur(true);
 					mMotionBlurRemainTime = MOTION_BLUR_TIME;
 				}
+
+				mRushHitCount++;
+
 				mStateStep++;
 			}
 		}
@@ -1099,11 +1120,15 @@ void CPlayer::AvoidJudge()
 	if (CInput::PushKey(VK_RBUTTON) && CInput::Key('D') && mSt >= mAvoidCost)
 	{
 		mpTACol->SetEnable(false);
+		// ジャストタイムか
 		if (mInTypeAhead)
 		{
 			Times::SetTimeScale(0.25f);
 			SetInvincible(true);
 			mInJustAction = true;
+
+			// チュートリアル用
+			mJustAvoidCount++;
 		}
 		mNextAttack = false;
 		CCharaBase::UseStamina(mAvoidCost);
@@ -1116,11 +1141,15 @@ void CPlayer::AvoidJudge()
 	else if (CInput::PushKey(VK_RBUTTON) && CInput::Key('A') && mSt >= mAvoidCost)
 	{
 		mpTACol->SetEnable(false);
+		// ジャストタイムか
 		if (mInTypeAhead)
 		{
 			Times::SetTimeScale(0.2f);
 			SetInvincible(true);
 			mInJustAction = true;
+
+			// チュートリアル用
+			mJustAvoidCount++;
 		}
 		mNextAttack = false;
 		CCharaBase::UseStamina(mAvoidCost);
@@ -1133,11 +1162,15 @@ void CPlayer::AvoidJudge()
 	else if (CInput::PushKey(VK_RBUTTON) && mSt >= mAvoidCost)
 	{
 		mpTACol->SetEnable(false);
+		// ジャストタイムか
 		if (mInTypeAhead)
 		{
 			Times::SetTimeScale(0.2f);
 			SetInvincible(true);
 			mInJustAction = true;
+
+			// チュートリアル用
+			mJustAvoidCount++;
 		}
 		mNextAttack = false;
 		CCharaBase::UseStamina(mAvoidCost);
@@ -1679,6 +1712,10 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		if (hitChara != nullptr && !IsAttackHitObj(hitChara))
 		{
 			AddAttackHitObj(hitChara);
+
+			// チュートリアル用
+			mAttHitCount++;
+
 			// 状態に合わせて、更新処理を切り替える
 			switch (mState)
 			{
@@ -1708,7 +1745,12 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 
 			if (mInJustAction && hitEnemy != nullptr)
 			{
+				mJustKickHitCount++;
 				hitEnemy->SetGuardBreak(true);
+			}
+			else if (hitEnemy != nullptr)
+			{
+				mKickHitCount++;
 			}
 
 			AddAttackHitObj(hitChara);
