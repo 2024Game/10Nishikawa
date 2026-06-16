@@ -16,6 +16,7 @@ CBootMenuScene::CBootMenuScene()
 		{ "ホーム画面", EScene::eHome },
 		{ "強化画面", EScene::eBarracks },
 		{ "ゲーム画面", EScene::eGame },
+		{ "チュートリアル画面", EScene::eTutorial },
 		{ "", EScene::eNone },
 		{ "■デバッグ", EScene::eNone },
 		{ "衝突判定テスト", EScene::eColTest },

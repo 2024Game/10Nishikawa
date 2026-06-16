@@ -27,7 +27,6 @@ CTutorialScene::CTutorialScene()
 	, mTimeCount(0)
 	, mElapsedTime(0.0f)
 	, mStateStep(0)
-	, mPlayerWin(false)
 	, mpKanseiSE(nullptr)
 	, mEnemyLv(0)
 {
@@ -96,6 +95,8 @@ void CTutorialScene::Load()
 	mpPlayer->Scale(1.0f, 1.0f, 1.0f);
 	mpPlayer->Position(0.0f, 5.0f, 100.0f);
 
+	mpPlayer->TutorialInit();
+
 	// Enemyを作成
 	mEnemyLv = 1;
 
@@ -142,6 +143,9 @@ void CTutorialScene::Update()
 	CDebugPrint::Print("ElapsedTime:%f\n", mElapsedTime);
 	CDebugPrint::Print("EnemyLv:%d\n", mEnemyLv);
 	CDebugPrint::Print("selectDiff:%d\n", mpSaveManager->data.selectDiff);
+	CDebugPrint::Print("mAttHitCount:%d\n", mpPlayer->mAttHitCount);
+	CDebugPrint::Print("mJustAvoidCount:%d\n", mpPlayer->mJustAvoidCount);
+	CDebugPrint::Print("mKickHitCount:%d\n", mpPlayer->mKickHitCount);
 #endif // _DEBUG
 }
 
@@ -253,6 +257,7 @@ void CTutorialScene::UpdateTuto3()
 		if (mpPlayer->GetHp() <= 0.0f || !CEnemyManager::Instance()->Surviv())
 		{
 			Times::SetTimeScale(0.25f);
+			mStateStep++;
 		}
 		break;
 

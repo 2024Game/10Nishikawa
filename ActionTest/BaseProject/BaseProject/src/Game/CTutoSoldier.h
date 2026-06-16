@@ -125,6 +125,14 @@ private:
 		PatternE	// 1段目→遠距離攻撃
 	};
 
+	// チュートリアル段階の列挙型
+	enum class ETutoState
+	{
+		eTuto1,
+		eTuto2,
+		eTuto3,
+	};
+
 	// アニメーション切り替え
 	void ChangeAnimation(int type, bool restart = false) override;
 
@@ -248,4 +256,6 @@ private:
 	bool  mAvoidMoving = false;
 
 	int mTactics;			// 現在の戦術レイヤー (ETactics)
+
+	ETutoState mTutoState;
 };

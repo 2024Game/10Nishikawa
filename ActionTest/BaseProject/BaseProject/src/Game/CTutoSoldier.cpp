@@ -272,8 +272,12 @@ void CTutoSoldier::TakeDamage(float damage, CObjectBase* causer)
 {
 	float amount = (!mInGuardBreak) ? damage : damage * 2;
 
-	// ベースクラスのダメージ処理を呼び出す
-	CEnemy::TakeDamage(amount, causer);
+	// チュートリアルが進むまで無敵
+	if (mTutoState == ETutoState::eTuto3)
+	{
+		// ベースクラスのダメージ処理を呼び出す
+		CEnemy::TakeDamage(amount, causer);
+	}
 
 	// 死亡していなければ、
 	if (!IsDeath())
@@ -803,12 +807,13 @@ void CTutoSoldier::UpdateTuto1()
 
 void CTutoSoldier::UpdateTuto2()
 {
+	STRegene();
+
 	ChangeAnimation((int)EAnimType::eIdleBattle);
 	// 徐々に戦闘相手の方向へ向く
 	LookAtBattleTarget();
 
 	float dist = GetDistToTarget();
-	int rand = Math::Rand(1, 100);
 
 	// 攻撃が当たる距離にいるか
 	if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
@@ -816,8 +821,6 @@ void CTutoSoldier::UpdateTuto2()
 		mAttPattern = (int)EAttPattern::PatternA;
 		AttPattGearBox();
 	}
-	// 遠ければ接近の状態へ移行
-	ChangeState((int)EState::eTuto2);
 }
 
 // 待機状態の更新処理
@@ -978,7 +981,7 @@ void CTutoSoldier::UpdateAttack1()
 			mStateStep++;
 		}
 
-		if (mInAttack)
+		if (mInAttack && mTutoState == ETutoState::eTuto3)
 		{
 			// 1秒あたりの移動速度
 			CVector move = mAttackVec * (15.0f * mStepMag * mAtSpeedMag) * Times::DeltaTime();
@@ -1634,9 +1637,22 @@ void CTutoSoldier::UpdateNeg()
 		}
 		break;
 	case 1:
-		// 待機状態へ移行
-		ChangeState((int)EState::eIdle);
-		ChangeAnimation((int)EAnimType::eIdle);
+		if (mTutoState == ETutoState::eTuto1)
+		{
+			
+		}
+		else if (mTutoState == ETutoState::eTuto2)
+		{
+			// Tuto2へ移行
+			ChangeState((int)EState::eTuto2);
+			ChangeAnimation((int)EAnimType::eIdle);
+		}
+		else if (mTutoState == ETutoState::eTuto3)
+		{
+			// 待機状態へ移行
+			ChangeState((int)EState::eIdle);
+			ChangeAnimation((int)EAnimType::eIdle);
+		}
 		break;
 	}
 }
@@ -1662,9 +1678,27 @@ void CTutoSoldier::UpdateHit()
 		// 待機状態へ戻す
 		if (IsAnimationFinished())
 		{
-			// 待機状態へ移行
-			ChangeState((int)EState::eIdle);
-			ChangeAnimation((int)EAnimType::eIdle);
+			if (mTutoState == ETutoState::eTuto1)
+			{
+				// Tuto1へ移行
+				ChangeState((int)EState::eTuto1);
+				ChangeAnimation((int)EAnimType::eIdle);
+				mAttPattern = (int)EAttPattern::None;
+			}
+			else if (mTutoState == ETutoState::eTuto2)
+			{
+				// Tuto2へ移行
+				ChangeState((int)EState::eTuto2);
+				ChangeAnimation((int)EAnimType::eIdle);
+				mAttPattern = (int)EAttPattern::None;
+			}
+			else if (mTutoState == ETutoState::eTuto3)
+			{
+				// 待機状態へ移行
+				ChangeState((int)EState::eIdle);
+				ChangeAnimation((int)EAnimType::eIdle);
+				mAttPattern = (int)EAttPattern::None;
+			}
 		}
 		break;
 	}
@@ -1743,11 +1777,29 @@ void CTutoSoldier::UpdateVictory()
 
 void CTutoSoldier::AttPattGearBox()
 {
-	if (GetDistToTarget() > ATTACK_RANGE + (mStepMag * 0.5f) && mAttPattern != (int)EAttPattern::PatternD)
+	if (
+		GetDistToTarget() > ATTACK_RANGE + (mStepMag * 0.5f) 
+		&& mAttPattern != (int)EAttPattern::PatternD
+		)
 	{
-		// Idleへ移行
-		ChangeState((int)EState::eIdle);
-		mAttPattern = (int)EAttPattern::None;
+		if (mTutoState == ETutoState::eTuto1)
+		{
+			// Tuto1へ移行
+			ChangeState((int)EState::eTuto1);
+			mAttPattern = (int)EAttPattern::None;
+		}
+		else if (mTutoState == ETutoState::eTuto2)
+		{
+			// Tuto2へ移行
+			ChangeState((int)EState::eTuto2);
+			mAttPattern = (int)EAttPattern::None;
+		}
+		else if (mTutoState == ETutoState::eTuto3)
+		{
+			// Idleへ移行
+			ChangeState((int)EState::eIdle);
+			mAttPattern = (int)EAttPattern::None;
+		}
 	}
 	switch (mAttPattern)
 	{
@@ -1782,16 +1834,29 @@ void CTutoSoldier::AttPatternA()
 	case 1:
 		mAttStep = 0;
 		int rand = Math::Rand(1, 100);
-		// 確率で隙ができる
-		if (rand <= mNegProb)
+
+		if (mTutoState == ETutoState::eTuto1)
+		{
+
+		}
+		else if (mTutoState == ETutoState::eTuto2)
 		{
 			// Neglectへ移行
 			ChangeState((int)EState::eNeglect);
 		}
-		else
+		else if (mTutoState == ETutoState::eTuto3)
 		{
-			// Idleへ移行
-			ChangeState((int)EState::eIdle);
+			// 確率で隙ができる
+			if (rand <= mNegProb)
+			{
+				// Neglectへ移行
+				ChangeState((int)EState::eNeglect);
+			}
+			else
+			{
+				// Idleへ移行
+				ChangeState((int)EState::eIdle);
+			}
 		}
 		break;
 	}
@@ -2037,6 +2102,7 @@ void CTutoSoldier::SetInBattle(int state)
 	{
 		// 待機状態へ移行
 		ChangeState((int)EState::eIdle);
+		mTutoState = ETutoState::eTuto3;
 	}
 	if (state == 2)
 	{
@@ -2047,10 +2113,12 @@ void CTutoSoldier::SetInBattle(int state)
 	{
 		// チュートリアル1状態へ移行
 		ChangeState((int)EState::eTuto1);
+		mTutoState = ETutoState::eTuto1;
 	}
 	if (state == 5)
 	{
 		// チュートリアル2状態へ移行
 		ChangeState((int)EState::eTuto2);
+		mTutoState = ETutoState::eTuto2;
 	}
 }

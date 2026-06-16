@@ -4,6 +4,7 @@
 #include "CHomeScene.h"
 #include "CBarracksScene.h"
 #include "CGameScene.h"
+#include "CTutorialScene.h"
 
 #include "Test/CBootMenuScene.h"
 #include "Test/CCollisionTestScene.h"
@@ -114,6 +115,8 @@ void CSceneManager::ChangeNextScene()
 		case EScene::eBarracks:		mpScene = new CBarracksScene();			break;
 		//ゲームシーン
 		case EScene::eGame:			mpScene = new CGameScene();				break;
+		//ゲームシーン
+		case EScene::eTutorial:		mpScene = new CTutorialScene();			break;
 
 		//起動時メニュー
 		case EScene::eBootMenu:		mpScene = new CBootMenuScene();			break;
