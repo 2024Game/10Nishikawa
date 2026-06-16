@@ -1,7 +1,7 @@
 #include "CTexture.h"
 #include <stdio.h>	//ファイルの入力に使用
 #include <string.h>
-#include "soil.h"
+#include "SOIL/soil.h"
 #include <string>
 //std::map<std::string, CTexture>CTexture::mTexFile;
 
