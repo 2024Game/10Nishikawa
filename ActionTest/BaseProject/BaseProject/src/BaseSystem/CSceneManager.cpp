@@ -8,6 +8,7 @@
 
 #include "Test/CBootMenuScene.h"
 #include "Test/CCollisionTestScene.h"
+#include "Test/CGameInputTestScene.h"
 
 // シーンマネージャのインスタンス
 CSceneManager* CSceneManager::mpInstance = nullptr;
@@ -119,9 +120,11 @@ void CSceneManager::ChangeNextScene()
 		case EScene::eTutorial:		mpScene = new CTutorialScene();			break;
 
 		//起動時メニュー
-		case EScene::eBootMenu:		mpScene = new CBootMenuScene();			break;
+		case EScene::eBootMenu:			mpScene = new CBootMenuScene();			break;
 		//衝突判定テスト
-		case EScene::eColTest:		mpScene = new CCollisionTestScene();	break;
+		case EScene::eColTest:			mpScene = new CCollisionTestScene();	break;
+		//Gameインプットテスト
+		case EScene::eGameInputTest:	mpScene = new CGameInputTestScene();	break;
 	}
 
 	//シーンを新しく生成できたら、

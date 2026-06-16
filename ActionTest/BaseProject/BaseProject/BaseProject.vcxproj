@@ -136,6 +136,7 @@
     <ClCompile Include="src\Test\CColQuad.cpp" />
     <ClCompile Include="src\Test\CColSphere.cpp" />
     <ClCompile Include="src\Test\CColTriangle.cpp" />
+    <ClCompile Include="src\Test\CGameInputTestScene.cpp" />
     <ClCompile Include="src\Test\CMeasure.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -264,9 +265,11 @@
     <ClInclude Include="src\Test\CColQuad.h" />
     <ClInclude Include="src\Test\CColSphere.h" />
     <ClInclude Include="src\Test\CColTriangle.h" />
+    <ClInclude Include="src\Test\CGameInputTestScene.h" />
     <ClInclude Include="src\Test\CMeasure.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="res\Shader\shadow330.frag" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -423,5 +426,12 @@
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\Microsoft.GameInput.3.4.218\build\native\targets\Microsoft.GameInput.targets" Condition="Exists('..\packages\Microsoft.GameInput.3.4.218\build\native\targets\Microsoft.GameInput.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>このプロジェクトは、このコンピューター上にない NuGet パッケージを参照しています。それらのパッケージをダウンロードするには、[NuGet パッケージの復元] を使用します。詳細については、http://go.microsoft.com/fwlink/?LinkID=322105 を参照してください。見つからないファイルは {0} です。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.GameInput.3.4.218\build\native\targets\Microsoft.GameInput.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.GameInput.3.4.218\build\native\targets\Microsoft.GameInput.targets'))" />
+  </Target>
 </Project>

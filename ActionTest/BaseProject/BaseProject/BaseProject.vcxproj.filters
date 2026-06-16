@@ -113,6 +113,9 @@
     <Filter Include="ソース ファイル\Game\UI\Tutorial">
       <UniqueIdentifier>{578df710-b869-4be0-bca9-339e6946a686}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Test\GameInputTest">
+      <UniqueIdentifier>{6d344491-43fd-4d6e-963c-182ec98c9da1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -468,6 +471,9 @@
     </ClCompile>
     <ClCompile Include="src\Game\CTutoSoldier.cpp">
       <Filter>ソース ファイル\Game\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test\CGameInputTestScene.cpp">
+      <Filter>ソース ファイル\Test\GameInputTest</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -847,10 +853,14 @@
     <ClInclude Include="src\Game\CTutoSoldier.h">
       <Filter>ソース ファイル\Game\Character\Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="src\Test\CGameInputTestScene.h">
+      <Filter>ソース ファイル\Test\GameInputTest</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Shader\shadow330.frag">
       <Filter>ソース ファイル</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

@@ -20,6 +20,7 @@ CBootMenuScene::CBootMenuScene()
 		{ "", EScene::eNone },
 		{ "■デバッグ", EScene::eNone },
 		{ "衝突判定テスト", EScene::eColTest },
+		{ "GameInputテスト", EScene::eGameInputTest },
 	};
 
 	// 一番先頭の項目が選択できない項目であれば、次の項目を初期選択に変更
