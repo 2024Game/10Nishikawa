@@ -4,6 +4,9 @@
 #include "CRideableObject.h"
 #include "CSound.h"
 #include "CSaveManager.h"
+#include "GameInput.h"
+
+using namespace GameInput::v3;
 
 class CCollider;
 class CFlamethrower;
@@ -232,6 +235,9 @@ private:
 
 	// 剣のクラス
 	CGreatSword* mpGreatSword;
+
+	// GameInputの本体オブジェクト
+	IGameInput* mpGameInput;
 
 	// ----- ステータス関連 -----
 	float mAttackCost1;

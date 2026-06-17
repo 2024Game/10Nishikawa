@@ -475,6 +475,9 @@
     <ClCompile Include="src\Test\CGameInputTestScene.cpp">
       <Filter>ソース ファイル\Test\GameInputTest</Filter>
     </ClCompile>
+    <ClCompile Include="src\BaseSystem\CInputManager.cpp">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -855,6 +858,9 @@
     </ClInclude>
     <ClInclude Include="src\Test\CGameInputTestScene.h">
       <Filter>ソース ファイル\Test\GameInputTest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CInputManager.h">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
