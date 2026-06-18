@@ -478,6 +478,9 @@
     <ClCompile Include="src\BaseSystem\CInputManager.cpp">
       <Filter>ソース ファイル\BaseSystem\System</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CTutorialUI.cpp">
+      <Filter>ソース ファイル\Game\UI\Tutorial</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -850,9 +853,6 @@
       <Filter>ソース ファイル\BaseSystem\Shader</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CEnemyStatusLoader.h" />
-    <ClInclude Include="src\Game\CTutorialScene.h">
-      <Filter>ソース ファイル\Game\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CTutoSoldier.h">
       <Filter>ソース ファイル\Game\Character\Enemy</Filter>
     </ClInclude>
@@ -861,6 +861,12 @@
     </ClInclude>
     <ClInclude Include="src\BaseSystem\CInputManager.h">
       <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTutorialUI.h">
+      <Filter>ソース ファイル\Game\UI\Tutorial</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTutorialScene.h">
+      <Filter>ソース ファイル\Game\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

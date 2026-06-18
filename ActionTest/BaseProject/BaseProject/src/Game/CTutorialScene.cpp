@@ -3,6 +3,7 @@
 
 #include "CSceneManager.h"
 #include "CGameSceneUI.h"
+#include "CTutorialUI.h"
 #include "CField.h"
 #include "CGameCamera.h"
 #include "CGameCamera2.h"
@@ -77,6 +78,11 @@ void CTutorialScene::Load()
 	// ランダム初期化（Load() の最初で一度だけ呼ぶ）
 	srand(static_cast<unsigned int>(time(nullptr)));
 
+	mpKanseiSE = CResourceManager::Get<CSound>("KanseiSound");
+
+	CField* arena = new CField();
+	arena->Scale(1.1f, 1.0f, 1.1f);
+
 	mpSaveManager = &CSaveManager::Instance();
 	// セーブファイルがあればロード、なければ初期値のまま
 	if (!mpSaveManager->Load())
@@ -84,17 +90,13 @@ void CTutorialScene::Load()
 		mpSaveManager->Reset();
 	}
 
-	mpKanseiSE = CResourceManager::Get<CSound>("KanseiSound");
-
-	CField* arena = new CField();
-	arena->Scale(1.1f, 1.0f, 1.1f);
-
 	// Playerを作成
 	mpPlayer = new CPlayer(mpSaveManager);
 	mpPlayer->Rotation(CVector(0.0f, 180.0f, 0.0f));
 	mpPlayer->Scale(1.0f, 1.0f, 1.0f);
 	mpPlayer->Position(0.0f, 5.0f, 100.0f);
 
+	// プレイヤーをチュートリアル用に
 	mpPlayer->TutorialInit();
 
 	// Enemyを作成
@@ -121,7 +123,9 @@ void CTutorialScene::Load()
 	mpGameMenu = new CGameMenu();
 
 	// UI作成
-	//new CGameSceneUI();
+	mpCTutorialUI = new CTutorialUI();
+	AddTask(mpCTutorialUI);
+
 	AddTask(new CGameSceneUI(mpPlayer));
 }
 
@@ -142,7 +146,6 @@ void CTutorialScene::Update()
 #ifdef _DEBUG
 	CDebugPrint::Print("ElapsedTime:%f\n", mElapsedTime);
 	CDebugPrint::Print("EnemyLv:%d\n", mEnemyLv);
-	CDebugPrint::Print("selectDiff:%d\n", mpSaveManager->data.selectDiff);
 	CDebugPrint::Print("mAttHitCount:%d\n", mpPlayer->mAttHitCount);
 	CDebugPrint::Print("mJustAvoidCount:%d\n", mpPlayer->mJustAvoidCount);
 	CDebugPrint::Print("mKickHitCount:%d\n", mpPlayer->mKickHitCount);
