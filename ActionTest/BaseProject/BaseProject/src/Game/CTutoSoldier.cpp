@@ -196,18 +196,18 @@ CTutoSoldier::~CTutoSoldier()
 
 void CTutoSoldier::InitStatus()
 {
-	mMaxHp = 100.0f;
+	mMaxHp = 50.0f;
 	mMaxSt = 150.0f;
-	mGainSt = 10.0f;
-	mAttackCost1 = 25.0f;
-	mAttackCost2 = 30.0f;
-	mAttackCost3 = 35.0f;
-	mAvoidCost = 20.0f;
+	mGainSt = 8.0f;
+	mAttackCost1 = 10.0f;
+	mAttackCost2 = 15.0f;
+	mAttackCost3 = 20.0f;
+	mAvoidCost = 25.0f;
 	mStepMag = 1.0f;
 	mAttackMag = 1.0f;
-	mAtSpeedMag = 1.0f;
-	mNegTime = 0.8f;
-	mNegProb = 66.6f;
+	mAtSpeedMag = 0.8f;
+	mNegTime = 3.0f;
+	mNegProb = 30.0f;
 
 	mHp = mMaxHp;
 	mSt = mMaxSt;

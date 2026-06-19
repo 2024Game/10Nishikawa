@@ -30,7 +30,7 @@ CTutorialUI::CTutorialUI()
 		false,
 		false
 	);
-	mpTextBg->SetSize(250.0f, 100.0f);
+	mpTextBg->SetSize(250.0f, 225.0f);
 	mpTextBg->SetPos(WINDOW_WIDTH - 260.0f, 10.0f);
 	mpTextBg->SetColor(CColor::black);
 	mpTextBg->SetAlpha(0.6f);
@@ -39,9 +39,9 @@ CTutorialUI::CTutorialUI()
 	mpText = new CText
 	(
 		mpFont, 20,
-		CVector2(WINDOW_WIDTH - 260.0f, 160.0f),
-		CVector2(260.0f, 530.0f),
-		CColor(CColor::darkBrown),
+		CVector2(WINDOW_WIDTH - 255.0f, 15.0f),
+		CVector2(240.0f, 215.0f),
+		CColor(CColor::yellow),
 		ETaskPriority::eUI,
 		0,
 		ETaskPauseType::eDefault,
@@ -90,25 +90,39 @@ void CTutorialUI::InformationUpdate()
 		mpText->SetText("チュートリアルへようこそ\n");
 		break;
 	case (EState::eTuto1):
-		mpText->SetText("WASD：移動\n""攻撃：マウス左クリック\n");
+		mpText->SetText(
+			"WASD：移動\n"
+			"攻撃：マウス左クリック\n"
+			"\n攻撃を5回当てる\n"
+			"\n当てるのが難しい場合は\n"
+			"Tキーでロックオンができます\n"
+		);
 		break;
 	case (EState::eTuto2):
 		mpText->SetText(
 			"回避：マウス右クリック\n"
-			"頭の上に下のアイコンが出ている間に回避すると、\nジャスト回避"
-		);
+			"頭の上に下のアイコンが出ている間に回避すると、\nジャスト回避\n");
 		break;
 	case (EState::eTuto3):
-		mpText->SetText("ジャスト回避後に攻撃を入力で\n強力なカウンター攻撃");
+		mpText->SetText("ジャスト回避後に攻撃を入力で\n強力なカウンター攻撃\n");
 		break;
 	case (EState::eTuto4):
-		mpText->SetText("チュートリアルへようこそ\n");
+		mpText->SetText(
+			"Cキーで「キック」\n"
+			"キックは相手をのけぞらせられるが、\n大きな敵には効かない\n");
 		break;
 	case (EState::eTuto5):
-		mpText->SetText("チュートリアルへようこそ\n");
+		mpText->SetText("頭の上に下のアイコンが出ている間にキックすると、\n"
+			"敵の防御力を一定時間下げられる\n");
 		break;
 	case (EState::eTuto6):
-		mpText->SetText("チュートリアルへようこそ\n");
+		mpText->SetText("次は敵が動き出します\n準備しておきましょう");
+		break;
+	case (EState::eTuto7):
+		mpText->SetText("敵を倒してみる\n");
+		break;
+	case (EState::eTuto8):
+		mpText->SetText("チュートリアルの終了です\n兵舎に戻ります");
 		break;
 	}
 }

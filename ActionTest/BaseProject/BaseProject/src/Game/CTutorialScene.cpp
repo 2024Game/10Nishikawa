@@ -178,6 +178,8 @@ void CTutorialScene::UpdateTuto1()
 	case 2:
 		mpPlayer->SetInBattle(0);
 		CEnemyManager::Instance()->SetInBattle(4);
+		// チュートリアルのテキストを次に進める
+		mpCTutorialUI->ChangeState(CTutorialUI::EState::eTuto1);
 		mStateStep++;
 		break;
 	case 3:
@@ -185,6 +187,9 @@ void CTutorialScene::UpdateTuto1()
 		if (mpPlayer->mAttHitCount >= 5)
 		{
 			CEnemyManager::Instance()->SetInBattle(5);
+
+			// チュートリアルのテキストを次に進める
+			mpCTutorialUI->ChangeState(CTutorialUI::EState::eTuto2);
 
 			// フェーズ2 : 一定間隔で​攻撃を​する​がダメージ無し、無敵の敵
 			ChangeState(EState::ephase2);
@@ -201,34 +206,74 @@ void CTutorialScene::UpdateTuto2()
 		// ジャスト回避のチュートリアル
 		if (mpPlayer->mJustAvoidCount >= 1)
 		{
-			// 次のキックのカウントを0にしておく
-			mpPlayer->mKickHitCount = 0;
+			// 次のカウンター攻撃のカウントを0にしておく
+			mpPlayer->mRushHitCount = 0;
+
+			// チュートリアルのテキストを次に進める
+			mpCTutorialUI->ChangeState(CTutorialUI::EState::eTuto3);
+
 			mStateStep++;
 		}
 		break;
 
 	case 1:
-		// キックのチュートリアル
-		if (mpPlayer->mKickHitCount >= 1)
+		// カウンター攻撃のチュートリアル
+		if (mpPlayer->mRushHitCount >= 1)
 		{
-			// 次のジャストキックのカウントを0にしておく
-			mpPlayer->mJustKickHitCount = 0;
+			// 次のキックのカウントを0にしておく
+			mpPlayer->mKickHitCount = 0;
+
+			mElapsedTime = 0;
 			mStateStep++;
 		}
 		break;
 
 	case 2:
+		// n秒経ったら次のチュートリアルに
+		if (mElapsedTime < 1.5f)
+		{
+			mElapsedTime += Times::DeltaTime();
+		}
+		// 待機時間が経過した
+		else
+		{
+			// チュートリアルのテキストを次に進める
+			mpCTutorialUI->ChangeState(CTutorialUI::EState::eTuto4);
+
+			mElapsedTime = 0.0f;
+
+			mStateStep++;
+		}
+		break;
+	case 3:
+		// キックのチュートリアル
+		if (mpPlayer->mKickHitCount >= 1)
+		{
+			// 次のジャストキックのカウントを0にしておく
+			mpPlayer->mJustKickHitCount = 0;
+
+			// チュートリアルのテキストを次に進める
+			mpCTutorialUI->ChangeState(CTutorialUI::EState::eTuto5);
+
+			mStateStep++;
+		}
+		break;
+
+	case 4:
 		// ジャストキックのチュートリアル
 		if (mpPlayer->mJustKickHitCount >= 1)
 		{
+			// チュートリアルのテキストを次に進める
+			mpCTutorialUI->ChangeState(CTutorialUI::EState::eTuto6);
+
 			mElapsedTime = 0.0f;
 			mStateStep++;
 		}
 		break;
 
-	case 3:
+	case 5:
 		// n秒経ったら次のチュートリアルに
-		if (mElapsedTime < 15.0f)
+		if (mElapsedTime < 5.0f)
 		{
 			mElapsedTime += Times::DeltaTime();
 		}
@@ -249,6 +294,9 @@ void CTutorialScene::UpdateTuto3()
 	switch (mStateStep)
 	{
 	case 0:
+		// チュートリアルのテキストを次に進める
+		mpCTutorialUI->ChangeState(CTutorialUI::EState::eTuto7);
+
 		// 敵を動ける状態に移行
 		CEnemyManager::Instance()->SetInBattle(0);
 
@@ -265,6 +313,7 @@ void CTutorialScene::UpdateTuto3()
 		break;
 
 	case 2:
+		// 敵の勝利
 		if (mpPlayer->GetHp() <= 0.0f)
 		{
 			CEnemyManager::Instance()->SetInBattle(2);
@@ -272,8 +321,12 @@ void CTutorialScene::UpdateTuto3()
 			mpKanseiSE->Play(0.25f);
 			mStateStep++;
 		}
+		// プレイヤーの勝利
 		else if (!CEnemyManager::Instance()->Surviv())
 		{
+			// チュートリアルのテキストを次に進める
+			mpCTutorialUI->ChangeState(CTutorialUI::EState::eTuto8);
+
 			mpPlayer->SetInBattle(2);
 			// 歓声SEを再生
 			mpKanseiSE->Play(0.25f);

@@ -224,6 +224,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	// リストに追加
 	mBgImages.push_back(stImg);
 
+
 	// [ゲーム終了]ボタンを生成
 	CExpandButton* startBtn = new CExpandButton
 	(
@@ -242,7 +243,7 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	// [タイトル画面へ]ボタンを生成
 	CExpandButton* titleBtn = new CExpandButton
 	(
-		CVector2(340.0f, WINDOW_HEIGHT - (40.0f + 10.0f)),
+		CVector2(330.0f, WINDOW_HEIGHT - (40.0f + 10.0f)),
 		CVector2(200.0f, 50.0f),
 		ETaskPriority::eUI, 0, ETaskPauseType::eGame,
 		false, false
@@ -257,17 +258,32 @@ CHomeSceneUI::CHomeSceneUI(CSaveManager* saveManager)
 	// [強化画面へ]ボタンを生成
 	CExpandButton* barracksBtn = new CExpandButton
 	(
-		CVector2(565.0f, WINDOW_HEIGHT - (40.0f + 10.0f)),
+		CVector2(545.0f, WINDOW_HEIGHT - (40.0f + 10.0f)),
 		CVector2(200.0f, 50.0f),
 		ETaskPriority::eUI, 0, ETaskPauseType::eGame,
 		false, false
 	);
 	// ボタンの画像を読み込み
-	barracksBtn->LoadButtonImage("UI/gobarracks.png", "UI/gobarracks.png");
+	barracksBtn->LoadButtonImage("UI/blacksmith.png", "UI/blacksmith.png");
 	// ボタンクリック時に呼び出されるコールバック関数を設定
 	barracksBtn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickGoBarracks, this));
 	// ボタンリストに追加
 	mButtons.push_back(barracksBtn);
+
+	// [チュートリアル]ボタンを生成
+	CExpandButton* tutorialBtn = new CExpandButton
+	(
+		CVector2(760.0f, WINDOW_HEIGHT - (40.0f + 10.0f)),
+		CVector2(200.0f, 50.0f),
+		ETaskPriority::eUI, 0, ETaskPauseType::eGame,
+		false, false
+	);
+	// ボタンの画像を読み込み
+	tutorialBtn->LoadButtonImage("UI/tutorial.png", "UI/tutorial.png");
+	// ボタンクリック時に呼び出されるコールバック関数を設定
+	tutorialBtn->SetOnClickFunc(std::bind(&CHomeSceneUI::OnClickGoTutorial, this));
+	// ボタンリストに追加
+	mButtons.push_back(tutorialBtn);
 }
 
 CHomeSceneUI::~CHomeSceneUI()
@@ -344,6 +360,12 @@ bool CHomeSceneUI::IsGoBarracks() const
 {
 	// 選択項目が4つ目ならば、兵舎へ移行
 	return mSelectIndex == 3;
+}
+
+bool CHomeSceneUI::IsGoTutorial() const
+{
+	// 選択項目が5つ目ならば、チュートリアルへ移行
+	return mSelectIndex == 4;
 }
 
 void CHomeSceneUI::Update()
@@ -477,7 +499,7 @@ void CHomeSceneUI::InformationUpdate()
 		"体力\n" + std::to_string((int)mpSaveManager->data.hp) + "/"
 		+ std::to_string((int)mpSaveManager->data.maxHp) + "\n"
 		"スタミナ\n" + std::to_string(150 + (mpSaveManager->data.stLv * 5)) + "\n"
-		"スタミナ回復量(秒間)\n" + std::to_string(8.25f * (1.0f + (mpSaveManager->data.stRegeneLv * 0.01f))) + "\n"
+		"スタミナ回復量(秒間)\n" + std::to_string(10.0f * (1.0f + (mpSaveManager->data.stRegeneLv * 0.01f))) + "\n"
 		"攻撃倍率\n" + std::to_string(1 + (mpSaveManager->data.attackLv * 0.05f)) + "\n"
 		"試合後体力回復量\n" + std::to_string(mpSaveManager->data.maxHp * (mpSaveManager->data.hpRegeneLv * 0.01f) + 5) + "\n"
 		).c_str());
@@ -671,6 +693,14 @@ void CHomeSceneUI::OnClickGoBarracks()
 	if (mIsEnd) return;
 
 	mSelectIndex = 3;
+	mIsEnd = true;
+}
+
+void CHomeSceneUI::OnClickGoTutorial()
+{
+	if (mIsEnd) return;
+
+	mSelectIndex = 4;
 	mIsEnd = true;
 }
 

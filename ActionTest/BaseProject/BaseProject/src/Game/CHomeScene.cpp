@@ -84,6 +84,11 @@ void CHomeScene::Update()
 		{
 			CSceneManager::Instance()->LoadScene(EScene::eBarracks);
 		}
+		// チュートリアルへ移行する
+		else if (mpCHomeSceneUI->IsGoTutorial())
+		{
+			CSceneManager::Instance()->LoadScene(EScene::eTutorial);
+		}
 		// タイトルへ移行する
 		else if (mpCHomeSceneUI->IsGoTitle())
 		{

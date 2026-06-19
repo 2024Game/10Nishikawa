@@ -318,7 +318,7 @@ void CPlayer::UpdateIdle()
 {
 	if (mHp > 0.0f)
 	{
-		CCharaBase::GainStamina(18.25f * Times::DeltaTime() * mStRegeneMag);
+		CCharaBase::GainStamina(10.0f * Times::DeltaTime() * mStRegeneMag);
 	}
 
 	// 接地していれば、
@@ -778,7 +778,7 @@ void CPlayer::UpdateSlideAttack()
 			float movePerFrame = dist / (SLIDEATT_START_FRAME - 5.0f);
 
 			// 1秒あたりの移動量
-			mMoveSpeed = camForward * movePerFrame * Times::DeltaTime() * 60 * 5.00;
+			mMoveSpeed = camForward * movePerFrame * Times::DeltaTime() * 60 * 6.00;
 		}
 
 		// ===== 攻撃開始 =====

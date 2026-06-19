@@ -24,6 +24,8 @@ public:
 	bool IsExitGame() const;
 	// 訓練所へ移行するか
 	bool IsGoBarracks() const;
+	// チュートリアルへ移行するか
+	bool IsGoTutorial() const;
 
 	// 更新
 	void Update() override;
@@ -60,6 +62,8 @@ private:
 	void OnClickGoTitle();
 	// [訓練所へ移行]クリック時のコールバック関数
 	void OnClickGoBarracks();
+	// [チュートリアルへ移行]クリック時のコールバック関数
+	void OnClickGoTutorial();
 	// [引退する]クリック時のコールバック関数
 	void OnClickGoReincarnation();
 	// [QUIT]クリック時のコールバック関数
