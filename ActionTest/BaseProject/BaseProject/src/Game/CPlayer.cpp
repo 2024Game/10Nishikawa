@@ -120,6 +120,7 @@ CPlayer::CPlayer(CSaveManager* SaveManager)
 	, mInJustAction(false)
 	, mS1RecastTime(10.0f)
 	, mS1CastTime(mS1RecastTime)
+	, mIsSA(false)
 
 	, mAttHitCount(0)
 	, mJustAvoidCount(0)
@@ -666,6 +667,10 @@ void CPlayer::UpdateKick()
 				SetInvincible(true);
 				mInJustAction = true;
 			}
+
+			// キック中はスーパーアーマーをオン
+			mIsSA = true;
+
 			mStateStep++;
 			break;
 		case 1:
@@ -692,6 +697,9 @@ void CPlayer::UpdateKick()
 					SetInvincible(false);
 					mInJustAction = false;
 				}
+
+				// スーパーアーマーをオフ
+				mIsSA = false;
 
 				// 待機状態へ移行
 				ChangeState(EState::eIdle);
@@ -1598,15 +1606,19 @@ void CPlayer::TakeDamage(float damage, CObjectBase* causer)
 	// 死亡していなければ、
 	if (!IsDeath())
 	{
-		// 仰け反り状態へ移行
-		ChangeState(EState::eHit);
+		// スーパーアーマー状態でなければのけぞる
+		if (!mIsSA)
+		{
+			// 仰け反り状態へ移行
+			ChangeState(EState::eHit);
 
-		// 攻撃を加えた相手の方向へ向く
-		CVector targetPos = causer->Position();
-		CVector vec = targetPos - Position();
-		vec.Y(0.0f);
-		Rotation(CQuaternion::LookRotation(vec.Normalized()));
-
+			// 攻撃を加えた相手の方向へ向く
+			CVector targetPos = causer->Position();
+			CVector vec = targetPos - Position();
+			vec.Y(0.0f);
+			Rotation(CQuaternion::LookRotation(vec.Normalized()));
+		}
+		
 		// 移動を停止
 		mMoveSpeed = CVector::zero;
 	}

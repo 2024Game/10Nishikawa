@@ -3,8 +3,7 @@
 #pragma once
 
 #ifndef __cplusplus
-#error GameInput req
-uires C++
+#error GameInput requires C++
 #endif
 
 #include <stdint.h>

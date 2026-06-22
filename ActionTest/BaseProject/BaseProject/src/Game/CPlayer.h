@@ -227,6 +227,8 @@ private:
 	float mS1RecastTime;		// スキル１のクールタイム
 	float mS1CastTime;			// スキル１の経過クールタイム
 
+	bool mIsSA;					// スーパーアーマーかどうか
+
 	// 火炎放射エフェクト
 	// CFlamethrower* mpFlamethrower;
 
