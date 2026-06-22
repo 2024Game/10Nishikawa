@@ -196,9 +196,12 @@ private:
 	bool mIsPlayedSlashSE;
 	bool mIsSpawnedSlashEffect;
 
+
 	bool mIsBattle;					// 戦闘状態か
 	float mBattleIdletime;			// 戦闘時の待機時間
 	CObjectBase* mpBattleTarget;	// 戦闘相手
+
+	bool mIsSA;					// スーパーアーマーかどうか
 
 	// 剣のクラス
 	CBusterSword* mpSword;
