@@ -32,6 +32,10 @@ public:
 
 	// ダメージを受ける
 	void TakeDamage(float damage, CObjectBase* causer) override;
+
+	// キックを受ける
+	void TakeKick(CObjectBase* causer) override;
+
 	// 死亡
 	void Death() override;
 	// 衝突処理
@@ -49,25 +53,26 @@ private:
 	{
 		None = -1,
 
-		eTPose,		// Tポーズ			0
-		eIdle,		// 待機				1
-		eIdleBattle,// 戦闘中の待機		2
-		eWalk,		// 歩行				3
-		eRun,		// ダッシュ			4
-		eAttack1,	// 斬り攻撃1		5
-		eAttack1B,	// 斬り攻撃1B		6
-		eAttack2,	// 斬り攻撃2		7
-		eAttackX,	// 斬りかかり攻撃	8
-		eKick,		// 蹴り攻撃			9
-		eJumpStart,	// ジャンプ開始		10
-		eJump,		// ジャンプ中		11
-		eJumpEnd,	// ジャンプ終了		12
-		eAvoidR,	// 回避:右			13
-		eAvoidL,	// 回避:左			14
-		eAvoidB,	// 回避:後ろ		15
-		eHit,		// 仰け反り			16
-		eDeath,		// 死亡				17
-		eVictory,	// 勝利				18
+		eTPose,		// Tポーズ				0
+		eIdle,		// 待機					1
+		eIdleBattle,// 戦闘中の待機			2
+		eWalk,		// 歩行					3
+		eRun,		// ダッシュ				4
+		eAttack1,	// 斬り攻撃1			5
+		eAttack1B,	// 斬り攻撃1B			6
+		eAttack2,	// 斬り攻撃2			7
+		eAttackX,	// 斬りかかり攻撃		8
+		eKick,		// 蹴り攻撃				9
+		eJumpStart,	// ジャンプ開始			10
+		eJump,		// ジャンプ中			11
+		eJumpEnd,	// ジャンプ終了			12
+		eAvoidR,	// 回避:右				13
+		eAvoidL,	// 回避:左				14
+		eAvoidB,	// 回避:後ろ			15
+		eHit,		// 仰け反り				16
+		eLeaning,	// 後ろに大きくのけぞる	17
+		eDeath,		// 死亡					18
+		eVictory,	// 勝利					19
 
 		Num
 	};
@@ -93,6 +98,7 @@ private:
 		eAvoidL,	// 回避:左
 		eAvoidB,	// 回避:後ろ
 		eHit,		// 仰け反り
+		eLeaning,	// 後ろに大きくのけぞる
 		eNeglect,	// 攻撃後の隙
 		eDeath,		// 死亡
 		eVictory,	// 勝利
@@ -208,6 +214,8 @@ private:
 	void UpdateNeg();
 	// 仰け反り状態の更新処理
 	void UpdateHit();
+	// 大きな仰け反り状態の更新処理
+	void UpdateLeaning();
 	// 死亡状態の更新処理
 	void UpdateDeath();
 	// 勝利

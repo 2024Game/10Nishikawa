@@ -79,6 +79,7 @@ const std::vector<CEnemy::AnimData> ANIM_DATA =
 	{ ANIM_PATH"avoidL.x",		true,	58.0f,	1.5f	},	// 回避:左
 	{ ANIM_PATH"avoidB.x",		true,	98.0f,	1.5f	},	// 回避:後ろ
 	{ ANIM_PATH"hit.x",			false,	44.0f,	0.85f	},	// 仰け反り
+	{ ANIM_PATH"leaning.x",		false,	61.0f,	0.65f	},	// 大きな仰け反り
 	{ ANIM_PATH"death.x",		false,	182.0f,	1.0f	},	// 死亡
 	{ ANIM_PATH"victory.x",		true,	271.0f,	1.0f	},	// 勝利
 };
@@ -296,6 +297,28 @@ void CTutoSoldier::TakeDamage(float damage, CObjectBase* causer)
 
 		// 移動を停止
 		mMoveSpeed = CVector::zero;
+	}
+}
+
+void CTutoSoldier::TakeKick(CObjectBase* causer)
+{
+	// 死亡していなければ、
+	if (!IsDeath())
+	{
+		// 攻撃を加えた相手を戦闘相手に設定
+		mpBattleTarget = causer;
+
+		// 攻撃を加えた相手の方向へ向く
+		LookAtBattleTarget(true);
+
+		// 戦闘状態へ切り替え
+		mIsBattle = true;
+
+		// 移動を停止
+		mMoveSpeed = CVector::zero;
+
+		// 仰け反り状態へ移行
+		ChangeState((int)EState::eLeaning);
 	}
 }
 
@@ -1704,6 +1727,47 @@ void CTutoSoldier::UpdateHit()
 	}
 }
 
+void CTutoSoldier::UpdateLeaning()
+{
+	// ステップごとに処理を分ける
+	switch (mStateStep)
+	{
+		// ステップ0：仰け反りアニメーション再生
+	case 0:
+		// 先行入力コライダーは最初はオフにしておく
+		mpTACol->SetEnable(false);
+		ChangeAnimation((int)EAnimType::eLeaning, true);
+		mStateStep++;
+		mAttStep = 0;
+		break;
+
+		// ステップ1：アニメーション再生中の移動
+	case 1:
+	{
+		// 1秒あたりの移動速度
+		CVector move = -VectorZ() * 12.5f * Times::DeltaTime();
+		Position(Position() + move);
+
+		if (GetAnimationFrame() >= 41.0f)
+		{
+			mStateStep++;
+		}
+		break;
+	}
+
+	// ステップ2：アニメーション終了待ち
+	case 2:
+		// 仰け反りアニメーションが終了したら、
+		// 待機状態へ戻す
+		if (IsAnimationFinished())
+		{
+			// Neglectへ移行
+			ChangeState((int)EState::eNeglect);
+		}
+		break;
+	}
+}
+
 // 死亡状態の更新処理
 void CTutoSoldier::UpdateDeath()
 {
@@ -2053,6 +2117,8 @@ void CTutoSoldier::Update()
 	case EState::eNeglect:	UpdateNeg();		break;
 		// 仰け反り
 	case EState::eHit:		UpdateHit();		break;
+		// 大きな仰け反り
+	case EState::eLeaning:	UpdateLeaning();	break;
 		// 死亡状態
 	case EState::eDeath:	UpdateDeath();		break;
 		// 勝利

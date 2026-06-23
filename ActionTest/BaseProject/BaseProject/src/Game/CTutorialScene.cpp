@@ -107,7 +107,7 @@ void CTutorialScene::Load()
 
 	// 兵士の敵を1体生成
 	enemy = new CTutoSoldier(mpPlayer, mEnemyLv);
-	enemy->Position(0.0f, 5.0f, -50.0f);
+	enemy->Position(0.0f, 5.0f, -25.0f);
 
 	// CGameCamera2のテスト
 	CVector atPos = mpPlayer->Position() + CVector(0.0f, 10.0f, 0.0f);
@@ -313,6 +313,21 @@ void CTutorialScene::UpdateTuto3()
 		break;
 
 	case 2:
+		// 戦闘結果時の待機時間待ち
+		if (mElapsedTime < 0.75f)
+		{
+			mElapsedTime += Times::DeltaTime();
+		}
+		// 待機時間が経過した
+		else
+		{
+			Times::SetTimeScale(1.0f);
+			mElapsedTime = 0.0f;
+			mStateStep++;
+		}
+		break;
+
+	case 3:
 		// 敵の勝利
 		if (mpPlayer->GetHp() <= 0.0f)
 		{
@@ -330,21 +345,6 @@ void CTutorialScene::UpdateTuto3()
 			mpPlayer->SetInBattle(2);
 			// 歓声SEを再生
 			mpKanseiSE->Play(0.25f);
-			mElapsedTime = 0.0f;
-			mStateStep++;
-		}
-		break;
-
-	case 3:
-		// 戦闘結果時の待機時間待ち
-		if (mElapsedTime < 0.75f)
-		{
-			mElapsedTime += Times::DeltaTime();
-		}
-		// 待機時間が経過した
-		else
-		{
-			Times::SetTimeScale(1.0f);
 			mElapsedTime = 0.0f;
 			mStateStep++;
 		}

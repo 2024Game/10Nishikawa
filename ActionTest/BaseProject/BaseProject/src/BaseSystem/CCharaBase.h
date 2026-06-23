@@ -26,6 +26,9 @@ public:
 	// ダメージを受ける
 	virtual void TakeDamage(float damage, CObjectBase* causer);
 
+	// キックを受ける
+	virtual void TakeKick(CObjectBase* causer);
+
 	// スタミナを回復する
 	void GainStamina(float amount);
 	// スタミナを消費する

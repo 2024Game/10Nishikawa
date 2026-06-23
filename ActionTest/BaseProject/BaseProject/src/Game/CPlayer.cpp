@@ -1766,7 +1766,7 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			}
 
 			AddAttackHitObj(hitChara);
-			hitChara->TakeDamage(0, this);
+			hitEnemy->TakeKick(this);
 		}
 	}
 }

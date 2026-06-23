@@ -55,6 +55,10 @@ void CCharaBase::TakeDamage(float damage, CObjectBase* causer)
 	}
 }
 
+void CCharaBase::TakeKick(CObjectBase* causer)
+{
+}
+
 void CCharaBase::GainStamina(float amount)
 {
 	// 回復したスタミナが最大値から現在値を引いた値以上なら

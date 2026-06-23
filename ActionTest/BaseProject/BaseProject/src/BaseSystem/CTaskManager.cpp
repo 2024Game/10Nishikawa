@@ -397,7 +397,8 @@ void CTaskManager::RenderMotionBlur()
 		glTranslatef(move.X(), move.Y(), move.Z());
 
 		// 3D関連のオブジェクトを描画
-		Render3d();
+		// Render3d();
+		mShadowMap.Render();
 
 		// 初回は、カラーバッファの内容を
 		// アキュムレーションバッファに上書き
