@@ -30,6 +30,10 @@ public:
 
 	// ダメージを受ける
 	void TakeDamage(float damage, CObjectBase* causer) override;
+
+	// キックを受ける
+	void TakeKick(CObjectBase* causer) override;
+
 	// 死亡
 	void Death() override;
 	// 衝突処理

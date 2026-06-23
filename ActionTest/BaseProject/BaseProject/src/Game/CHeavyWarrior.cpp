@@ -321,6 +321,32 @@ void CHeavyWarrior::TakeDamage(float damage, CObjectBase* causer)
 	}
 }
 
+void CHeavyWarrior::TakeKick(CObjectBase* causer)
+{
+	// 死亡していなければ、
+	if (!IsDeath())
+	{
+		// 攻撃を加えた相手を戦闘相手に設定
+		mpBattleTarget = causer;
+
+		// スーパーアーマー状態でなければのけぞる
+		if (!mIsSA)
+		{
+			// 仰け反り状態へ移行
+			ChangeState((int)EState::eHit);
+
+			// 攻撃を加えた相手の方向へ向く
+			LookAtBattleTarget(true);
+		}
+
+		// 戦闘状態へ切り替え
+		mIsBattle = true;
+
+		// 移動を停止
+		mMoveSpeed = CVector::zero;
+	}
+}
+
 // 死亡
 void CHeavyWarrior::Death()
 {
