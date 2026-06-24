@@ -9,7 +9,7 @@
 // アニメーションのパス
 #define ANIM_PATH "Character\\TestPlayer\\Anims\\"
 #define BODY_HEIGHT 18.0f	// 本体のコライダーの高さ
-#define BODY_RADIUS 3.0f	// 本体のコライダーの幅
+#define BODY_RADIUS 3.5f	// 本体のコライダーの幅
 #define MOVE_SPEED 13.5f	// 移動速度
 #define RUN_SPEED 27.0f		// 移動速度
 #define JUMP_SPEED 1.5f		// ジャンプ速度
@@ -23,7 +23,7 @@
 #define BATTLE_IDLE_TIME_MIN 0.5f
 #define BATTLE_IDLE_TIME_MAX 2.0f
 #define DASH_DIST 75.0f				// 駆け寄ってくる距離
-#define ATTACK_RANGE 34.5f			// 攻撃を行う距離
+#define ATTACK_RANGE 41.5f			// 攻撃を行う距離
 
 #define AT_GRACE_FRAME 5.0f			// 先行入力フレーム
 #define ATTACK1_START_FRAME 25.0f	// 斬り攻撃1の開始フレーム
@@ -53,7 +53,7 @@
 #define KICK_COL_OFFSET_POS CVector(0.0f, 4.0f, 2.5f)
 
 // 先行入力のコライダーの半径
-#define TA_COL_RADIUS 27.5f
+#define TA_COL_RADIUS 25.0f
 // 先行入力のコライダーのオフセット座標
 #define TA_COL_OFFSET_POS CVector(0.0f, 4.0f, 2.75f)
 
@@ -93,6 +93,7 @@ CHeavyWarrior::CHeavyWarrior(CPlayer* player, int enemyLevel)
 	, mCan1B(false)
 	, mTactics((int)ETactics::Aggressive)
 	, mAttPattern((int)EAttPattern::None)
+	, mIsSA(false)
 {
 	mpBattleTarget = player;
 
@@ -384,13 +385,13 @@ void CHeavyWarrior::Collision(CCollider* self, CCollider* other, const CHitInfo&
 			switch (mState)
 			{
 				// 斬り攻撃1
-			case (int)EState::eAttack1:		hitChara->TakeDamage(8 * mAttackMag, this);		break;
+			case (int)EState::eAttack1:		hitChara->TakeDamage(12 * mAttackMag, this);	break;
 				// 斬り攻撃1B
-			case (int)EState::eAttack1B:	hitChara->TakeDamage(8 * mAttackMag, this);		break;
+			case (int)EState::eAttack1B:	hitChara->TakeDamage(10 * mAttackMag, this);	break;
 				// 斬り攻撃2
-			case (int)EState::eAttack2:		hitChara->TakeDamage(12 * mAttackMag, this);	break;
+			case (int)EState::eAttack2:		hitChara->TakeDamage(18 * mAttackMag, this);	break;
 				// 斬り攻撃X
-			case (int)EState::eAttackX:		hitChara->TakeDamage(11 * mAttackMag, this);	break;
+			case (int)EState::eAttackX:		hitChara->TakeDamage(15 * mAttackMag, this);	break;
 			}
 		}
 	}
@@ -1665,18 +1666,119 @@ void CHeavyWarrior::UpdateVictory()
 
 void CHeavyWarrior::AttPattGearBox()
 {
+	if (GetDistToTarget() > ATTACK_RANGE + (mStepMag * 0.5f))
+	{
+		// Idleへ移行
+		ChangeState((int)EState::eIdle);
+		mAttPattern = (int)EAttPattern::None;
+	}
+	switch (mAttPattern)
+	{
+	case (int)EAttPattern::PatternA:
+		AttPatternA();
+		break;
+	case (int)EAttPattern::PatternB:
+		AttPatternB();
+		break;
+	case (int)EAttPattern::PatternC:
+		AttPatternC();
+		break;
+	case (int)EAttPattern::PatternD:
+		AttPatternD();
+		break;
+	default:
+		break;
+	}
 }
 
 void CHeavyWarrior::AttPatternA()
 {
+	switch (mAttStep)
+	{
+	case 0:
+		// Attack1へ移行
+		ChangeState((int)EState::eAttack1);
+		break;
+	case 1:
+		mAttStep = 0;
+		int rand = Math::Rand(1, 100);
+		// 確率で隙ができる
+		if (rand <= mNegProb)
+		{
+			// Neglectへ移行
+			ChangeState((int)EState::eNeglect);
+		}
+		else
+		{
+			// Idleへ移行
+			ChangeState((int)EState::eIdle);
+		}
+		break;
+	}
 }
 
 void CHeavyWarrior::AttPatternB()
 {
+	switch (mAttStep)
+	{
+	case 0:
+		// Attack1へ移行
+		ChangeState((int)EState::eAttack1);
+		break;
+	case 1:
+		// Attack2へ移行
+		ChangeState((int)EState::eAttack2);
+		break;
+	case 2:
+		mAttStep = 0;
+		int rand = Math::Rand(1, 100);
+		// 確率で隙ができる
+		if (rand <= mNegProb)
+		{
+			// Neglectへ移行
+			ChangeState((int)EState::eNeglect);
+		}
+		else
+		{
+			// Idleへ移行
+			ChangeState((int)EState::eIdle);
+		}
+		break;
+	}
 }
 
 void CHeavyWarrior::AttPatternC()
 {
+	switch (mAttStep)
+	{
+	case 0:
+		// Attack1へ移行
+		ChangeState((int)EState::eAttack1);
+		break;
+	case 1:
+		// Attack2へ移行
+		ChangeState((int)EState::eAttack2);
+		break;
+	case 2:
+		// AttackXへ移行
+		ChangeState((int)EState::eAttackX);
+		break;
+	case 3:
+		mAttStep = 0;
+		int rand = Math::Rand(1, 100);
+		// 確率で隙ができる
+		if (rand <= mNegProb)
+		{
+			// Neglectへ移行
+			ChangeState((int)EState::eNeglect);
+		}
+		else
+		{
+			// Idleへ移行
+			ChangeState((int)EState::eIdle);
+		}
+		break;
+	}
 }
 
 void CHeavyWarrior::AttPatternD()
@@ -1707,6 +1809,8 @@ void CHeavyWarrior::Update()
 	case EState::eAvoidR:	UpdateAvoidR();		break;
 		// 回避:左
 	case EState::eAvoidL:	UpdateAvoidL();		break;
+		// 後隙
+	case EState::eNeglect:	UpdateNeg();		break;
 		// 仰け反り
 	case EState::eHit:		UpdateHit();		break;
 		// 死亡状態

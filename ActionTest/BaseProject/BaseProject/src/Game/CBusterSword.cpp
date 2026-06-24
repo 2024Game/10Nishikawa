@@ -2,7 +2,7 @@
 #include "CColliderCapsule.h"
 
 #define SWORD_LENGTH 165.0f
-#define SWORD_RADIUS 1.75f
+#define SWORD_RADIUS 2.75f
 
 // コンストラクタ
 CBusterSword::CBusterSword(CObjectBase* owner, ETag tag,

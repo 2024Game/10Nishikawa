@@ -61,7 +61,7 @@ void CColliderSphere::Render()
 	// ライトオン
 	glEnable(GL_LIGHTING);
 	// アルファブレンド無効
-	glDisable(GL_ALPHA);
+	glDisable(GL_BLEND);
 
 	// 描画前の行列に戻す
 	glPopMatrix();
