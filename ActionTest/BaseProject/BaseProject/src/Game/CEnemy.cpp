@@ -180,6 +180,15 @@ void CEnemy::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 				}
 			}
 		}
+		// 壁との衝突
+		else if (other->Layer() == ELayer::eWall)
+		{
+			// 横方向の押し戻しのため、押し戻しベクトルのYの値を0にする
+			CVector adjust = hit.adjust;
+			adjust.Y(0.0f);
+
+			Position(Position() + adjust * hit.weight);
+		}
 		// プレイヤーと衝突した場合
 		else if (other->Layer() == ELayer::ePlayer)
 		{

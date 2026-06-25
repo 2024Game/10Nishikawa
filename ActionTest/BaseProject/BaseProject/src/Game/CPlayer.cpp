@@ -1642,12 +1642,12 @@ void CPlayer::SetInvincible(bool invincible)
 	if (!invincible)
 	{
 		// 当たり判定を通常のレイヤー設定にする
-		mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
+		mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
 	}
 	else
 	{
 		// 当たり判定を無敵のレイヤー設定にする
-		mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
+		mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eEnemy });
 	}
 }
 
@@ -1700,6 +1700,15 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 					mMoveSpeedY = 0.0f;
 				}
 			}
+		}
+		// 壁との衝突
+		else if (other->Layer() == ELayer::eWall)
+		{
+			// 横方向の押し戻しのため、押し戻しベクトルのYの値を0にする
+			CVector adjust = hit.adjust;
+			adjust.Y(0.0f);
+
+			Position(Position() + adjust * hit.weight);
 		}
 		// 敵と衝突した場合
 		else if (other->Layer() == ELayer::eEnemy)

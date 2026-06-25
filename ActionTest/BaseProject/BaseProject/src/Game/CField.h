@@ -20,7 +20,9 @@ private:
 	static CField* mpInstance;
 
 	CModel* mpModel;
-	CColliderMesh* mpColliderMesh;
+
+	CColliderMesh* mpFloorCol;
+	CColliderMesh* mpWallCol;
 
 	CModel* mpCubeModel;
 	CModel* mpCylinderModel;

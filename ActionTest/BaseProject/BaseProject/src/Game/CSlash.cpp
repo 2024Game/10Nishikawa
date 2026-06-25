@@ -1,5 +1,6 @@
 #include "CSlash.h"
 #include "CColliderSphere.h"
+#include "CShadowMap.h"
 
 // コンストラクタ
 CSlash::CSlash(CObjectBase* owner, const CVector& pos, const CVector& dir,
@@ -57,6 +58,13 @@ void CSlash::Update()
 // 描画
 void CSlash::Render()
 {
+	/*
+		影を描画する処理の中なら
+		このオブジェクトの描画処理をスキップして、
+		影を描画しない
+	*/
+	if (CShadowMap::Shadow()) return;
+
 	mpModel->SetColor(mColor);
 	mpModel->Render(Matrix());
 }

@@ -799,6 +799,20 @@ void CTutoSoldier::STRegene()
 	}
 }
 
+void CTutoSoldier::SetInvincible(bool invincible)
+{
+	if (!invincible)
+	{
+		// 当たり判定を通常のレイヤー設定にする
+		mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::ePlayer, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
+	}
+	else
+	{
+		// 当たり判定を無敵のレイヤー設定にする
+		mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::ePlayer, ELayer::eEnemy });
+	}
+}
+
 // 状態切り替え
 void CTutoSoldier::ChangeState(int state)
 {
@@ -1388,7 +1402,7 @@ void CTutoSoldier::SelectAvoid()
 	//-----------------------------------
 	for (auto col : CCollisionManager::Instance()->GetColList())
 	{
-		if (col->Layer() != ELayer::eField) continue;
+		if (col->Layer() != ELayer::eWall) continue;
 
 		if (CCollider::CollisionRay(col, start, rightEnd, &hit))
 		{
@@ -1403,7 +1417,7 @@ void CTutoSoldier::SelectAvoid()
 	//-----------------------------------
 	for (auto col : CCollisionManager::Instance()->GetColList())
 	{
-		if (col->Layer() != ELayer::eField) continue;
+		if (col->Layer() != ELayer::eWall) continue;
 
 		if (CCollider::CollisionRay(col, start, leftEnd, &hit))
 		{
@@ -1418,7 +1432,7 @@ void CTutoSoldier::SelectAvoid()
 	//-----------------------------------
 	for (auto col : CCollisionManager::Instance()->GetColList())
 	{
-		if (col->Layer() != ELayer::eField) continue;
+		if (col->Layer() != ELayer::eWall) continue;
 
 		if (CCollider::CollisionRay(col, start, backEnd, &hit))
 		{
@@ -1513,7 +1527,7 @@ void CTutoSoldier::UpdateAvoidR()
 		if (GetAnimationFrame() >= 20.0f && !mAvoidMoving)
 		{
 			mAvoidMoving = true;
-			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
+			SetInvincible(true);
 			mStateStep++;
 		}
 		break;
@@ -1535,7 +1549,7 @@ void CTutoSoldier::UpdateAvoidR()
 		// 回避アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::ePlayer, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
+			SetInvincible(false);
 			mIsGravity = true;
 			// 待機状態へ移行
 			ChangeState((int)EState::eIdle);
@@ -1558,7 +1572,7 @@ void CTutoSoldier::UpdateAvoidL()
 		if (GetAnimationFrame() >= 20.0f && !mAvoidMoving)
 		{
 			mAvoidMoving = true;
-			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
+			SetInvincible(true);
 			mStateStep++;
 		}
 		break;
@@ -1580,7 +1594,7 @@ void CTutoSoldier::UpdateAvoidL()
 		// 回避アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::ePlayer, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
+			SetInvincible(false);
 			mIsGravity = true;
 			// 待機状態へ移行
 			ChangeState((int)EState::eIdle);
@@ -1603,7 +1617,7 @@ void CTutoSoldier::UpdateAvoidB()
 		if (GetAnimationFrame() >= 12.0f && !mAvoidMoving)
 		{
 			mAvoidMoving = true;
-			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
+			SetInvincible(true);
 			mStateStep++;
 		}
 		break;
@@ -1625,7 +1639,7 @@ void CTutoSoldier::UpdateAvoidB()
 		// 回避アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::ePlayer, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
+			SetInvincible(false);
 			mIsGravity = true;
 			// 待機状態へ移行
 			ChangeState((int)EState::eIdle);
@@ -1778,7 +1792,7 @@ void CTutoSoldier::UpdateDeath()
 		ChangeAnimation((int)EAnimType::eDeath, true);
 		mDeathVec = -VectorZ();
 		mToDeath = true;
-		mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
+		SetInvincible(true);
 		mStateStep++;
 		break;
 		// ステップ1：死亡アニメーション着地待ち

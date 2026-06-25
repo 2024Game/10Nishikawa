@@ -8,6 +8,7 @@ enum class ELayer
 	eTest,
 	eField,
 	eGround,
+	eWall,
 	ePlayer,
 	eEnemy,
 	eItem,

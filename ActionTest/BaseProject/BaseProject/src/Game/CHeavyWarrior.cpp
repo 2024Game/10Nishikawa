@@ -116,7 +116,7 @@ CHeavyWarrior::CHeavyWarrior(CPlayer* player, int enemyLevel)
 		BODY_RADIUS
 	);
 	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::eRideableObject, ETag::ePlayer, ETag::eEnemy });
-	mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::ePlayer, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
+	SetInvincible(false);
 
 	mpSlashSE = CResourceManager::Get<CSound>("SlashSound");
 
@@ -803,6 +803,20 @@ void CHeavyWarrior::STRegene()
 	}
 }
 
+void CHeavyWarrior::SetInvincible(bool invincible)
+{
+	if (!invincible)
+	{
+		// 当たり判定を通常のレイヤー設定にする
+		mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::ePlayer, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
+	}
+	else
+	{
+		// 当たり判定を無敵のレイヤー設定にする
+		mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::ePlayer, ELayer::eEnemy });
+	}
+}
+
 // 状態切り替え
 void CHeavyWarrior::ChangeState(int state)
 {
@@ -1290,7 +1304,7 @@ void CHeavyWarrior::SelectAvoid()
 	//-----------------------------------
 	for (auto col : CCollisionManager::Instance()->GetColList())
 	{
-		if (col->Layer() != ELayer::eField) continue;
+		if (col->Layer() != ELayer::eWall) continue;
 
 		if (CCollider::CollisionRay(col, start, rightEnd, &hit))
 		{
@@ -1305,7 +1319,7 @@ void CHeavyWarrior::SelectAvoid()
 	//-----------------------------------
 	for (auto col : CCollisionManager::Instance()->GetColList())
 	{
-		if (col->Layer() != ELayer::eField) continue;
+		if (col->Layer() != ELayer::eWall) continue;
 
 		if (CCollider::CollisionRay(col, start, leftEnd, &hit))
 		{
@@ -1320,7 +1334,7 @@ void CHeavyWarrior::SelectAvoid()
 	//-----------------------------------
 	for (auto col : CCollisionManager::Instance()->GetColList())
 	{
-		if (col->Layer() != ELayer::eField) continue;
+		if (col->Layer() != ELayer::eWall) continue;
 
 		if (CCollider::CollisionRay(col, start, backEnd, &hit))
 		{
@@ -1415,7 +1429,7 @@ void CHeavyWarrior::UpdateAvoidR()
 		if (GetAnimationFrame() >= 20.0f && !mAvoidMoving)
 		{
 			mAvoidMoving = true;
-			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
+			SetInvincible(true);
 			mStateStep++;
 		}
 		break;
@@ -1437,7 +1451,7 @@ void CHeavyWarrior::UpdateAvoidR()
 		// 回避アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::ePlayer, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
+			SetInvincible(false);
 			mIsGravity = true;
 			// 待機状態へ移行
 			ChangeState((int)EState::eIdle);
@@ -1460,7 +1474,7 @@ void CHeavyWarrior::UpdateAvoidL()
 		if (GetAnimationFrame() >= 20.0f && !mAvoidMoving)
 		{
 			mAvoidMoving = true;
-			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
+			SetInvincible(true);
 			mStateStep++;
 		}
 		break;
@@ -1482,7 +1496,7 @@ void CHeavyWarrior::UpdateAvoidL()
 		// 回避アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::ePlayer, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
+			SetInvincible(false);
 			mIsGravity = true;
 			// 待機状態へ移行
 			ChangeState((int)EState::eIdle);
@@ -1505,7 +1519,7 @@ void CHeavyWarrior::UpdateAvoidB()
 		if (GetAnimationFrame() >= 12.0f && !mAvoidMoving)
 		{
 			mAvoidMoving = true;
-			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
+			SetInvincible(true);
 			mStateStep++;
 		}
 		break;
@@ -1527,7 +1541,7 @@ void CHeavyWarrior::UpdateAvoidB()
 		// 回避アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::ePlayer, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eTypeAheadCol });
+			SetInvincible(false);
 			mIsGravity = true;
 			// 待機状態へ移行
 			ChangeState((int)EState::eIdle);
@@ -1608,7 +1622,7 @@ void CHeavyWarrior::UpdateDeath()
 		ChangeAnimation((int)EAnimType::eDeath, true);
 		mDeathVec = -VectorZ();
 		mToDeath = true;
-		mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eEnemy });
+		SetInvincible(true);
 		mStateStep++;
 		break;
 		// ステップ1：死亡アニメーション着地待ち

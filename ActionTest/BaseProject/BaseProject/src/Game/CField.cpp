@@ -14,8 +14,12 @@ CField::CField()
 
 	mpModel = CResourceManager::Get<CModel>("Arena");
 
-	mpColliderMesh = new CColliderMesh(this, ELayer::eField, mpModel, true);
+	CModel* floorCol = CResourceManager::Get<CModel>("ArenaFloorCol");
+	mpFloorCol = new CColliderMesh(this, ELayer::eField, floorCol, true);
 
+	CModel* wallCol = CResourceManager::Get<CModel>("ArenaWallCol");
+	mpWallCol = new CColliderMesh(this, ELayer::eWall, wallCol, true);
+	
 	//CreateFieldObjects();
 }
 
@@ -25,11 +29,9 @@ CField::~CField()
 	{
 		mpInstance = nullptr;
 	}
-	if (mpColliderMesh != nullptr)
-	{
-		delete mpColliderMesh;
-		mpColliderMesh = nullptr;
-	}
+
+	SAFE_DELETE(mpFloorCol);
+	SAFE_DELETE(mpWallCol);
 }
 
 void CField::CreateFieldObjects()
@@ -123,10 +125,17 @@ void CField::CreateFieldObjects()
 bool CField::CollisionRay(const CVector& start, const CVector& end)
 {
 	if (mpInstance == nullptr) return false;
-	if (mpInstance->mpColliderMesh != nullptr)
+
+	if (mpInstance->mpFloorCol != nullptr)
 	{
 		CHitInfo hit;
-		if (CCollider::CollisionRay(mpInstance->mpColliderMesh, start, end, &hit)) return true;
+		if (CCollider::CollisionRay(mpInstance->mpFloorCol, start, end, &hit)) return true;
+	}
+
+	if (mpInstance->mpWallCol != nullptr)
+	{
+		CHitInfo hit;
+		if (CCollider::CollisionRay(mpInstance->mpWallCol, start, end, &hit)) return true;
 	}
 	
 	return false;

@@ -160,6 +160,9 @@ private:
 	// スタミナ自動回復
 	void STRegene();
 
+	// 当たり判定を変更して無敵にする
+	void SetInvincible(bool invincible);
+
 	// 行動状態切り替え
 	void ChangeState(int state) override;
 

@@ -54,7 +54,11 @@ void CGameScene::Load()
 	CEnemyStatusLoader::Load("EnemyStatus\\HeavyWarrior.csv");
 
 	CResourceManager::Load<CModel>(		"Field",			"Field\\field.obj");
+
 	CResourceManager::Load<CModel>(		"Arena",			"Field\\Arena\\arena.obj");
+	CResourceManager::Load<CModel>(		"ArenaFloorCol",	"Field\\Arena\\arena_floor_col.obj");
+	CResourceManager::Load<CModel>(		"ArenaWallCol",		"Field\\Arena\\arena_wall_col.obj");
+
 	CResourceManager::Load<CModel>(		"FieldCube",		"Field\\Object\\cube.obj");
 	CResourceManager::Load<CModel>(		"FieldCylinder",	"Field\\Object\\cylinder.obj");
 
