@@ -11,7 +11,7 @@
 #define BODY_HEIGHT 18.0f	// 本体のコライダーの高さ
 #define BODY_RADIUS 3.5f	// 本体のコライダーの幅
 #define MOVE_SPEED 13.5f	// 移動速度
-#define RUN_SPEED 27.0f		// 移動速度
+#define RUN_SPEED 27.0f		// ダッシュ移動速度
 #define JUMP_SPEED 1.5f		// ジャンプ速度
 #define GRAVITY 0.0625f		// 重力加速度
 
@@ -20,8 +20,6 @@
 #define DEATH_WAIT_TIME 3.0f
 
 #define LOOKAT_SPEED 90.0f
-#define BATTLE_IDLE_TIME_MIN 0.5f
-#define BATTLE_IDLE_TIME_MAX 2.0f
 #define DASH_DIST 75.0f				// 駆け寄ってくる距離
 #define ATTACK_RANGE 41.5f			// 攻撃を行う距離
 
@@ -44,7 +42,7 @@
 
 #define ATTACKX_SWORD_OFFSET_ROT CVector(-20.0f, 0.0f, -25.0f)
 // ダッシュ時の剣のオフセット向き
-#define DASH_SWORD_OFFSET_ROT CVector(20.0f, 0.0f, -70.0f)
+#define DASH_SWORD_OFFSET_ROT CVector(0.0f, 0.0f, 0.0f)
 
 #define KICK_START_FRAME 26.0f		// 蹴り攻撃の開始フレーム
 #define KICK_END_FRAME 40.0f		// 蹴り攻撃の終了フレーム
@@ -64,7 +62,7 @@ const std::vector<CEnemy::AnimData> ANIM_DATA =
 	{ ANIM_PATH"idle.x",		true,	121.0f,	1.0f	},	// 待機
 	{ ANIM_PATH"idle2.x",		true,	121.0f,	1.0f	},	// 待機(戦闘中)
 	{ ANIM_PATH"walk.x",		true,	82.0f,	1.0f	},	// 歩行
-	{ ANIM_PATH"run.x",			true,	39.0f,	1.0f	},	// ダッシュ
+	{ ANIM_PATH"run.x",			true,	36.0f,	0.7f	},	// ダッシュ
 	{ ANIM_PATH"GSSlash1.x",	false,	77.0f,	1.0f	},	// 斬り攻撃
 	{ ANIM_PATH"GSSlashR.x",	false,	90.0f,	1.0f	},	// 斬り攻撃B
 	{ ANIM_PATH"GSSlash2.x",	false,	110.0f,	1.25f	},	// 斬り攻撃
@@ -113,7 +111,7 @@ CHeavyWarrior::CHeavyWarrior(CPlayer* player, int enemyLevel)
 	mpBodyCol = new CColliderCapsule
 	(
 		this, ELayer::eEnemy,
-		CVector(0.0f, BODY_RADIUS, 0.0f),
+		CVector(0.0f, BODY_RADIUS - 1.0f, 0.0f),
 		CVector(0.0f, BODY_HEIGHT - BODY_RADIUS, 0.0f),
 		BODY_RADIUS
 	);

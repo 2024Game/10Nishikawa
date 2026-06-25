@@ -1,7 +1,7 @@
 #include "CBusterSword.h"
 #include "CColliderCapsule.h"
 
-#define SWORD_LENGTH 165.0f
+#define SWORD_LENGTH 170.0f
 #define SWORD_RADIUS 2.75f
 
 // コンストラクタ
@@ -19,7 +19,7 @@ CBusterSword::CBusterSword(CObjectBase* owner, ETag tag,
 	mpCollider = new CColliderCapsule
 	(
 		this, ELayer::eAttackCol,
-		CVector(30.0f, 0.0f, 0.0f),
+		CVector(0.0f, 0.0f, 0.0f),
 		CVector(SWORD_LENGTH - SWORD_RADIUS, 0.0f, 0.0f),
 		SWORD_RADIUS
 	);

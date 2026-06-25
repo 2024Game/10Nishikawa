@@ -1,4 +1,4 @@
-#include "CSoldier.h"
+﻿#include "CSoldier.h"
 #include "CColliderCapsule.h"
 #include "CColliderSphere.h"
 #include "CGreatSword.h"
@@ -12,7 +12,7 @@
 #define BODY_HEIGHT 16.0f	// 本体のコライダーの高さ
 #define BODY_RADIUS 3.0f	// 本体のコライダーの幅
 #define MOVE_SPEED 24.0f	// 移動速度
-#define RUN_SPEED 54.0f		// ダッシュ移動速度
+#define RUN_SPEED 47.5f		// ダッシュ移動速度
 #define JUMP_SPEED 1.5f		// ジャンプ速度
 #define GRAVITY 0.0625f		// 重力加速度
 
@@ -21,8 +21,6 @@
 #define DEATH_WAIT_TIME 3.0f
 
 #define LOOKAT_SPEED 90.0f
-#define BATTLE_IDLE_TIME_MIN 0.5f
-#define BATTLE_IDLE_TIME_MAX 2.0f
 #define DASH_DIST 75.0f				// 駆け寄ってくる距離
 #define ATTACK_RANGE 23.5f			// 攻撃を行う距離
 #define SLASH_RANGE 100.0f			// 遠距離攻撃を行う距離
@@ -66,7 +64,7 @@ const std::vector<CEnemy::AnimData> ANIM_DATA =
 	{ ANIM_PATH"idle.x",		true,	121.0f,	1.0f	},	// 待機
 	{ ANIM_PATH"idle2.x",		true,	121.0f,	1.0f	},	// 待機(戦闘中)
 	{ ANIM_PATH"walk.x",		true,	82.0f,	2.25f	},	// 歩行
-	{ ANIM_PATH"run.x",			true,	39.0f,	1.5f	},	// ダッシュ
+	{ ANIM_PATH"run.x",			true,	39.0f,	0.95f	},	// ダッシュ
 	{ ANIM_PATH"GSSlash1.x",	false,	77.0f,	1.20f	},	// 斬り攻撃
 	{ ANIM_PATH"GSSlashR.x",	false,	90.0f,	1.20f	},	// 斬り攻撃B
 	{ ANIM_PATH"GSSlash2.x",	false,	110.0f,	1.40f	},	// 斬り攻撃
