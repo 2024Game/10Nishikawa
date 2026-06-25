@@ -943,6 +943,8 @@ void CHeavyWarrior::UpdateAttack1()
 		ChangeAnimation((int)EAnimType::eAttack1, true);
 		mAttackVec = VectorZ();
 		CCharaBase::UseStamina(mAttackCost1);
+		// 斬り攻撃1にはスーパーアーマーを付与
+		mIsSA = true;
 		mStateStep++;
 		break;
 	case 1:
@@ -995,6 +997,9 @@ void CHeavyWarrior::UpdateAttack1()
 		// アニメーション終了したら、待機状態へ戻す
 		if (IsAnimationFinished())
 		{
+			// スーパーアーマーを解除
+			mIsSA = false;
+
 			// 待機状態へ移行
 			ChangeState((int)EState::eIdle);
 			ChangeAnimation((int)EAnimType::eIdle);
