@@ -123,6 +123,10 @@ void CTutorialScene::Load()
 
 	mainCamera->SetFollowTargetTf(mpPlayer);
 
+	// ぶつかるコライダーを設定して、カメラが壁を通過しないようにする
+	mainCamera->AddCollider(arena->GetFloorCol());
+	mainCamera->AddCollider(arena->GetWallCol());
+
 	// ゲームメニューを作成
 	mpGameMenu = new CGameMenu();
 

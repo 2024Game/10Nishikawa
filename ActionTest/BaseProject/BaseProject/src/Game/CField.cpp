@@ -141,6 +141,16 @@ bool CField::CollisionRay(const CVector& start, const CVector& end)
 	return false;
 }
 
+CCollider* CField::GetFloorCol()
+{
+	return mpFloorCol;
+}
+
+CCollider* CField::GetWallCol()
+{
+	return mpWallCol;
+}
+
 void CField::Update()
 {
 }

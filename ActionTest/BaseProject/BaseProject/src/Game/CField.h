@@ -11,6 +11,10 @@ public:
 	// フィールドとのレイ判定の結果を返す
 	static bool CollisionRay(const CVector& start, const CVector& end);
 
+	// 各コライダーを返す
+	CCollider* GetFloorCol();
+	CCollider* GetWallCol();
+
 	void Update();
 	void Render();
 
