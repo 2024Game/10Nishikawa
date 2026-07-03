@@ -124,7 +124,9 @@ private:
 		PatternB,	// 1段目→2段目
 		PatternC,	// 1段目→2段目→3段目
 		PatternD,	// 1段目→2段目(当たる位置にいなければ遠距離攻撃)→3段目
-		PatternE	// 1段目→遠距離攻撃
+		PatternE,	// 1段目→遠距離攻撃
+		PatternF,	// 1段目→2段目→3段目→遠距離攻撃
+		PatternG	// 遠距離攻撃
 	};
 
 	// アニメーション切り替え
@@ -168,7 +170,7 @@ private:
 	void UpdateAttack2();
 	// 斬り攻撃Xの更新処理
 	void UpdateAttackX();
-	// 斬り攻撃1の更新処理
+	// 遠距離攻撃の更新処理
 	void UpdateSlash();
 	// どの方向に回避するべきかを決定する
 	void SelectAvoid();
@@ -203,6 +205,10 @@ private:
 	void AttPatternD();
 	// 1段目→遠距離攻撃
 	void AttPatternE();
+	// 1段目→2段目→3段目→遠距離攻撃
+	void AttPatternF();
+	// 遠距離攻撃
+	void AttPatternG();
 
 
 	CCollider* mpKickCol;			// 蹴り攻撃用コライダー
@@ -232,4 +238,6 @@ private:
 	bool  mAvoidMoving = false;
 
 	int mTactics;			// 現在の戦術レイヤー (ETactics)
+
+	float mSlashCT;			// 斬撃攻撃のみのクールタイム
 };

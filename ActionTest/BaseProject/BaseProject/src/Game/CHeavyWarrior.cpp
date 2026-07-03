@@ -672,7 +672,7 @@ void CHeavyWarrior::DecideNextAction()
 	case ETactics::Cautious:
 		switch (static_cast<EBattleTempo>(mBattleTempo))
 		{
-			// 慎重 × 高スタミナ：スタミナがあっても追わずに戦う
+			// 慎重 × 高スタミナ
 		case EBattleTempo::HighSt:
 			// 攻撃が当たる距離にいるか
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
@@ -694,11 +694,11 @@ void CHeavyWarrior::DecideNextAction()
 				AttPattGearBox();
 				break;
 			}
-			// 遠くても追わない
-			ChangeState((int)EState::eIdle);
+			// 遠ければ接近の状態へ移行
+			ChangeState((int)EState::eChase);
 			break;
 
-			// 慎重 × 中スタミナ：距離を取りたがる
+			// 慎重 × 中スタミナ：スタミナがあっても追わずに戦う
 		case EBattleTempo::MidSt:
 			// 攻撃が当たる距離にいるか
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))

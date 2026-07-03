@@ -690,8 +690,8 @@ void CTutoSoldier::DecideNextAction()
 				AttPattGearBox();
 				break;
 			}
-			// 遠くても追わない
-			ChangeState((int)EState::eIdle);
+			// 遠ければ接近の状態へ移行
+			ChangeState((int)EState::eChase);
 			break;
 
 			// 慎重 × 中スタミナ：距離を取りたがる

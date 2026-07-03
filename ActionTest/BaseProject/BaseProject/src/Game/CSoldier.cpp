@@ -24,6 +24,7 @@
 #define DASH_DIST 75.0f				// 駆け寄ってくる距離
 #define ATTACK_RANGE 23.5f			// 攻撃を行う距離
 #define SLASH_RANGE 100.0f			// 遠距離攻撃を行う距離
+#define SLASH_CT 5.0f				// 単発の遠距離攻撃を行うクールタイム
 
 #define AT_GRACE_FRAME 6.0f			// 先行入力フレーム
 #define ATTACK1_START_FRAME 25.0f	// 斬り攻撃1の開始フレーム
@@ -95,6 +96,7 @@ CSoldier::CSoldier(CPlayer* player, int enemyLevel)
 	, mCan1B(false)
 	, mTactics((int)ETactics::Aggressive)
 	, mAttPattern((int)EAttPattern::None)
+	, mSlashCT(0.0f)
 {
 	mpBattleTarget = player;
 
@@ -383,7 +385,7 @@ void CSoldier::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			case (int)EState::eAttack2:		hitChara->TakeDamage(6 * mAttackMag, this);	break;
 				// 斬り攻撃X
 			case (int)EState::eAttackX:		hitChara->TakeDamage(5 * mAttackMag, this);	break;
-				// 斬り攻撃X
+				// 遠距離攻撃
 			case (int)EState::eSlash:		hitChara->TakeDamage(5 * mAttackMag, this);	break;
 			}
 		}
@@ -398,14 +400,14 @@ void CSoldier::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			hitChara->TakeDamage(1, this);
 		}
 	}
-	// 剣のコライダーが衝突した
+	// 遠距離攻撃のコライダーが衝突した
 	else if (mpSlash != nullptr && self == mpSlash->Collider())
 	{
 		CCharaBase* hitChara = dynamic_cast<CCharaBase*>(other->Owner());
 		if (hitChara != nullptr && !IsAttackHitObj(hitChara))
 		{
 			AddAttackHitObj(hitChara);
-			hitChara->TakeDamage(5 * mAttackMag, this);
+			hitChara->TakeDamage(10 * mAttackMag, this);
 		}
 	}
 }
@@ -615,15 +617,21 @@ void CSoldier::DecideNextAction()
 				}
 				else
 				{
-					mAttPattern = (int)EAttPattern::PatternC;
+					mAttPattern = (int)EAttPattern::PatternF;
 				}
+				AttPattGearBox();
+				break;
+			}
+			else if (dist <= SLASH_RANGE && mSlashCT <= 0.0f)
+			{
+				mAttPattern = (int)EAttPattern::PatternG;
 				AttPattGearBox();
 				break;
 			}
 			// 遠ければ接近の状態へ移行
 			ChangeState((int)EState::eChase);
 			break;
-
+			
 		// バランス × 中スタミナ：確実な戦い方
 		case EBattleTempo::MidSt:
 			// 攻撃が当たる距離にいるか
@@ -643,10 +651,20 @@ void CSoldier::DecideNextAction()
 				{
 					mAttPattern = (int)EAttPattern::PatternB;
 				}
+				else if (rand <= 65)
+				{
+					mAttPattern = (int)EAttPattern::PatternF;
+				}
 				else
 				{
 					mAttPattern = (int)EAttPattern::PatternC;
 				}
+				AttPattGearBox();
+				break;
+			}
+			else if (dist <= SLASH_RANGE && mSlashCT <= 0.0f)
+			{
+				mAttPattern = (int)EAttPattern::PatternG;
 				AttPattGearBox();
 				break;
 			}
@@ -676,6 +694,12 @@ void CSoldier::DecideNextAction()
 				AttPattGearBox();
 				break;
 			}
+			else if (dist <= SLASH_RANGE && mSlashCT <= 0.0f)
+			{
+				mAttPattern = (int)EAttPattern::PatternG;
+				AttPattGearBox();
+				break;
+			}
 			// 遠くても追わない
 			ChangeState((int)EState::eIdle);
 			break;
@@ -686,7 +710,7 @@ void CSoldier::DecideNextAction()
 	case ETactics::Cautious:
 		switch (static_cast<EBattleTempo>(mBattleTempo))
 		{
-		// 慎重 × 高スタミナ：スタミナがあっても追わずに戦う
+		// 慎重 × 高スタミナ
 		case EBattleTempo::HighSt:
 			// 攻撃が当たる距離にいるか
 			if (dist <= ATTACK_RANGE + (mStepMag * 0.5f))
@@ -701,6 +725,10 @@ void CSoldier::DecideNextAction()
 				{
 					mAttPattern = (int)EAttPattern::PatternB;
 				}
+				else if (rand <= 55)
+				{
+					mAttPattern = (int)EAttPattern::PatternF;
+				}
 				else
 				{
 					mAttPattern = (int)EAttPattern::PatternC;
@@ -708,8 +736,14 @@ void CSoldier::DecideNextAction()
 				AttPattGearBox();
 				break;
 			}
-			// 遠くても追わない
-			ChangeState((int)EState::eIdle);
+			else if (dist <= SLASH_RANGE && mSlashCT <= 0.0f)
+			{
+				mAttPattern = (int)EAttPattern::PatternG;
+				AttPattGearBox();
+				break;
+			}
+			// 遠ければ接近の状態へ移行
+			ChangeState((int)EState::eChase);
 			break;
 
 		// 慎重 × 中スタミナ：距離を取りたがる
@@ -731,6 +765,12 @@ void CSoldier::DecideNextAction()
 				{
 					mAttPattern = (int)EAttPattern::PatternC;
 				}
+				AttPattGearBox();
+				break;
+			}
+			else if (dist <= SLASH_RANGE && mSlashCT <= 0.0f)
+			{
+				mAttPattern = (int)EAttPattern::PatternG;
 				AttPattGearBox();
 				break;
 			}
@@ -757,6 +797,12 @@ void CSoldier::DecideNextAction()
 				{
 					mAttPattern = (int)EAttPattern::PatternC;
 				}
+				AttPattGearBox();
+				break;
+			}
+			else if (dist <= SLASH_RANGE && mSlashCT <= 0.0f)
+			{
+				mAttPattern = (int)EAttPattern::PatternG;
 				AttPattGearBox();
 				break;
 			}
@@ -1308,12 +1354,15 @@ void CSoldier::UpdateSlash()
 		// 攻撃終了フレームまで経過したか
 		if (GetAnimationFrame() >= ATTACK1_END_FRAME)
 		{
+			// 相手の方向へ向く
+			LookAtBattleTarget(true);
+
 			mpSlash = new CSlash
 			(
 				this,
 				Position() + CVector(0.0f, 10.0f, 0.0f) + VectorZ() * 5.0f,
 				VectorZ(),
-				150.0f * 1.3f,
+				150.0f * 1.5f,
 				SLASH_RANGE,
 				ETag::eEnemy,
 				{ ETag::ePlayer },	// プレイヤーのタグが設定されたコライダーと衝突
@@ -1815,7 +1864,9 @@ void CSoldier::UpdateVictory()
 
 void CSoldier::AttPattGearBox()
 {
-	if (GetDistToTarget() > ATTACK_RANGE + (mStepMag * 0.5f) && mAttPattern != (int)EAttPattern::PatternD)
+	if (GetDistToTarget() > ATTACK_RANGE + (mStepMag * 0.5f) 
+		&& mAttPattern != (int)EAttPattern::PatternD 
+		&& mAttPattern != (int)EAttPattern::PatternG)
 	{
 		// Idleへ移行
 		ChangeState((int)EState::eIdle);
@@ -1837,6 +1888,12 @@ void CSoldier::AttPattGearBox()
 		break;
 	case (int)EAttPattern::PatternE:
 		AttPatternE();
+		break;
+	case (int)EAttPattern::PatternF:
+		AttPatternF();
+		break;
+	case (int)EAttPattern::PatternG:
+		AttPatternG();
 		break;
 	default:
 		break;
@@ -2026,9 +2083,96 @@ void CSoldier::AttPatternE()
 	}
 }
 
+void CSoldier::AttPatternF()
+{
+	switch (mAttStep)
+	{
+	case 0:
+		// Attack1へ移行
+		ChangeState((int)EState::eAttack1);
+		break;
+	case 1:
+		// Attack2へ移行
+		ChangeState((int)EState::eAttack2);
+		break;
+	case 2:
+		// AttackXへ移行
+		ChangeState((int)EState::eAttackX);
+		break;
+	case 3:
+		if (GetDistToTarget() <= SLASH_RANGE)
+		{
+			// Slashへ移行
+			ChangeState((int)EState::eSlash);
+		}
+		else
+		{
+			// Idleへ移行
+			ChangeState((int)EState::eIdle);
+		}
+		break;
+	case 4:
+		mAttStep = 0;
+		int rand = Math::Rand(1, 100);
+		// 確率で隙ができる
+		if (rand <= mNegProb)
+		{
+			// Neglectへ移行
+			ChangeState((int)EState::eNeglect);
+		}
+		else
+		{
+			// Idleへ移行
+			ChangeState((int)EState::eIdle);
+		}
+		break;
+	}
+}
+
+void CSoldier::AttPatternG()
+{
+	switch (mAttStep)
+	{
+	case 0:
+		if (GetDistToTarget() <= SLASH_RANGE)
+		{
+			// クールタイムを追加
+			mSlashCT = SLASH_CT;
+			// Slashへ移行
+			ChangeState((int)EState::eSlash);
+		}
+		else
+		{
+			// Idleへ移行
+			ChangeState((int)EState::eIdle);
+		}
+		break;
+	case 1:
+		mAttStep = 0;
+		int rand = Math::Rand(1, 100);
+		// 確率で隙ができる
+		if (rand <= mNegProb)
+		{
+			// Neglectへ移行
+			ChangeState((int)EState::eNeglect);
+		}
+		else
+		{
+			// Idleへ移行
+			ChangeState((int)EState::eIdle);
+		}
+		break;
+	}
+}
+
 // 更新
 void CSoldier::Update()
 {
+	if (mSlashCT > 0)
+	{
+		mSlashCT -= 1 * Times::DeltaTime();
+	}
+
 	// 状態に合わせて、更新処理を切り替える
 	switch ((EState)mState)
 	{

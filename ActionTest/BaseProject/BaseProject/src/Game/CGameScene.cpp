@@ -127,22 +127,8 @@ void CGameScene::Load()
 		enemyCount = 1;
 		break;
 	case 3:
-		rand = Math::Rand(0, 5);
-		if (rand == 5)
-		{
-			mEnemyLv--;
-			enemyCount = 3;
-		}
-		else if (rand > 2)
-		{
-			enemyCount = 2;
-		}
-		else
-		{
-			if (mEnemyLv < 10) mEnemyLv++;
-			
-			enemyCount = 1;
-		}
+		mEnemyLv += 2;
+		enemyCount = 1;
 		break;
 	default:
 		break;
@@ -382,13 +368,13 @@ void CGameScene::UpdateBattleResult()
 				switch (mpSaveManager->data.selectDiff)
 				{
 				case 1:
-					mpSaveManager->data.money += 125 + 50;
+					mpSaveManager->data.money += 150 * (1 + (0.1f * mEnemyLv));
 					break;
 				case 2:
-					mpSaveManager->data.money += 150 + 75;
+					mpSaveManager->data.money += 200 * (1 + (0.1f * mEnemyLv));
 					break;
 				case 3:
-					mpSaveManager->data.money += 175 + 175;
+					mpSaveManager->data.money += 275 * (1 + (0.1f * mEnemyLv));
 					break;
 				default:
 					break;

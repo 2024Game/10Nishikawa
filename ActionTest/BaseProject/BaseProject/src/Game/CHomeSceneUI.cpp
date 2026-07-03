@@ -604,26 +604,39 @@ void CHomeSceneUI::InformationUpdate()
 				break;
 
 			case 1:
-				newText->SetText((
-					"“G‚ÌƒŒƒxƒ‹" + std::to_string((((int)mpSaveManager->data.day / 3) - 1) + 2)
-					+ "\n•ñV\n$?"
-					).c_str());
-				break;
+			{
 
+				int enemyLevel = ((((int)mpSaveManager->data.day / 3) - 1) + 2);
+				int reward = static_cast<int>(150 * (1.0f + 0.1f * (enemyLevel - 1)));
+
+				newText->SetText(
+					("“G‚ÌƒŒƒxƒ‹ " + std::to_string(enemyLevel) +
+						"\n•ñV\n$" + std::to_string(reward))
+					.c_str());
+				break;
+			}
 			case 2:
-				newText->SetText((
-					"“G‚ÌƒŒƒxƒ‹" + std::to_string(((int)mpSaveManager->data.day / 3) + 2)
-					+ "\n•ñV\n$??"
-					).c_str());
-				break;
+			{
+				int enemyLevel = (((int)mpSaveManager->data.day / 3) + 2);
+				int reward = static_cast<int>(200 * (1.0f + 0.1f * (enemyLevel - 1)));
 
+				newText->SetText(
+					("“G‚ÌƒŒƒxƒ‹ " + std::to_string(enemyLevel) +
+						"\n•ñV\n$" + std::to_string(reward))
+					.c_str());
+				break;
+			}
 			case 3:
-				newText->SetText((
-					"“G‚ÌƒŒƒxƒ‹" + std::to_string((((int)mpSaveManager->data.day / 3) + 1) + 2)
-					 + "\n•ñV\n$???"
-					).c_str());
-				break;
+			{
+				int enemyLevel = ((((int)mpSaveManager->data.day / 3) + 2) + 2);
+				int reward = static_cast<int>(275 * (1.0f + 0.1f * (enemyLevel - 1)));
 
+				newText->SetText(
+					("“G‚ÌƒŒƒxƒ‹ " + std::to_string(enemyLevel) +
+						"\n•ñV\n$" + std::to_string(reward))
+					.c_str());
+				break;
+			}
 			case 4:
 				break;
 			case 5:
