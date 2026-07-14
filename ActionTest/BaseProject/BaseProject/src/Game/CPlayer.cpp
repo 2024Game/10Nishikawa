@@ -3,6 +3,7 @@
 #include "CInput.h"
 #include "CCamera.h"
 #include "CBullet.h"
+#include "CBlood.h"
 #include "CFlamethrower.h"
 #include "CSlash.h"
 #include "Maths.h"
@@ -1734,6 +1735,9 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		if (hitChara != nullptr && !IsAttackHitObj(hitChara))
 		{
 			AddAttackHitObj(hitChara);
+
+			// 血のエフェクトを作成
+			CBlood* blood = new CBlood(ETag::eFlame, hitChara);
 
 			// チュートリアル用
 			mAttHitCount++;

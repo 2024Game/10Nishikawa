@@ -481,6 +481,9 @@
     <ClCompile Include="src\Game\CTutorialUI.cpp">
       <Filter>ソース ファイル\Game\UI\Tutorial</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CBlood.cpp">
+      <Filter>ソース ファイル\Game\Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -867,6 +870,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\CTutorialScene.h">
       <Filter>ソース ファイル\Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CBlood.h">
+      <Filter>ソース ファイル\Game\Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

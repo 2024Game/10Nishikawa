@@ -232,6 +232,8 @@ private:
 	// 火炎放射エフェクト
 	// CFlamethrower* mpFlamethrower;
 
+	//CBlood*
+
 	// モーションブラーを掛ける残り時間
 	float mMotionBlurRemainTime;
 

@@ -88,6 +88,7 @@
     <ClCompile Include="src\Game\CApplication.cpp" />
     <ClCompile Include="src\Game\CBarracksScene.cpp" />
     <ClCompile Include="src\Game\CBarracksSceneUI.cpp" />
+    <ClCompile Include="src\Game\CBlood.cpp" />
     <ClCompile Include="src\Game\CBullet.cpp" />
     <ClCompile Include="src\Game\CBusterSword.cpp" />
     <ClCompile Include="src\Game\CCactus.cpp" />
@@ -220,6 +221,7 @@
     <ClInclude Include="src\Game\CApplication.h" />
     <ClInclude Include="src\Game\CBarracksScene.h" />
     <ClInclude Include="src\Game\CBarracksSceneUI.h" />
+    <ClInclude Include="src\Game\CBlood.h" />
     <ClInclude Include="src\Game\CBullet.h" />
     <ClInclude Include="src\Game\CBusterSword.h" />
     <ClInclude Include="src\Game\CCactus.h" />
