@@ -141,7 +141,7 @@ void CGameScene::Load()
 		rand = Math::Rand(0, 99);
 		// デバック用マックスレベル
 		//mEnemyLv = 10;
-		// rand = 110;
+		rand = 110;
 		if (rand < 59)
 		{
 			enemy = new CSoldier(mpPlayer, mEnemyLv);
