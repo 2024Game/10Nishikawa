@@ -2,6 +2,7 @@
 #include "CColliderCapsule.h"
 #include "CColliderSphere.h"
 #include "CGreatSword.h"
+#include "CBlood.h"
 #include "CSlash.h"
 #include "Maths.h"
 #include "CEnemyStatusLoader.h"
@@ -372,7 +373,6 @@ void CSoldier::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		CCharaBase* hitChara = dynamic_cast<CCharaBase*>(other->Owner());
 		if (hitChara != nullptr && !IsAttackHitObj(hitChara))
 		{
-			
 			AddAttackHitObj(hitChara);
 			// 状態に合わせて、更新処理を切り替える
 			switch (mState)
@@ -388,6 +388,9 @@ void CSoldier::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 				// 遠距離攻撃
 			case (int)EState::eSlash:		hitChara->TakeDamage(5 * mAttackMag, this);	break;
 			}
+
+			// 血のエフェクトを作成
+			CBlood* blood = new CBlood(ETag::eFlame, hitChara, 1.0f);
 		}
 	}
 	// 蹴り攻撃のコライダーが衝突した

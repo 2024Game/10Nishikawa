@@ -2,17 +2,17 @@
 
 
 // アニメーションの1コマ表示時間
-#define ANIM_TIME 0.0625f
+#define ANIM_TIME 0.05f
 // 炎のエフェクトのアニメーションデータ
 TexAnimData CBlood::msAnimData = TexAnimData(4, 4, false, 16, ANIM_TIME);
 
-CBlood::CBlood(ETag tag, CCharaBase* hitChara)
+CBlood::CBlood(ETag tag, CCharaBase* hitChara, float size)
 	: CBillboardImage("Effect/blood.png", tag, ETaskPauseType::eGame)
 	, mpHitChara(hitChara)
-	, mBloodScale(1.5f)
+	, mBloodScale(1.25f)
 {
 	SetAnimData(&msAnimData);
-	Scale(CVector::one * mBloodScale);
+	Scale(CVector::one * mBloodScale * size);
 }
 
 CBlood::~CBlood()

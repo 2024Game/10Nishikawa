@@ -5,6 +5,7 @@
 #include "Maths.h"
 #include "CEnemyStatusLoader.h"
 #include "CCollisionManager.h"
+#include "CBlood.h"
 
 // アニメーションのパス
 #define ANIM_PATH "Character\\TestPlayer\\Anims\\"
@@ -391,6 +392,9 @@ void CHeavyWarrior::Collision(CCollider* self, CCollider* other, const CHitInfo&
 				// 斬り攻撃X
 			case (int)EState::eAttackX:		hitChara->TakeDamage(15 * mAttackMag, this);	break;
 			}
+
+			// 血のエフェクトを作成
+			CBlood* blood = new CBlood(ETag::eFlame, hitChara, 1.75f);
 		}
 	}
 	// 蹴り攻撃のコライダーが衝突した

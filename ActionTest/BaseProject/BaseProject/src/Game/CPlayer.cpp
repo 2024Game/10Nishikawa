@@ -42,8 +42,8 @@
 #define ATTACKX_END_FRAME 210.0f	// 斬り攻撃Xの終了フレーム
 #define DEATH_END_FRAME 110.0f		// 死亡の終了フレーム
 
-#define SLIDEATT_START_FRAME 60.0f	// 斬り攻撃Xの開始フレーム
-#define SLIDEATT_END_FRAME 100.0f	// 斬り攻撃Xの終了フレーム
+#define SLIDEATT_START_FRAME 60.0f	// スライド斬り攻撃の開始フレーム
+#define SLIDEATT_END_FRAME 100.0f	// スライド斬り攻撃の終了フレーム
 
 // 剣のオフセット座標
 #define SWORD_OFFSET_POS CVector(0.0f, 7.2f, 3.5f)
@@ -785,7 +785,7 @@ void CPlayer::UpdateSlideAttack()
 		if (dist > 0.001f)
 		{
 			// 1フレームあたりの移動距離
-			float movePerFrame = dist / (SLIDEATT_START_FRAME - 5.0f);
+			float movePerFrame = dist / (SLIDEATT_START_FRAME - 15.0f);
 
 			// 1秒あたりの移動量
 			mMoveSpeed = camForward * movePerFrame * Times::DeltaTime() * 60 * 6.00;
@@ -1736,9 +1736,6 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		{
 			AddAttackHitObj(hitChara);
 
-			// 血のエフェクトを作成
-			CBlood* blood = new CBlood(ETag::eFlame, hitChara);
-
 			// チュートリアル用
 			mAttHitCount++;
 
@@ -1747,16 +1744,35 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			{
 				// 斬り攻撃1
 			case EState::eAttack1:
-				hitChara->TakeDamage(4.0f * mAttackMag, this);	break;
+				{
+					// 血のエフェクトを作成
+					CBlood* blood = new CBlood(ETag::eFlame, hitChara, 1.0f);
+					hitChara->TakeDamage(4.0f * mAttackMag, this);	break;
+				}
+				
 				// 斬り攻撃2
 			case EState::eAttack2:
-				hitChara->TakeDamage(6.0f * mAttackMag, this);	break;
+				{
+					// 血のエフェクトを作成
+					CBlood* blood = new CBlood(ETag::eFlame, hitChara, 1.0f);
+					hitChara->TakeDamage(6.0f * mAttackMag, this);	break;
+				}
+
 				// 斬り攻撃X
 			case EState::eAttackX:
-				hitChara->TakeDamage(5.0f * mAttackMag, this);	break;
+				{
+					// 血のエフェクトを作成
+					CBlood* blood = new CBlood(ETag::eFlame, hitChara, 1.0f);
+					hitChara->TakeDamage(5.0f * mAttackMag, this);	break;
+				}
+				
 				// スライド斬り攻撃
 			case EState::eSlideAtt:
-				hitChara->TakeDamage(8.0f * mAttackMag, this);	break;
+				{
+					// 血のエフェクトを作成
+					CBlood* blood = new CBlood(ETag::eFlame, hitChara, 1.5f);
+					hitChara->TakeDamage(8.0f * mAttackMag, this);	break;
+				}
 			}
 		}
 	}

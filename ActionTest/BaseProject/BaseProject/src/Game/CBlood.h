@@ -6,7 +6,7 @@ class CBlood : public CBillboardImage
 {
 public:
 	// コンストラクタ
-	CBlood(ETag tag, CCharaBase* hitChara);
+	CBlood(ETag tag, CCharaBase* hitChara, float size);
 	// デストラクタ
 	~CBlood();
 

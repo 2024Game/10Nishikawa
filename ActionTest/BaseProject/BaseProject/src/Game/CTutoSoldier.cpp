@@ -6,6 +6,7 @@
 #include "Maths.h"
 #include "CEnemyStatusLoader.h"
 #include "CCollisionManager.h"
+#include "CBlood.h"
 
 // アニメーションのパス
 #define ANIM_PATH "Character\\TestPlayer\\Anims\\"
@@ -368,6 +369,9 @@ void CTutoSoldier::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 				// 遠距離攻撃
 			case (int)EState::eSlash:		hitChara->TakeDamage(0 * mAttackMag, this);	break;
 			}
+
+			// 血のエフェクトを作成
+			CBlood* blood = new CBlood(ETag::eFlame, hitChara, 1.0f);
 		}
 	}
 	// 蹴り攻撃のコライダーが衝突した
