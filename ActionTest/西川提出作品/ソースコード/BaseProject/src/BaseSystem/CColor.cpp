@@ -1,0 +1,107 @@
+#include "CColor.h"
+
+const CColor CColor::black(0.0f, 0.0f, 0.0f, 1.0f);
+const CColor CColor::white(1.0f, 1.0f, 1.0f, 1.0f);
+const CColor CColor::gray(0.5f, 0.5f, 0.5f, 1.0f);
+const CColor CColor::red(1.0f, 0.0f, 0.0f, 1.0f);
+const CColor CColor::green(0.0f, 1.0f, 0.0f, 1.0f);
+const CColor CColor::blue(0.0f, 0.0f, 1.0f, 1.0f);
+const CColor CColor::cyan(0.0f, 1.0f, 1.0f, 1.0f);
+const CColor CColor::magenta(1.0f, 0.0f, 1.0f, 1.0f);
+const CColor CColor::yellow(1.0f, 1.0f, 0.0f, 1.0f);
+const CColor CColor::orange(1.0f, 0.5f, 0.0f, 1.0f);
+const CColor CColor::pink(1.0f, 0.4f, 0.7f, 1.0f);
+const CColor CColor::purple(0.5f, 0.0f, 0.5f, 1.0f);
+const CColor CColor::clear(0.0f, 0.0f, 0.0f, 0.0f);
+
+const CColor CColor::darkGray(0.25f, 0.25f, 0.25f, 1.0f);
+const CColor CColor::lightGray(0.75f, 0.75f, 0.75f, 1.0f);
+
+const CColor CColor::darkRed(0.5f, 0.0f, 0.0f, 1.0f);
+const CColor CColor::darkGreen(0.0f, 0.5f, 0.0f, 1.0f);
+const CColor CColor::darkBlue(0.0f, 0.0f, 0.5f, 1.0f);
+
+const CColor CColor::darkBrown(0.25f, 0.15f, 0.08f, 1.0f);
+const CColor CColor::deepBrown(0.20f, 0.10f, 0.05f, 1.0f);
+const CColor CColor::chocolate(0.36f, 0.18f, 0.09f, 1.0f);
+const CColor CColor::coffee(0.30f, 0.20f, 0.15f, 1.0f);
+const CColor CColor::almostBlackBrown(0.12f, 0.07f, 0.04f, 1.0f);
+const CColor CColor::darkSoil(0.18f, 0.12f, 0.08f, 1.0f);
+
+const CColor CColor::lightRed(1.0f, 0.5f, 0.5f, 1.0f);
+const CColor CColor::lightGreen(0.5f, 1.0f, 0.5f, 1.0f);
+const CColor CColor::lightBlue(0.5f, 0.5f, 1.0f, 1.0f);
+
+const CColor CColor::navy(0.0f, 0.0f, 0.4f, 1.0f);
+const CColor CColor::skyBlue(0.4f, 0.7f, 1.0f, 1.0f);
+const CColor CColor::teal(0.0f, 0.5f, 0.5f, 1.0f);
+
+
+CColor::CColor()
+	: mR(1.0f), mG(1.0f), mB(1.0f), mA(1.0f)
+{
+}
+
+CColor::CColor(float r, float g, float b)
+	: mR(r), mG(g), mB(b), mA(1.0f)
+{
+}
+
+CColor::CColor(float r, float g, float b, float a)
+	: mR(r), mG(g), mB(b), mA(a)
+{
+}
+
+CColor::~CColor()
+{
+}
+
+void CColor::Set(float r, float g, float b)
+{
+	mR = r, mG = g, mB = b;
+}
+
+void CColor::Set(float r, float g, float b, float a)
+{
+	mR = r, mG = g, mB = b, mA = a;
+}
+
+float CColor::R() const
+{
+	return mR;
+}
+
+void CColor::R(float r)
+{
+	mR = r;
+}
+
+float CColor::G() const
+{
+	return mG;
+}
+
+void CColor::G(float g)
+{
+	mG = g;
+}
+
+float CColor::B() const
+{
+	return mB;
+}
+
+void CColor::B(float b)
+{
+	mB = b;
+}
+
+float CColor::A() const
+{
+	return mA;
+}
+
+void CColor::A(float a)
+{
+	mA = a;
+}
