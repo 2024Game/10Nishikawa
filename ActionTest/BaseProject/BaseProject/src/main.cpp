@@ -141,7 +141,7 @@ int main(int argc, char* argv[])
 	if (glewInit() != GLEW_OK)
 	{
 		// GLEW の初期化に失敗した
-//		std::cerr << "Can't initialize GLEW" << std::endl;
+		// std::cerr << "Can't initialize GLEW" << std::endl;
 		return 1;
 	}
 	// 垂直同期のタイミングを待つ  
