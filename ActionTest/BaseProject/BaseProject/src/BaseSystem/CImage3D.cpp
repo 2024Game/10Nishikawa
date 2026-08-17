@@ -1,9 +1,9 @@
 #include "CImage3D.h"
 
-// 3D‹óŠÔ‚Å‚ÌkÚi3D‹óŠÔ‚Å‚Ì1‚ÌƒTƒCƒY‚É‘Š“–‚·‚éƒsƒNƒZƒ‹”j
+// 3Dï¿½ï¿½Ô‚Å‚Ìkï¿½Úi3Dï¿½ï¿½Ô‚Å‚ï¿½1ï¿½ÌƒTï¿½Cï¿½Yï¿½É‘ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½Nï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½j
 #define WORLD_UNIT_PER_PIXEL 256.0f
 
-//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+//ï¿½Rï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½Nï¿½^
 CImage3D::CImage3D(std::string path,
 	ETag tag,
 	ETaskPriority prio, int sortOrder,
@@ -22,29 +22,29 @@ CImage3D::CImage3D(std::string path,
 	, mIsDepthMask(false)
 	, mIsLighting(false)
 {
-	// ƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ç‚İï¿½ï¿½ï¿½
 	Load(path);
 
 	SetColor(CColor::white);
 
-	// UVİ’è
+	// UVï¿½İ’ï¿½
 	SetUV(CRect(0.0f, 0.0f, 1.0f, 1.0f));
 }
 
-//ƒfƒXƒgƒ‰ƒNƒ^
+//ï¿½fï¿½Xï¿½gï¿½ï¿½ï¿½Nï¿½^
 CImage3D::~CImage3D()
 {
 }
 
-// ƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ
+// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ç‚İï¿½ï¿½ï¿½
 void CImage3D::Load(std::string path)
 {
-	// ƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ
+	// ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ç‚İï¿½ï¿½ï¿½
 	mMaterial.LoadTexture(path, path, false);
 	CTexture* tex = mMaterial.Texture();
 	if (tex != nullptr)
 	{
-		// “Ç‚İ‚ñ‚¾ƒeƒNƒXƒ`ƒƒ‚Ì
+		// ï¿½Ç‚İï¿½ï¿½ñ‚¾ƒeï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½
 		CVector2 size;
 		size.X(tex->Header().width);
 		size.Y(tex->Header().height);
@@ -52,63 +52,63 @@ void CImage3D::Load(std::string path)
 	}
 }
 
-// ƒCƒ[ƒW‚ÌƒAƒ‰ƒCƒƒ“ƒg‚ğæ“¾
+// ï¿½Cï¿½ï¿½ï¿½[ï¿½Wï¿½ÌƒAï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½æ“¾
 EAlignment CImage3D::GetAlignment() const
 {
 	return mAlignment;
 }
 
-// ƒCƒ[ƒW‚ÌƒAƒ‰ƒCƒƒ“ƒg‚ğİ’è
+// ï¿½Cï¿½ï¿½ï¿½[ï¿½Wï¿½ÌƒAï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½İ’ï¿½
 void CImage3D::SetAlignment(EAlignment align)
 {
 	mAlignment = align;
 	ApplyVertices();
 }
 
-// 2D‹óŠÔ‚Å‚ÌƒIƒtƒZƒbƒgÀ•W‚ğæ“¾
+// 2Dï¿½ï¿½Ô‚Å‚ÌƒIï¿½tï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½æ“¾
 const CVector2& CImage3D::GetOffsetPos() const
 {
 	return mOffsetPos;
 }
 
-// 2D‹óŠÔ‚Å‚ÌƒIƒtƒZƒbƒgÀ•W‚ğİ’è
+// 2Dï¿½ï¿½Ô‚Å‚ÌƒIï¿½tï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½Wï¿½ï¿½İ’ï¿½
 void CImage3D::SetOffsetPos(const float& x, const float& y)
 {
 	SetOffsetPos(CVector2(x, y));
 }
 
-// 2D‹óŠÔ‚Å‚ÌƒIƒtƒZƒbƒgÀ•W‚ğİ’èiCVector2”Åj
+// 2Dï¿½ï¿½Ô‚Å‚ÌƒIï¿½tï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½Wï¿½ï¿½İ’ï¿½iCVector2ï¿½Åj
 void CImage3D::SetOffsetPos(const CVector2& pos)
 {
 	mOffsetPos = pos;
 }
 
-// ƒTƒCƒYæ“¾
+// ï¿½Tï¿½Cï¿½Yï¿½æ“¾
 const CVector2& CImage3D::GetSize() const
 {
 	return mSize;
 }
 
-// ƒTƒCƒYİ’è
+// ï¿½Tï¿½Cï¿½Yï¿½İ’ï¿½
 void CImage3D::SetSize(const float& x, const float& y)
 {
 	SetSize(CVector2(x, y));
 }
 
-// ƒTƒCƒYİ’èiCVector2”Åj
+// ï¿½Tï¿½Cï¿½Yï¿½İ’ï¿½iCVector2ï¿½Åj
 void CImage3D::SetSize(const CVector2& size)
 {
 	mSize = size;
 	ApplyVertices();
 }
 
-// UVæ“¾
+// UVï¿½æ“¾
 const CRect& CImage3D::GetUV() const
 {
 	return mUV;
 }
 
-// UVİ’è
+// UVï¿½İ’ï¿½
 void CImage3D::SetUV(const float& left, const float& top, const float& right, const float& bottom)
 {
 	CRect rect;
@@ -118,7 +118,7 @@ void CImage3D::SetUV(const float& left, const float& top, const float& right, co
 	SetUV(rect);
 }
 
-// UVİ’èiCRect”Åj
+// UVï¿½İ’ï¿½iCRectï¿½Åj
 void CImage3D::SetUV(const CRect& uv)
 {
 	mUV = uv;
@@ -142,14 +142,14 @@ void CImage3D::SetUV(const CRect& uv)
 	);
 }
 
-// 3D‹óŠÔ‚Å‚ÌkÚ‚ğİ’è
+// 3Dï¿½ï¿½Ô‚Å‚Ìkï¿½Ú‚ï¿½İ’ï¿½
 void CImage3D::SetWorldUnitPerPixel(float pixel)
 {
 	mWolrdUnitPerPixel = pixel;
 	SetSize(mSize);
 }
 
-// ƒAƒjƒ[ƒVƒ‡ƒ“ƒf[ƒ^‚ğİ’è
+// ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½ï¿½İ’ï¿½
 void CImage3D::SetAnimData(TexAnimData* animData)
 {
 	CTexture* tex = mMaterial.Texture();
@@ -159,8 +159,8 @@ void CImage3D::SetAnimData(TexAnimData* animData)
 	mAnimNo = 0;
 	mElapsedTime = 0.0f;
 
-	// ƒAƒjƒ[ƒVƒ‡ƒ“‚ª—LŒø‚Å‚ ‚ê‚ÎA
-	// ˆê”ÔÅ‰‚Ì‰æ‘œ‚ÌUV‚ğİ’è
+	// ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½ÎA
+	// ï¿½ï¿½ÔÅï¿½ï¿½Ì‰æ‘œï¿½ï¿½UVï¿½ï¿½İ’ï¿½
 	if (IsEnableAnim())
 	{
 		CRect uv = mMaterial.Texture()->CalcUV
@@ -179,39 +179,39 @@ void CImage3D::SetAnimData(TexAnimData* animData)
 	}
 }
 
-// ƒAƒjƒ[ƒVƒ‡ƒ“‚ªI‚í‚Á‚½‚©‚Ç‚¤‚©
-bool CImage3D::IsEndAnim() const
+// ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç‚ï¿½ï¿½ï¿½
+bool CImage3D::IsEndAnim()
 {
 	if (mpAnimData == nullptr) return true;
 	int size = mpAnimData->frames.size();
 	return mAnimNo == size;
 }
 
-// ƒrƒ‹ƒ{[ƒh‚ÌƒIƒ“ƒIƒt‚ğİ’è
+// ï¿½rï¿½ï¿½ï¿½{ï¿½[ï¿½hï¿½ÌƒIï¿½ï¿½ï¿½Iï¿½tï¿½ï¿½İ’ï¿½
 void CImage3D::SetBillboard(bool enable)
 {
 	mIsBillboard = enable;
 }
 
-// ƒfƒvƒXƒeƒXƒg‚ÌƒIƒ“ƒIƒt‚ğİ’è
+// ï¿½fï¿½vï¿½Xï¿½eï¿½Xï¿½gï¿½ÌƒIï¿½ï¿½ï¿½Iï¿½tï¿½ï¿½İ’ï¿½
 void CImage3D::SetDepthTest(bool enable)
 {
 	mIsDepthTest = enable;
 }
 
-// ƒfƒvƒXƒeƒXƒg‚ÌƒIƒ“ƒIƒt‚ğİ’è
+// ï¿½fï¿½vï¿½Xï¿½eï¿½Xï¿½gï¿½ÌƒIï¿½ï¿½ï¿½Iï¿½tï¿½ï¿½İ’ï¿½
 void CImage3D::SetDepthMask(bool enable)
 {
 	mIsDepthMask = enable;
 }
 
-// ƒ‰ƒCƒeƒBƒ“ƒO‚ÌƒIƒ“ƒIƒt‚ğİ’è
+// ï¿½ï¿½ï¿½Cï¿½eï¿½Bï¿½ï¿½ï¿½Oï¿½ÌƒIï¿½ï¿½ï¿½Iï¿½tï¿½ï¿½İ’ï¿½
 void CImage3D::SetLighting(bool enable)
 {
 	mIsLighting = enable;
 }
 
-// •ÏX‚ğ’¸“_‚É”½‰f
+// ï¿½ÏXï¿½ğ’¸“_ï¿½É”ï¿½ï¿½f
 void CImage3D::ApplyVertices()
 {
 	CVector s = mSize * (1.0f / mWolrdUnitPerPixel) * 2.0f;
@@ -231,7 +231,7 @@ void CImage3D::ApplyVertices()
 	else if (mAlignment == EAlignment::eLowerCenter)	start = CVector(-hs.X(),	-s.Y(),		0.0f);
 	else if (mAlignment == EAlignment::eLowerRight)		start = CVector(-s.X(),		-s.Y(),		0.0f);
 
-	// OŠpŒ`‚Ì’¸“_À•Wİ’è
+	// ï¿½Oï¿½pï¿½`ï¿½Ì’ï¿½ï¿½_ï¿½ï¿½ï¿½Wï¿½İ’ï¿½
 	mT[0].Vertex
 	(
 		start + CVector(s.X(), s.Y(), 0.0f),
@@ -245,12 +245,12 @@ void CImage3D::ApplyVertices()
 		start + CVector(s.X(), s.Y(), 0.0f)
 	);
 
-	// –@ü‚ğZ²•ûŒü
+	// ï¿½@ï¿½ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	mT[0].Normal(CVector(0.0f, 0.0f, 1.0f));
 	mT[1].Normal(CVector(0.0f, 0.0f, 1.0f));
 }
 
-// ƒAƒjƒ[ƒVƒ‡ƒ“‚ğÄ¶‚Å‚«‚é‚©‚Ç‚¤‚©
+// ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äï¿½ï¿½Å‚ï¿½ï¿½é‚©ï¿½Ç‚ï¿½ï¿½ï¿½
 bool CImage3D::IsEnableAnim() const
 {
 	if (mpAnimData == nullptr) return false;
@@ -258,20 +258,20 @@ bool CImage3D::IsEnableAnim() const
 	return true;
 }
 
-// XV
+// ï¿½Xï¿½V
 void CImage3D::Update()
 {
-	// ƒAƒjƒ[ƒVƒ‡ƒ“‚ª—LŒø‚Å‚ ‚ê‚Î
+	// ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½ï¿½
 	if (IsEnableAnim())
 	{
 		int size = mpAnimData->frames.size();
 		if (mAnimNo < size)
 		{
 			TexAnimFrameData data = mpAnimData->frames[mAnimNo];
-			// Œ»İ‚Ì‰æ‘œ‚Ì•\¦ŠÔ‚ğ’´‚¦‚½‚ç
+			// ï¿½ï¿½ï¿½İ‚Ì‰æ‘œï¿½Ì•\ï¿½ï¿½ï¿½ï¿½ï¿½Ô‚ğ’´‚ï¿½ï¿½ï¿½ï¿½ï¿½
 			if (mElapsedTime >= data.time)
 			{
-				// Ÿ‚Ì‰æ‘œ‚ÖØ‚è‘Ö‚¦
+				// ï¿½ï¿½ï¿½Ì‰æ‘œï¿½ÖØ‚ï¿½Ö‚ï¿½
 				mElapsedTime -= data.time;
 
 				mAnimNo++;
@@ -294,34 +294,35 @@ void CImage3D::Update()
 				);
 				SetUV(uv);
 			}
-			// Œo‰ßŠÔ‚ğŒv‘ª
+			// ï¿½oï¿½ßï¿½ï¿½Ô‚ï¿½ï¿½vï¿½ï¿½
 			mElapsedTime += Times::DeltaTime();
 		}
+
 	}
 }
 
-// •`‰æ
+// ï¿½`ï¿½ï¿½
 void CImage3D::Render()
 {
 	Render(&mMaterial);
 }
 
-// •`‰æiƒ}ƒeƒŠƒAƒ‹w’è”Åj
+// ï¿½`ï¿½ï¿½iï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½wï¿½ï¿½Åj
 void CImage3D::Render(CMaterial* mpMaterial)
 {
 	CTexture* tex = mMaterial.Texture();
 	if (tex == nullptr) return;
 
-	// s—ñ‚Ì•Û‘¶
+	// ï¿½sï¿½ï¿½Ì•Û‘ï¿½
 	glPushMatrix();
 
-	// ©g‚Ìs—ñ
+	// ï¿½ï¿½ï¿½gï¿½Ìsï¿½ï¿½
 	CMatrix m;
 
-	// ƒrƒ‹ƒ{[ƒh‚ª—LŒø‚È‚ç‚Î
+	// ï¿½rï¿½ï¿½ï¿½{ï¿½[ï¿½hï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½È‚ï¿½ï¿½
 	if (mIsBillboard)
 	{
-		// í‚ÉƒJƒƒ‰‚Ì•ûŒü‚ğŒü‚©‚¹‚é
+		// ï¿½ï¿½ÉƒJï¿½ï¿½ï¿½ï¿½ï¿½Ì•ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		CCamera* cam = CCamera::CurrentCamera();
 		CMatrix camMtx = cam->GetViewMatrix().Inverse();
 		camMtx.Position(CVector::zero);
@@ -331,38 +332,38 @@ void CImage3D::Render(CMaterial* mpMaterial)
 		t.Translate(mPosition);
 		m = s * r * camMtx * t;
 	}
-	// ƒrƒ‹ƒ{[ƒh‚ª–³Œø‚È‚ç‚Î
+	// ï¿½rï¿½ï¿½ï¿½{ï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½
 	else
 	{
-		// ’Êí‚Ìs—ñ‚ğæ“¾
+		// ï¿½Êï¿½Ìsï¿½ï¿½ï¿½ï¿½æ“¾
 		m = Matrix();
 	}
 
-	// s—ñ‚ğ”½‰f
+	// ï¿½sï¿½ï¿½ğ”½‰f
 	glMultMatrixf(m.M());
 
-	// ƒIƒtƒZƒbƒgÀ•W‚ğ”½‰f
+	// ï¿½Iï¿½tï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½Wï¿½ğ”½‰f
 	CVector2 offset = mOffsetPos * (1.0f / mWolrdUnitPerPixel);
 	glTranslatef(offset.X(), offset.Y(), 0.0f);
 
-	// Šeİ’è‚Ìƒtƒ‰ƒO‚Ìó‘Ô‚É‡‚í‚¹‚ÄAƒIƒt‚É‚·‚é
-	if (!mIsDepthTest) glDisable(GL_DEPTH_TEST);	// ƒfƒvƒXƒeƒXƒg
-	if (!mIsDepthMask) glDepthMask(false);			// ƒfƒvƒX‘‚«‚İ
-	if (!mIsLighting) glDisable(GL_LIGHTING);		// ƒ‰ƒCƒeƒBƒ“ƒO
+	// ï¿½eï¿½İ’ï¿½Ìƒtï¿½ï¿½ï¿½Oï¿½Ìï¿½Ô‚Éï¿½ï¿½í‚¹ï¿½ÄAï¿½Iï¿½tï¿½É‚ï¿½ï¿½ï¿½
+	if (!mIsDepthTest) glDisable(GL_DEPTH_TEST);	// ï¿½fï¿½vï¿½Xï¿½eï¿½Xï¿½g
+	if (!mIsDepthMask) glDepthMask(false);			// ï¿½fï¿½vï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	if (!mIsLighting) glDisable(GL_LIGHTING);		// ï¿½ï¿½ï¿½Cï¿½eï¿½Bï¿½ï¿½ï¿½O
 
-	// ƒ}ƒeƒŠƒAƒ‹“K—p
+	// ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Kï¿½p
 	mpMaterial->Enabled(mColor);
-	// OŠpŒ`‚Ì•`‰æ
+	// ï¿½Oï¿½pï¿½`ï¿½Ì•`ï¿½ï¿½
 	mT[0].Render();
 	mT[1].Render();
-	// ƒ}ƒeƒŠƒAƒ‹‰ğœ
+	// ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	mpMaterial->Disabled();
 
-	// Šeİ’è‚ğŒ³‚É–ß‚·
-	glEnable(GL_DEPTH_TEST);	// ƒfƒvƒXƒeƒXƒg
-	glDepthMask(true);			// ƒfƒvƒX‘‚«‚İ
-	glEnable(GL_LIGHTING);		// ƒ‰ƒCƒeƒBƒ“ƒO
+	// ï¿½eï¿½İ’ï¿½ï¿½ï¿½ï¿½ï¿½É–ß‚ï¿½
+	glEnable(GL_DEPTH_TEST);	// ï¿½fï¿½vï¿½Xï¿½eï¿½Xï¿½g
+	glDepthMask(true);			// ï¿½fï¿½vï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	glEnable(GL_LIGHTING);		// ï¿½ï¿½ï¿½Cï¿½eï¿½Bï¿½ï¿½ï¿½O
 
-	// s—ñ‚ğ–ß‚·
+	// ï¿½sï¿½ï¿½ï¿½ß‚ï¿½
 	glPopMatrix();
 }

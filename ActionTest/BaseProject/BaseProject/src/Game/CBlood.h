@@ -6,12 +6,14 @@ class CBlood : public CBillboardImage
 {
 public:
 	// コンストラクタ
-	CBlood(ETag tag, CCharaBase* hitChara, float size);
+	CBlood(ETag tag);
 	// デストラクタ
 	~CBlood();
 
 	// 更新
 	void Update() override;
+
+	void SetEffect(CCharaBase* hitChara, float size);
 
 private:
 	// アニメーションデータ
@@ -19,4 +21,5 @@ private:
 	CCharaBase* mpHitChara; //このエフェクトが出ているキャラクター
 	// スケールの値
 	float mBloodScale;
+	bool mIsPlay;
 };

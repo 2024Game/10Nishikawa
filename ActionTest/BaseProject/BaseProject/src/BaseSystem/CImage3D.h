@@ -76,7 +76,7 @@ public:
 	/// <param name="animData"></param>
 	void SetAnimData(TexAnimData* animData);
 	// アニメーションが終わったかどうか
-	bool IsEndAnim() const;
+	bool IsEndAnim();
 
 	// ビルボードのオンオフを設定
 	void SetBillboard(bool enable);

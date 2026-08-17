@@ -177,6 +177,9 @@ CHeavyWarrior::CHeavyWarrior(CPlayer* player, int enemyLevel)
 
 	// ロックオンしたときの注視点の高さ
 	mLockOnOffset = CVector(0.0f, 15.0f, 0.0f);
+
+	// エフェクトを先に作っておく
+	mpBlood = new CBlood(ETag::eFlame);
 }
 
 // デストラクタ
@@ -393,8 +396,8 @@ void CHeavyWarrior::Collision(CCollider* self, CCollider* other, const CHitInfo&
 			case (int)EState::eAttackX:		hitChara->TakeDamage(15 * mAttackMag, this);	break;
 			}
 
-			// 血のエフェクトを作成
-			CBlood* blood = new CBlood(ETag::eFlame, hitChara, 1.75f);
+			// 血のエフェクトを再生
+			mpBlood->SetEffect(hitChara, 1.75f);
 		}
 	}
 	// 蹴り攻撃のコライダーが衝突した

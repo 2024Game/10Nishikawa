@@ -106,7 +106,13 @@ void idle() {
 
 int main(int argc, char* argv[])
 {
-	GLFWwindow* window;
+	// メモリリーク検出.
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
+	// この番地が確保されるとゲームを落とす
+	//_CrtSetBreakAlloc(573);
+
+	GLFWwindow* window;	
 
 	// freeglutの初期化
 	// GLUTの補助描画関数を使うために必要
