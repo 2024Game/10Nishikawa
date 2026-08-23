@@ -176,6 +176,9 @@ CSoldier::CSoldier(CPlayer* player, int enemyLevel)
 	mLevel = enemyLevel;
 	InitStatus();
 	mGuardBreakTime = 12.5f;
+
+	// エフェクトを先に作っておく
+	mpBlood = new CBlood(ETag::eFlame);
 }
 
 // デストラクタ
@@ -389,8 +392,8 @@ void CSoldier::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			case (int)EState::eSlash:		hitChara->TakeDamage(5 * mAttackMag, this);	break;
 			}
 
-			// 血のエフェクトを作成
-			CBlood* blood = new CBlood(ETag::eFlame, hitChara, 1.0f);
+			// 血のエフェクトを再生
+			mpBlood->SetEffect(hitChara, 1.0f);
 		}
 	}
 	// 蹴り攻撃のコライダーが衝突した
@@ -411,6 +414,9 @@ void CSoldier::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		{
 			AddAttackHitObj(hitChara);
 			hitChara->TakeDamage(10 * mAttackMag, this);
+
+			// 血のエフェクトを再生
+			mpBlood->SetEffect(hitChara, 1.25f);
 		}
 	}
 }

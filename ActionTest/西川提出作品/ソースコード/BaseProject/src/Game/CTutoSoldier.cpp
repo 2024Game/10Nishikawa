@@ -175,6 +175,9 @@ CTutoSoldier::CTutoSoldier(CPlayer* player, int enemyLevel)
 	mLevel = enemyLevel;
 	InitStatus();
 	mGuardBreakTime = 12.5f;
+
+	// エフェクトを先に作っておく
+	mpBlood = new CBlood(ETag::eFlame);
 }
 
 // デストラクタ
@@ -370,8 +373,8 @@ void CTutoSoldier::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 			case (int)EState::eSlash:		hitChara->TakeDamage(0 * mAttackMag, this);	break;
 			}
 
-			// 血のエフェクトを作成
-			CBlood* blood = new CBlood(ETag::eFlame, hitChara, 1.0f);
+			// 血のエフェクトを再生
+			mpBlood->SetEffect(hitChara, 1.0f);
 		}
 	}
 	// 蹴り攻撃のコライダーが衝突した

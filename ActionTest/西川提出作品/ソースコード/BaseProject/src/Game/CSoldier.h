@@ -5,6 +5,7 @@
 #include "CRideableObject.h"
 #include "CSound.h"
 #include "CPlayer.h"
+#include "CBlood.h"
 
 class CCollider;
 class CGreatSword;
@@ -240,4 +241,6 @@ private:
 	int mTactics;			// 現在の戦術レイヤー (ETactics)
 
 	float mSlashCT;			// 斬撃攻撃のみのクールタイム
+
+	CBlood* mpBlood;	// 攻撃をあてた相手に貼り付ける出血エフェクト
 };

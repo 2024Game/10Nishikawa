@@ -5,6 +5,7 @@
 #include "CSound.h"
 #include "CSaveManager.h"
 #include "GameInput.h"
+#include "CBlood.h"
 
 using namespace GameInput::v3;
 
@@ -267,4 +268,7 @@ private:
 	CVector mIndicatorOffsetPos;	// インジケーターのオフセット座標
 	bool mInTypeAhead;				// 先行入力コライダー内に入っているか
 	bool mInJustAction;
+
+	CBlood* mpBlood;	// 攻撃をあてた相手に貼り付ける出血エフェクト
+	float mAfterImageTimer; // 残像生成用のタイマー
 };
